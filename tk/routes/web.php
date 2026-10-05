@@ -9,10 +9,14 @@ use App\Http\Controllers\PublicFormController;
 use App\Http\Controllers\ToolAnalyticsController;
 use App\Http\Controllers\ToolController;
 use App\Http\Controllers\ToolFormController;
+use App\Http\Controllers\ToolInvitationController;
 use App\Http\Controllers\ToolSubmissionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
+
+Route::get('/invitations/{token}', [ToolInvitationController::class, 'acceptForm'])->name('invitations.accept');
+Route::middleware(['auth', 'verified'])->get('/invitations/{token}/complete', [ToolInvitationController::class, 'complete'])->name('invitations.complete');
 
 Route::get('/f/{form:code}', [PublicFormController::class, 'show'])->name('public.forms.show');
 Route::post('/f/{form:code}', [PublicFormController::class, 'submit'])->name('public.forms.submit');
@@ -26,6 +30,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('tools', ToolController::class)->only(['index', 'create', 'store', 'show']);
 
     Route::prefix('tools/{tool}')->name('tools.')->group(function () {
+        Route::post('invitations', [ToolInvitationController::class, 'store'])->name('invitations.store');
         Route::get('analytics', [ToolAnalyticsController::class, 'show'])->name('analytics');
         Route::get('analytics/field', [ToolAnalyticsController::class, 'fieldBreakdown'])->name('analytics.field');
         Route::get('export', [ToolAnalyticsController::class, 'export'])->name('export');

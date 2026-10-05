@@ -66,6 +66,7 @@ class FormBuilderService
                     'hint' => $field['hint'] ?? null,
                     'position' => $field['position'] ?? $index,
                     'is_required' => (bool) ($field['is_required'] ?? false),
+                    'calculation_expr' => $field['calculation_expr'] ?? null,
                     'parameters' => $field['parameters'] ?? null,
                     'sensitivity' => $field['sensitivity'] ?? 'none',
                 ]);

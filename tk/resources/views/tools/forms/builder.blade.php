@@ -1,13 +1,20 @@
 @php
     use App\Support\FieldTypeHelper;
-    $initialFields = $form->currentVersion?->fields->map(fn ($f) => [
-        'name' => $f->name,
-        'field_type' => $f->field_type,
-        'label' => $f->label,
-        'hint' => $f->hint,
-        'is_required' => $f->is_required,
-        'parameters' => $f->parameters ?? [],
-    ]) ?? collect();
+    $initialFields = $form->currentVersion?->fields->map(function ($f) {
+        $parameters = $f->parameters ?? [];
+        if ($f->field_type === 'calculate' && ! empty($f->calculation_expr)) {
+            $parameters['expression'] = $f->calculation_expr;
+        }
+
+        return [
+            'name' => $f->name,
+            'field_type' => $f->field_type,
+            'label' => $f->label,
+            'hint' => $f->hint,
+            'is_required' => $f->is_required,
+            'parameters' => $parameters,
+        ];
+    }) ?? collect();
     $typeCatalog = $fieldTypes->map(fn ($t) => [
         'code' => $t->code,
         'label' => FieldTypeHelper::label($t->code),
@@ -107,6 +114,26 @@
                                 <div x-show="field.field_type === 'select_multiple'" class="mt-2">
                                     <label class="text-xs text-tk-muted">Max selections</label>
                                     <input type="number" min="1" :name="'fields['+index+'][parameters][max_selections]'" x-model.number="field.parameters.max_selections" class="w-24 rounded border border-tk-line px-2 py-1 text-sm">
+                                </div>
+                            </div>
+
+                            <div x-show="field.field_type === 'calculate'" class="mt-3 border-t border-tk-line pt-3 text-sm">
+                                <label class="text-xs text-tk-muted">Expression (use ${field_name} for numeric fields)</label>
+                                <input type="text" :name="'fields['+index+'][parameters][expression]'" x-model="field.parameters.expression" placeholder="${weight} * ${height}" class="w-full rounded border border-tk-line px-2 py-1 text-sm font-mono mt-1">
+                            </div>
+
+                            <div x-show="field.field_type === 'signature'" class="mt-3 border-t border-tk-line pt-3 text-sm space-y-2">
+                                <label class="flex items-center gap-2">
+                                    <input type="checkbox" :name="'fields['+index+'][parameters][allow_draw]'" value="1" x-model="field.parameters.allow_draw">
+                                    Allow on-screen drawing
+                                </label>
+                                <label class="flex items-center gap-2">
+                                    <input type="checkbox" :name="'fields['+index+'][parameters][allow_upload]'" value="1" x-model="field.parameters.allow_upload">
+                                    Allow upload / camera scan of signature
+                                </label>
+                                <div>
+                                    <label class="text-xs text-tk-muted">Max size (MB)</label>
+                                    <input type="number" min="1" max="50" :name="'fields['+index+'][parameters][max_size_mb]'" x-model.number="field.parameters.max_size_mb" class="w-24 rounded border border-tk-line px-2 py-1 text-sm">
                                 </div>
                             </div>
 

@@ -16,7 +16,7 @@ class ToolAnalyticsController extends Controller
 {
     public function show(Request $request, DcProject $tool, AnalyticsService $analytics, ToolAccessService $access): View
     {
-        $access->assertCanView($request->user(), $tool);
+        $access->assertCanViewAnalytics($request->user(), $tool);
 
         $overview = $analytics->toolOverview($tool);
         $trend = $analytics->submissionsTrend($tool);
@@ -27,7 +27,7 @@ class ToolAnalyticsController extends Controller
 
     public function fieldBreakdown(Request $request, DcProject $tool, AnalyticsService $analytics, ToolAccessService $access)
     {
-        $access->assertCanView($request->user(), $tool);
+        $access->assertCanViewAnalytics($request->user(), $tool);
 
         $validated = $request->validate([
             'form_id' => ['required', 'integer'],
@@ -41,7 +41,7 @@ class ToolAnalyticsController extends Controller
 
     public function export(Request $request, DcProject $tool, ToolAccessService $access): StreamedResponse
     {
-        $access->assertCanView($request->user(), $tool);
+        $access->assertCanManage($request->user(), $tool);
 
         $filename = 'tilkit-'.$tool->code.'-submissions-'.now()->format('Y-m-d').'.csv';
 

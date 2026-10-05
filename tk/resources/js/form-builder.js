@@ -182,5 +182,14 @@ function defaultParameters(type, existing = {}) {
         base.allow_upload = base.allow_upload ?? true;
         base.max_size_mb = base.max_size_mb ?? 25;
     }
+    if (type === 'signature') {
+        base.allow_draw = base.allow_draw ?? true;
+        base.allow_upload = base.allow_upload ?? true;
+        base.allow_capture = base.allow_capture ?? true;
+        base.max_size_mb = base.max_size_mb ?? 10;
+    }
+    if (type === 'calculate') {
+        base.expression = base.expression ?? '';
+    }
     return base;
 }

@@ -48,7 +48,12 @@ class ToolController extends Controller
     public function show(Request $request, DcProject $tool, ToolAccessService $access): View
     {
         $access->assertCanView($request->user(), $tool);
-        $tool->load(['forms' => fn ($q) => $q->latest(), 'owner']);
+        $tool->load([
+            'forms' => fn ($q) => $q->latest(),
+            'owner',
+            'members.user',
+            'invitations' => fn ($q) => $q->whereNull('accepted_at')->where('expires_at', '>', now()),
+        ]);
         $role = $request->user()->toolRoleFor($tool);
 
         return view('tools.show', compact('tool', 'role'));

@@ -13,10 +13,15 @@ class ToolSubmissionController extends Controller
     public function index(Request $request, DcProject $tool, ToolAccessService $access): View
     {
         $access->assertCanView($request->user(), $tool);
+        $role = $request->user()->toolRoleFor($tool);
 
-        $submissions = DcSubmission::query()
+        $query = DcSubmission::query()
             ->where('project_id', $tool->id)
-            ->with(['form', 'collector'])
+            ->with(['form', 'collector']);
+
+        $access->scopeSubmissionsForUser($request->user(), $tool, $query);
+
+        $submissions = $query
             ->when($request->filled('status'), fn ($q) => $q->where('status', $request->string('status')))
             ->when($request->filled('form_id'), fn ($q) => $q->where('form_id', $request->integer('form_id')))
             ->latest('received_at')
@@ -25,13 +30,12 @@ class ToolSubmissionController extends Controller
 
         $forms = $tool->forms()->orderBy('title')->get(['id', 'title']);
 
-        return view('tools.submissions.index', compact('tool', 'submissions', 'forms'));
+        return view('tools.submissions.index', compact('tool', 'submissions', 'forms', 'role'));
     }
 
     public function show(Request $request, DcProject $tool, DcSubmission $submission, ToolAccessService $access): View
     {
-        $access->assertCanView($request->user(), $tool);
-        abort_unless($submission->project_id === $tool->id, 404);
+        $access->assertCanViewSubmission($request->user(), $tool, $submission);
 
         $submission->load(['form', 'formVersion.fields', 'answers.field', 'collector']);
 

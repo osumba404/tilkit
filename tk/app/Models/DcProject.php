@@ -55,4 +55,9 @@ class DcProject extends Model
     {
         return $this->hasMany(DcSubmission::class, 'project_id');
     }
+
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(ToolInvitation::class, 'project_id');
+    }
 }

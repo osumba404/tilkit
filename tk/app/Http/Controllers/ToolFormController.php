@@ -109,6 +109,16 @@ class ToolFormController extends Controller
                 $field['parameters']['allow_capture'] = ! empty($field['parameters']['allow_capture']);
                 $field['parameters']['allow_upload'] = ! empty($field['parameters']['allow_upload']);
             }
+            if ($field['field_type'] === 'signature') {
+                $field['parameters'] = $field['parameters'] ?? [];
+                $field['parameters']['allow_draw'] = ! empty($field['parameters']['allow_draw']);
+                $field['parameters']['allow_upload'] = ! empty($field['parameters']['allow_upload']);
+                $field['parameters']['allow_capture'] = ! empty($field['parameters']['allow_capture']);
+            }
+            if ($field['field_type'] === 'calculate') {
+                $expr = trim((string) ($field['parameters']['expression'] ?? ''));
+                $field['calculation_expr'] = $expr !== '' ? $expr : null;
+            }
             if (FieldTypeHelper::supportsChoices($field['field_type'])) {
                 $choices = array_values(array_filter(
                     $field['parameters']['choices'] ?? [],

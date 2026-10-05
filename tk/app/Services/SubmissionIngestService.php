@@ -54,7 +54,7 @@ class SubmissionIngestService
             ]);
 
             foreach ($version->fields as $field) {
-                if ($field->field_type === 'note') {
+                if (in_array($field->field_type, ['note', 'group', 'repeat'], true)) {
                     continue;
                 }
                 if (! array_key_exists($field->name, $normalized)) {
@@ -73,7 +73,7 @@ class SubmissionIngestService
         $out = [];
 
         foreach ($fields as $field) {
-            if ($field->field_type === 'note') {
+            if (in_array($field->field_type, ['note', 'group', 'repeat'], true)) {
                 continue;
             }
 
@@ -87,12 +87,33 @@ class SubmissionIngestService
                 continue;
             }
 
+            $drawnKey = $field->name.'_drawn';
+            if ($field->field_type === 'signature' && ! empty($input[$drawnKey]) && is_string($input[$drawnKey])) {
+                $media = $this->mediaService->storeFromDataUrl(
+                    $submission,
+                    $field,
+                    $input[$drawnKey],
+                    $collector?->id,
+                );
+                $out[$field->name] = $this->mediaService->publicPathSummary($media);
+
+                continue;
+            }
+
             if (array_key_exists($field->name, $input)) {
                 $value = $input[$field->name];
                 if (in_array($field->field_type, ['geopoint', 'geotrace', 'geoshape'], true)) {
                     $value = GeoFieldValidator::parseAndValidate($field->field_type, $value, $field->name);
                 } elseif ($field->field_type === 'select_multiple' && is_array($value)) {
                     $value = array_values($value);
+                } elseif ($field->field_type === 'rank' && is_string($value)) {
+                    $decoded = json_decode($value, true);
+                    $value = is_array($decoded) ? array_values($decoded) : [];
+                } elseif ($field->field_type === 'metadata' && is_string($value)) {
+                    $decoded = json_decode($value, true);
+                    $value = is_array($decoded) ? $decoded : [];
+                } elseif ($field->field_type === 'acknowledge') {
+                    $value = filter_var($value, FILTER_VALIDATE_BOOLEAN) || $value === '1' || $value === 'on';
                 }
                 $out[$field->name] = $value;
             }
@@ -112,9 +133,15 @@ class SubmissionIngestService
         $type = $field->field_type;
         if (in_array($type, ['integer', 'decimal', 'range'], true) && is_numeric($value)) {
             $answer['value_number'] = $value;
-        } elseif (in_array($type, ['select_one', 'text'], true)) {
+        } elseif (in_array($type, ['select_one', 'text', 'barcode'], true)) {
             $answer['value_text'] = is_scalar($value) ? (string) $value : json_encode($value);
-        } elseif ($type === 'select_multiple' && is_array($value)) {
+        } elseif (in_array($type, ['select_multiple', 'rank'], true) && is_array($value)) {
+            $answer['value_json'] = $value;
+        } elseif ($type === 'acknowledge') {
+            $answer['value_text'] = $value ? '1' : '0';
+        } elseif ($type === 'calculate') {
+            $answer['value_text'] = is_scalar($value) ? (string) $value : '';
+        } elseif ($type === 'metadata' && is_array($value)) {
             $answer['value_json'] = $value;
         } elseif (in_array($type, ['date', 'datetime', 'time'], true)) {
             $answer['value_text'] = (string) $value;

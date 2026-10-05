@@ -74,8 +74,38 @@ class PublicFormController extends Controller
                     break;
 
                 case 'select_one':
+                case 'text':
+                case 'barcode':
+                    $rules[$name] = [$required, 'string', 'max:2000'];
+                    break;
+
                 case 'rank':
-                    $rules[$name] = [$required, 'string'];
+                    $rules[$name] = array_filter([$required, 'string', 'json']);
+                    break;
+
+                case 'date':
+                    $rules[$name] = array_filter([$required, 'date']);
+                    break;
+
+                case 'time':
+                    $rules[$name] = array_filter([$required, 'date_format:H:i']);
+                    break;
+
+                case 'datetime':
+                    $rules[$name] = array_filter([$required, 'date_format:Y-m-d\TH:i']);
+                    break;
+
+                case 'acknowledge':
+                    $rules[$name] = $field->is_required ? ['accepted'] : ['nullable'];
+                    break;
+
+                case 'calculate':
+                case 'metadata':
+                    $rules[$name] = ['nullable', 'string'];
+                    break;
+
+                case 'group':
+                case 'repeat':
                     break;
 
                 case 'integer':
@@ -110,8 +140,21 @@ class PublicFormController extends Controller
                     break;
 
                 case 'file':
-                case 'signature':
                     $rules[$name] = $this->fileRules($field, $required, []);
+                    break;
+
+                case 'signature':
+                    $rules[$name] = array_filter([
+                        $field->is_required ? 'required_without:'.$name.'_drawn' : 'nullable',
+                        'file',
+                        'max:'.((int) ($params['max_size_mb'] ?? 25) * 1024),
+                        'mimes:jpg,jpeg,png,webp,pdf',
+                    ]);
+                    $rules[$name.'_drawn'] = array_filter([
+                        $field->is_required ? 'required_without:'.$name : 'nullable',
+                        'string',
+                        'regex:/^data:image\/(png|jpe?g|webp);base64,/',
+                    ]);
                     break;
 
                 case 'note':

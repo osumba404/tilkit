@@ -4,8 +4,10 @@ namespace App\Services;
 
 use App\Enums\ToolMemberRole;
 use App\Models\DcProject;
+use App\Models\DcSubmission;
 use App\Models\ToolMember;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -52,6 +54,41 @@ class ToolAccessService
         if (! $user->canAccessTool($project)) {
             abort(403, 'You do not have access to this tool.');
         }
+    }
+
+    public function assertCanViewAnalytics(User $user, DcProject $project): void
+    {
+        $this->assertCanView($user, $project);
+        $role = $user->toolRoleFor($project);
+        if ($role === null || ! $role->canViewAnalytics()) {
+            abort(403, 'Analytics are available to tool administrators only.');
+        }
+    }
+
+    public function assertCanViewSubmission(User $user, DcProject $project, DcSubmission $submission): void
+    {
+        $this->assertCanView($user, $project);
+        abort_unless($submission->project_id === $project->id, 404);
+
+        $role = $user->toolRoleFor($project);
+        if ($role !== null && $role->canViewAllSubmissions()) {
+            return;
+        }
+
+        if ($submission->collector_id !== $user->id) {
+            abort(403, 'You can only view submissions you collected.');
+        }
+    }
+
+    /** @param  Builder<DcSubmission>  $query */
+    public function scopeSubmissionsForUser(User $user, DcProject $project, Builder $query): Builder
+    {
+        $role = $user->toolRoleFor($project);
+        if ($role !== null && $role->canViewAllSubmissions()) {
+            return $query;
+        }
+
+        return $query->where('collector_id', $user->id);
     }
 
     private function uniqueProjectCode(string $base): string

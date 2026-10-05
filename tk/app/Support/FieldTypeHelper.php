@@ -4,6 +4,35 @@ namespace App\Support;
 
 class FieldTypeHelper
 {
+    /** Readable catalogue labels keyed by type code (shown beside monospace code). */
+    private const TYPE_LABELS = [
+        'text' => 'Text',
+        'note' => 'Note',
+        'integer' => 'Integer',
+        'decimal' => 'Decimal',
+        'range' => 'Range',
+        'select_one' => 'Select One',
+        'select_multiple' => 'Select Multiple',
+        'rank' => 'Rank',
+        'date' => 'Date',
+        'time' => 'Time',
+        'datetime' => 'Datetime',
+        'geopoint' => 'Geopoint',
+        'geotrace' => 'Geotrace',
+        'geoshape' => 'Geoshape',
+        'image' => 'Image',
+        'audio' => 'Audio',
+        'video' => 'Video',
+        'file' => 'File',
+        'barcode' => 'Barcode',
+        'signature' => 'Signature',
+        'calculate' => 'Calculate',
+        'group' => 'Group',
+        'repeat' => 'Repeat',
+        'metadata' => 'Metadata',
+        'acknowledge' => 'Acknowledge',
+    ];
+
     /** @return array<string, string> SVG path / viewBox icons keyed by type code */
     public static function icons(): array
     {
@@ -38,7 +67,7 @@ class FieldTypeHelper
 
     public static function label(string $code): string
     {
-        return ucwords(str_replace('_', ' ', $code));
+        return self::TYPE_LABELS[$code] ?? ucwords(str_replace('_', ' ', $code));
     }
 
     public static function supportsChoices(string $code): bool
