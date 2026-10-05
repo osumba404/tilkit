@@ -1,11 +1,33 @@
-@import 'tailwindcss';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+@layer base {
+    body {
+        @apply bg-tk-bg text-tk-ink antialiased;
+    }
+}
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+@layer components {
+    .tk-card {
+        @apply bg-tk-surface border border-tk-line rounded-lg shadow-sm;
+    }
+    .tk-btn {
+        @apply inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-semibold transition;
+    }
+    .tk-btn-primary {
+        @apply tk-btn bg-tk-accent text-white hover:opacity-90;
+    }
+    .tk-btn-secondary {
+        @apply tk-btn border border-tk-line bg-white text-tk-ink hover:bg-tk-soft;
+    }
+    .tk-stat {
+        @apply tk-card p-5;
+    }
+    .tk-stat-label {
+        @apply text-sm text-tk-muted;
+    }
+    .tk-stat-value {
+        @apply mt-1 text-2xl font-semibold font-serif text-tk-ink;
+    }
 }
