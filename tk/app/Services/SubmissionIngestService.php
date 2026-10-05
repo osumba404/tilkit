@@ -5,8 +5,10 @@ namespace App\Services;
 use App\Models\DcAnswer;
 use App\Models\DcForm;
 use App\Models\DcFormField;
+use App\Models\DcGeoValue;
 use App\Models\DcSubmission;
 use App\Models\User;
+use App\Support\GeoFieldValidator;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -20,11 +22,9 @@ class SubmissionIngestService
 
     public function submit(DcForm $form, array $answers, Request $request, ?User $collector = null): DcSubmission
     {
-        $version = $form->currentVersion()->with('fields')->firstOrFail();
-
-        if ($version->status !== 'published') {
-            abort(422, 'This form is not published yet.');
-        }
+        $version = $form->liveVersion();
+        abort_unless($version, 422, 'This form is not published yet.');
+        $version->load('fields');
 
         return DB::transaction(function () use ($form, $version, $answers, $request, $collector): DcSubmission {
             $clientUuid = (string) ($answers['_client_uuid'] ?? Str::uuid());
@@ -89,7 +89,9 @@ class SubmissionIngestService
 
             if (array_key_exists($field->name, $input)) {
                 $value = $input[$field->name];
-                if ($field->field_type === 'select_multiple' && is_array($value)) {
+                if (in_array($field->field_type, ['geopoint', 'geotrace', 'geoshape'], true)) {
+                    $value = GeoFieldValidator::parseAndValidate($field->field_type, $value, $field->name);
+                } elseif ($field->field_type === 'select_multiple' && is_array($value)) {
                     $value = array_values($value);
                 }
                 $out[$field->name] = $value;
@@ -118,12 +120,40 @@ class SubmissionIngestService
             $answer['value_text'] = (string) $value;
         } elseif (in_array($type, ['image', 'audio', 'video', 'file', 'signature'], true) && is_array($value)) {
             $answer['value_json'] = $value;
-        } elseif ($type === 'geopoint' && is_array($value)) {
+        } elseif (in_array($type, ['geopoint', 'geotrace', 'geoshape'], true) && is_array($value)) {
             $answer['value_json'] = $value;
         } else {
             $answer['value_text'] = is_scalar($value) ? (string) $value : json_encode($value);
         }
 
-        DcAnswer::create($answer);
+        $record = DcAnswer::create($answer);
+
+        if (in_array($type, ['geopoint', 'geotrace', 'geoshape'], true) && is_array($value)) {
+            $this->storeGeoValue($record, $type, $value);
+        }
+    }
+
+    /** @param array<string, mixed> $geojson */
+    private function storeGeoValue(DcAnswer $answer, string $fieldType, array $geojson): void
+    {
+        $geomType = match ($fieldType) {
+            'geopoint' => 'point',
+            'geotrace' => 'line',
+            'geoshape' => 'polygon',
+        };
+
+        $rep = GeoFieldValidator::representativeLatLng($geojson);
+        $props = $geojson['properties'] ?? [];
+
+        DcGeoValue::create([
+            'answer_id' => $answer->id,
+            'geom_type' => $geomType,
+            'lat' => $rep['lat'],
+            'lng' => $rep['lng'],
+            'altitude_m' => $props['altitude'] ?? null,
+            'accuracy_m' => $props['accuracy'] ?? null,
+            'gnss_meta' => $props['gnss_meta'] ?? null,
+            'geojson' => $geojson,
+        ]);
     }
 }

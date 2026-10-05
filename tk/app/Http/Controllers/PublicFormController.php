@@ -15,9 +15,12 @@ class PublicFormController extends Controller
     {
         abort_unless($form->status === 'published', 404);
 
-        $form->load(['currentVersion.fields.fieldTypeDefinition', 'project']);
+        $form->load(['currentVersion', 'project']);
+        $liveVersion = $form->liveVersion();
+        abort_unless($liveVersion, 404);
+        $liveVersion->load(['fields.fieldTypeDefinition']);
 
-        return view('public.form', compact('form'));
+        return view('public.form', compact('form', 'liveVersion'));
     }
 
     public function submit(Request $request, DcForm $form, SubmissionIngestService $ingest): RedirectResponse
@@ -30,7 +33,9 @@ class PublicFormController extends Controller
 
         $request->attributes->set('submission_channel', 'web');
 
-        $version = $form->currentVersion()->with('fields')->firstOrFail();
+        $version = $form->liveVersion();
+        abort_unless($version, 404);
+        $version->load('fields');
         $rules = $this->rulesForFields($version->fields);
         $validated = $request->validate($rules);
 
@@ -110,6 +115,12 @@ class PublicFormController extends Controller
                     break;
 
                 case 'note':
+                    break;
+
+                case 'geopoint':
+                case 'geotrace':
+                case 'geoshape':
+                    $rules[$name] = array_filter([$required, 'string']);
                     break;
 
                 default:

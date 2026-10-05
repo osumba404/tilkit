@@ -58,4 +58,25 @@ class DcForm extends Model
     {
         return $this->hasMany(DcSubmission::class, 'form_id');
     }
+
+    /** Version collectors see on the public web form (latest published). */
+    public function liveVersion(): ?DcFormVersion
+    {
+        $current = $this->currentVersion;
+        if ($current?->status === 'published') {
+            return $current;
+        }
+
+        return $this->versions()
+            ->where('status', 'published')
+            ->orderByDesc('version_no')
+            ->first();
+    }
+
+    public function hasUnpublishedDraft(): bool
+    {
+        $current = $this->currentVersion;
+
+        return $current !== null && $current->status === 'draft' && $this->liveVersion() !== null;
+    }
 }

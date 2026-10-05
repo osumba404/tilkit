@@ -17,13 +17,24 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex flex-wrap justify-between gap-4">
-            <h2 class="text-2xl font-semibold">Form builder - {{ $form->title }}</h2>
+            <div>
+                <h2 class="text-2xl font-semibold">Form builder - {{ $form->title }}</h2>
+                @if ($form->currentVersion)
+                    <p class="text-sm text-tk-muted mt-1">
+                        Editing version {{ $form->currentVersion->version_no }}
+                        ({{ $form->currentVersion->status }})
+                        @if ($form->hasUnpublishedDraft() && ($live = $form->liveVersion()))
+                            - public form still uses published version {{ $live->version_no }} until you publish
+                        @endif
+                    </p>
+                @endif
+            </div>
             <div class="flex gap-2">
                 <a href="{{ route('reference') }}" class="tk-btn-secondary text-sm" target="_blank">Field catalogue</a>
-                @if ($form->currentVersion?->fields->isNotEmpty())
+                @if ($form->currentVersion?->status === 'draft' && $form->currentVersion?->fields->isNotEmpty())
                     <form method="POST" action="{{ route('tools.forms.publish', [$tool, $form]) }}">
                         @csrf
-                        <button type="submit" class="tk-btn-primary text-sm">Publish form</button>
+                        <button type="submit" class="tk-btn-primary text-sm">Publish changes</button>
                     </form>
                 @endif
             </div>
@@ -36,7 +47,7 @@
         class="grid lg:grid-cols-3 gap-6"
     >
         <div class="lg:col-span-2 tk-card p-5">
-            <form method="POST" action="{{ route('tools.forms.builder.save', [$tool, $form]) }}">
+            <form method="POST" action="{{ route('tools.forms.builder.save', [$tool, $form]) }}" @submit="ensureFieldNames">
                 @csrf
                 <div x-ref="fieldList" class="space-y-3">
                     <template x-for="(field, index) in fields" :key="field._key">
@@ -47,11 +58,8 @@
                                 </button>
                                 <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-tk-accent-soft text-xs font-semibold text-tk-accent" x-text="index + 1"></span>
                                 <div class="flex-1 grid sm:grid-cols-2 gap-3">
-                                    <div>
-                                        <label class="text-xs text-tk-muted">Field name (key)</label>
-                                        <input :name="'fields['+index+'][name]'" x-model="field.name" required pattern="[a-z][a-z0-9_]*" class="w-full rounded border border-tk-line px-2 py-1.5 text-sm">
-                                    </div>
-                                    <div class="relative">
+                                    <input type="hidden" :name="'fields['+index+'][name]'" :value="field.name">
+                                    <div class="relative sm:col-span-2">
                                         <label class="text-xs text-tk-muted">Type</label>
                                         <button type="button" @click="toggleTypeMenu(index)" class="w-full flex items-center gap-2 rounded border border-tk-line px-2 py-1.5 text-sm bg-white text-left">
                                             <svg class="h-4 w-4 shrink-0 text-tk-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path :d="typeMeta(field.field_type).icon"/></svg>
@@ -71,7 +79,7 @@
                                     </div>
                                     <div class="sm:col-span-2">
                                         <label class="text-xs text-tk-muted">Label</label>
-                                        <input :name="'fields['+index+'][label]'" x-model="field.label" class="w-full rounded border border-tk-line px-2 py-1.5 text-sm">
+                                        <input :name="'fields['+index+'][label]'" x-model="field.label" @input="syncAutoName(field, index)" class="w-full rounded border border-tk-line px-2 py-1.5 text-sm">
                                     </div>
                                     <div class="sm:col-span-2">
                                         <label class="text-xs text-tk-muted">Hint</label>
@@ -90,12 +98,10 @@
                                     <button type="button" @click="addChoice(field)" class="text-xs text-tk-accent">Add choice</button>
                                 </div>
                                 <template x-for="(choice, ci) in field.parameters.choices" :key="ci">
-                                    <div class="grid sm:grid-cols-2 gap-2 mb-2">
-                                        <input :name="'fields['+index+'][parameters][choices]['+ci+'][value]'" x-model="choice.value" placeholder="Stored value" class="rounded border border-tk-line px-2 py-1 text-sm">
-                                        <div class="flex gap-2">
-                                            <input :name="'fields['+index+'][parameters][choices]['+ci+'][label]'" x-model="choice.label" placeholder="Label shown to user" class="flex-1 rounded border border-tk-line px-2 py-1 text-sm">
-                                            <button type="button" @click="removeChoice(field, ci)" class="text-xs text-red-600 px-2">Remove</button>
-                                        </div>
+                                    <div class="flex gap-2 mb-2">
+                                        <input type="hidden" :name="'fields['+index+'][parameters][choices]['+ci+'][value]'" :value="choice.value">
+                                        <input :name="'fields['+index+'][parameters][choices]['+ci+'][label]'" x-model="choice.label" placeholder="Choice label" class="flex-1 rounded border border-tk-line px-2 py-1 text-sm">
+                                        <button type="button" @click="removeChoice(field, ci)" class="text-xs text-red-600 px-2 shrink-0">Remove</button>
                                     </div>
                                 </template>
                                 <div x-show="field.field_type === 'select_multiple'" class="mt-2">

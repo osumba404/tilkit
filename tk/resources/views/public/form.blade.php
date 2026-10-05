@@ -5,7 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $form->title }} - Tilkit</title>
-    @vite(['resources/css/app.css', 'resources/js/public-form.js'])
+    @php
+        $hasGeo = ($liveVersion->fields ?? collect())->contains(
+            fn ($f) => in_array($f->field_type, ['geopoint', 'geotrace', 'geoshape'], true)
+        );
+        $viteEntries = ['resources/css/app.css', 'resources/js/public-form.js'];
+        if ($hasGeo) {
+            $viteEntries[] = 'resources/js/public-geo.js';
+        }
+    @endphp
+    @vite($viteEntries)
 </head>
 <body class="font-body bg-tk-bg text-tk-ink min-h-screen">
 <div class="max-w-xl mx-auto px-4 py-10">
@@ -17,7 +26,7 @@
 
     <form method="POST" action="{{ route('public.forms.submit', $form) }}" enctype="multipart/form-data" class="tk-card p-6 mt-8 space-y-6">
         @csrf
-        @foreach ($form->currentVersion?->fields ?? [] as $index => $field)
+        @foreach ($liveVersion->fields ?? [] as $index => $field)
             <div class="flex gap-3">
                 <span class="text-xs font-medium text-tk-muted pt-2 w-6 shrink-0">{{ $index + 1 }}.</span>
                 <div class="flex-1">

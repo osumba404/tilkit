@@ -31,12 +31,14 @@ document.addEventListener('alpine:init', () => {
 
         addField(type = 'text') {
             const n = this.fields.length + 1;
+            const label = 'Question ' + n;
             this.fields.push(
                 normalizeField({
                     _key: crypto.randomUUID(),
-                    name: 'field_' + n,
+                    name: slugFieldName(label, n),
+                    autoName: true,
                     field_type: type,
-                    label: 'Question ' + n,
+                    label,
                     hint: '',
                     is_required: false,
                     parameters: defaultParameters(type),
@@ -46,6 +48,39 @@ document.addEventListener('alpine:init', () => {
 
         removeField(index) {
             this.fields.splice(index, 1);
+        },
+
+        syncAutoName(field, index) {
+            if (!field.autoName) {
+                return;
+            }
+            field.name = slugFieldName(field.label, index + 1);
+        },
+
+        ensureFieldNames() {
+            const used = new Set();
+            this.fields.forEach((field, index) => {
+                if (field.autoName) {
+                    field.name = slugFieldName(field.label, index + 1);
+                }
+                field.name = uniqueFieldName(field.name, used, index + 1);
+                used.add(field.name);
+
+                if (this.supportsChoices(field) && field.parameters?.choices) {
+                    const choiceUsed = new Set();
+                    field.parameters.choices = field.parameters.choices.filter(
+                        (choice) => (choice.label ?? '').trim() !== '',
+                    );
+                    field.parameters.choices.forEach((choice, ci) => {
+                        choice.value = uniqueFieldName(
+                            slugFieldName(choice.label, ci + 1),
+                            choiceUsed,
+                            ci + 1,
+                        );
+                        choiceUsed.add(choice.value);
+                    });
+                }
+            });
         },
 
         typeMeta(code) {
@@ -64,8 +99,7 @@ document.addEventListener('alpine:init', () => {
             if (!field.parameters.choices) {
                 field.parameters.choices = [];
             }
-            const i = field.parameters.choices.length + 1;
-            field.parameters.choices.push({ value: 'option_' + i, label: 'Option ' + i });
+            field.parameters.choices.push({ value: '', label: '' });
         },
 
         removeChoice(field, index) {
@@ -81,18 +115,17 @@ document.addEventListener('alpine:init', () => {
             field.parameters = defaultParameters(code, field.parameters);
             this.typeMenuOpen = null;
         },
-
-        parametersJson(field) {
-            return JSON.stringify(field.parameters ?? {});
-        },
     }));
 });
 
 function normalizeField(field) {
     const type = field.field_type ?? 'text';
+    const name = field.name ?? 'field_1';
+
     return {
         _key: field._key ?? crypto.randomUUID(),
-        name: field.name ?? 'field_1',
+        name,
+        autoName: field.autoName ?? false,
         field_type: type,
         label: field.label ?? '',
         hint: field.hint ?? '',
@@ -104,15 +137,38 @@ function normalizeField(field) {
     };
 }
 
+function slugFieldName(label, fallbackIndex) {
+    let slug = (label ?? '')
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '_')
+        .replace(/^_+|_+$/g, '');
+
+    if (!slug || !/^[a-z]/.test(slug)) {
+        slug = 'field_' + fallbackIndex;
+    }
+
+    return slug.slice(0, 80);
+}
+
+function uniqueFieldName(base, used, fallbackIndex) {
+    let name = base || 'field_' + fallbackIndex;
+    if (!used.has(name)) {
+        return name;
+    }
+    let suffix = 2;
+    while (used.has(name + '_' + suffix)) {
+        suffix++;
+    }
+    return (name.slice(0, 76) + '_' + suffix).slice(0, 80);
+}
+
 function defaultParameters(type, existing = {}) {
     const base = { ...existing };
     if (['select_one', 'select_multiple', 'rank'].includes(type)) {
-        base.choices = base.choices?.length
-            ? base.choices
-            : [
-                  { value: 'option_1', label: 'Option 1' },
-                  { value: 'option_2', label: 'Option 2' },
-              ];
+        if (!Array.isArray(base.choices)) {
+            base.choices = [];
+        }
         if (type === 'select_multiple' && base.max_selections == null) {
             base.max_selections = 3;
         }

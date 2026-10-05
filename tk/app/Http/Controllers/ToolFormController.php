@@ -10,10 +10,44 @@ use App\Services\ToolAccessService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class ToolFormController extends Controller
 {
+    /** @param  array<int, array<string, mixed>>  $choices */
+    private function assignChoiceValues(array $choices): array
+    {
+        $used = [];
+        $out = [];
+
+        foreach ($choices as $index => $choice) {
+            $label = trim((string) ($choice['label'] ?? ''));
+            if ($label === '') {
+                continue;
+            }
+
+            $base = Str::slug($label, '_');
+            $base = preg_replace('/[^a-z0-9_]/', '', Str::lower($base)) ?: 'option_'.($index + 1);
+            if (! preg_match('/^[a-z]/', $base)) {
+                $base = 'option_'.$base;
+            }
+            $base = Str::limit($base, 100, '');
+
+            $name = $base;
+            $suffix = 2;
+            while (in_array($name, $used, true)) {
+                $name = Str::limit($base, 96, '').'_'.$suffix;
+                $suffix++;
+            }
+            $used[] = $name;
+
+            $out[] = ['label' => $label, 'value' => $name];
+        }
+
+        return $out;
+    }
+
     public function create(Request $request, DcProject $tool, ToolAccessService $access): View
     {
         $access->assertCanManage($request->user(), $tool);
@@ -76,8 +110,12 @@ class ToolFormController extends Controller
                 $field['parameters']['allow_upload'] = ! empty($field['parameters']['allow_upload']);
             }
             if (FieldTypeHelper::supportsChoices($field['field_type'])) {
-                $choices = $field['parameters']['choices'] ?? [];
-                if (count($choices) < 1) {
+                $choices = array_values(array_filter(
+                    $field['parameters']['choices'] ?? [],
+                    fn ($c) => trim((string) ($c['label'] ?? '')) !== '',
+                ));
+                $field['parameters']['choices'] = $this->assignChoiceValues($choices);
+                if (count($field['parameters']['choices']) < 1) {
                     throw ValidationException::withMessages([
                         "fields.{$i}.parameters.choices" => 'Add at least one choice for '.$field['field_type'].'.',
                     ]);
@@ -87,10 +125,13 @@ class ToolFormController extends Controller
             }
         }
 
-        $version = $form->currentVersion;
-        $builder->syncDraftFields($version, $validated['fields']);
+        $result = $builder->syncDraftFields($form, $request->user(), $validated['fields']);
 
-        return back()->with('status', 'Draft saved.');
+        $message = $result['forked']
+            ? 'Created draft version '.$result['version']->version_no.' from the published form. Changes apply when you publish again.'
+            : 'Draft saved.';
+
+        return back()->with('status', $message);
     }
 
     public function publish(Request $request, DcProject $tool, DcForm $form, ToolAccessService $access, FormBuilderService $builder): RedirectResponse

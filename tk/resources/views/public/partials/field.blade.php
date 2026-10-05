@@ -124,6 +124,12 @@
                 class="w-full text-sm file:mr-3 file:tk-btn-secondary file:border-0 file:text-sm">
             @break
 
+        @case('geopoint')
+        @case('geotrace')
+        @case('geoshape')
+            @include('public.partials.field-geo', ['field' => $field, 'type' => $type, 'name' => $name])
+            @break
+
         @default
             <input id="field-{{ $name }}" type="text" name="{{ $name }}" value="{{ old($name) }}" @required($field->is_required)
                 class="w-full rounded-md border border-tk-line px-3 py-2">

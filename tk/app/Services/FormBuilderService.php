@@ -44,14 +44,17 @@ class FormBuilderService
         });
     }
 
-    /** @param array<int, array<string, mixed>> $fields */
-    public function syncDraftFields(DcFormVersion $version, array $fields): void
+    /**
+     * @param  array<int, array<string, mixed>>  $fields
+     * @return array{version: DcFormVersion, forked: bool}
+     */
+    public function syncDraftFields(DcForm $form, ?User $user, array $fields): array
     {
-        if ($version->status === 'published') {
-            abort(422, 'Published versions are immutable. Create a new version to edit.');
-        }
+        $forked = false;
 
-        DB::transaction(function () use ($version, $fields): void {
+        $version = DB::transaction(function () use ($form, $user, $fields, &$forked): DcFormVersion {
+            $version = $this->ensureDraftVersion($form, $user, $forked);
+
             DcFormField::where('form_version_id', $version->id)->delete();
 
             foreach ($fields as $index => $field) {
@@ -71,12 +74,77 @@ class FormBuilderService
             $version->update([
                 'compiled_json' => $this->compile($version->fresh('fields')),
             ]);
+
+            return $version->fresh('fields');
+        });
+
+        return ['version' => $version, 'forked' => $forked];
+    }
+
+    public function ensureDraftVersion(DcForm $form, ?User $user, ?bool &$forked = null): DcFormVersion
+    {
+        $form->loadMissing('currentVersion.fields');
+        $current = $form->currentVersion ?? abort(404, 'Form has no version.');
+
+        if ($current->status === 'draft') {
+            return $current;
+        }
+
+        if ($forked !== null) {
+            $forked = true;
+        }
+
+        return DB::transaction(function () use ($form, $current, $user): DcFormVersion {
+            $nextNo = ((int) $form->versions()->max('version_no')) + 1;
+
+            $draft = DcFormVersion::create([
+                'form_id' => $form->id,
+                'version_no' => $nextNo,
+                'status' => 'draft',
+                'change_note' => 'Draft branched from published version '.$current->version_no,
+                'created_at' => now(),
+                'created_by' => $user?->id,
+            ]);
+
+            foreach ($current->fields as $field) {
+                DcFormField::create([
+                    'form_version_id' => $draft->id,
+                    'parent_id' => null,
+                    'field_type' => $field->field_type,
+                    'name' => $field->name,
+                    'label' => $field->label,
+                    'hint' => $field->hint,
+                    'position' => $field->position,
+                    'choice_list_id' => null,
+                    'is_required' => $field->is_required,
+                    'required_message' => $field->required_message,
+                    'relevant_expr' => $field->relevant_expr,
+                    'constraint_expr' => $field->constraint_expr,
+                    'constraint_msg' => $field->constraint_msg,
+                    'calculation_expr' => $field->calculation_expr,
+                    'default_value' => $field->default_value,
+                    'is_read_only' => $field->is_read_only,
+                    'appearance' => $field->appearance,
+                    'parameters' => $field->parameters,
+                    'repeat_count_expr' => $field->repeat_count_expr,
+                    'sensitivity' => $field->sensitivity,
+                    'is_identifier' => $field->is_identifier,
+                ]);
+            }
+
+            $form->update(['current_version_id' => $draft->id]);
+
+            return $draft->fresh('fields');
         });
     }
 
     public function publish(DcForm $form, User $user, ?string $changeNote = null): DcFormVersion
     {
         $version = $form->currentVersion()->with('fields')->firstOrFail();
+
+        if ($version->status !== 'draft') {
+            abort(422, 'Only a draft version can be published.');
+        }
 
         if ($version->fields->isEmpty()) {
             abort(422, 'Add at least one field before publishing.');
@@ -86,7 +154,7 @@ class FormBuilderService
             'status' => 'published',
             'published_at' => now(),
             'published_by' => $user->id,
-            'change_note' => $changeNote,
+            'change_note' => $changeNote ?? $version->change_note,
             'compiled_json' => $this->compile($version),
             'checksum' => hash('sha256', json_encode($this->compile($version))),
         ]);
