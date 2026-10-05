@@ -27,6 +27,7 @@ class ToolAccessService
                 'lawful_basis' => $attributes['lawful_basis'] ?? 'consent',
                 'retention_months' => $attributes['retention_months'] ?? null,
                 'status' => 'active',
+                'public_collection_enabled' => $attributes['public_collection_enabled'] ?? true,
                 'owner_user_id' => $owner->id,
                 'created_by' => $owner->id,
             ]);

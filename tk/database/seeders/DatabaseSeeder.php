@@ -11,6 +11,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             FieldTypeSeeder::class,
             TilkitSeeder::class,
+            WeatherIndicatorLogToolSeeder::class,
         ]);
     }
 }

@@ -23,6 +23,7 @@ class DcProject extends Model
         'starts_on',
         'ends_on',
         'status',
+        'public_collection_enabled',
         'owner_user_id',
         'created_by',
         'updated_by',
@@ -33,7 +34,18 @@ class DcProject extends Model
         return [
             'starts_on' => 'date',
             'ends_on' => 'date',
+            'public_collection_enabled' => 'boolean',
         ];
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'code';
+    }
+
+    public function publicCollectUrl(): string
+    {
+        return route('public.tools.collect', $this);
     }
 
     public function owner(): BelongsTo

@@ -22,6 +22,8 @@
         </div>
     </x-slot>
 
+    @include('tools.partials.public-collection', ['tool' => $tool])
+
     @if ($role?->canManageTool())
         <div class="tk-card p-6 mb-8">
             <h3 class="font-semibold mb-2">Invite field collectors</h3>
@@ -74,7 +76,10 @@
                     <p class="font-medium">{{ $form->title }}</p>
                     <p class="text-sm text-tk-muted">{{ $form->code }} · {{ $form->status }}</p>
                     @if ($form->status === 'published' && $role?->canFillForms())
-                        <a class="text-sm text-tk-accent font-medium" href="{{ route('public.forms.show', $form) }}">Fill form (stay signed in to link your entries)</a>
+                        <a class="text-sm text-tk-accent font-medium" href="{{ route('public.forms.show', $form) }}">Fill form</a>
+                    @endif
+                    @if ($form->status === 'published')
+                        <p class="text-xs text-tk-muted font-mono mt-1">{{ route('public.forms.show', $form) }}</p>
                     @endif
                 </div>
                 @if ($role?->canManageTool())

@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PlatformAdminController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicFormController;
+use App\Http\Controllers\PublicToolController;
 use App\Http\Controllers\ToolAnalyticsController;
 use App\Http\Controllers\ToolController;
 use App\Http\Controllers\ToolFormController;
@@ -17,6 +18,9 @@ Route::get('/', HomeController::class)->name('home');
 
 Route::get('/invitations/{token}', [ToolInvitationController::class, 'acceptForm'])->name('invitations.accept');
 Route::middleware(['auth', 'verified'])->get('/invitations/{token}/complete', [ToolInvitationController::class, 'complete'])->name('invitations.complete');
+
+Route::get('/t/{tool:code}', [PublicToolController::class, 'collect'])->name('public.tools.collect');
+Route::get('/t/{tool:code}/qr.svg', [PublicToolController::class, 'qr'])->name('public.tools.qr');
 
 Route::get('/f/{form:code}', [PublicFormController::class, 'show'])->name('public.forms.show');
 Route::post('/f/{form:code}', [PublicFormController::class, 'submit'])->name('public.forms.submit');

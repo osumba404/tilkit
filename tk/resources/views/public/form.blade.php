@@ -18,7 +18,10 @@
 </head>
 <body class="font-body bg-tk-bg text-tk-ink min-h-screen">
 <div class="max-w-xl mx-auto px-4 py-10">
-    <p class="text-xs text-tk-muted uppercase tracking-wide">{{ $form->project?->name }}</p>
+    @if ($form->project?->public_collection_enabled)
+        <a href="{{ route('public.tools.collect', $form->project) }}" class="text-sm text-tk-accent">← All forms</a>
+    @endif
+    <p class="text-xs text-tk-muted uppercase tracking-wide mt-2">{{ $form->project?->name }}</p>
     <h1 class="text-3xl font-semibold mt-1">{{ $form->title }}</h1>
     @if ($form->description)
         <p class="text-tk-muted mt-2">{{ $form->description }}</p>

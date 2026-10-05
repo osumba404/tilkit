@@ -6,6 +6,7 @@ use App\Models\DcForm;
 use App\Models\DcFormField;
 use App\Services\SubmissionIngestService;
 use App\Support\DateTimeFieldValidator;
+use App\Support\PublicFormAccess;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -29,8 +30,10 @@ class PublicFormController extends Controller
     {
         abort_unless($form->status === 'published', 404);
 
-        if (! $form->allow_anonymous && ! $request->user()) {
-            return redirect()->route('login')->with('status', 'Sign in to submit this form.');
+        if (! PublicFormAccess::canFill($form, $request->user())) {
+            return redirect()
+                ->guest(route('login'))
+                ->with('status', 'Sign in to submit this form, or use the tool\'s public collection link.');
         }
 
         $request->attributes->set('submission_channel', 'web');
