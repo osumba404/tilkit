@@ -1,4 +1,5 @@
 @php
+    use App\Support\DateTimeFieldValidator;
     use App\Support\FieldTypeHelper;
     $params = $field->parameters ?? [];
     $choices = $params['choices'] ?? [];
@@ -150,18 +151,54 @@
             @break
 
         @case('date')
-            <input id="field-{{ $name }}" type="date" name="{{ $name }}" value="{{ old($name) }}" @required($field->is_required)
+            @php
+                $dateVal = old($name);
+                if (is_string($dateVal) && $dateVal !== '') {
+                    try {
+                        $dateVal = DateTimeFieldValidator::forHtmlInput('date', DateTimeFieldValidator::parseAndValidate('date', $dateVal, $name));
+                    } catch (\Throwable) {
+                        /* keep raw old input */
+                    }
+                }
+            @endphp
+            <input id="field-{{ $name }}" type="date" name="{{ $name }}" value="{{ $dateVal }}"
+                pattern="\d{4}-\d{2}-\d{2}" @required($field->is_required)
                 class="w-full rounded-md border border-tk-line px-3 py-2">
+            <p class="text-xs text-tk-muted mt-1">Format: {{ DateTimeFieldValidator::formatHint('date') }}</p>
             @break
 
         @case('time')
-            <input id="field-{{ $name }}" type="time" name="{{ $name }}" value="{{ old($name) }}" @required($field->is_required)
+            @php
+                $timeVal = old($name);
+                if (is_string($timeVal) && $timeVal !== '') {
+                    try {
+                        $timeVal = DateTimeFieldValidator::forHtmlInput('time', DateTimeFieldValidator::parseAndValidate('time', $timeVal, $name));
+                    } catch (\Throwable) {
+                        /* keep raw old input */
+                    }
+                }
+            @endphp
+            <input id="field-{{ $name }}" type="time" name="{{ $name }}" value="{{ $timeVal }}"
+                step="1" @required($field->is_required)
                 class="w-full rounded-md border border-tk-line px-3 py-2">
+            <p class="text-xs text-tk-muted mt-1">Format: {{ DateTimeFieldValidator::formatHint('time') }} (24-hour)</p>
             @break
 
         @case('datetime')
-            <input id="field-{{ $name }}" type="datetime-local" name="{{ $name }}" value="{{ old($name) }}" @required($field->is_required)
+            @php
+                $dtVal = old($name);
+                if (is_string($dtVal) && $dtVal !== '') {
+                    try {
+                        $dtVal = DateTimeFieldValidator::forHtmlInput('datetime', DateTimeFieldValidator::parseAndValidate('datetime', $dtVal, $name));
+                    } catch (\Throwable) {
+                        /* keep raw old input */
+                    }
+                }
+            @endphp
+            <input id="field-{{ $name }}" type="datetime-local" name="{{ $name }}" value="{{ $dtVal }}"
+                step="1" @required($field->is_required)
                 class="w-full rounded-md border border-tk-line px-3 py-2">
+            <p class="text-xs text-tk-muted mt-1">Format: {{ DateTimeFieldValidator::formatHint('datetime') }} (local time)</p>
             @break
 
         @case('text')

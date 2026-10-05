@@ -8,6 +8,7 @@ use App\Models\DcFormField;
 use App\Models\DcGeoValue;
 use App\Models\DcSubmission;
 use App\Models\User;
+use App\Support\DateTimeFieldValidator;
 use App\Support\GeoFieldValidator;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -104,6 +105,8 @@ class SubmissionIngestService
                 $value = $input[$field->name];
                 if (in_array($field->field_type, ['geopoint', 'geotrace', 'geoshape'], true)) {
                     $value = GeoFieldValidator::parseAndValidate($field->field_type, $value, $field->name);
+                } elseif (in_array($field->field_type, ['date', 'time', 'datetime'], true) && is_string($value)) {
+                    $value = DateTimeFieldValidator::parseAndValidate($field->field_type, $value, $field->name);
                 } elseif ($field->field_type === 'select_multiple' && is_array($value)) {
                     $value = array_values($value);
                 } elseif ($field->field_type === 'rank' && is_string($value)) {
@@ -143,7 +146,13 @@ class SubmissionIngestService
             $answer['value_text'] = is_scalar($value) ? (string) $value : '';
         } elseif ($type === 'metadata' && is_array($value)) {
             $answer['value_json'] = $value;
-        } elseif (in_array($type, ['date', 'datetime', 'time'], true)) {
+        } elseif ($type === 'date') {
+            $answer['value_date'] = (string) $value;
+            $answer['value_text'] = (string) $value;
+        } elseif ($type === 'datetime') {
+            $answer['value_datetime'] = (string) $value;
+            $answer['value_text'] = (string) $value;
+        } elseif ($type === 'time') {
             $answer['value_text'] = (string) $value;
         } elseif (in_array($type, ['image', 'audio', 'video', 'file', 'signature'], true) && is_array($value)) {
             $answer['value_json'] = $value;

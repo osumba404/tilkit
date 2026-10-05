@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\DcForm;
 use App\Models\DcFormField;
 use App\Services\SubmissionIngestService;
+use App\Support\DateTimeFieldValidator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class PublicFormController extends Controller
@@ -38,6 +40,7 @@ class PublicFormController extends Controller
         $version->load('fields');
         $rules = $this->rulesForFields($version->fields);
         $validated = $request->validate($rules);
+        $validated = $this->normalizeDateTimeAnswers($version->fields, $validated);
 
         $ingest->submit($form, $validated, $request, $request->user());
 
@@ -84,15 +87,9 @@ class PublicFormController extends Controller
                     break;
 
                 case 'date':
-                    $rules[$name] = array_filter([$required, 'date']);
-                    break;
-
                 case 'time':
-                    $rules[$name] = array_filter([$required, 'date_format:H:i']);
-                    break;
-
                 case 'datetime':
-                    $rules[$name] = array_filter([$required, 'date_format:Y-m-d\TH:i']);
+                    $rules[$name] = array_filter([$required, 'string', 'max:32']);
                     break;
 
                 case 'acknowledge':
@@ -172,6 +169,50 @@ class PublicFormController extends Controller
         }
 
         return $rules;
+    }
+
+    /**
+     * @param  \Illuminate\Support\Collection<int, DcFormField>  $fields
+     * @param  array<string, mixed>  $validated
+     * @return array<string, mixed>
+     */
+    private function normalizeDateTimeAnswers($fields, array $validated): array
+    {
+        $errors = [];
+
+        foreach ($fields as $field) {
+            if (! in_array($field->field_type, ['date', 'time', 'datetime'], true)) {
+                continue;
+            }
+
+            $name = $field->name;
+            if (! array_key_exists($name, $validated)) {
+                continue;
+            }
+
+            $raw = $validated[$name];
+            if ($raw === null || $raw === '') {
+                continue;
+            }
+
+            try {
+                $validated[$name] = DateTimeFieldValidator::parseAndValidate(
+                    $field->field_type,
+                    $raw,
+                    $name,
+                );
+            } catch (ValidationException $e) {
+                foreach ($e->errors() as $key => $messages) {
+                    $errors[$key] = $messages;
+                }
+            }
+        }
+
+        if ($errors !== []) {
+            throw ValidationException::withMessages($errors);
+        }
+
+        return $validated;
     }
 
     /** @param list<string> $extensions */
