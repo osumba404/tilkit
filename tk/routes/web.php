@@ -20,6 +20,8 @@ Route::get('/invitations/{token}', [ToolInvitationController::class, 'acceptForm
 Route::middleware(['auth', 'verified'])->get('/invitations/{token}/complete', [ToolInvitationController::class, 'complete'])->name('invitations.complete');
 
 Route::get('/t/{tool:code}', [PublicToolController::class, 'collect'])->name('public.tools.collect');
+Route::post('/t/{tool:code}', [PublicToolController::class, 'submit'])->name('public.tools.submit');
+Route::get('/t/{tool:code}/thanks', [PublicToolController::class, 'thanks'])->name('public.tools.thanks');
 Route::get('/t/{tool:code}/qr.svg', [PublicToolController::class, 'qr'])->name('public.tools.qr');
 
 Route::get('/f/{form:code}', [PublicFormController::class, 'show'])->name('public.forms.show');

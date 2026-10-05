@@ -8,6 +8,7 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/js/app.js',
                 'resources/js/public-form.js',
+                'resources/js/public-form-wizard.js',
                 'resources/js/public-geo.js',
             ],
             refresh: true,

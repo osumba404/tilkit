@@ -12,7 +12,7 @@
         <p class="text-tk-muted mt-3">Your response to <strong>{{ $form->title }}</strong> was recorded securely.</p>
         <div class="flex flex-col gap-2 mt-6">
             @if ($form->project?->public_collection_enabled)
-                <a href="{{ route('public.tools.collect', $form->project) }}" class="tk-btn-primary inline-block">More forms in this tool</a>
+                <a href="{{ route('public.tools.collect', $form->project) }}" class="tk-btn-primary inline-block">Back to full tool form</a>
             @endif
             <a href="{{ route('home') }}" class="tk-btn-secondary inline-block">Back to Tilkit</a>
         </div>

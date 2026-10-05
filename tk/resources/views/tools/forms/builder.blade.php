@@ -58,7 +58,12 @@
                 @csrf
                 <div x-ref="fieldList" class="space-y-3">
                     <template x-for="(field, index) in fields" :key="field._key">
-                        <div class="border border-tk-line rounded-md p-4 bg-white" :data-field-key="field._key">
+                        <div class="border border-tk-line rounded-md p-4 bg-white"
+                            :class="{'border-l-4 border-l-tk-accent bg-tk-soft/30': field.field_type === 'group' || field.field_type === 'repeat'}"
+                            :data-field-key="field._key">
+                            <p x-show="field.field_type === 'group' || field.field_type === 'repeat'" class="text-xs font-semibold text-tk-accent mb-2 uppercase tracking-wide">
+                                Section break — starts a new page on the public form
+                            </p>
                             <div class="flex items-start gap-3 mb-3">
                                 <button type="button" class="drag-handle mt-1 cursor-grab text-tk-muted hover:text-tk-ink" title="Drag to reorder" aria-label="Drag to reorder">
                                     <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M7 4a1 1 0 110-2 1 1 0 010 2zm6-1a1 1 0 100-2 1 1 0 000 2zM7 11a1 1 0 110-2 1 1 0 010 2zm6-1a1 1 0 100-2 1 1 0 000 2zM7 18a1 1 0 110-2 1 1 0 010 2zm6-1a1 1 0 100-2 1 1 0 000 2z"/></svg>
@@ -164,7 +169,7 @@
         </div>
         <aside class="tk-card p-5 h-fit">
             <h3 class="font-semibold mb-2">Collection point families</h3>
-            <p class="text-sm text-tk-muted mb-4">Add fields from the catalogue. Types show a readable label and code.</p>
+            <p class="text-sm text-tk-muted mb-4">Add fields from the catalogue. Use <strong>Section</strong> (<code class="font-mono">group</code>) to split the public form into pages with Next / Previous.</p>
             @foreach ($fieldTypes->groupBy('family') as $family => $types)
                 <details class="mb-2">
                     <summary class="cursor-pointer text-sm font-medium">{{ $family }}</summary>

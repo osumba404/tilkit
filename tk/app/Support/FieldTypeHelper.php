@@ -27,7 +27,7 @@ class FieldTypeHelper
         'barcode' => 'Barcode',
         'signature' => 'Signature',
         'calculate' => 'Calculate',
-        'group' => 'Group',
+        'group' => 'Section',
         'repeat' => 'Repeat',
         'metadata' => 'Metadata',
         'acknowledge' => 'Acknowledge',
