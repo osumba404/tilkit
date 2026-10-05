@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex flex-wrap justify-between gap-4">
             <div>
-                <h2 class="font-serif text-2xl font-bold">Analytics — {{ $tool->name }}</h2>
+                <h2 class="text-2xl font-bold">Analytics — {{ $tool->name }}</h2>
                 <p class="text-sm text-tk-muted">Submission trends and distributions</p>
             </div>
             <a href="{{ route('tools.export', $tool) }}" class="tk-btn-secondary">Download CSV</a>

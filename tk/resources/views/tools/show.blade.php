@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex flex-wrap justify-between gap-4">
             <div>
-                <h2 class="font-serif text-2xl font-bold">{{ $tool->name }}</h2>
+                <h2 class="text-2xl font-bold">{{ $tool->name }}</h2>
                 <p class="text-sm text-tk-muted font-mono">{{ $tool->code }} · Your role: {{ $role?->value ?? '—' }}</p>
             </div>
             <div class="flex flex-wrap gap-2">

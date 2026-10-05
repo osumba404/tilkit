@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-serif text-2xl font-bold">Platform administration</h2>
+        <h2 class="text-2xl font-bold">Platform administration</h2>
         <p class="text-sm text-tk-muted">Super admin view across all tools and users</p>
     </x-slot>
 

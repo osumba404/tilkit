@@ -7,10 +7,10 @@
     <title>Field reference — Tilkit</title>
     @vite(['resources/css/app.css'])
 </head>
-<body class="font-sans bg-tk-bg min-h-screen">
+<body class="font-body bg-tk-bg min-h-screen">
 @include('layouts.navigation')
 <main class="max-w-7xl mx-auto px-4 py-8">
-    <h1 class="font-serif text-2xl font-bold mb-2">Data collection field reference</h1>
+    <h1 class="text-2xl font-bold mb-2">Data collection field reference</h1>
     <p class="text-sm text-tk-muted mb-4">200+ catalogued collection points — searchable master catalogue.</p>
     <div class="tk-card overflow-hidden" style="height: min(80vh, 900px);">
         <iframe src="{{ asset('reference/field-reference.html') }}" class="w-full h-full border-0" title="Field reference"></iframe>
@@ -22,7 +22,7 @@
 <x-app-layout>
     <x-slot name="header">
         <div>
-            <h2 class="font-serif text-2xl font-bold">Data collection points — field reference</h2>
+            <h2 class="text-2xl font-bold">Data collection points — field reference</h2>
             <p class="text-sm text-tk-muted">Master catalogue from the Tilkit field guide (200+ points, 16 families).</p>
         </div>
     </x-slot>

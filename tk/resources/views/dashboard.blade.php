@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex flex-wrap items-end justify-between gap-4">
             <div>
-                <h2 class="font-serif text-2xl font-bold text-tk-ink">Dashboard</h2>
+                <h2 class="text-2xl font-bold text-tk-ink">Dashboard</h2>
                 <p class="text-sm text-tk-muted mt-1">Your tools and latest collected data</p>
             </div>
             <a href="{{ route('tools.create') }}" class="tk-btn-primary">New tool</a>

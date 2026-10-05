@@ -1,9 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,400;1,700&display=swap');
+
+[x-cloak] {
+    display: none !important;
+}
+
+:root {
+    --font-body: Merriweather, Georgia, serif;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
     body {
+        font-family: var(--font-body);
         @apply bg-tk-bg text-tk-ink antialiased;
     }
 }
@@ -28,6 +39,6 @@
         @apply text-sm text-tk-muted;
     }
     .tk-stat-value {
-        @apply mt-1 text-2xl font-semibold font-serif text-tk-ink;
+        @apply mt-1 text-2xl font-semibold text-tk-ink;
     }
 }

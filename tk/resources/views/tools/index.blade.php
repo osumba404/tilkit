@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
-            <h2 class="font-serif text-2xl font-bold">Tools</h2>
+            <h2 class="text-2xl font-bold">Tools</h2>
             <a href="{{ route('tools.create') }}" class="tk-btn-primary">Create tool</a>
         </div>
     </x-slot>

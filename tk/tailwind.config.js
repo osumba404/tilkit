@@ -12,8 +12,8 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Public Sans', ...defaultTheme.fontFamily.sans],
-                serif: ['"Source Serif 4"', ...defaultTheme.fontFamily.serif],
+                body: ['Merriweather', 'Georgia', 'serif'],
+                sans: ['Merriweather', 'Georgia', 'serif'],
             },
             colors: {
                 'tk-bg': '#eef2f5',

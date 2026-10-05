@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-serif text-2xl font-bold">Submissions — {{ $tool->name }}</h2>
+        <h2 class="text-2xl font-bold">Submissions — {{ $tool->name }}</h2>
     </x-slot>
 
     <form method="GET" class="tk-card p-4 mb-4 flex flex-wrap gap-3 items-end">

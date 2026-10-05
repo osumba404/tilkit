@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-serif text-2xl font-bold">Create a collection tool</h2>
+        <h2 class="text-2xl font-bold">Create a collection tool</h2>
     </x-slot>
 
     <form method="POST" action="{{ route('tools.store') }}" class="tk-card max-w-2xl p-6 space-y-5">

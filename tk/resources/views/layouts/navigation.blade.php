@@ -3,7 +3,7 @@
         <div class="flex justify-between h-16">
             <div class="flex items-center gap-8">
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
-                    <span class="font-serif font-bold text-xl text-tk-ink tracking-tight">Tilkit</span>
+                    <span class="font-semibold text-xl text-tk-ink tracking-tight">Tilkit</span>
                     <span class="hidden sm:inline text-xs text-tk-muted uppercase tracking-wider">Data collection</span>
                 </a>
                 @auth
