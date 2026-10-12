@@ -13,7 +13,7 @@
     <h1 class="text-2xl font-bold mb-2">Data collection field reference</h1>
     <p class="text-sm text-tk-muted mb-4">200+ catalogued collection points — searchable master catalogue.</p>
     <div class="tk-card overflow-hidden" style="height: min(80vh, 900px);">
-        <iframe src="{{ asset('reference/field-reference.html') }}" class="w-full h-full border-0" title="Field reference"></iframe>
+        <iframe src="{{ asset('field-guide/field-reference.html') }}" class="w-full h-full border-0" title="Field reference"></iframe>
     </div>
 </main>
 </body>
@@ -29,7 +29,7 @@
 
     <div class="tk-card overflow-hidden" style="height: min(80vh, 900px);">
         <iframe
-            src="{{ asset('reference/field-reference.html') }}"
+            src="{{ asset('field-guide/field-reference.html') }}"
             title="Data collection field reference"
             class="w-full h-full border-0"
         ></iframe>
