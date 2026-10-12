@@ -5,19 +5,51 @@ namespace App\Services;
 use App\Models\DcFormField;
 use App\Models\DcProject;
 use App\Models\DcSubmission;
+use App\Support\AccFilters;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class AnalyticsService
 {
-    public function toolOverview(DcProject $project): array
+    /** @return Builder<DcSubmission> */
+    public function filteredSubmissionsQuery(DcProject $project, AccFilters $filters): Builder
     {
-        $submissions = DcSubmission::query()->where('project_id', $project->id);
+        $query = DcSubmission::query()
+            ->where('project_id', $project->id)
+            ->where('received_at', '>=', $filters->periodStart())
+            ->where('received_at', '<=', $filters->periodEnd());
+
+        if ($filters->formId) {
+            $query->where('form_id', $filters->formId);
+        }
+        if ($filters->status) {
+            $query->where('status', $filters->status);
+        }
+        if ($filters->channel) {
+            $query->where('channel', $filters->channel);
+        }
+
+        return $query;
+    }
+
+    public function toolOverview(DcProject $project, ?AccFilters $filters = null): array
+    {
+        $filters ??= new AccFilters(30, 'previous', null, null, null, null, null, 'daily');
+        $submissions = $this->filteredSubmissionsQuery($project, $filters);
+
+        $approved = (clone $submissions)->where('status', 'approved')->count();
+        $decided = (clone $submissions)->whereIn('status', ['approved', 'rejected'])->count();
 
         return [
             'total_submissions' => (clone $submissions)->count(),
-            'submissions_today' => (clone $submissions)->whereDate('received_at', today())->count(),
+            'submissions_today' => DcSubmission::query()
+                ->where('project_id', $project->id)
+                ->whereDate('received_at', today())
+                ->count(),
+            'in_review' => (clone $submissions)->whereIn('status', ['submitted', 'in_review'])->count(),
+            'approval_rate' => $decided > 0 ? round(100 * $approved / $decided, 1) : null,
             'by_status' => (clone $submissions)
                 ->select('status', DB::raw('count(*) as total'))
                 ->groupBy('status')
@@ -28,16 +60,146 @@ class AnalyticsService
                 ->pluck('total', 'channel'),
             'forms_count' => $project->forms()->count(),
             'published_forms' => $project->forms()->where('status', 'published')->count(),
+            'compare_total' => $this->compareSubmissionCount($project, $filters),
+            'last_updated' => DcSubmission::query()
+                ->where('project_id', $project->id)
+                ->max('received_at'),
+        ];
+    }
+
+    public function compareSubmissionCount(DcProject $project, AccFilters $filters): int
+    {
+        if ($filters->compare === 'none') {
+            return 0;
+        }
+
+        return DcSubmission::query()
+            ->where('project_id', $project->id)
+            ->where('received_at', '>=', $filters->previousPeriodStart())
+            ->where('received_at', '<=', $filters->previousPeriodEnd())
+            ->when($filters->formId, fn ($q) => $q->where('form_id', $filters->formId))
+            ->when($filters->status, fn ($q) => $q->where('status', $filters->status))
+            ->when($filters->channel, fn ($q) => $q->where('channel', $filters->channel))
+            ->count();
+    }
+
+    /** @return array{current: int, previous: int, change_pct: ?float} */
+    public function kpiDelta(int $current, int $previous): array
+    {
+        $change = null;
+        if ($previous > 0) {
+            $change = round(100 * ($current - $previous) / $previous, 1);
+        } elseif ($current > 0) {
+            $change = 100.0;
+        }
+
+        return ['current' => $current, 'previous' => $previous, 'change_pct' => $change];
+    }
+
+    /** @return array<int, array{date: string, count: int}> */
+    public function submissionsTrend(DcProject $project, int $days = 30, ?AccFilters $filters = null): array
+    {
+        $filters ??= new AccFilters($days, 'previous', null, null, null, null, null, 'daily');
+        $from = $filters->periodStart();
+
+        $rows = $this->filteredSubmissionsQuery($project, $filters)
+            ->select(DB::raw('DATE(received_at) as day'), DB::raw('count(*) as total'))
+            ->groupBy('day')
+            ->orderBy('day')
+            ->pluck('total', 'day');
+
+        $dayCount = $filters->periodDays;
+        $trend = [];
+        for ($i = 0; $i < $dayCount; $i++) {
+            $day = $from->copy()->addDays($i)->toDateString();
+            if ($day > $filters->periodEnd()->toDateString()) {
+                break;
+            }
+            $trend[] = ['date' => $day, 'count' => (int) ($rows[$day] ?? 0)];
+        }
+
+        return $trend;
+    }
+
+    /** @return array<string, mixed> */
+    public function reviewMetrics(DcProject $project, AccFilters $filters): array
+    {
+        $base = $this->filteredSubmissionsQuery($project, $filters);
+
+        return [
+            'submitted' => (clone $base)->where('status', 'submitted')->count(),
+            'in_review' => (clone $base)->where('status', 'in_review')->count(),
+            'approved' => (clone $base)->where('status', 'approved')->count(),
+            'rejected' => (clone $base)->where('status', 'rejected')->count(),
+        ];
+    }
+
+    /** @return array<string, mixed> */
+    public function toolDataFreshness(DcProject $project): array
+    {
+        $lastSubmission = DcSubmission::query()->where('project_id', $project->id)->max('received_at');
+        $export = $project->scheduledExports()->where('is_active', true)->first();
+
+        return [
+            'database' => [
+                'label' => 'Tilkit database',
+                'status' => 'connected',
+                'updated_at' => $lastSubmission,
+            ],
+            'scheduled_export' => [
+                'label' => 'Scheduled CSV export',
+                'status' => $export ? 'active' : 'off',
+                'updated_at' => $export?->last_run_at,
+            ],
+            'public_collection' => [
+                'label' => 'Public collection',
+                'status' => $project->public_collection_enabled ? 'enabled' : 'disabled',
+                'updated_at' => null,
+            ],
+        ];
+    }
+
+    /** @return array<string, mixed> */
+    public function platformOverview(AccFilters $filters): array
+    {
+        $query = DcSubmission::query()
+            ->whereNull('deleted_at')
+            ->where('received_at', '>=', $filters->periodStart())
+            ->where('received_at', '<=', $filters->periodEnd());
+
+        $current = (clone $query)->count();
+        $previous = DcSubmission::query()
+            ->whereNull('deleted_at')
+            ->where('received_at', '>=', $filters->previousPeriodStart())
+            ->where('received_at', '<=', $filters->previousPeriodEnd())
+            ->count();
+
+        return [
+            'users' => DB::table('users')->whereNull('deleted_at')->count(),
+            'tools' => DB::table('dc_projects')->whereNull('deleted_at')->count(),
+            'forms' => DB::table('dc_forms')->whereNull('deleted_at')->count(),
+            'submissions' => $current,
+            'submissions_delta' => $this->kpiDelta($current, $previous),
+            'submissions_today' => DcSubmission::query()->whereDate('received_at', today())->count(),
+            'by_status' => (clone $query)
+                ->select('status', DB::raw('count(*) as total'))
+                ->groupBy('status')
+                ->pluck('total', 'status'),
+            'by_channel' => (clone $query)
+                ->select('channel', DB::raw('count(*) as total'))
+                ->groupBy('channel')
+                ->pluck('total', 'channel'),
+            'last_updated' => DcSubmission::query()->whereNull('deleted_at')->max('received_at'),
         ];
     }
 
     /** @return array<int, array{date: string, count: int}> */
-    public function submissionsTrend(DcProject $project, int $days = 30): array
+    public function platformSubmissionsTrend(int $days): array
     {
         $from = Carbon::today()->subDays($days - 1);
 
         $rows = DcSubmission::query()
-            ->where('project_id', $project->id)
+            ->whereNull('deleted_at')
             ->where('received_at', '>=', $from)
             ->select(DB::raw('DATE(received_at) as day'), DB::raw('count(*) as total'))
             ->groupBy('day')
@@ -51,6 +213,44 @@ class AnalyticsService
         }
 
         return $trend;
+    }
+
+    /** @return list<array{tool: DcProject, count: int}> */
+    public function toolsBySubmissionVolume(int $limit, AccFilters $filters): array
+    {
+        $rows = DcSubmission::query()
+            ->whereNull('deleted_at')
+            ->where('received_at', '>=', $filters->periodStart())
+            ->where('received_at', '<=', $filters->periodEnd())
+            ->select('project_id', DB::raw('count(*) as total'))
+            ->groupBy('project_id')
+            ->orderByDesc('total')
+            ->limit($limit)
+            ->get();
+
+        $tools = DcProject::query()->whereIn('id', $rows->pluck('project_id'))->get()->keyBy('id');
+
+        return $rows->map(fn ($row) => [
+            'tool' => $tools[$row->project_id],
+            'count' => (int) $row->total,
+        ])->filter(fn ($r) => $r['tool'] !== null)->values()->all();
+    }
+
+    /** @return array<string, mixed> */
+    public function platformDataFreshness(): array
+    {
+        return [
+            'database' => [
+                'label' => 'Platform database',
+                'status' => 'connected',
+                'updated_at' => DcSubmission::query()->whereNull('deleted_at')->max('received_at'),
+            ],
+            'ingestion' => [
+                'label' => 'Submission ingest',
+                'status' => 'active',
+                'updated_at' => now(),
+            ],
+        ];
     }
 
     /** @return Collection<int, object> */
@@ -95,12 +295,20 @@ class AnalyticsService
      *
      * @return array<string, mixed>|null
      */
-    public function tercileWeightingDashboard(DcProject $project, ?string $site = null, ?string $season = null): ?array
+    public function tercileWeightingDashboard(DcProject $project, ?string $site = null, ?string $season = null, ?AccFilters $filters = null): ?array
     {
-        $rows = DcSubmission::query()
+        $query = DcSubmission::query()
             ->where('project_id', $project->id)
-            ->whereNotIn('status', ['rejected', 'draft'])
-            ->get(['data']);
+            ->whereNotIn('status', ['rejected', 'draft']);
+
+        if ($filters) {
+            $query->where('received_at', '>=', $filters->periodStart())
+                ->where('received_at', '<=', $filters->periodEnd());
+        }
+
+        $rows = $query->get(['data']);
+        $site = $site ?? $filters?->site;
+        $season = $season ?? $filters?->season;
 
         $eligible = [];
         foreach ($rows as $row) {

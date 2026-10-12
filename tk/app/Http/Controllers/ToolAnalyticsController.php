@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DcForm;
+use App\Http\Controllers\Concerns\BuildsAccToolContext;
 use App\Models\DcProject;
 use App\Models\DcSubmission;
 use App\Services\AnalyticsService;
@@ -14,17 +14,62 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ToolAnalyticsController extends Controller
 {
+    use BuildsAccToolContext;
+
     public function show(Request $request, DcProject $tool, AnalyticsService $analytics, ToolAccessService $access): View
     {
         $access->assertCanViewAnalytics($request->user(), $tool);
+        extract($this->accToolContext($request, $tool));
 
-        $overview = $analytics->toolOverview($tool);
-        $trend = $analytics->submissionsTrend($tool);
-        $forms = $tool->forms()->where('status', 'published')->get(['id', 'title', 'code']);
-        $tercile = $analytics->tercileWeightingDashboard($tool);
+        $overview = $analytics->toolOverview($tool, $filters);
+        $trend = $analytics->submissionsTrend($tool, $filters->periodDays, $filters);
+        $tercile = $analytics->tercileWeightingDashboard($tool, $filters->site, $filters->season, $filters);
         $calibration = $analytics->calibrationByIndicator($tool);
+        $freshness = $analytics->toolDataFreshness($tool);
+        $totalDelta = $analytics->kpiDelta($overview['total_submissions'], $overview['compare_total']);
+        $accSection = 'overview';
 
-        return view('tools.analytics', compact('tool', 'overview', 'trend', 'forms', 'tercile', 'calibration'));
+        return view('tools.analytics.overview', compact(
+            'tool', 'filters', 'forms', 'overview', 'trend', 'tercile', 'calibration', 'freshness', 'totalDelta', 'accSection',
+        ));
+    }
+
+    public function explorer(Request $request, DcProject $tool, AnalyticsService $analytics, ToolAccessService $access): View
+    {
+        $access->assertCanViewAnalytics($request->user(), $tool);
+        extract($this->accToolContext($request, $tool));
+
+        $query = $analytics->filteredSubmissionsQuery($tool, $filters)
+            ->with(['form:id,title,code', 'collector:id,name'])
+            ->latest('received_at');
+
+        $submissions = $query->paginate(25)->withQueryString();
+        $accSection = 'explorer';
+
+        return view('tools.analytics.explorer', compact('tool', 'filters', 'forms', 'submissions', 'accSection'));
+    }
+
+    public function review(Request $request, DcProject $tool, AnalyticsService $analytics, ToolAccessService $access): View
+    {
+        $access->assertCanViewAnalytics($request->user(), $tool);
+        extract($this->accToolContext($request, $tool));
+
+        $review = $analytics->reviewMetrics($tool, $filters);
+        $accSection = 'review';
+
+        return view('tools.analytics.review', compact('tool', 'filters', 'forms', 'review', 'accSection'));
+    }
+
+    public function reports(Request $request, DcProject $tool, ToolAccessService $access): View
+    {
+        $access->assertCanViewAnalytics($request->user(), $tool);
+        extract($this->accToolContext($request, $tool));
+
+        $scheduledExport = $tool->scheduledExports()->first();
+        $capabilities = $request->user()->toolCapabilitiesFor($tool);
+        $accSection = 'reports';
+
+        return view('tools.analytics.reports', compact('tool', 'filters', 'forms', 'scheduledExport', 'capabilities', 'accSection'));
     }
 
     public function fieldBreakdown(Request $request, DcProject $tool, AnalyticsService $analytics, ToolAccessService $access)

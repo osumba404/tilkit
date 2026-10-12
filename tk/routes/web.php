@@ -4,6 +4,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FieldReferenceController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PlatformAdminController;
+use App\Http\Controllers\PlatformAnalyticsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicFormController;
 use App\Http\Controllers\PublicSubmissionDraftController;
@@ -46,6 +47,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('tools/{tool}')->name('tools.')->group(function () {
         Route::post('invitations', [ToolInvitationController::class, 'store'])->name('invitations.store');
         Route::get('analytics', [ToolAnalyticsController::class, 'show'])->name('analytics');
+        Route::get('analytics/explorer', [ToolAnalyticsController::class, 'explorer'])->name('analytics.explorer');
+        Route::get('analytics/review', [ToolAnalyticsController::class, 'review'])->name('analytics.review');
+        Route::get('analytics/reports', [ToolAnalyticsController::class, 'reports'])->name('analytics.reports');
         Route::get('analytics/field', [ToolAnalyticsController::class, 'fieldBreakdown'])->name('analytics.field');
         Route::get('export', [ToolAnalyticsController::class, 'export'])->name('export');
         Route::get('settings', [ToolSettingsController::class, 'edit'])->name('settings.edit');
@@ -69,6 +73,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::middleware('super_admin')->prefix('platform')->name('platform.')->group(function () {
         Route::get('/', [PlatformAdminController::class, 'index'])->name('index');
+        Route::get('/analytics', [PlatformAnalyticsController::class, 'overview'])->name('analytics.overview');
+        Route::get('/analytics/sources', [PlatformAnalyticsController::class, 'sources'])->name('analytics.sources');
         Route::post('/users/{user}/super-admin', [PlatformAdminController::class, 'promoteSuperAdmin'])->name('users.promote');
     });
 

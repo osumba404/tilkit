@@ -1,7 +1,12 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-2xl font-bold">Platform administration</h2>
-        <p class="text-sm text-tk-muted">Super admin view across all tools and users</p>
+        <div class="flex flex-wrap justify-between gap-4">
+            <div>
+                <h2 class="text-2xl font-bold">Platform administration</h2>
+                <p class="text-sm text-tk-muted">Super admin view across all tools and users</p>
+            </div>
+            <a href="{{ route('platform.analytics.overview') }}" class="tk-btn-primary text-sm">Analytics Command Center</a>
+        </div>
     </x-slot>
 
     <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">

@@ -10,6 +10,7 @@ export default defineConfig({
                 'resources/js/public-form.js',
                 'resources/js/public-form-wizard.js',
                 'resources/js/public-geo.js',
+                'resources/js/acc-dashboard.js',
             ],
             refresh: true,
         }),

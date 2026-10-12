@@ -41,4 +41,13 @@
     .tk-stat-value {
         @apply mt-1 text-2xl font-semibold text-tk-ink;
     }
+    .acc-sidebar {
+        @apply bg-slate-800;
+    }
+    .acc-nav-link {
+        @apply block rounded-md px-3 py-2 text-slate-300 hover:bg-slate-700 hover:text-white transition;
+    }
+    .acc-nav-active {
+        @apply bg-slate-700 text-white font-medium;
+    }
 }
