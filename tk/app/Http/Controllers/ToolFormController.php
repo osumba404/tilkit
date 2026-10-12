@@ -8,11 +8,13 @@ use App\Support\FieldTypeHelper;
 use App\Services\FormBuilderService;
 use App\Services\ToolAccessService;
 use App\Services\ToolAuditService;
+use App\Services\XlsFormService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ToolFormController extends Controller
 {
@@ -207,5 +209,52 @@ class ToolFormController extends Controller
         $builder->syncDraftFields($form, $request->user(), array_merge($existing, $imported));
 
         return back()->with('status', count($imported).' field(s) imported from CSV.');
+    }
+
+    public function exportXlsForm(
+        Request $request,
+        DcProject $tool,
+        DcForm $form,
+        ToolAccessService $access,
+        XlsFormService $xlsform,
+    ): StreamedResponse {
+        $access->assertCanManage($request->user(), $tool);
+        abort_unless($form->project_id === $tool->id, 404);
+
+        $version = $form->liveVersion() ?? $form->currentVersion;
+        abort_unless($version, 404, 'No published or draft version to export.');
+
+        return $xlsform->downloadResponse($form, $version);
+    }
+
+    public function importXlsForm(
+        Request $request,
+        DcProject $tool,
+        DcForm $form,
+        ToolAccessService $access,
+        FormBuilderService $builder,
+        XlsFormService $xlsform,
+        ToolAuditService $audit,
+    ): RedirectResponse {
+        $access->assertCanManage($request->user(), $tool);
+        abort_unless($form->project_id === $tool->id, 404);
+
+        $validated = $request->validate([
+            'xlsform' => ['required', 'file', 'mimes:xlsx,xls', 'max:10240'],
+        ]);
+
+        $fields = $xlsform->importToDraftFields($validated['xlsform']);
+        $result = $builder->syncDraftFields($form, $request->user(), $fields);
+
+        $audit->log($tool, $request->user(), 'form.xlsform_imported', 'dc_form', $form->id, [
+            'version_no' => $result['version']->version_no,
+            'field_count' => count($fields),
+        ]);
+
+        $message = $result['forked']
+            ? 'XLSForm imported into new draft version '.$result['version']->version_no.'. Review and publish when ready.'
+            : 'XLSForm imported — draft updated with '.count($fields).' field(s).';
+
+        return back()->with('status', $message);
     }
 }

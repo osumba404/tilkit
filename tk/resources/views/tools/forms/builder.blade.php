@@ -200,6 +200,24 @@
             </form>
         </div>
         <aside class="tk-card p-5 h-fit space-y-6">
+            <div class="border border-tk-line rounded-md p-4 bg-tk-soft/40">
+                <h3 class="font-semibold mb-2">XLSForm round-trip</h3>
+                <p class="text-xs text-tk-muted mb-3">Export the published form for Kobo/ODK, edit in Excel, then import to replace the current draft.</p>
+                @if ($form->liveVersion() || $form->currentVersion?->fields->isNotEmpty())
+                    <a href="{{ route('tools.forms.xlsform.export', [$tool, $form]) }}" class="tk-btn-secondary text-xs inline-block mb-3">
+                        Download XLSForm (.xlsx){{ $form->liveVersion() ? '' : ' — draft' }}
+                    </a>
+                @else
+                    <p class="text-xs text-amber-800 mb-3">Add fields and save a draft before exporting.</p>
+                @endif
+                <form method="POST" action="{{ route('tools.forms.xlsform.import', [$tool, $form]) }}" enctype="multipart/form-data">
+                    @csrf
+                    <label class="text-xs text-tk-muted">Import .xlsx (updates draft)</label>
+                    <input type="file" name="xlsform" accept=".xlsx,.xls" required class="block w-full text-xs mt-1 mb-2">
+                    @error('xlsform')<p class="text-red-600 text-xs">{{ $message }}</p>@enderror
+                    <button type="submit" class="tk-btn-primary text-xs">Import XLSForm</button>
+                </form>
+            </div>
             <form method="POST" action="{{ route('tools.forms.import-csv', [$tool, $form]) }}">
                 @csrf
                 <h3 class="font-semibold mb-2">Import field list</h3>

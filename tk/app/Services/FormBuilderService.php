@@ -76,7 +76,8 @@ class FormBuilderService
                     'position' => $field['position'] ?? $index,
                     'is_required' => (bool) ($field['is_required'] ?? false),
                     'relevant_expr' => $field['relevant_expr'] ?? null,
-                    'calculation_expr' => $field['calculation_expr'] ?? null,
+                    'calculation_expr' => $field['calculation_expr']
+                        ?? (isset($field['parameters']['expression']) ? $field['parameters']['expression'] : null),
                     'parameters' => $field['parameters'] ?? null,
                     'sensitivity' => $field['sensitivity'] ?? 'none',
                 ]);

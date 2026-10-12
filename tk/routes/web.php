@@ -63,6 +63,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('forms/{form}/publish', [ToolFormController::class, 'publish'])->name('forms.publish');
         Route::post('forms/{form}/duplicate', [ToolFormController::class, 'duplicate'])->name('forms.duplicate');
         Route::post('forms/{form}/import-csv', [ToolFormController::class, 'importCsv'])->name('forms.import-csv');
+        Route::get('forms/{form}/xlsform/export', [ToolFormController::class, 'exportXlsForm'])->name('forms.xlsform.export');
+        Route::post('forms/{form}/xlsform/import', [ToolFormController::class, 'importXlsForm'])->name('forms.xlsform.import');
     });
 
     Route::middleware('super_admin')->prefix('platform')->name('platform.')->group(function () {
