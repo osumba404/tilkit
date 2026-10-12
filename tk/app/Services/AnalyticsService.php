@@ -90,6 +90,139 @@ class AnalyticsService
             ->get();
     }
 
+    /**
+     * Live tercile tally from indicator log submissions (protocol-eligible rows only).
+     *
+     * @return array<string, mixed>|null
+     */
+    public function tercileWeightingDashboard(DcProject $project, ?string $site = null, ?string $season = null): ?array
+    {
+        $rows = DcSubmission::query()
+            ->where('project_id', $project->id)
+            ->whereNotIn('status', ['rejected', 'draft'])
+            ->get(['data']);
+
+        $eligible = [];
+        foreach ($rows as $row) {
+            $data = is_array($row->data) ? $row->data : [];
+            if ($site && ($data['record_community_site'] ?? null) !== $site) {
+                continue;
+            }
+            if ($season && ($data['record_season_year'] ?? null) !== $season) {
+                continue;
+            }
+            if (! $this->isTercileEligible($data)) {
+                continue;
+            }
+            $eligible[] = $data;
+        }
+
+        if ($eligible === []) {
+            return null;
+        }
+
+        $counts = ['3' => 0, '2' => 0, '1' => 0];
+        $weightSums = ['3' => 0.0, '2' => 0.0, '1' => 0.0];
+        $totalWeight = 0.0;
+
+        foreach ($eligible as $data) {
+            $t = (string) ($data['season_tercile_prediction'] ?? '');
+            if (! isset($counts[$t])) {
+                continue;
+            }
+            $counts[$t]++;
+            $w = (float) ($data['final_weight'] ?? 1);
+            if ($w <= 0) {
+                $w = 1.0;
+            }
+            $weightSums[$t] += $w;
+            $totalWeight += $w;
+        }
+
+        $n = count($eligible);
+        $pct = fn (int $c): float => $n > 0 ? round(100 * $c / $n, 1) : 0.0;
+        $wpct = fn (float $s): float => $totalWeight > 0 ? round(100 * $s / $totalWeight, 1) : 0.0;
+
+        return [
+            'eligible_count' => $n,
+            'simple' => [
+                'above' => ['count' => $counts['3'], 'pct' => $pct($counts['3'])],
+                'normal' => ['count' => $counts['2'], 'pct' => $pct($counts['2'])],
+                'below' => ['count' => $counts['1'], 'pct' => $pct($counts['1'])],
+            ],
+            'weighted' => [
+                'above' => ['sum' => $weightSums['3'], 'pct' => $wpct($weightSums['3'])],
+                'normal' => ['sum' => $weightSums['2'], 'pct' => $wpct($weightSums['2'])],
+                'below' => ['sum' => $weightSums['1'], 'pct' => $wpct($weightSums['1'])],
+            ],
+        ];
+    }
+
+    /** @return list<array{indicator_id: string, submissions: int, hit_rate: ?float, reliability_drift: ?float}> */
+    public function calibrationByIndicator(DcProject $project, int $limit = 25): array
+    {
+        $grouped = [];
+
+        DcSubmission::query()
+            ->where('project_id', $project->id)
+            ->whereNotIn('status', ['rejected', 'draft'])
+            ->orderBy('id')
+            ->get(['data'])
+            ->each(function (DcSubmission $row) use (&$grouped): void {
+                $data = is_array($row->data) ? $row->data : [];
+                $id = $data['unique_indicator_id'] ?? null;
+                if (! $id) {
+                    return;
+                }
+                $grouped[$id] ??= ['hits' => 0, 'total' => 0, 'hist' => [], 'curr' => []];
+                $grouped[$id]['total']++;
+                $outcome = $data['verification_outcome'] ?? $data['actual_season_classification'] ?? null;
+                if (in_array((string) $outcome, ['2', 'hit', 'yes'], true)) {
+                    $grouped[$id]['hits']++;
+                }
+                if (isset($data['historical_reliability_rating'])) {
+                    $grouped[$id]['hist'][] = (float) $data['historical_reliability_rating'];
+                }
+                if (isset($data['current_reliability_rating'])) {
+                    $grouped[$id]['curr'][] = (float) $data['current_reliability_rating'];
+                }
+            });
+
+        $out = [];
+        foreach ($grouped as $indicatorId => $stats) {
+            $avg = fn (array $xs): ?float => $xs === [] ? null : round(array_sum($xs) / count($xs), 2);
+            $out[] = [
+                'indicator_id' => $indicatorId,
+                'submissions' => $stats['total'],
+                'hit_rate' => $stats['total'] > 0 ? round($stats['hits'] / $stats['total'], 2) : null,
+                'reliability_drift' => ($avg($stats['hist']) !== null && $avg($stats['curr']) !== null)
+                    ? round($avg($stats['curr']) - $avg($stats['hist']), 2)
+                    : null,
+            ];
+        }
+
+        usort($out, fn ($a, $b) => $b['submissions'] <=> $a['submissions']);
+
+        return array_slice($out, 0, $limit);
+    }
+
+    /** @param array<string, mixed> $data */
+    private function isTercileEligible(array $data): bool
+    {
+        if (($data['sighted_this_season'] ?? null) !== '1') {
+            return false;
+        }
+        if (empty($data['confirmed_by']) || empty($data['approved_by'])) {
+            return false;
+        }
+        if (($data['validation_status'] ?? null) === '4') {
+            return false;
+        }
+        $t = (string) ($data['season_tercile_prediction'] ?? '0');
+
+        return in_array($t, ['1', '2', '3'], true);
+    }
+
     public function platformStats(): array
     {
         return [

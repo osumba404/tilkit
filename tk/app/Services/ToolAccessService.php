@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\ToolMemberRole;
 use App\Models\DcProject;
+use App\Support\ToolCapabilities;
 use App\Models\DcSubmission;
 use App\Models\ToolMember;
 use App\Models\User;
@@ -60,9 +61,24 @@ class ToolAccessService
     public function assertCanViewAnalytics(User $user, DcProject $project): void
     {
         $this->assertCanView($user, $project);
-        $role = $user->toolRoleFor($project);
-        if ($role === null || ! $role->canViewAnalytics()) {
+        if (! $user->toolCapabilitiesFor($project)->canViewAnalytics()) {
             abort(403, 'Analytics are available to tool administrators only.');
+        }
+    }
+
+    public function assertCanExport(User $user, DcProject $project): void
+    {
+        $this->assertCanView($user, $project);
+        if (! $user->toolCapabilitiesFor($project)->canExportData()) {
+            abort(403, 'You do not have permission to export data for this tool.');
+        }
+    }
+
+    public function assertCanPublishForms(User $user, DcProject $project): void
+    {
+        $this->assertCanView($user, $project);
+        if (! $user->toolCapabilitiesFor($project)->canPublishForms()) {
+            abort(403, 'You do not have permission to publish forms for this tool.');
         }
     }
 

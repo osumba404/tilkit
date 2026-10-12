@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\DcProject;
 use App\Models\ToolInvitation;
+use App\Enums\ToolMemberRole;
 use App\Services\ToolAccessService;
+use App\Services\ToolAuditService;
 use App\Services\ToolInvitationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,15 +16,32 @@ use Illuminate\View\View;
 
 class ToolInvitationController extends Controller
 {
-    public function store(Request $request, DcProject $tool, ToolAccessService $access, ToolInvitationService $invites): RedirectResponse
+    public function store(Request $request, DcProject $tool, ToolAccessService $access, ToolInvitationService $invites, ToolAuditService $audit): RedirectResponse
     {
         $access->assertCanManage($request->user(), $tool);
 
         $validated = $request->validate([
             'email' => ['required', 'email', 'max:190'],
+            'role' => ['required', 'in:viewer,collector,admin'],
+            'can_export' => ['sometimes', 'boolean'],
+            'can_publish_forms' => ['sometimes', 'boolean'],
         ]);
 
-        $invites->invite($tool, $request->user(), $validated['email']);
+        $role = ToolMemberRole::from($validated['role']);
+
+        $invites->invite(
+            $tool,
+            $request->user(),
+            $validated['email'],
+            $role,
+            $request->boolean('can_export') ? true : null,
+            $request->boolean('can_publish_forms') ? true : null,
+        );
+
+        $audit->log($tool, $request->user(), 'invitation.sent', null, null, [
+            'email' => $validated['email'],
+            'role' => $role->value,
+        ]);
 
         return back()->with('status', 'Invitation sent to '.$validated['email'].'.');
     }

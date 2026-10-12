@@ -29,6 +29,9 @@ class DcSubmission extends Model
         'sync_batch_id',
         'channel',
         'status',
+        'reviewed_at',
+        'reviewed_by',
+        'review_notes',
         'language',
         'started_at',
         'ended_at',
@@ -57,6 +60,7 @@ class DcSubmission extends Model
             'ended_at' => 'datetime',
             'submitted_at' => 'datetime',
             'received_at' => 'datetime',
+            'reviewed_at' => 'datetime',
             'retain_until' => 'date',
             'is_encrypted' => 'boolean',
         ];

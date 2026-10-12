@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\DcProject;
+use App\Services\DuplicateDetectionService;
 use App\Services\PublicFormValidationService;
+use App\Services\SubmissionDraftService;
 use App\Services\SubmissionIngestService;
 use App\Support\FormWizardPages;
 use App\Support\PublicFormAccess;
@@ -17,9 +19,15 @@ use Symfony\Component\HttpFoundation\Response as HttpResponse;
 
 class PublicToolController extends Controller
 {
-    public function collect(DcProject $tool): View
+    public function collect(DcProject $tool, SubmissionDraftService $drafts, Request $request): View|RedirectResponse
     {
         abort_unless($tool->public_collection_enabled, 404);
+
+        if ($tool->requiresConsentGate() && ! session('tool_consent_'.$tool->id)) {
+            return redirect()->route('public.tools.consent', $tool);
+        }
+
+        app()->setLocale($tool->default_locale ?: 'en');
 
         $tool->load([
             'forms' => fn ($q) => $q->where('status', 'published')->orderBy('id'),
@@ -27,8 +35,20 @@ class PublicToolController extends Controller
 
         $pages = FormWizardPages::pagesForTool($tool);
         $publicUrl = $tool->publicCollectUrl();
+        $deviceToken = $request->cookie('tk_draft_'.$tool->code);
+        $draft = $drafts->load($tool, $request->user(), $deviceToken);
+        $draftPayload = $draft?->payload ?? [];
+        $draftSaveUrl = route('public.tools.draft.store', $tool);
+        $draftLoadUrl = route('public.tools.draft.show', $tool);
 
-        return view('public.tool-collect', compact('tool', 'publicUrl', 'pages'));
+        return view('public.tool-collect', compact(
+            'tool',
+            'publicUrl',
+            'pages',
+            'draftPayload',
+            'draftSaveUrl',
+            'draftLoadUrl',
+        ));
     }
 
     public function submit(
@@ -36,6 +56,8 @@ class PublicToolController extends Controller
         DcProject $tool,
         PublicFormValidationService $validation,
         SubmissionIngestService $ingest,
+        DuplicateDetectionService $duplicates,
+        SubmissionDraftService $drafts,
     ): RedirectResponse {
         abort_unless($tool->public_collection_enabled, 404);
 
@@ -57,6 +79,13 @@ class PublicToolController extends Controller
         $rules = $validation->rulesForFields($allFields);
         $validated = $request->validate($rules);
         $validated = $validation->normalizeDateTimeAnswers($allFields, $validated);
+
+        $duplicateWarnings = $duplicates->checkIndicatorLog($tool, $validated);
+        if ($duplicateWarnings !== [] && ! $request->boolean('confirm_duplicate')) {
+            return back()
+                ->withInput()
+                ->with('duplicate_warnings', $duplicateWarnings);
+        }
 
         DB::transaction(function () use ($tool, $validated, $request, $ingest): void {
             foreach ($tool->forms as $form) {
@@ -89,6 +118,9 @@ class PublicToolController extends Controller
                 $ingest->submit($form, $subset, $request, $request->user());
             }
         });
+
+        $deviceToken = $request->cookie('tk_draft_'.$tool->code);
+        $drafts->clear($tool, $request->user(), $deviceToken);
 
         return redirect()
             ->route('public.tools.thanks', $tool)

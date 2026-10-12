@@ -54,8 +54,11 @@ class ToolController extends Controller
             'members.user',
             'invitations' => fn ($q) => $q->whereNull('accepted_at')->where('expires_at', '>', now()),
         ]);
-        $role = $request->user()->toolRoleFor($tool);
+        $capabilities = $request->user()->toolCapabilitiesFor($tool);
+        $auditLogs = $capabilities->canManageTool()
+            ? $tool->auditLogs()->with('user')->latest('created_at')->limit(15)->get()
+            : collect();
 
-        return view('tools.show', compact('tool', 'role'));
+        return view('tools.show', compact('tool', 'capabilities', 'auditLogs'));
     }
 }

@@ -73,8 +73,31 @@ class SubmissionIngestService
     {
         $out = [];
 
+        $fieldsById = $fields->keyBy('id');
+
         foreach ($fields as $field) {
             if (in_array($field->field_type, ['note', 'group', 'repeat'], true)) {
+                continue;
+            }
+
+            if ($field->parent_id && $fieldsById->has($field->parent_id)) {
+                $parent = $fieldsById[$field->parent_id];
+                $rows = $input[$parent->name] ?? null;
+                if (is_array($rows)) {
+                    $collected = [];
+                    foreach ($rows as $row) {
+                        if (is_array($row) && array_key_exists($field->name, $row)) {
+                            $collected[] = $row[$field->name];
+                        }
+                    }
+                    if ($collected !== []) {
+                        $out[$parent->name] = $out[$parent->name] ?? [];
+                        foreach ($collected as $i => $val) {
+                            $out[$parent->name][$i][$field->name] = $val;
+                        }
+                    }
+                }
+
                 continue;
             }
 

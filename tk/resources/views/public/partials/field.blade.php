@@ -5,10 +5,20 @@
     $choices = $params['choices'] ?? [];
     $type = $field->field_type;
     $name = $field->name;
+    $inputName = $namePrefix ?? $name;
+    $oldKey = str_replace(['[', ']'], ['.', ''], $inputName);
     $typeLabel = FieldTypeHelper::label($type);
+    $relevantExpr = $field->relevant_expr ?? null;
 @endphp
 
-<div class="tk-field" data-field-type="{{ $type }}">
+<div
+    class="tk-field"
+    data-field-type="{{ $type }}"
+    data-field-name="{{ $inputName }}"
+    @if ($relevantExpr) data-relevant-expr="{{ $relevantExpr }}" @endif
+    role="group"
+    @if ($relevantExpr) aria-hidden="false" @endif
+>
     @unless (in_array($type, ['note', 'group', 'repeat', 'acknowledge'], true))
         <div class="mb-1">
             <label class="block text-sm font-medium" for="field-{{ $name }}">
@@ -34,20 +44,43 @@
             @break
 
         @case('group')
-        @case('repeat')
-            <div class="border-l-4 border-tk-accent/80 pl-3 py-2 bg-tk-soft/50 rounded-r-md">
+            <div class="border-l-4 border-tk-accent pl-3 py-2 bg-tk-soft rounded-r-md">
                 <p class="text-sm font-semibold">{{ $field->label ?: FieldTypeHelper::label($type) }}</p>
-                <p class="text-xs text-tk-muted mt-1">{{ $typeLabel }} <span class="font-mono">{{ $type }}</span> — section heading for grouped questions.</p>
+            </div>
+            @break
+
+        @case('repeat')
+            @php
+                $children = $field->relationLoaded('repeatChildren') ? $field->repeatChildren : collect();
+            @endphp
+            <div
+                class="border border-tk-line rounded-md p-4 bg-tk-soft space-y-4"
+                data-repeat-group
+                data-repeat-name="{{ $inputName }}"
+                aria-label="{{ $field->label ?: 'Repeat group' }}"
+            >
+                <p class="text-sm font-semibold">{{ $field->label ?: 'Repeat group' }}</p>
+                <div data-repeat-rows class="space-y-6">
+                    <div data-repeat-row data-row-index="0" class="space-y-4 border-b border-tk-line pb-4">
+                        @foreach ($children as $child)
+                            @include('public.partials.field', [
+                                'field' => $child,
+                                'namePrefix' => $name.'[0]['.$child->name.']',
+                            ])
+                        @endforeach
+                    </div>
+                </div>
+                <button type="button" class="tk-btn-secondary text-sm" data-repeat-add>Add another</button>
             </div>
             @break
 
         @case('select_one')
             @if (count($choices))
-                <select id="field-{{ $name }}" name="{{ $name }}" @required($field->is_required)
+                <select id="field-{{ $name }}" name="{{ $inputName }}" @required($field->is_required)
                     class="w-full rounded-md border border-tk-line px-3 py-2 bg-white">
                     <option value="">Choose one</option>
                     @foreach ($choices as $choice)
-                        <option value="{{ $choice['value'] ?? $choice['label'] }}" @selected(old($name) == ($choice['value'] ?? $choice['label']))>
+                        <option value="{{ $choice['value'] ?? $choice['label'] }}" @selected(old($oldKey) == ($choice['value'] ?? $choice['label']))>
                             {{ $choice['label'] ?? $choice['value'] }}
                         </option>
                     @endforeach
@@ -64,8 +97,8 @@
                     @foreach ($choices as $choice)
                         @php $val = $choice['value'] ?? $choice['label']; @endphp
                         <label class="flex items-center gap-2 text-sm cursor-pointer">
-                            <input type="checkbox" name="{{ $name }}[]" value="{{ $val }}"
-                                @checked(is_array(old($name)) && in_array($val, old($name), true))
+                            <input type="checkbox" name="{{ $inputName }}[]" value="{{ $val }}"
+                                @checked(is_array(old($oldKey)) && in_array($val, old($oldKey), true))
                                 class="rounded border-tk-line text-tk-accent focus:ring-tk-accent">
                             <span>{{ $choice['label'] ?? $val }}</span>
                         </label>
@@ -83,7 +116,7 @@
         @case('rank')
             @if (count($choices))
                 @php
-                    $oldRank = old($name);
+                    $oldRank = old($oldKey);
                     $ordered = $choices;
                     if (is_string($oldRank)) {
                         $decoded = json_decode($oldRank, true);
@@ -108,7 +141,7 @@
                 <ul
                     id="field-{{ $name }}"
                     data-rank-list
-                    data-rank-name="{{ $name }}"
+                    data-rank-name="{{ $inputName }}"
                     class="space-y-1 rounded-md border border-tk-line p-2 bg-white"
                 >
                     @foreach ($ordered as $choice)
@@ -122,7 +155,7 @@
                         </li>
                     @endforeach
                 </ul>
-                <input type="hidden" name="{{ $name }}" id="field-{{ $name }}" value="{{ old($name) }}" data-rank-input @required($field->is_required)>
+                <input type="hidden" name="{{ $inputName }}" id="field-{{ $name }}" value="{{ old($oldKey) }}" data-rank-input @required($field->is_required)>
             @else
                 <p class="text-xs text-amber-700">No choices configured for rank field.</p>
             @endif
@@ -130,17 +163,17 @@
 
         @case('integer')
         @case('decimal')
-            <input id="field-{{ $name }}" type="number" name="{{ $name }}" step="{{ $type === 'integer' ? '1' : 'any' }}"
+            <input id="field-{{ $name }}" type="number" name="{{ $inputName }}" step="{{ $type === 'integer' ? '1' : 'any' }}"
                 @if(isset($params['min'])) min="{{ $params['min'] }}" @endif
                 @if(isset($params['max'])) max="{{ $params['max'] }}" @endif
-                value="{{ old($name) }}" @required($field->is_required)
+                value="{{ old($oldKey) }}" @required($field->is_required)
                 class="w-full rounded-md border border-tk-line px-3 py-2"
                 @if($type === 'integer' || $type === 'decimal') data-calc-source @endif>
             @break
 
         @case('range')
             <div class="flex items-center gap-3">
-                <input id="field-{{ $name }}" type="range" name="{{ $name }}"
+                <input id="field-{{ $name }}" type="range" name="{{ $inputName }}"
                     @if(isset($params['min'])) min="{{ $params['min'] ?? 0 }}" @else min="0" @endif
                     @if(isset($params['max'])) max="{{ $params['max'] ?? 100 }}" @else max="100" @endif
                     value="{{ old($name, $params['min'] ?? 0) }}" @required($field->is_required)
@@ -152,7 +185,7 @@
 
         @case('date')
             @php
-                $dateVal = old($name);
+                $dateVal = old($oldKey);
                 if (is_string($dateVal) && $dateVal !== '') {
                     try {
                         $dateVal = DateTimeFieldValidator::forHtmlInput('date', DateTimeFieldValidator::parseAndValidate('date', $dateVal, $name));
@@ -161,7 +194,7 @@
                     }
                 }
             @endphp
-            <input id="field-{{ $name }}" type="date" name="{{ $name }}" value="{{ $dateVal }}"
+            <input id="field-{{ $name }}" type="date" name="{{ $inputName }}" value="{{ $dateVal }}"
                 pattern="\d{4}-\d{2}-\d{2}" @required($field->is_required)
                 class="w-full rounded-md border border-tk-line px-3 py-2">
             <p class="text-xs text-tk-muted mt-1">Format: {{ DateTimeFieldValidator::formatHint('date') }}</p>
@@ -169,7 +202,7 @@
 
         @case('time')
             @php
-                $timeVal = old($name);
+                $timeVal = old($oldKey);
                 if (is_string($timeVal) && $timeVal !== '') {
                     try {
                         $timeVal = DateTimeFieldValidator::forHtmlInput('time', DateTimeFieldValidator::parseAndValidate('time', $timeVal, $name));
@@ -178,7 +211,7 @@
                     }
                 }
             @endphp
-            <input id="field-{{ $name }}" type="time" name="{{ $name }}" value="{{ $timeVal }}"
+            <input id="field-{{ $name }}" type="time" name="{{ $inputName }}" value="{{ $timeVal }}"
                 step="1" @required($field->is_required)
                 class="w-full rounded-md border border-tk-line px-3 py-2">
             <p class="text-xs text-tk-muted mt-1">Format: {{ DateTimeFieldValidator::formatHint('time') }} (24-hour)</p>
@@ -186,7 +219,7 @@
 
         @case('datetime')
             @php
-                $dtVal = old($name);
+                $dtVal = old($oldKey);
                 if (is_string($dtVal) && $dtVal !== '') {
                     try {
                         $dtVal = DateTimeFieldValidator::forHtmlInput('datetime', DateTimeFieldValidator::parseAndValidate('datetime', $dtVal, $name));
@@ -195,20 +228,20 @@
                     }
                 }
             @endphp
-            <input id="field-{{ $name }}" type="datetime-local" name="{{ $name }}" value="{{ $dtVal }}"
+            <input id="field-{{ $name }}" type="datetime-local" name="{{ $inputName }}" value="{{ $dtVal }}"
                 step="1" @required($field->is_required)
                 class="w-full rounded-md border border-tk-line px-3 py-2">
             <p class="text-xs text-tk-muted mt-1">Format: {{ DateTimeFieldValidator::formatHint('datetime') }} (local time)</p>
             @break
 
         @case('text')
-            <input id="field-{{ $name }}" type="text" name="{{ $name }}" value="{{ old($name) }}" @required($field->is_required)
+            <input id="field-{{ $name }}" type="text" name="{{ $inputName }}" value="{{ old($oldKey) }}" @required($field->is_required)
                 class="w-full rounded-md border border-tk-line px-3 py-2" data-calc-source>
             @break
 
         @case('barcode')
             <div data-barcode-field class="space-y-2">
-                <input id="field-{{ $name }}" type="text" name="{{ $name }}" value="{{ old($name) }}" @required($field->is_required)
+                <input id="field-{{ $name }}" type="text" name="{{ $inputName }}" value="{{ old($oldKey) }}" @required($field->is_required)
                     autocomplete="off" inputmode="numeric"
                     class="w-full rounded-md border border-tk-line px-3 py-2 font-mono"
                     placeholder="Enter or scan barcode">
@@ -220,8 +253,8 @@
         @case('acknowledge')
             <p class="text-xs text-tk-muted mb-2">{{ $typeLabel }} <span class="font-mono">{{ $type }}</span></p>
             <label class="flex items-start gap-2 text-sm cursor-pointer rounded-md border border-tk-line p-3 bg-white">
-                <input type="checkbox" id="field-{{ $name }}" name="{{ $name }}" value="1"
-                    @checked(old($name))
+                <input type="checkbox" id="field-{{ $name }}" name="{{ $inputName }}" value="1"
+                    @checked(old($oldKey))
                     @required($field->is_required)
                     class="mt-0.5 rounded border-tk-line text-tk-accent focus:ring-tk-accent">
                 <span>{{ $field->label ?: 'I acknowledge' }}</span>
@@ -232,9 +265,9 @@
             <input
                 id="field-{{ $name }}"
                 type="text"
-                name="{{ $name }}"
+                name="{{ $inputName }}"
                 readonly
-                value="{{ old($name) }}"
+                value="{{ old($oldKey) }}"
                 data-calculate-output
                 data-calculate-expr="{{ $field->calculation_expr ?? ($params['expression'] ?? '') }}"
                 class="w-full rounded-md border border-tk-line px-3 py-2 bg-tk-soft text-tk-muted"
@@ -243,12 +276,12 @@
             @break
 
         @case('metadata')
-            <input type="hidden" name="{{ $name }}" id="field-{{ $name }}" value="{{ old($name) }}" data-metadata-field>
+            <input type="hidden" name="{{ $inputName }}" id="field-{{ $name }}" value="{{ old($oldKey) }}" data-metadata-field>
             <p class="text-xs text-tk-muted">Submission context (browser, time zone) is attached automatically.</p>
             @break
 
         @case('image')
-            <input id="field-{{ $name }}" type="file" name="{{ $name }}" accept="image/*"
+            <input id="field-{{ $name }}" type="file" name="{{ $inputName }}" accept="image/*"
                 @if($params['allow_capture'] ?? true) capture="environment" @endif
                 @required($field->is_required)
                 class="w-full text-sm file:mr-3 file:tk-btn-secondary file:border-0 file:text-sm">
@@ -256,7 +289,7 @@
             @break
 
         @case('video')
-            <input id="field-{{ $name }}" type="file" name="{{ $name }}" accept="video/*"
+            <input id="field-{{ $name }}" type="file" name="{{ $inputName }}" accept="video/*"
                 @if($params['allow_capture'] ?? true) capture @endif
                 @required($field->is_required)
                 class="w-full text-sm file:mr-3 file:tk-btn-secondary file:border-0 file:text-sm">
@@ -264,7 +297,7 @@
             @break
 
         @case('audio')
-            <input id="field-{{ $name }}" type="file" name="{{ $name }}" accept="audio/*"
+            <input id="field-{{ $name }}" type="file" name="{{ $inputName }}" accept="audio/*"
                 @if($params['allow_capture'] ?? true) capture @endif
                 @required($field->is_required)
                 class="w-full text-sm file:mr-3 file:tk-btn-secondary file:border-0 file:text-sm">
@@ -272,7 +305,7 @@
             @break
 
         @case('file')
-            <input id="field-{{ $name }}" type="file" name="{{ $name }}"
+            <input id="field-{{ $name }}" type="file" name="{{ $inputName }}"
                 @required($field->is_required)
                 class="w-full text-sm file:mr-3 file:tk-btn-secondary file:border-0 file:text-sm">
             <p class="text-xs text-tk-muted mt-1">Upload a document or file.</p>
@@ -289,7 +322,7 @@
             @break
 
         @default
-            <input id="field-{{ $name }}" type="text" name="{{ $name }}" value="{{ old($name) }}" @required($field->is_required)
+            <input id="field-{{ $name }}" type="text" name="{{ $inputName }}" value="{{ old($oldKey) }}" @required($field->is_required)
                 class="w-full rounded-md border border-tk-line px-3 py-2">
     @endswitch
 

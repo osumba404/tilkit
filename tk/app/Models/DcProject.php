@@ -24,6 +24,12 @@ class DcProject extends Model
         'ends_on',
         'status',
         'public_collection_enabled',
+        'consent_text',
+        'consent_ack_label',
+        'consent_require_signature',
+        'brand_logo_path',
+        'brand_footer',
+        'default_locale',
         'owner_user_id',
         'created_by',
         'updated_by',
@@ -35,6 +41,7 @@ class DcProject extends Model
             'starts_on' => 'date',
             'ends_on' => 'date',
             'public_collection_enabled' => 'boolean',
+            'consent_require_signature' => 'boolean',
         ];
     }
 
@@ -71,5 +78,20 @@ class DcProject extends Model
     public function invitations(): HasMany
     {
         return $this->hasMany(ToolInvitation::class, 'project_id');
+    }
+
+    public function auditLogs(): HasMany
+    {
+        return $this->hasMany(ToolAuditLog::class, 'project_id');
+    }
+
+    public function scheduledExports(): HasMany
+    {
+        return $this->hasMany(ToolScheduledExport::class, 'project_id');
+    }
+
+    public function requiresConsentGate(): bool
+    {
+        return filled(trim((string) $this->consent_text));
     }
 }

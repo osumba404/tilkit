@@ -33,6 +33,10 @@ class FormWizardPages
         $current = null;
 
         foreach ($fields as $field) {
+            if ($field->parent_id) {
+                continue;
+            }
+
             if (self::isSectionBreak($field)) {
                 if ($current !== null && $current['fields'] !== []) {
                     $pages[] = $current;
@@ -54,6 +58,15 @@ class FormWizardPages
                     'form_id' => $formId,
                     'fields' => [],
                 ];
+            }
+
+            if ($field->field_type === 'repeat') {
+                $children = $fields
+                    ->where('parent_id', $field->id)
+                    ->sortBy('position')
+                    ->values()
+                    ->all();
+                $field->setRelation('repeatChildren', collect($children));
             }
 
             $current['fields'][] = $field;

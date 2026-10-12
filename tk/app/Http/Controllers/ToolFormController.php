@@ -7,6 +7,7 @@ use App\Models\DcProject;
 use App\Support\FieldTypeHelper;
 use App\Services\FormBuilderService;
 use App\Services\ToolAccessService;
+use App\Services\ToolAuditService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -71,18 +72,19 @@ class ToolFormController extends Controller
         return redirect()->route('tools.forms.builder', [$tool, $form]);
     }
 
-    public function builder(Request $request, DcProject $tool, DcForm $form, ToolAccessService $access): View
+    public function builder(Request $request, DcProject $tool, DcForm $form, ToolAccessService $access, FormBuilderService $builder): View
     {
         $access->assertCanManage($request->user(), $tool);
         abort_unless($form->project_id === $tool->id, 404);
 
         $form->load(['currentVersion.fields.fieldTypeDefinition']);
         $fieldTypes = \App\Models\DcFieldType::query()->orderBy('family')->orderBy('code')->get();
+        $publishDiff = $builder->diffPublishedToDraft($form);
 
-        return view('tools.forms.builder', compact('tool', 'form', 'fieldTypes'));
+        return view('tools.forms.builder', compact('tool', 'form', 'fieldTypes', 'publishDiff'));
     }
 
-    public function saveBuilder(Request $request, DcProject $tool, DcForm $form, ToolAccessService $access, FormBuilderService $builder): RedirectResponse
+    public function saveBuilder(Request $request, DcProject $tool, DcForm $form, ToolAccessService $access, FormBuilderService $builder, ToolAuditService $audit): RedirectResponse
     {
         $access->assertCanManage($request->user(), $tool);
         abort_unless($form->project_id === $tool->id, 404);
@@ -100,6 +102,8 @@ class ToolFormController extends Controller
             'fields.*.parameters.choices.*.label' => ['required_with:fields.*.parameters.choices', 'string', 'max:255'],
             'fields.*.parameters.max_selections' => ['nullable', 'integer', 'min:1', 'max:50'],
             'fields.*.parameters.max_size_mb' => ['nullable', 'integer', 'min:1', 'max:100'],
+            'fields.*.relevant_expr' => ['nullable', 'string', 'max:500'],
+            'fields.*.repeat_parent' => ['nullable', 'string', 'max:80'],
         ]);
 
         foreach ($validated['fields'] as $i => &$field) {
@@ -137,6 +141,11 @@ class ToolFormController extends Controller
 
         $result = $builder->syncDraftFields($form, $request->user(), $validated['fields']);
 
+        $audit->log($tool, $request->user(), 'form.builder_saved', 'dc_form', $form->id, [
+            'version_no' => $result['version']->version_no,
+            'field_count' => count($validated['fields']),
+        ]);
+
         $message = $result['forked']
             ? 'Created draft version '.$result['version']->version_no.' from the published form. Changes apply when you publish again.'
             : 'Draft saved.';
@@ -144,13 +153,59 @@ class ToolFormController extends Controller
         return back()->with('status', $message);
     }
 
-    public function publish(Request $request, DcProject $tool, DcForm $form, ToolAccessService $access, FormBuilderService $builder): RedirectResponse
+    public function publish(Request $request, DcProject $tool, DcForm $form, ToolAccessService $access, FormBuilderService $builder, ToolAuditService $audit): RedirectResponse
+    {
+        $access->assertCanPublishForms($request->user(), $tool);
+        abort_unless($form->project_id === $tool->id, 404);
+
+        $diff = $builder->diffPublishedToDraft($form);
+        $version = $builder->publish($form, $request->user(), $request->input('change_note'));
+
+        $audit->log($tool, $request->user(), 'form.published', 'dc_form', $form->id, [
+            'version_no' => $version->version_no,
+            'diff' => $diff,
+        ]);
+
+        return redirect()->route('tools.show', $tool)->with('status', 'Form published and ready for collection.');
+    }
+
+    public function duplicate(Request $request, DcProject $tool, DcForm $form, ToolAccessService $access, FormBuilderService $builder, ToolAuditService $audit): RedirectResponse
     {
         $access->assertCanManage($request->user(), $tool);
         abort_unless($form->project_id === $tool->id, 404);
 
-        $builder->publish($form, $request->user(), $request->input('change_note'));
+        $copy = $builder->duplicateForm($form, $request->user());
+        $audit->log($tool, $request->user(), 'form.duplicated', 'dc_form', $copy->id, ['from_form_id' => $form->id]);
 
-        return redirect()->route('tools.show', $tool)->with('status', 'Form published and ready for collection.');
+        return redirect()->route('tools.forms.builder', [$tool, $copy])->with('status', 'Form duplicated. Edit the copy before publishing.');
+    }
+
+    public function importCsv(Request $request, DcProject $tool, DcForm $form, ToolAccessService $access, FormBuilderService $builder): RedirectResponse
+    {
+        $access->assertCanManage($request->user(), $tool);
+        abort_unless($form->project_id === $tool->id, 404);
+
+        $validated = $request->validate([
+            'csv' => ['required', 'string', 'max:500000'],
+        ]);
+
+        $imported = $builder->importFieldsFromCsv($validated['csv']);
+        if ($imported === []) {
+            return back()->withErrors(['csv' => 'Could not parse CSV. Use columns: name, type, label.']);
+        }
+
+        $existing = $form->currentVersion?->fields->map(fn ($f) => [
+            'name' => $f->name,
+            'field_type' => $f->field_type,
+            'label' => $f->label,
+            'hint' => $f->hint,
+            'is_required' => $f->is_required,
+            'parameters' => $f->parameters ?? [],
+            'relevant_expr' => $f->relevant_expr,
+        ])->values()->all() ?? [];
+
+        $builder->syncDraftFields($form, $request->user(), array_merge($existing, $imported));
+
+        return back()->with('status', count($imported).' field(s) imported from CSV.');
     }
 }

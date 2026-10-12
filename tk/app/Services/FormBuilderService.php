@@ -57,19 +57,33 @@ class FormBuilderService
 
             DcFormField::where('form_version_id', $version->id)->delete();
 
+            $repeatIdsByName = [];
+
             foreach ($fields as $index => $field) {
-                DcFormField::create([
+                $parentId = null;
+                $repeatParent = $field['repeat_parent'] ?? null;
+                if ($repeatParent && isset($repeatIdsByName[$repeatParent])) {
+                    $parentId = $repeatIdsByName[$repeatParent];
+                }
+
+                $created = DcFormField::create([
                     'form_version_id' => $version->id,
+                    'parent_id' => $parentId,
                     'field_type' => $field['field_type'],
                     'name' => $field['name'],
                     'label' => $field['label'] ?? $field['name'],
                     'hint' => $field['hint'] ?? null,
                     'position' => $field['position'] ?? $index,
                     'is_required' => (bool) ($field['is_required'] ?? false),
+                    'relevant_expr' => $field['relevant_expr'] ?? null,
                     'calculation_expr' => $field['calculation_expr'] ?? null,
                     'parameters' => $field['parameters'] ?? null,
                     'sensitivity' => $field['sensitivity'] ?? 'none',
                 ]);
+
+                if ($field['field_type'] === 'repeat') {
+                    $repeatIdsByName[$field['name']] = $created->id;
+                }
             }
 
             $version->update([
@@ -107,8 +121,9 @@ class FormBuilderService
                 'created_by' => $user?->id,
             ]);
 
+            $idMap = [];
             foreach ($current->fields as $field) {
-                DcFormField::create([
+                $created = DcFormField::create([
                     'form_version_id' => $draft->id,
                     'parent_id' => null,
                     'field_type' => $field->field_type,
@@ -131,6 +146,15 @@ class FormBuilderService
                     'sensitivity' => $field->sensitivity,
                     'is_identifier' => $field->is_identifier,
                 ]);
+                $idMap[$field->id] = $created->id;
+            }
+
+            foreach ($current->fields as $field) {
+                if ($field->parent_id && isset($idMap[$field->parent_id], $idMap[$field->id])) {
+                    DcFormField::where('id', $idMap[$field->id])->update([
+                        'parent_id' => $idMap[$field->parent_id],
+                    ]);
+                }
             }
 
             $form->update(['current_version_id' => $draft->id]);
@@ -183,6 +207,137 @@ class FormBuilderService
                 'sensitivity' => $f->sensitivity,
             ])->values()->all(),
         ];
+    }
+
+    public function duplicateForm(DcForm $source, User $user): DcForm
+    {
+        return DB::transaction(function () use ($source, $user): DcForm {
+            $source->load('currentVersion.fields');
+            $copy = DcForm::create([
+                'uuid' => (string) Str::uuid(),
+                'project_id' => $source->project_id,
+                'code' => $this->uniqueFormCode($source->code.'_copy'),
+                'title' => $source->title.' (copy)',
+                'description' => $source->description,
+                'record_kind' => $source->record_kind,
+                'allow_anonymous' => $source->allow_anonymous,
+                'status' => 'draft',
+                'created_by' => $user->id,
+            ]);
+
+            $version = DcFormVersion::create([
+                'form_id' => $copy->id,
+                'version_no' => 1,
+                'status' => 'draft',
+                'created_at' => now(),
+                'created_by' => $user->id,
+            ]);
+
+            $copy->update(['current_version_id' => $version->id]);
+
+            $fields = $source->currentVersion?->fields ?? collect();
+            $idMap = [];
+            foreach ($fields as $field) {
+                $created = DcFormField::create([
+                    'form_version_id' => $version->id,
+                    'parent_id' => null,
+                    'field_type' => $field->field_type,
+                    'name' => $field->name,
+                    'label' => $field->label,
+                    'hint' => $field->hint,
+                    'position' => $field->position,
+                    'is_required' => $field->is_required,
+                    'relevant_expr' => $field->relevant_expr,
+                    'calculation_expr' => $field->calculation_expr,
+                    'parameters' => $field->parameters,
+                    'sensitivity' => $field->sensitivity,
+                ]);
+                $idMap[$field->id] = $created->id;
+            }
+
+            foreach ($fields as $field) {
+                if ($field->parent_id && isset($idMap[$field->parent_id], $idMap[$field->id])) {
+                    DcFormField::where('id', $idMap[$field->id])->update([
+                        'parent_id' => $idMap[$field->parent_id],
+                    ]);
+                }
+            }
+
+            $version->update(['compiled_json' => $this->compile($version->fresh('fields'))]);
+
+            return $copy->fresh(['currentVersion']);
+        });
+    }
+
+    /**
+     * @return array{added: list<string>, removed: list<string>, changed: list<string>}
+     */
+    public function diffPublishedToDraft(DcForm $form): array
+    {
+        $draft = $form->currentVersion;
+        $live = $form->liveVersion();
+        if (! $draft || ! $live || $draft->id === $live->id) {
+            return ['added' => [], 'removed' => [], 'changed' => []];
+        }
+
+        $draftNames = $draft->fields->pluck('name', 'name');
+        $liveNames = $live->fields->pluck('name', 'name');
+
+        $added = array_values(array_diff(array_keys($draftNames->all()), array_keys($liveNames->all())));
+        $removed = array_values(array_diff(array_keys($liveNames->all()), array_keys($draftNames->all())));
+
+        $changed = [];
+        foreach ($draftNames as $name => $_) {
+            if (! isset($liveNames[$name])) {
+                continue;
+            }
+            $d = $draft->fields->firstWhere('name', $name);
+            $l = $live->fields->firstWhere('name', $name);
+            if ($d->field_type !== $l->field_type || $d->label !== $l->label || $d->is_required !== $l->is_required) {
+                $changed[] = $name;
+            }
+        }
+
+        return compact('added', 'removed', 'changed');
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    public function importFieldsFromCsv(string $csvBody): array
+    {
+        $lines = preg_split('/\r\n|\r|\n/', trim($csvBody)) ?: [];
+        if ($lines === []) {
+            return [];
+        }
+
+        $header = str_getcsv(array_shift($lines));
+        $nameIdx = array_search('name', $header, true);
+        $typeIdx = array_search('type', $header, true);
+        $labelIdx = array_search('label', $header, true);
+
+        if ($nameIdx === false || $typeIdx === false) {
+            return [];
+        }
+
+        $fields = [];
+        foreach ($lines as $i => $line) {
+            if (trim($line) === '') {
+                continue;
+            }
+            $cols = str_getcsv($line);
+            $fields[] = [
+                'name' => Str::lower(trim($cols[$nameIdx] ?? 'field_'.($i + 1))),
+                'field_type' => trim($cols[$typeIdx] ?? 'text'),
+                'label' => trim($cols[$labelIdx !== false ? $labelIdx : 2] ?? $cols[$nameIdx] ?? ''),
+                'hint' => '',
+                'is_required' => false,
+                'parameters' => [],
+                'position' => count($fields),
+            ];
+        }
+
+        return $fields;
     }
 
     private function uniqueFormCode(string $base): string

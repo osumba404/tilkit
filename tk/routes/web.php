@@ -6,7 +6,11 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PlatformAdminController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicFormController;
+use App\Http\Controllers\PublicSubmissionDraftController;
+use App\Http\Controllers\PublicToolConsentController;
 use App\Http\Controllers\PublicToolController;
+use App\Http\Controllers\ToolSettingsController;
+use App\Http\Controllers\ToolSubmissionReviewController;
 use App\Http\Controllers\ToolAnalyticsController;
 use App\Http\Controllers\ToolController;
 use App\Http\Controllers\ToolFormController;
@@ -19,6 +23,10 @@ Route::get('/', HomeController::class)->name('home');
 Route::get('/invitations/{token}', [ToolInvitationController::class, 'acceptForm'])->name('invitations.accept');
 Route::middleware(['auth', 'verified'])->get('/invitations/{token}/complete', [ToolInvitationController::class, 'complete'])->name('invitations.complete');
 
+Route::get('/t/{tool:code}/consent', [PublicToolConsentController::class, 'show'])->name('public.tools.consent');
+Route::post('/t/{tool:code}/consent', [PublicToolConsentController::class, 'accept'])->name('public.tools.consent.accept');
+Route::get('/t/{tool:code}/draft', [PublicSubmissionDraftController::class, 'show'])->name('public.tools.draft.show');
+Route::post('/t/{tool:code}/draft', [PublicSubmissionDraftController::class, 'store'])->name('public.tools.draft.store');
 Route::get('/t/{tool:code}', [PublicToolController::class, 'collect'])->name('public.tools.collect');
 Route::post('/t/{tool:code}', [PublicToolController::class, 'submit'])->name('public.tools.submit');
 Route::get('/t/{tool:code}/thanks', [PublicToolController::class, 'thanks'])->name('public.tools.thanks');
@@ -40,6 +48,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('analytics', [ToolAnalyticsController::class, 'show'])->name('analytics');
         Route::get('analytics/field', [ToolAnalyticsController::class, 'fieldBreakdown'])->name('analytics.field');
         Route::get('export', [ToolAnalyticsController::class, 'export'])->name('export');
+        Route::get('settings', [ToolSettingsController::class, 'edit'])->name('settings.edit');
+        Route::patch('settings', [ToolSettingsController::class, 'update'])->name('settings.update');
+        Route::get('submissions/review', [ToolSubmissionReviewController::class, 'queue'])->name('submissions.review');
+        Route::patch('submissions/{submission}/review', [ToolSubmissionReviewController::class, 'update'])->name('submissions.review.update');
 
         Route::get('submissions', [ToolSubmissionController::class, 'index'])->name('submissions.index');
         Route::get('submissions/{submission}', [ToolSubmissionController::class, 'show'])->name('submissions.show');
@@ -49,6 +61,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('forms/{form}/builder', [ToolFormController::class, 'builder'])->name('forms.builder');
         Route::post('forms/{form}/builder', [ToolFormController::class, 'saveBuilder'])->name('forms.builder.save');
         Route::post('forms/{form}/publish', [ToolFormController::class, 'publish'])->name('forms.publish');
+        Route::post('forms/{form}/duplicate', [ToolFormController::class, 'duplicate'])->name('forms.duplicate');
+        Route::post('forms/{form}/import-csv', [ToolFormController::class, 'importCsv'])->name('forms.import-csv');
     });
 
     Route::middleware('super_admin')->prefix('platform')->name('platform.')->group(function () {

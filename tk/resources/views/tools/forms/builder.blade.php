@@ -1,9 +1,14 @@
 @php
     use App\Support\FieldTypeHelper;
-    $initialFields = $form->currentVersion?->fields->map(function ($f) {
+    $fieldsById = $form->currentVersion?->fields->keyBy('id') ?? collect();
+    $initialFields = $form->currentVersion?->fields->map(function ($f) use ($fieldsById) {
         $parameters = $f->parameters ?? [];
         if ($f->field_type === 'calculate' && ! empty($f->calculation_expr)) {
             $parameters['expression'] = $f->calculation_expr;
+        }
+        $repeatParent = null;
+        if ($f->parent_id && $fieldsById->has($f->parent_id)) {
+            $repeatParent = $fieldsById[$f->parent_id]->name;
         }
 
         return [
@@ -12,6 +17,8 @@
             'label' => $f->label,
             'hint' => $f->hint,
             'is_required' => $f->is_required,
+            'relevant_expr' => $f->relevant_expr,
+            'repeat_parent' => $repeatParent,
             'parameters' => $parameters,
         ];
     }) ?? collect();
@@ -39,6 +46,16 @@
             <div class="flex gap-2">
                 <a href="{{ route('reference') }}" class="tk-btn-secondary text-sm" target="_blank">Field catalogue</a>
                 @if ($form->currentVersion?->status === 'draft' && $form->currentVersion?->fields->isNotEmpty())
+                    @if (($publishDiff['added'] ?? []) !== [] || ($publishDiff['removed'] ?? []) !== [] || ($publishDiff['changed'] ?? []) !== [])
+                        <details class="text-xs text-tk-muted mr-2">
+                            <summary class="cursor-pointer">Version diff</summary>
+                            <ul class="mt-1 space-y-0.5">
+                                @foreach ($publishDiff['added'] ?? [] as $n)<li class="text-green-700">+ {{ $n }}</li>@endforeach
+                                @foreach ($publishDiff['removed'] ?? [] as $n)<li class="text-red-700">− {{ $n }}</li>@endforeach
+                                @foreach ($publishDiff['changed'] ?? [] as $n)<li>~ {{ $n }}</li>@endforeach
+                            </ul>
+                        </details>
+                    @endif
                     <form method="POST" action="{{ route('tools.forms.publish', [$tool, $form]) }}">
                         @csrf
                         <button type="submit" class="tk-btn-primary text-sm">Publish changes</button>
@@ -56,6 +73,13 @@
         <div class="lg:col-span-2 tk-card p-5">
             <form method="POST" action="{{ route('tools.forms.builder.save', [$tool, $form]) }}" @submit="ensureFieldNames">
                 @csrf
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-4 text-sm">
+                    <p class="text-tk-muted">Section preview: page <span class="font-medium text-tk-ink" x-text="previewPage + 1"></span> of <span x-text="previewSectionCount"></span></p>
+                    <div class="flex gap-2">
+                        <button type="button" class="tk-btn-secondary text-xs" @click="previewPage = Math.max(0, previewPage - 1)" :disabled="previewPage === 0">Prev page</button>
+                        <button type="button" class="tk-btn-secondary text-xs" @click="previewPage = Math.min(previewSectionCount - 1, previewPage + 1)" :disabled="previewPage >= previewSectionCount - 1">Next page</button>
+                    </div>
+                </div>
                 <div x-ref="fieldList" class="space-y-3">
                     <template x-for="(field, index) in fields" :key="field._key">
                         <div class="border border-tk-line rounded-md p-4 bg-white"
@@ -96,6 +120,14 @@
                                     <div class="sm:col-span-2">
                                         <label class="text-xs text-tk-muted">Hint</label>
                                         <input :name="'fields['+index+'][hint]'" x-model="field.hint" class="w-full rounded border border-tk-line px-2 py-1.5 text-sm">
+                                    </div>
+                                    <div class="sm:col-span-2">
+                                        <label class="text-xs text-tk-muted">Relevance (show when)</label>
+                                        <input type="text" :name="'fields['+index+'][relevant_expr]'" x-model="field.relevant_expr" placeholder="other_field=Yes" class="w-full rounded border border-tk-line px-2 py-1.5 text-sm font-mono">
+                                    </div>
+                                    <div class="sm:col-span-2" x-show="field.field_type !== 'repeat' && field.field_type !== 'group'">
+                                        <label class="text-xs text-tk-muted">Nest under repeat (field name)</label>
+                                        <input type="text" :name="'fields['+index+'][repeat_parent]'" x-model="field.repeat_parent" placeholder="repeat_group_name" class="w-full rounded border border-tk-line px-2 py-1.5 text-sm font-mono">
                                     </div>
                                     <label class="flex items-center gap-2 text-sm sm:col-span-2">
                                         <input type="checkbox" :name="'fields['+index+'][is_required]'" value="1" x-model="field.is_required">
@@ -167,7 +199,15 @@
                 </div>
             </form>
         </div>
-        <aside class="tk-card p-5 h-fit">
+        <aside class="tk-card p-5 h-fit space-y-6">
+            <form method="POST" action="{{ route('tools.forms.import-csv', [$tool, $form]) }}">
+                @csrf
+                <h3 class="font-semibold mb-2">Import field list</h3>
+                <p class="text-xs text-tk-muted mb-2">CSV columns: name, type, label</p>
+                <textarea name="csv" rows="4" class="w-full text-xs font-mono rounded border border-tk-line p-2" placeholder="name,type,label"></textarea>
+                <button type="submit" class="tk-btn-secondary text-xs mt-2">Import CSV</button>
+            </form>
+            <div>
             <h3 class="font-semibold mb-2">Collection point families</h3>
             <p class="text-sm text-tk-muted mb-4">Add fields from the catalogue. Use <strong>Section</strong> (<code class="font-mono">group</code>) to split the public form into pages with Next / Previous.</p>
             @foreach ($fieldTypes->groupBy('family') as $family => $types)
@@ -185,6 +225,7 @@
                     </ul>
                 </details>
             @endforeach
+            </div>
         </aside>
     </div>
 

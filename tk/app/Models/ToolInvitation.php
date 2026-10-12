@@ -15,6 +15,8 @@ class ToolInvitation extends Model
         'project_id',
         'email',
         'role',
+        'can_export',
+        'can_publish_forms',
         'token',
         'invited_by',
         'accepted_at',
@@ -26,6 +28,8 @@ class ToolInvitation extends Model
     {
         return [
             'role' => ToolMemberRole::class,
+            'can_export' => 'boolean',
+            'can_publish_forms' => 'boolean',
             'accepted_at' => 'datetime',
             'expires_at' => 'datetime',
             'created_at' => 'datetime',

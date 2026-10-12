@@ -5,6 +5,21 @@ document.addEventListener('alpine:init', () => {
         fields: initial.length ? initial.map(normalizeField) : [],
         typeCatalog,
         typeMenuOpen: null,
+        previewPage: 0,
+
+        get previewSectionCount() {
+            let sections = 1;
+            this.fields.forEach((f) => {
+                if (
+                    f.field_type === 'group'
+                    || f.field_type === 'repeat'
+                    || (f.field_type === 'note' && String(f.name).startsWith('section_'))
+                ) {
+                    sections += 1;
+                }
+            });
+            return sections;
+        },
 
         init() {
             this.$nextTick(() => {
@@ -130,6 +145,8 @@ function normalizeField(field) {
         label: field.label ?? '',
         hint: field.hint ?? '',
         is_required: Boolean(field.is_required),
+        relevant_expr: field.relevant_expr ?? '',
+        repeat_parent: field.repeat_parent ?? '',
         parameters: {
             ...defaultParameters(type),
             ...(field.parameters ?? {}),

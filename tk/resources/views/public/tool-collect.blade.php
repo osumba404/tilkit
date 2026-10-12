@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,6 +17,7 @@
     @vite($viteEntries)
 </head>
 <body class="font-body bg-tk-bg text-tk-ink min-h-screen">
+@include('public.partials.branding', ['tool' => $tool])
 <div class="max-w-xl mx-auto px-4 py-10">
     <p class="text-xs text-tk-muted uppercase tracking-wide">Tilkit · Public collection</p>
     <h1 class="text-3xl font-semibold mt-1">{{ $tool->name }}</h1>
@@ -40,8 +41,15 @@
         @include('public.partials.form-wizard', [
             'pages' => $pages,
             'submitAction' => route('public.tools.submit', $tool),
+            'draftSaveUrl' => $draftSaveUrl ?? null,
+            'draftPayload' => $draftPayload ?? [],
         ])
     @endif
 </div>
+@if ($tool->brand_footer)
+    <footer class="border-t border-tk-line py-6 text-center text-xs text-tk-muted max-w-xl mx-auto px-4">
+        {{ $tool->brand_footer }}
+    </footer>
+@endif
 </body>
 </html>

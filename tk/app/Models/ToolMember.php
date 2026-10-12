@@ -18,6 +18,8 @@ class ToolMember extends Model
         'project_id',
         'user_id',
         'role',
+        'can_export',
+        'can_publish_forms',
         'joined_at',
     ];
 
@@ -25,6 +27,8 @@ class ToolMember extends Model
     {
         return [
             'role' => ToolMemberRole::class,
+            'can_export' => 'boolean',
+            'can_publish_forms' => 'boolean',
             'joined_at' => 'datetime',
         ];
     }

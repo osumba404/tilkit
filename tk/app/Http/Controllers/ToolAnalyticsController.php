@@ -21,8 +21,10 @@ class ToolAnalyticsController extends Controller
         $overview = $analytics->toolOverview($tool);
         $trend = $analytics->submissionsTrend($tool);
         $forms = $tool->forms()->where('status', 'published')->get(['id', 'title', 'code']);
+        $tercile = $analytics->tercileWeightingDashboard($tool);
+        $calibration = $analytics->calibrationByIndicator($tool);
 
-        return view('tools.analytics', compact('tool', 'overview', 'trend', 'forms'));
+        return view('tools.analytics', compact('tool', 'overview', 'trend', 'forms', 'tercile', 'calibration'));
     }
 
     public function fieldBreakdown(Request $request, DcProject $tool, AnalyticsService $analytics, ToolAccessService $access)
@@ -41,7 +43,7 @@ class ToolAnalyticsController extends Controller
 
     public function export(Request $request, DcProject $tool, ToolAccessService $access): StreamedResponse
     {
-        $access->assertCanManage($request->user(), $tool);
+        $access->assertCanExport($request->user(), $tool);
 
         $filename = 'tilkit-'.$tool->code.'-submissions-'.now()->format('Y-m-d').'.csv';
 

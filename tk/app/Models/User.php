@@ -94,17 +94,35 @@ class User extends Authenticatable
         return $this->hasMany(DcProject::class, 'owner_user_id');
     }
 
+    public function toolMembershipFor(DcProject $project): ?ToolMember
+    {
+        if ($this->isSuperAdmin()) {
+            return null;
+        }
+
+        return $this->toolMemberships()
+            ->where('project_id', $project->id)
+            ->first();
+    }
+
     public function toolRoleFor(DcProject $project): ?ToolMemberRole
     {
         if ($this->isSuperAdmin()) {
             return ToolMemberRole::Admin;
         }
 
-        $membership = $this->toolMemberships()
-            ->where('project_id', $project->id)
-            ->first();
+        return $this->toolMembershipFor($project)?->role;
+    }
 
-        return $membership?->role;
+    public function toolCapabilitiesFor(DcProject $project): \App\Support\ToolCapabilities
+    {
+        if ($this->isSuperAdmin()) {
+            return new \App\Support\ToolCapabilities(ToolMemberRole::Admin);
+        }
+
+        $membership = $this->toolMembershipFor($project);
+
+        return new \App\Support\ToolCapabilities($membership?->role, $membership);
     }
 
     public function canAccessTool(DcProject $project): bool

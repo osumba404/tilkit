@@ -15,7 +15,14 @@ use Illuminate\Validation\ValidationException;
 
 class ToolInvitationService
 {
-    public function invite(DcProject $tool, User $inviter, string $email, ToolMemberRole $role = ToolMemberRole::Collector): ToolInvitation|ToolMember
+    public function invite(
+        DcProject $tool,
+        User $inviter,
+        string $email,
+        ToolMemberRole $role = ToolMemberRole::Collector,
+        ?bool $canExport = null,
+        ?bool $canPublishForms = null,
+    ): ToolInvitation|ToolMember
     {
         $email = Str::lower(trim($email));
 
@@ -35,11 +42,13 @@ class ToolInvitationService
                 throw ValidationException::withMessages(['email' => 'This person already has access to the tool.']);
             }
 
-            return DB::transaction(function () use ($tool, $existingUser, $role, $inviter): ToolMember {
+            return DB::transaction(function () use ($tool, $existingUser, $role, $inviter, $canExport, $canPublishForms): ToolMember {
                 $member = ToolMember::create([
                     'project_id' => $tool->id,
                     'user_id' => $existingUser->id,
                     'role' => $role,
+                    'can_export' => $canExport,
+                    'can_publish_forms' => $canPublishForms,
                 ]);
 
                 ToolInvitation::query()
@@ -69,6 +78,8 @@ class ToolInvitationService
             ['project_id' => $tool->id, 'email' => $email],
             [
                 'role' => $role,
+                'can_export' => $canExport,
+                'can_publish_forms' => $canPublishForms,
                 'invited_by' => $inviter->id,
                 'token' => (string) Str::uuid(),
                 'accepted_at' => null,
@@ -99,11 +110,19 @@ class ToolInvitationService
         return DB::transaction(function () use ($invitation, $user): ToolMember {
             $member = ToolMember::firstOrCreate(
                 ['project_id' => $invitation->project_id, 'user_id' => $user->id],
-                ['role' => $invitation->role],
+                [
+                    'role' => $invitation->role,
+                    'can_export' => $invitation->can_export,
+                    'can_publish_forms' => $invitation->can_publish_forms,
+                ],
             );
 
             if ($member->wasRecentlyCreated === false) {
-                $member->update(['role' => $invitation->role]);
+                $member->update([
+                    'role' => $invitation->role,
+                    'can_export' => $invitation->can_export,
+                    'can_publish_forms' => $invitation->can_publish_forms,
+                ]);
             }
 
             $invitation->update(['accepted_at' => now()]);
