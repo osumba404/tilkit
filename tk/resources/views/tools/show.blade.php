@@ -6,6 +6,7 @@
                 <p class="text-sm text-tk-muted font-mono">{{ $tool->code }} · Your role: {{ $capabilities->label() }}</p>
             </div>
             <div class="flex flex-wrap gap-2">
+                <a href="{{ route('platform.datasets.index') }}" class="tk-btn-secondary">My datasets</a>
                 @if ($capabilities->canViewAnalytics())
                     <a href="{{ route('tools.analytics', $tool) }}" class="tk-btn-secondary">Analytics</a>
                 @endif

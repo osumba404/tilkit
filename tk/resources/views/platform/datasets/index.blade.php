@@ -4,7 +4,7 @@
         <p class="text-sm text-tk-muted">Upload CSV or Excel for natural-language analysis</p>
     </x-slot>
 
-    <x-analytics.acc-shell context="platform" acc-section="datasets" title="Dataset workspace" subtitle="Ingestion, mapping, and sandboxed analysis">
+    <x-analytics.acc-shell context="datasets" acc-section="datasets" title="Dataset workspace" subtitle="Ingestion, mapping, and sandboxed analysis">
         <div class="grid lg:grid-cols-3 gap-6">
             <div class="lg:col-span-2 tk-card p-5">
                 <h3 class="font-semibold mb-4">Your datasets</h3>

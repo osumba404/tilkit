@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class PlatformDataset extends Model
@@ -47,7 +48,7 @@ class PlatformDataset extends Model
 
     public function workspaceAbsolutePath(): string
     {
-        return storage_path('app/'.$this->workspace_path);
+        return Storage::disk('local')->path($this->workspace_path);
     }
 
     public function dataCsvPath(): string

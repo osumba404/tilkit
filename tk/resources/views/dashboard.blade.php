@@ -5,7 +5,10 @@
                 <h2 class="text-2xl font-bold text-tk-ink">Dashboard</h2>
                 <p class="text-sm text-tk-muted mt-1">Your tools and latest collected data</p>
             </div>
-            <a href="{{ route('tools.create') }}" class="tk-btn-primary">New tool</a>
+            <div class="flex flex-wrap gap-2">
+                <a href="{{ route('platform.datasets.index') }}" class="tk-btn-secondary">Upload & analyze data</a>
+                <a href="{{ route('tools.create') }}" class="tk-btn-primary">New tool</a>
+            </div>
         </div>
     </x-slot>
 

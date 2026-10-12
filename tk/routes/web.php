@@ -72,15 +72,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('forms/{form}/xlsform/import', [ToolFormController::class, 'importXlsForm'])->name('forms.xlsform.import');
     });
 
+    Route::prefix('platform')->name('platform.')->group(function () {
+        Route::get('/datasets', [PlatformDatasetController::class, 'index'])->name('datasets.index');
+        Route::post('/datasets', [PlatformDatasetController::class, 'store'])->name('datasets.store');
+        Route::get('/datasets/{dataset}', [PlatformDatasetController::class, 'show'])->name('datasets.show');
+        Route::get('/datasets/{dataset}/explorer', [PlatformDatasetController::class, 'explorer'])->name('datasets.explorer');
+        Route::get('/datasets/{dataset}/analyze', [PlatformDatasetController::class, 'analyze'])->name('datasets.analyze');
+        Route::post('/datasets/{dataset}/analyze', [PlatformDatasetController::class, 'runAnalyze'])->name('datasets.analyze.run');
+        Route::get('/datasets/{dataset}/runs/{run}/chart.png', [PlatformDatasetController::class, 'chart'])->name('datasets.chart');
+    });
+
     Route::middleware('super_admin')->prefix('platform')->name('platform.')->group(function () {
         Route::get('/', [PlatformAdminController::class, 'index'])->name('index');
         Route::get('/analytics', [PlatformAnalyticsController::class, 'overview'])->name('analytics.overview');
         Route::get('/analytics/sources', [PlatformAnalyticsController::class, 'sources'])->name('analytics.sources');
-        Route::get('/datasets', [PlatformDatasetController::class, 'index'])->name('datasets.index');
-        Route::post('/datasets', [PlatformDatasetController::class, 'store'])->name('datasets.store');
-        Route::get('/datasets/{dataset}', [PlatformDatasetController::class, 'show'])->name('datasets.show');
-        Route::post('/datasets/{dataset}/analyze', [PlatformDatasetController::class, 'analyze'])->name('datasets.analyze');
-        Route::get('/datasets/{dataset}/runs/{run}/chart.png', [PlatformDatasetController::class, 'chart'])->name('datasets.chart');
         Route::post('/users/{user}/super-admin', [PlatformAdminController::class, 'promoteSuperAdmin'])->name('users.promote');
     });
 

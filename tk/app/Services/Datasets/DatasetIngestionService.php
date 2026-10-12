@@ -32,11 +32,18 @@ class DatasetIngestionService
             $workspace = 'datasets/'.$uuid;
             Storage::disk('local')->makeDirectory($workspace);
 
+            $disk = Storage::disk('local');
             $stored = $file->storeAs($workspace, 'original.'.$ext, 'local');
-            $workspaceAbs = storage_path('app/'.$workspace);
-            $csvPath = $workspaceAbs.DIRECTORY_SEPARATOR.'data.csv';
+            if ($stored === false) {
+                throw ValidationException::withMessages([
+                    'dataset' => 'Could not save the uploaded file. Check storage permissions.',
+                ]);
+            }
 
-            $this->convertToCsv(storage_path('app/'.$stored), $csvPath, $ext);
+            $sourcePath = $disk->path($stored);
+            $csvPath = $disk->path($workspace.'/data.csv');
+
+            $this->convertToCsv($sourcePath, $csvPath, $ext);
 
             $profile = $this->inference->profileCsv($csvPath);
 

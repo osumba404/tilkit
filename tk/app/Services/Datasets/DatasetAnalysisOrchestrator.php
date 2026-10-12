@@ -5,6 +5,7 @@ namespace App\Services\Datasets;
 use App\Models\PlatformAnalysisRun;
 use App\Models\PlatformDataset;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 
 class DatasetAnalysisOrchestrator
 {
@@ -118,7 +119,8 @@ class DatasetAnalysisOrchestrator
         }
 
         $dest = $dataset->workspace_path.'/chart_'.time().'.png';
-        copy($src, storage_path('app/'.$dest));
+        $destPath = Storage::disk('local')->path($dest);
+        copy($src, $destPath);
 
         return $dest;
     }

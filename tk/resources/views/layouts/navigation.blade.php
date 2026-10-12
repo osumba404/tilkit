@@ -10,6 +10,7 @@
                 <div class="hidden sm:flex gap-1">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">Dashboard</x-nav-link>
                     <x-nav-link :href="route('tools.index')" :active="request()->routeIs('tools.*')">Tools</x-nav-link>
+                    <x-nav-link :href="route('platform.datasets.index')" :active="request()->routeIs('platform.datasets.*')">My datasets</x-nav-link>
                     <x-nav-link :href="route('reference')" :active="request()->routeIs('reference')">Field reference</x-nav-link>
                     @if (Auth::user()->isSuperAdmin())
                         <x-nav-link :href="route('platform.index')" :active="request()->routeIs('platform.*')">Platform</x-nav-link>

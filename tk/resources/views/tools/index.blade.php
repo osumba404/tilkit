@@ -1,8 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
+        <div class="flex flex-wrap justify-between items-center gap-3">
             <h2 class="text-2xl font-bold">Tools</h2>
-            <a href="{{ route('tools.create') }}" class="tk-btn-primary">Create tool</a>
+            <div class="flex flex-wrap gap-2">
+                <a href="{{ route('platform.datasets.index') }}" class="tk-btn-secondary">My datasets</a>
+                <a href="{{ route('tools.create') }}" class="tk-btn-primary">Create tool</a>
+            </div>
         </div>
     </x-slot>
 

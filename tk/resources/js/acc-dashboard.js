@@ -55,7 +55,26 @@ export function initAccCharts({ trend, channels, statuses, baseUrl, query }) {
     bindFilterChart('accStatusChart', statuses, 'status', baseUrl, query);
 }
 
-function bindFilterChart(elementId, dataObj, filterKey, baseUrl, query) {
+export function initDatasetAccCharts({ dimensionA, dimensionB, baseUrl, query, dimensionAKey, dimensionBKey }) {
+    bindDatasetFilterChart('accDatasetChartA', dimensionA, dimensionAKey, baseUrl, query);
+    bindDatasetFilterChart('accDatasetChartB', dimensionB, dimensionBKey, baseUrl, query);
+}
+
+function bindDatasetFilterChart(elementId, dataObj, columnKey, baseUrl, query) {
+    if (!columnKey) {
+        return;
+    }
+    bindFilterChart(elementId, dataObj, null, baseUrl, query, (label) => {
+        const params = new URLSearchParams({
+            ...query,
+            filter_column: columnKey,
+            filter_value: label,
+        });
+        window.location.href = `${baseUrl}?${params.toString()}`;
+    });
+}
+
+function bindFilterChart(elementId, dataObj, filterKey, baseUrl, query, onSegmentClick = null) {
     const el = document.getElementById(elementId);
     if (!el || !dataObj) {
         return;
@@ -73,10 +92,17 @@ function bindFilterChart(elementId, dataObj, filterKey, baseUrl, query) {
         options: {
             responsive: true,
             onClick(_evt, elements) {
-                if (!elements.length || !filterKey) {
+                if (!elements.length) {
                     return;
                 }
                 const label = labels[elements[0].index];
+                if (onSegmentClick) {
+                    onSegmentClick(label);
+                    return;
+                }
+                if (!filterKey) {
+                    return;
+                }
                 const params = new URLSearchParams({ ...query, [filterKey]: label });
                 window.location.href = `${baseUrl}?${params.toString()}`;
             },

@@ -14,6 +14,14 @@
             @include('analytics.partials.kpi-card', ['label' => 'Users', 'value' => number_format($overview['users'])])
         </div>
 
+        <div class="tk-card p-4 mb-6 flex flex-wrap items-center justify-between gap-3">
+            <div>
+                <p class="font-semibold text-sm">Personal dataset workspace</p>
+                <p class="text-xs text-tk-muted">Available to all signed-in users — upload and analyze outside form submissions.</p>
+            </div>
+            <a href="{{ route('platform.datasets.index') }}" class="tk-btn-primary text-sm shrink-0">My datasets</a>
+        </div>
+
         <div class="grid lg:grid-cols-3 gap-6 mb-6">
             <div class="lg:col-span-2 tk-card p-5">
                 <h3 class="font-semibold mb-4">Platform submission trend ({{ $filters->periodDays }}d)</h3>
