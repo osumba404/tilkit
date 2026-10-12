@@ -5,6 +5,7 @@ use App\Http\Controllers\FieldReferenceController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PlatformAdminController;
 use App\Http\Controllers\PlatformAnalyticsController;
+use App\Http\Controllers\PlatformDatasetController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicFormController;
 use App\Http\Controllers\PublicSubmissionDraftController;
@@ -75,6 +76,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', [PlatformAdminController::class, 'index'])->name('index');
         Route::get('/analytics', [PlatformAnalyticsController::class, 'overview'])->name('analytics.overview');
         Route::get('/analytics/sources', [PlatformAnalyticsController::class, 'sources'])->name('analytics.sources');
+        Route::get('/datasets', [PlatformDatasetController::class, 'index'])->name('datasets.index');
+        Route::post('/datasets', [PlatformDatasetController::class, 'store'])->name('datasets.store');
+        Route::get('/datasets/{dataset}', [PlatformDatasetController::class, 'show'])->name('datasets.show');
+        Route::post('/datasets/{dataset}/analyze', [PlatformDatasetController::class, 'analyze'])->name('datasets.analyze');
+        Route::get('/datasets/{dataset}/runs/{run}/chart.png', [PlatformDatasetController::class, 'chart'])->name('datasets.chart');
         Route::post('/users/{user}/super-admin', [PlatformAdminController::class, 'promoteSuperAdmin'])->name('users.promote');
     });
 

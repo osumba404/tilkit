@@ -7,13 +7,10 @@
     <x-analytics.acc-shell context="platform" :acc-section="'sources'" title="Data source management" subtitle="Connection status and freshness (MVP: Tilkit-native sources)">
         @include('analytics.partials.freshness-panel', ['sources' => $freshness])
 
-        <div class="tk-card p-5 mt-6 text-sm text-tk-muted">
-            <p class="font-medium text-tk-ink mb-2">Coming soon</p>
-            <ul class="list-disc ml-5 space-y-1">
-                <li>GA4, advertising APIs, and warehouse connectors</li>
-                <li>Sync job history and retry controls</li>
-                <li>Field mapping for CSV/Excel imports</li>
-            </ul>
+        <div class="tk-card p-5 mt-6">
+            <h3 class="font-semibold mb-2">Upload your own data</h3>
+            <p class="text-sm text-tk-muted mb-3">CSV/Excel ingestion with type mapping and natural-language charts is available now.</p>
+            <a href="{{ route('platform.datasets.index') }}" class="tk-btn-primary text-sm">Open dataset workspace</a>
         </div>
     </x-analytics.acc-shell>
 </x-app-layout>

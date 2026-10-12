@@ -14,6 +14,7 @@
             @if ($context === 'platform')
                 <a href="{{ route('platform.analytics.overview') }}" class="acc-nav-link @if($accSection === 'overview') acc-nav-active @endif">Executive overview</a>
                 <a href="{{ route('platform.analytics.sources') }}" class="acc-nav-link @if($accSection === 'sources') acc-nav-active @endif">Data sources</a>
+                <a href="{{ route('platform.datasets.index') }}" class="acc-nav-link @if($accSection === 'datasets') acc-nav-active @endif">My datasets</a>
                 <a href="{{ route('platform.index') }}" class="acc-nav-link">Administration</a>
             @else
                 <a href="{{ route('tools.analytics', $tool) }}" class="acc-nav-link @if($accSection === 'overview') acc-nav-active @endif">Overview</a>
