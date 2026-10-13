@@ -10,21 +10,26 @@
 </head>
 <body class="font-body min-h-screen">
     @include('layouts.navigation')
+    @php
+        $pageWrap = ($fullWidth ?? false)
+            ? 'w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10'
+            : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8';
+    @endphp
     @if (isset($header))
         <header class="border-b border-tk-line bg-tk-surface">
-            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <div class="{{ $pageWrap }} py-6">
                 {{ $header }}
             </div>
         </header>
     @endif
     @if (session('status'))
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+        <div class="{{ $pageWrap }} pt-4">
             <div class="rounded-md bg-tk-accent-soft border border-tk-accent/30 px-4 py-3 text-sm text-tk-ink">
                 {{ session('status') }}
             </div>
         </div>
     @endif
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="{{ $pageWrap }} py-8 w-full">
         {{ $slot ?? '' }}
         @yield('content')
     </main>

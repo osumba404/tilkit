@@ -10,6 +10,7 @@ import {
     ArcElement,
     DoughnutController,
     ScatterController,
+    BubbleController,
     Legend,
     Tooltip,
 } from 'chart.js';
@@ -25,6 +26,7 @@ Chart.register(
     ArcElement,
     DoughnutController,
     ScatterController,
+    BubbleController,
     Legend,
     Tooltip,
 );
@@ -57,53 +59,128 @@ export function initAccCharts({ trend, channels, statuses, baseUrl, query }) {
     bindFilterChart('accStatusChart', statuses, 'status', baseUrl, query);
 }
 
-export function initDatasetAccCharts({ dimensionA, dimensionB, lineSeries, baseUrl, query, dimensionAKey, dimensionBKey }) {
-    bindDatasetFilterChart('accDatasetChartA', dimensionA, dimensionAKey, baseUrl, query);
-    bindDatasetFilterChart('accDatasetChartB', dimensionB, dimensionBKey, baseUrl, query);
-    if (lineSeries?.labels?.length) {
-        renderLineChart('accDatasetLineChart', lineSeries);
-    }
-}
-
-function renderLineChart(elementId, spec) {
-    const el = document.getElementById(elementId);
-    if (!el || !spec?.labels?.length) {
+export function initDatasetAccCharts({ charts, baseUrl, query }) {
+    if (!Array.isArray(charts)) {
         return;
     }
-
-    new Chart(el, {
-        type: 'line',
-        data: {
-            labels: spec.labels,
-            datasets: [{
-                label: spec.title || spec.y_column || 'Series',
-                data: spec.values,
-                borderColor: '#0891b2',
-                backgroundColor: 'rgba(8, 145, 178, 0.15)',
-                tension: 0.25,
-                fill: true,
-                pointRadius: 2,
-            }],
-        },
-        options: {
-            responsive: true,
-            scales: { y: { beginAtZero: false } },
-            plugins: { legend: { display: true } },
-        },
+    charts.forEach((spec) => {
+        if (spec.empty || (spec.render && spec.render !== 'canvas')) {
+            return;
+        }
+        renderDatasetChart(spec, baseUrl, query);
     });
 }
 
-function bindDatasetFilterChart(elementId, dataObj, columnKey, baseUrl, query) {
-    if (!columnKey) {
+function renderDatasetChart(spec, baseUrl, query) {
+    const el = document.getElementById(spec.id);
+    if (!el) {
         return;
     }
-    bindFilterChart(elementId, dataObj, null, baseUrl, query, (label) => {
-        const params = new URLSearchParams({
-            ...query,
-            filter_column: columnKey,
-            filter_value: label,
+
+    const onSegmentClick = spec.filter_column
+        ? (label) => {
+            const params = new URLSearchParams({
+                ...query,
+                filter_column: spec.filter_column,
+                filter_value: label,
+            });
+            window.location.href = `${baseUrl}?${params.toString()}`;
+        }
+        : null;
+
+    if ((spec.type === 'scatter' || spec.type === '3d_bubble') && spec.points?.length) {
+        const isBubble = spec.type === '3d_bubble';
+        new Chart(el, {
+            type: isBubble ? 'bubble' : 'scatter',
+            data: {
+                datasets: [{
+                    label: spec.title || (isBubble ? '3D bubble' : 'Scatter'),
+                    data: spec.points,
+                    backgroundColor: 'rgba(8, 145, 178, 0.55)',
+                    borderColor: '#0e7490',
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { title: { display: true, text: spec.axis_labels?.x || 'X' } },
+                    y: { title: { display: true, text: spec.axis_labels?.y || 'Y' } },
+                },
+                plugins: isBubble ? {
+                    tooltip: {
+                        callbacks: {
+                            label(ctx) {
+                                const p = ctx.raw;
+                                return `X: ${p.x}, Y: ${p.y} (bubble size ∝ Z)`;
+                            },
+                        },
+                    },
+                } : {},
+            },
         });
-        window.location.href = `${baseUrl}?${params.toString()}`;
+
+        return;
+    }
+
+    if (!spec.labels?.length || !spec.values?.length) {
+        return;
+    }
+
+    const isLine = spec.type === 'line' || spec.type === 'area';
+    const isPie = spec.type === 'pie' || spec.type === 'doughnut';
+    const chartType = isLine ? 'line' : (isPie ? 'doughnut' : 'bar');
+
+    const dataset = {
+        data: spec.values,
+        label: spec.title || 'Values',
+        backgroundColor: isLine ? 'rgba(8, 145, 178, 0.15)' : palette,
+    };
+    if (chartType === 'bar') {
+        dataset.borderColor = '#0891b2';
+        dataset.borderWidth = 1;
+    }
+    if (chartType === 'line') {
+        dataset.borderColor = '#0891b2';
+        dataset.tension = 0.25;
+        dataset.fill = true;
+        dataset.pointRadius = 2;
+    }
+
+    const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: isPie ? 'bottom' : 'top' },
+            tooltip: onSegmentClick ? { callbacks: { afterLabel: () => 'Click to filter' } } : {},
+        },
+        scales: (chartType === 'bar' || chartType === 'line') ? { y: { beginAtZero: chartType === 'bar' } } : {},
+    };
+
+    if (onSegmentClick && chartType === 'doughnut') {
+        options.onClick = (_evt, elements) => {
+            if (!elements.length) {
+                return;
+            }
+            const label = spec.labels[elements[0].index];
+            onSegmentClick(label);
+        };
+    }
+
+    if (onSegmentClick && chartType === 'bar') {
+        options.onClick = (_evt, elements) => {
+            if (!elements.length) {
+                return;
+            }
+            const label = spec.labels[elements[0].index];
+            onSegmentClick(label);
+        };
+    }
+
+    new Chart(el, {
+        type: chartType,
+        data: { labels: spec.labels, datasets: [dataset] },
+        options,
     });
 }
 
@@ -115,22 +192,44 @@ export function initAnalysisRunCharts(root = document) {
         } catch {
             return;
         }
-        if (spec.type === 'scatter' && spec.points?.length) {
+        if ((spec.type === 'scatter' || spec.type === '3d_bubble') && spec.points?.length) {
+            const isBubble = spec.type === '3d_bubble';
             new Chart(canvas, {
-                type: 'scatter',
+                type: isBubble ? 'bubble' : 'scatter',
                 data: {
                     datasets: [{
-                        label: spec.title || 'Scatter',
+                        label: spec.title || (isBubble ? '3D bubble' : 'Scatter'),
                         data: spec.points,
-                        backgroundColor: '#0891b2',
+                        backgroundColor: 'rgba(8, 145, 178, 0.55)',
                         borderColor: '#0e7490',
                     }],
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     scales: {
-                        x: { title: { display: true, text: 'X' } },
-                        y: { title: { display: true, text: 'Y' } },
+                        x: {
+                            title: {
+                                display: true,
+                                text: spec.axis_labels?.x || 'X',
+                            },
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: spec.axis_labels?.y || 'Y',
+                            },
+                        },
+                    },
+                    plugins: {
+                        tooltip: isBubble ? {
+                            callbacks: {
+                                label(ctx) {
+                                    const p = ctx.raw;
+                                    return `X: ${p.x}, Y: ${p.y}, size ∝ Z`;
+                                },
+                            },
+                        } : {},
                     },
                 },
             });

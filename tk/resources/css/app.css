@@ -50,4 +50,35 @@
     .acc-nav-active {
         @apply bg-slate-700 text-white font-medium;
     }
+
+    .dataset-acc-wide .dataset-panel-grid {
+        @apply w-full gap-4;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+    }
+
+    @media (min-width: 1280px) {
+        .dataset-acc-wide .dataset-panel-grid {
+            grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+        }
+    }
+
+    @media (min-width: 1536px) {
+        .dataset-acc-wide .dataset-panel-grid {
+            grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+        }
+    }
+
+    .dataset-acc-wide .dataset-panel-grid .dataset-panel-wide {
+        grid-column: 1 / -1;
+    }
+
+    .dataset-acc-wide .dataset-panel-card {
+        @apply w-full min-h-[14rem];
+    }
+
+    .dataset-acc-wide .dataset-panel-card canvas {
+        @apply w-full;
+        max-height: none !important;
+    }
 }

@@ -47,13 +47,11 @@ class PlatformDatasetController extends Controller
         $dataset = $this->authorizedDataset($request, $dataset);
         $filters = DatasetAccFilters::fromRequest($request, $dataset);
         $overview = $acc->overview($dataset, $filters);
-        $distributionA = $acc->distribution($dataset, $filters->dimensionA, $filters);
-        $distributionB = $acc->distribution($dataset, $filters->dimensionB, $filters);
-        $lineSeries = $acc->lineGraphSeries($dataset, $filters);
+        $chartPayloads = $acc->materializeCharts($dataset, $filters);
         $accSection = 'overview';
 
         return view('platform.datasets.dashboard', compact(
-            'dataset', 'filters', 'overview', 'distributionA', 'distributionB', 'lineSeries', 'accSection',
+            'dataset', 'filters', 'overview', 'chartPayloads', 'accSection',
         ));
     }
 

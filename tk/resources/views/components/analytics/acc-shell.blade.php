@@ -5,10 +5,11 @@
     'subtitle' => null,
     'tool' => null,
     'dataset' => null,
+    'wide' => false,
 ])
 
-<div class="flex flex-col lg:flex-row gap-6 min-h-[60vh]">
-    <aside class="acc-sidebar w-full lg:w-56 shrink-0 rounded-lg p-4 text-sm text-slate-200">
+<div @class(['flex flex-col lg:flex-row gap-6 min-h-[60vh] w-full', 'dataset-acc-wide' => $wide])>
+    <aside @class(['acc-sidebar shrink-0 rounded-lg p-4 text-sm text-slate-200', 'w-full lg:w-52 xl:w-56' => $wide, 'w-full lg:w-56' => ! $wide])>
         <p class="text-xs uppercase tracking-wide text-slate-400 mb-1">Analytics Command Center</p>
         <p class="font-semibold text-white mb-4">
             @if ($context === 'platform')
@@ -49,7 +50,7 @@
             @endif
         </nav>
     </aside>
-    <div class="flex-1 min-w-0">
+    <div class="flex-1 min-w-0 w-full max-w-none">
         <div class="mb-4">
             <h2 class="text-xl font-bold">{{ $title }}</h2>
             @if ($subtitle)

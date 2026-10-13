@@ -1,9 +1,9 @@
-<x-app-layout>
+<x-app-layout :full-width="true">
     <x-slot name="header">
         @include('platform.datasets.partials.header')
     </x-slot>
 
-    <x-analytics.acc-shell context="dataset" :acc-section="$accSection" :dataset="$dataset" title="Ask AI" subtitle="Natural language analysis with sandboxed Python (PHP fallback without API key)">
+    <x-analytics.acc-shell context="dataset" :acc-section="$accSection" :dataset="$dataset" :wide="true" title="Ask AI" subtitle="Natural language analysis with sandboxed Python (PHP fallback without API key)">
         <div class="tk-card p-5 mb-8">
             <h3 class="font-semibold mb-3">Ask a question</h3>
             <form method="POST" action="{{ route('platform.datasets.analyze.run', $dataset) }}" class="flex flex-col sm:flex-row gap-3">

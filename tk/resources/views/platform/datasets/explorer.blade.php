@@ -1,10 +1,10 @@
-<x-app-layout>
+<x-app-layout :full-width="true">
     <x-slot name="header">
         @include('platform.datasets.partials.header')
     </x-slot>
 
-    <x-analytics.acc-shell context="dataset" :acc-section="$accSection" :dataset="$dataset" title="Data explorer" subtitle="Paginated rows with dashboard filters applied">
-        @include('analytics.partials.dataset-filter-bar', [
+    <x-analytics.acc-shell context="dataset" :acc-section="$accSection" :dataset="$dataset" :wide="true" title="Data explorer" subtitle="Paginated rows with dashboard filters applied">
+        @include('analytics.partials.dataset-chart-builder', [
             'filters' => $filters,
             'dataset' => $dataset,
             'filterAction' => route('platform.datasets.explorer', $dataset),
