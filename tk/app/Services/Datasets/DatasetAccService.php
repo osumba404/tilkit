@@ -5,6 +5,7 @@ namespace App\Services\Datasets;
 use App\Models\PlatformDataset;
 use App\Support\DatasetAccFilters;
 use App\Support\DatasetChartSchema;
+use App\Support\DatasetPanelColors;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class DatasetAccService
@@ -50,6 +51,8 @@ class DatasetAccService
         foreach ($filters->charts as $def) {
             $payload = $this->materializeChart($dataset, $def, $filters);
             if ($payload !== null) {
+                $payload['colors'] = DatasetPanelColors::resolve($def['colors'] ?? null);
+                $payload['definition'] = $def;
                 $out[] = $payload;
             }
         }

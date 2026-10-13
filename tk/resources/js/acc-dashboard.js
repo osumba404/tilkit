@@ -33,6 +33,44 @@ Chart.register(
 
 const palette = ['#0891b2', '#64748b', '#94a3b8', '#334155', '#0e7490', '#475569'];
 
+function specPalette(spec) {
+    if (Array.isArray(spec?.colors) && spec.colors.length) {
+        return spec.colors;
+    }
+
+    return palette;
+}
+
+function hexToRgba(hex, alpha) {
+    const normalized = (hex || '#0891b2').replace('#', '');
+    if (normalized.length !== 6) {
+        return `rgba(8, 145, 178, ${alpha})`;
+    }
+    const r = parseInt(normalized.slice(0, 2), 16);
+    const g = parseInt(normalized.slice(2, 4), 16);
+    const b = parseInt(normalized.slice(4, 6), 16);
+
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+function cycleColors(colors, count) {
+    const out = [];
+    for (let i = 0; i < count; i += 1) {
+        out.push(colors[i % colors.length]);
+    }
+
+    return out;
+}
+
+export function destroyDatasetCharts(root = document) {
+    root.querySelectorAll('canvas').forEach((canvas) => {
+        const existing = Chart.getChart(canvas);
+        if (existing) {
+            existing.destroy();
+        }
+    });
+}
+
 export function initAccCharts({ trend, channels, statuses, baseUrl, query }) {
     const trendEl = document.getElementById('accTrendChart');
     if (trendEl && trend) {
@@ -88,6 +126,9 @@ function renderDatasetChart(spec, baseUrl, query) {
         }
         : null;
 
+    const colors = specPalette(spec);
+    const primary = colors[0] || '#0891b2';
+
     if ((spec.type === 'scatter' || spec.type === '3d_bubble') && spec.points?.length) {
         const isBubble = spec.type === '3d_bubble';
         new Chart(el, {
@@ -96,8 +137,8 @@ function renderDatasetChart(spec, baseUrl, query) {
                 datasets: [{
                     label: spec.title || (isBubble ? '3D bubble' : 'Scatter'),
                     data: spec.points,
-                    backgroundColor: 'rgba(8, 145, 178, 0.55)',
-                    borderColor: '#0e7490',
+                    backgroundColor: hexToRgba(primary, 0.55),
+                    borderColor: colors[1] || primary,
                 }],
             },
             options: {
@@ -129,22 +170,24 @@ function renderDatasetChart(spec, baseUrl, query) {
 
     const isLine = spec.type === 'line' || spec.type === 'area';
     const isPie = spec.type === 'pie' || spec.type === 'doughnut';
-    const chartType = isLine ? 'line' : (isPie ? 'doughnut' : 'bar');
+    const chartType = isLine ? 'line' : (isPie ? (spec.type === 'pie' ? 'pie' : 'doughnut') : 'bar');
+    const segmentColors = cycleColors(colors, spec.values.length);
 
     const dataset = {
         data: spec.values,
         label: spec.title || 'Values',
-        backgroundColor: isLine ? 'rgba(8, 145, 178, 0.15)' : palette,
+        backgroundColor: isLine ? hexToRgba(primary, 0.15) : segmentColors,
     };
     if (chartType === 'bar') {
-        dataset.borderColor = '#0891b2';
+        dataset.borderColor = segmentColors.map((c) => c);
         dataset.borderWidth = 1;
     }
     if (chartType === 'line') {
-        dataset.borderColor = '#0891b2';
+        dataset.borderColor = primary;
         dataset.tension = 0.25;
         dataset.fill = true;
         dataset.pointRadius = 2;
+        dataset.backgroundColor = hexToRgba(primary, 0.15);
     }
 
     const options = {

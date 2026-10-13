@@ -3,13 +3,7 @@
         @include('platform.datasets.partials.header')
     </x-slot>
 
-    <x-analytics.acc-shell context="dataset" :acc-section="$accSection" :dataset="$dataset" :wide="true" title="Executive overview" subtitle="Build any number of charts with your chosen types and columns">
-        @include('analytics.partials.dataset-chart-builder', [
-            'filters' => $filters,
-            'dataset' => $dataset,
-            'filterAction' => route('platform.datasets.show', $dataset),
-        ])
-
+    <x-analytics.acc-shell context="dataset" :acc-section="$accSection" :dataset="$dataset" :wide="true" title="Executive overview" subtitle="Add visualizations one at a time — each panel runs independently">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 w-full">
             @include('analytics.partials.kpi-card', [
                 'label' => 'Rows in view',
@@ -22,8 +16,9 @@
                 'value' => number_format($overview['columns']),
             ])
             @include('analytics.partials.kpi-card', [
-                'label' => 'Charts on page',
+                'label' => 'Panels on dashboard',
                 'value' => number_format(count($chartPayloads)),
+                'valueId' => 'dataset-kpi-panel-count',
             ])
             @include('analytics.partials.kpi-card', [
                 'label' => 'AI analyses run',
@@ -32,28 +27,28 @@
             ])
         </div>
 
-        @if ($chartPayloads === [])
-            <div class="tk-card p-8 text-center text-tk-muted text-sm mb-6">
-                No charts configured. Use the chart builder above to add visualizations.
-            </div>
-        @else
-            <div class="dataset-panel-grid mb-6">
-                @foreach ($chartPayloads as $chart)
-                    @php
-                        $widePanel = in_array($chart['render'] ?? 'canvas', ['crosstab', 'sample_rows', 'table'], true);
-                    @endphp
-                    <div @class(['tk-card p-5 flex flex-col dataset-panel-card', 'dataset-panel-wide' => $widePanel])>
-                        <h3 class="font-semibold mb-1 text-sm">{{ $chart['title'] ?? 'Chart' }}</h3>
-                        <p class="text-xs text-tk-muted mb-3 capitalize">{{ str_replace('_', ' ', $chart['type'] ?? 'chart') }}</p>
-                        @include('analytics.partials.dataset-display-widget', [
-                            'chart' => $chart,
-                            'filterAction' => route('platform.datasets.show', $dataset),
-                            'query' => $filters->toQueryArray(),
-                        ])
-                    </div>
-                @endforeach
+        @if ($filters->hasActiveFilter())
+            <div class="tk-card p-3 mb-4 text-xs flex flex-wrap items-center gap-2">
+                <span class="text-tk-muted">Row filter active (applies to each panel when it runs):</span>
+                <span class="bg-tk-soft px-2 py-0.5 rounded border border-tk-line">{{ $filters->filterColumn }} = {{ $filters->filterValue }}</span>
+                <a href="{{ route('platform.datasets.show', $dataset) }}" class="text-tk-accent">Clear filter</a>
             </div>
         @endif
+
+        <div id="dataset-panels-root">
+            @include('analytics.partials.dataset-panels-stack', [
+                'chartPayloads' => $chartPayloads,
+                'dataset' => $dataset,
+                'filters' => $filters,
+            ])
+        </div>
+
+        <div id="dataset-add-panel-root">
+            @include('analytics.partials.dataset-add-panel', [
+                'filters' => $filters,
+                'dataset' => $dataset,
+            ])
+        </div>
 
         <div class="tk-card p-5 mb-6 w-full">
             <h3 class="font-semibold mb-3">Column mapping</h3>
@@ -75,8 +70,10 @@
             charts: @json($chartPayloads),
             baseUrl: @json(route('platform.datasets.show', $dataset)),
             query: @json($filters->toQueryArray()),
+            datasetName: @json($dataset->name),
+            csrf: @json(csrf_token()),
         };
     </script>
-    @vite('resources/js/acc-dashboard.js')
+    @vite(['resources/js/acc-dashboard.js', 'resources/js/dataset-dashboard.js'])
     @endpush
 </x-app-layout>

@@ -8,6 +8,9 @@ use App\Services\Datasets\DatasetAccService;
 use App\Services\Datasets\DatasetAnalysisOrchestrator;
 use App\Services\Datasets\DatasetIngestionService;
 use App\Support\DatasetAccFilters;
+use App\Support\DatasetChartSchema;
+use App\Support\DatasetPanelSession;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -92,6 +95,130 @@ class PlatformDatasetController extends Controller
         return redirect()
             ->route('platform.datasets.analyze', $dataset)
             ->with('status', 'Analysis complete.');
+    }
+
+    public function storePanel(Request $request, PlatformDataset $dataset, DatasetAccService $acc): RedirectResponse|JsonResponse
+    {
+        $this->authorizeDataset($request, $dataset);
+
+        $definition = DatasetPanelSession::definitionFromRequest($request, $dataset);
+        $error = DatasetChartSchema::validate($definition);
+        if ($error !== null) {
+            return $this->panelMutationResponse($request, $dataset, $acc, false, ['panel' => $error], 422);
+        }
+
+        if (! DatasetPanelSession::append($request, $dataset, $definition)) {
+            return $this->panelMutationResponse($request, $dataset, $acc, false, ['panel' => 'Maximum number of panels reached. Remove one to add another.'], 422);
+        }
+
+        return $this->panelMutationResponse($request, $dataset, $acc, true, message: 'Visualization added.', focusPanelId: $definition['id']);
+    }
+
+    public function updatePanel(Request $request, PlatformDataset $dataset, string $panel, DatasetAccService $acc): RedirectResponse|JsonResponse
+    {
+        $this->authorizeDataset($request, $dataset);
+
+        if (DatasetPanelSession::find($request, $dataset, $panel) === null) {
+            abort(404);
+        }
+
+        $definition = DatasetPanelSession::definitionFromRequest($request, $dataset, $panel);
+        $error = DatasetChartSchema::validate($definition);
+        if ($error !== null) {
+            return $this->panelMutationResponse($request, $dataset, $acc, false, ['panel' => $error], 422);
+        }
+
+        DatasetPanelSession::update($request, $dataset, $panel, $definition);
+
+        return $this->panelMutationResponse($request, $dataset, $acc, true, message: 'Panel updated.', focusPanelId: $panel);
+    }
+
+    public function destroyPanel(Request $request, PlatformDataset $dataset, string $panel, DatasetAccService $acc): RedirectResponse|JsonResponse
+    {
+        $this->authorizeDataset($request, $dataset);
+        DatasetPanelSession::remove($request, $dataset, $panel);
+
+        return $this->panelMutationResponse($request, $dataset, $acc, true, message: 'Panel removed.');
+    }
+
+    public function clearPanels(Request $request, PlatformDataset $dataset, DatasetAccService $acc): RedirectResponse|JsonResponse
+    {
+        $this->authorizeDataset($request, $dataset);
+        DatasetPanelSession::clear($request, $dataset);
+
+        return $this->panelMutationResponse($request, $dataset, $acc, true, message: 'All panels cleared.');
+    }
+
+    /** @param  array<string, string>  $errors */
+    private function panelMutationResponse(
+        Request $request,
+        PlatformDataset $dataset,
+        DatasetAccService $acc,
+        bool $ok,
+        array $errors = [],
+        int $errorStatus = 422,
+        ?string $focusPanelId = null,
+        ?string $message = null,
+    ): RedirectResponse|JsonResponse {
+        if ($request->expectsJson()) {
+            if (! $ok) {
+                return response()->json(['message' => $errors['panel'] ?? 'Validation failed.', 'errors' => $errors], $errorStatus);
+            }
+
+            return response()->json($this->dashboardPanelsPayload($request, $dataset, $acc, $focusPanelId, $message));
+        }
+
+        if (! $ok) {
+            return back()->withInput()->withErrors($errors);
+        }
+
+        $url = $this->datasetDashboardUrl($dataset, $request);
+        if ($focusPanelId) {
+            $url .= '#panel-'.$focusPanelId;
+        }
+
+        return redirect()->to($url)->with('status', $message ?? 'Done.');
+    }
+
+    /** @return array<string, mixed> */
+    private function dashboardPanelsPayload(
+        Request $request,
+        PlatformDataset $dataset,
+        DatasetAccService $acc,
+        ?string $focusPanelId = null,
+        ?string $message = null,
+    ): array {
+        $dataset = $this->authorizedDataset($request, $dataset);
+        $filters = DatasetAccFilters::fromRequest($request, $dataset);
+        $chartPayloads = $acc->materializeCharts($dataset, $filters);
+
+        return [
+            'message' => $message,
+            'focus_panel_id' => $focusPanelId,
+            'panel_count' => count($chartPayloads),
+            'charts' => $chartPayloads,
+            'panels_html' => view('analytics.partials.dataset-panels-stack', [
+                'chartPayloads' => $chartPayloads,
+                'dataset' => $dataset,
+                'filters' => $filters,
+            ])->render(),
+            'add_panel_html' => view('analytics.partials.dataset-add-panel', [
+                'filters' => $filters,
+                'dataset' => $dataset,
+            ])->render(),
+        ];
+    }
+
+    private function datasetDashboardUrl(PlatformDataset $dataset, Request $request): string
+    {
+        $query = array_filter([
+            'filter_column' => $request->input('filter_column'),
+            'filter_value' => $request->input('filter_value'),
+        ], fn ($v) => $v !== null && $v !== '');
+
+        $url = route('platform.datasets.show', $dataset);
+
+        return $query === [] ? $url : $url.'?'.http_build_query($query);
     }
 
     public function chart(Request $request, PlatformDataset $dataset, PlatformAnalysisRun $run): BinaryFileResponse

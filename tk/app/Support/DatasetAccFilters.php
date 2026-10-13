@@ -19,34 +19,7 @@ class DatasetAccFilters
         $columns = $dataset->columns->pluck('name')->all();
         $pick = static fn (?string $name) => $name && in_array($name, $columns, true) ? $name : null;
 
-        $allowedTypes = DatasetChartSchema::allowedTypes();
-        $allowedMetrics = ['sum', 'average', 'count', 'min', 'max', 'distinct'];
-        $maxCharts = (int) config('tilkit.dataset_analysis.max_dashboard_charts', 12);
-
-        $charts = [];
-        $raw = $request->input('charts', []);
-        if (is_array($raw)) {
-            foreach (array_slice($raw, 0, $maxCharts, true) as $i => $row) {
-                if (! is_array($row)) {
-                    continue;
-                }
-                $type = in_array($row['type'] ?? '', $allowedTypes, true) ? $row['type'] : 'bar';
-                $metric = in_array($row['metric'] ?? '', $allowedMetrics, true) ? $row['metric'] : 'count';
-                $charts[] = [
-                    'id' => 'acc_chart_'.(is_numeric($i) ? $i : count($charts)),
-                    'type' => $type,
-                    'column' => $pick($row['column'] ?? null),
-                    'x_column' => $pick($row['x_column'] ?? null),
-                    'y_column' => $pick($row['y_column'] ?? null),
-                    'z_column' => $pick($row['z_column'] ?? null),
-                    'metric' => $metric,
-                ];
-            }
-        }
-
-        if ($charts === []) {
-            $charts = self::defaultCharts($dataset);
-        }
+        $charts = DatasetPanelSession::charts($request, $dataset);
 
         return new self(
             filterColumn: $pick($request->string('filter_column')->toString() ?: null),
@@ -112,14 +85,6 @@ class DatasetAccFilters
         if ($this->filterValue !== null && $this->filterValue !== '') {
             $query['filter_value'] = $this->filterValue;
         }
-        foreach ($this->charts as $i => $chart) {
-            foreach (['type', 'column', 'x_column', 'y_column', 'z_column', 'metric'] as $key) {
-                if (! empty($chart[$key])) {
-                    $query["charts[{$i}][{$key}]"] = $chart[$key];
-                }
-            }
-        }
-
         return $query;
     }
 

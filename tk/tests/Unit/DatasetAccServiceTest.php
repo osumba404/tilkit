@@ -54,7 +54,7 @@ class DatasetAccServiceTest extends TestCase
 
         $service = new DatasetAccService;
         $filters = new DatasetAccFilters('region', 'North', [
-            ['id' => 'acc_chart_0', 'type' => 'pie', 'column' => 'region', 'x_column' => null, 'y_column' => null],
+            ['id' => 'acc_chart_0', 'type' => 'pie', 'column' => 'region', 'x_column' => null, 'y_column' => null, 'z_column' => null, 'metric' => 'count'],
         ]);
         $overview = $service->overview($dataset, $filters);
 
@@ -66,7 +66,7 @@ class DatasetAccServiceTest extends TestCase
         $this->assertSame('pie', $charts[0]['type']);
 
         $tableFilters = new DatasetAccFilters(null, null, [
-            ['id' => 't1', 'type' => 'stats', 'column' => 'amount', 'x_column' => null, 'y_column' => null, 'metric' => 'count'],
+            ['id' => 't1', 'type' => 'stats', 'column' => 'amount', 'x_column' => null, 'y_column' => null, 'z_column' => null, 'metric' => 'count'],
         ]);
         $stats = $service->materializeCharts($dataset, $tableFilters);
         $this->assertSame('stats', $stats[0]['render']);

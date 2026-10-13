@@ -2,6 +2,8 @@
     $render = $chart['render'] ?? 'canvas';
     $filterAction = $filterAction ?? null;
     $query = $query ?? [];
+    $colors = $chart['colors'] ?? \App\Support\DatasetPanelColors::defaults();
+    $barColor = $colors[0] ?? '#0891b2';
 @endphp
 
 @if (!empty($chart['empty']))
@@ -57,7 +59,7 @@
                     <span class="font-mono shrink-0">{{ number_format($item['value']) }}</span>
                 </div>
                 <div class="h-2 bg-tk-soft rounded-full overflow-hidden">
-                    <div class="h-full bg-tk-accent rounded-full" style="width: {{ $item['pct'] }}%"></div>
+                    <div class="h-full rounded-full" style="width: {{ $item['pct'] }}%; background-color: {{ $barColor }}"></div>
                 </div>
             </li>
         @endforeach
@@ -109,7 +111,7 @@
     </div>
 @elseif ($render === 'kpi' && isset($chart['kpi_value']))
     <div class="flex-1 flex flex-col items-center justify-center py-6 text-center">
-        <p class="text-4xl font-bold text-tk-accent tracking-tight">{{ $chart['kpi_value'] }}</p>
+        <p class="text-4xl font-bold tracking-tight" style="color: {{ $barColor }}">{{ $chart['kpi_value'] }}</p>
         @if (!empty($chart['kpi_detail']))
             <p class="text-xs text-tk-muted mt-2 max-w-xs">{{ $chart['kpi_detail'] }}</p>
         @endif

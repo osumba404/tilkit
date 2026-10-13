@@ -11,6 +11,7 @@ export default defineConfig({
                 'resources/js/public-form-wizard.js',
                 'resources/js/public-geo.js',
                 'resources/js/acc-dashboard.js',
+                'resources/js/dataset-dashboard.js',
             ],
             refresh: true,
         }),
