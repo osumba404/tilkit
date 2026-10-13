@@ -13,6 +13,7 @@
             </form>
             <p class="text-xs text-tk-muted mt-2">
                 {{ $llmConfigured ? 'LLM code generation is enabled.' : 'Set OPENAI_API_KEY for full Python charts; basic charts still work via PHP.' }}
+                Try: line graph of amount over date, scatter plot of X vs Y, histogram of price, pie chart of category.
             </p>
         </div>
 
@@ -34,7 +35,9 @@
                     @if ($run->chart_image_path)
                         <img src="{{ route('platform.datasets.chart', [$dataset, $run]) }}" alt="Analysis chart" class="max-w-full rounded border border-tk-line mb-4">
                     @elseif ($run->chart_spec)
-                        <canvas id="run-chart-{{ $run->id }}" height="120" class="max-h-64 mb-4" data-spec="{{ json_encode($run->chart_spec) }}"></canvas>
+                        <div class="mb-4 max-w-2xl">
+                            <canvas id="run-chart-{{ $run->id }}" height="160" data-chart-spec='@json($run->chart_spec)'></canvas>
+                        </div>
                     @endif
 
                     @if ($run->error_message && $run->status === 'failed')
@@ -53,23 +56,7 @@
     </x-analytics.acc-shell>
 
     @push('scripts')
+    <script>window.__tilkitAcc = { type: 'analysis-runs' };</script>
     @vite('resources/js/acc-dashboard.js')
-    <script type="module">
-        import { Chart, BarController, BarElement, CategoryScale, LinearScale, ArcElement, DoughnutController, Legend, Tooltip } from 'chart.js';
-        Chart.register(BarController, BarElement, CategoryScale, LinearScale, ArcElement, DoughnutController, Legend, Tooltip);
-        document.querySelectorAll('[data-spec]').forEach((canvas) => {
-            const spec = JSON.parse(canvas.dataset.spec);
-            if (!spec?.labels) return;
-            const type = spec.type === 'pie' ? 'doughnut' : 'bar';
-            new Chart(canvas, {
-                type,
-                data: {
-                    labels: spec.labels,
-                    datasets: [{ data: spec.values, backgroundColor: ['#0891b2', '#64748b', '#94a3b8', '#334155', '#0e7490'] }],
-                },
-                options: { responsive: true, plugins: { legend: { position: 'bottom' } } },
-            });
-        });
-    </script>
     @endpush
 </x-app-layout>

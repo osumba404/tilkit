@@ -40,6 +40,35 @@ class DatasetAccService
         return $this->valueCounts($dataset, $column, $filters, $limit);
     }
 
+    /** @return ?array{type: string, labels: list<string>, values: list<float>, title: string, x_column: string, y_column: string} */
+    public function lineGraphSeries(PlatformDataset $dataset, DatasetAccFilters $filters, int $limit = 80): ?array
+    {
+        $xColumn = $dataset->columns->first(fn ($c) => in_array($c->inferred_type, ['date', 'datetime', 'timestamp'], true))?->name
+            ?? $dataset->columns->firstWhere('inferred_type', 'category')?->name
+            ?? $dataset->columns->first()?->name;
+
+        $yColumn = $dataset->columns->first(fn ($c) => in_array($c->inferred_type, ['integer', 'decimal', 'number'], true)
+            && $c->name !== $xColumn)?->name;
+
+        if ($xColumn === null || $yColumn === null) {
+            return null;
+        }
+
+        $series = $this->readFilteredSeries($dataset, $xColumn, $yColumn, $filters, $limit);
+        if ($series['labels'] === []) {
+            return null;
+        }
+
+        return [
+            'type' => 'line',
+            'labels' => $series['labels'],
+            'values' => $series['values'],
+            'title' => "{$yColumn} over {$xColumn}",
+            'x_column' => $xColumn,
+            'y_column' => $yColumn,
+        ];
+    }
+
     public function paginateRows(PlatformDataset $dataset, DatasetAccFilters $filters, int $page = 1, int $perPage = 25): LengthAwarePaginator
     {
         $csvPath = $dataset->dataCsvPath();
@@ -165,5 +194,53 @@ class DatasetAccService
         }
 
         return $out;
+    }
+
+    /**
+     * @return array{labels: list<string>, values: list<float>}
+     */
+    private function readFilteredSeries(
+        PlatformDataset $dataset,
+        string $xColumn,
+        string $yColumn,
+        DatasetAccFilters $filters,
+        int $limit,
+    ): array {
+        $csvPath = $dataset->dataCsvPath();
+        if (! is_readable($csvPath)) {
+            return ['labels' => [], 'values' => []];
+        }
+
+        $handle = fopen($csvPath, 'r');
+        $headers = fgetcsv($handle) ?: [];
+        $xIndex = $this->columnIndex($headers, $xColumn);
+        $yIndex = $this->columnIndex($headers, $yColumn);
+        $filterIndex = $this->columnIndex($headers, $filters->filterColumn);
+
+        if ($xIndex === null || $yIndex === null) {
+            fclose($handle);
+
+            return ['labels' => [], 'values' => []];
+        }
+
+        $labels = [];
+        $values = [];
+        while (($row = fgetcsv($handle)) !== false) {
+            if (! $this->rowMatches($row, $filterIndex, $filters->filterValue)) {
+                continue;
+            }
+            $yRaw = str_replace(',', '', trim((string) ($row[$yIndex] ?? '')));
+            if (! is_numeric($yRaw)) {
+                continue;
+            }
+            $labels[] = trim((string) ($row[$xIndex] ?? '')) ?: '(empty)';
+            $values[] = (float) $yRaw;
+            if (count($labels) >= $limit) {
+                break;
+            }
+        }
+        fclose($handle);
+
+        return ['labels' => $labels, 'values' => $values];
     }
 }

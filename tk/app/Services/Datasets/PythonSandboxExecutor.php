@@ -55,6 +55,10 @@ class PythonSandboxExecutor
             }
         }
 
-        return str_contains($lower, 'pandas') && str_contains($lower, 'read_csv');
+        if (! str_contains($lower, 'pandas')) {
+            return false;
+        }
+
+        return str_contains($lower, 'read_csv') || str_contains($lower, 'read_excel');
     }
 }

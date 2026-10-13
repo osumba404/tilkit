@@ -36,7 +36,11 @@
             <div class="lg:col-span-2 tk-card p-5">
                 <h3 class="font-semibold mb-1">Distribution · {{ $filters->dimensionA }}</h3>
                 <p class="text-xs text-tk-muted mb-4">Click a segment to cross-filter the dashboard and explorer.</p>
-                <canvas id="accDatasetChartA" height="200"></canvas>
+                @if ($distributionA === [])
+                    <p class="text-sm text-tk-muted py-8 text-center">No values to chart for this column. Pick another dimension above.</p>
+                @else
+                    <canvas id="accDatasetChartA" height="200"></canvas>
+                @endif
             </div>
             <div class="tk-card p-5 text-sm">
                 <h3 class="font-semibold mb-3">Data freshness</h3>
@@ -49,10 +53,22 @@
             </div>
         </div>
 
+        @if ($lineSeries)
+            <div class="tk-card p-5 mb-6">
+                <h3 class="font-semibold mb-1">Line graph · {{ $lineSeries['y_column'] }} over {{ $lineSeries['x_column'] }}</h3>
+                <p class="text-xs text-tk-muted mb-4">Trend view (first {{ count($lineSeries['labels']) }} points). Ask AI for custom line, scatter, or histogram charts.</p>
+                <canvas id="accDatasetLineChart" height="120"></canvas>
+            </div>
+        @endif
+
         <div class="grid lg:grid-cols-2 gap-6 mb-6">
             <div class="tk-card p-5">
                 <h3 class="font-semibold mb-4">By {{ $filters->dimensionB }}</h3>
-                <canvas id="accDatasetChartB" height="200"></canvas>
+                @if ($distributionB === [])
+                    <p class="text-sm text-tk-muted py-8 text-center">No values to chart for this column.</p>
+                @else
+                    <canvas id="accDatasetChartB" height="200"></canvas>
+                @endif
             </div>
             <div class="tk-card p-5">
                 <h3 class="font-semibold mb-3">Column mapping</h3>
@@ -69,17 +85,18 @@
     </x-analytics.acc-shell>
 
     @push('scripts')
-    @vite('resources/js/acc-dashboard.js')
-    <script type="module">
-        import { initDatasetAccCharts } from '{{ Vite::asset('resources/js/acc-dashboard.js') }}';
-        initDatasetAccCharts({
+    <script>
+        window.__tilkitAcc = {
+            type: 'dataset',
             dimensionA: @json($distributionA),
             dimensionB: @json($distributionB),
+            lineSeries: @json($lineSeries),
             baseUrl: @json(route('platform.datasets.show', $dataset)),
             query: @json($filters->toQueryArray()),
             dimensionAKey: @json($filters->dimensionA),
             dimensionBKey: @json($filters->dimensionB),
-        });
+        };
     </script>
+    @vite('resources/js/acc-dashboard.js')
     @endpush
 </x-app-layout>

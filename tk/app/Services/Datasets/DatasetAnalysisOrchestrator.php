@@ -38,19 +38,22 @@ class DatasetAnalysisOrchestrator
                 $result = $this->sandbox->run($dataset, $code);
                 if ($result['success']) {
                     $parsed = $this->readWorkspaceOutput($dataset);
-                    if ($parsed !== null) {
+                    $chartImage = $this->persistChartImage($dataset);
+                    $chartSpec = $this->normalizeChartSpec(is_array($parsed) ? ($parsed['chart'] ?? null) : null);
+
+                    if ($parsed !== null || $chartImage !== null || $chartSpec !== null) {
                         $run->update([
                             'generated_code' => $code,
                             'attempts' => $attempt,
                             'status' => 'completed',
-                            'summary' => $parsed['summary'] ?? 'Analysis completed.',
-                            'chart_spec' => $parsed['chart'] ?? null,
-                            'chart_image_path' => $this->persistChartImage($dataset),
+                            'summary' => $parsed['summary'] ?? ($chartImage ? 'Chart generated from your data.' : 'Analysis completed.'),
+                            'chart_spec' => $chartSpec,
+                            'chart_image_path' => $chartImage,
                         ]);
 
                         return $run->fresh();
                     }
-                    $lastError = 'Script ran but output.json was missing or invalid.';
+                    $lastError = 'Script ran but produced no chart or output.json.';
                 } else {
                     $lastError = $result['stderr'] ?: $result['stdout'];
                 }
@@ -72,8 +75,19 @@ class DatasetAnalysisOrchestrator
 
         $fallback = $this->phpAnalyzer->analyze($dataset, $prompt);
         $summary = $fallback['summary'];
+        $chartSpec = $this->normalizeChartSpec($fallback['chart_spec']);
+
+        if ($chartSpec === null && $this->promptWantsChart($prompt)) {
+            $chartSpec = $this->normalizeChartSpec(
+                $this->phpAnalyzer->defaultDistributionChart($dataset, $prompt)
+            );
+            if ($chartSpec !== null && ! str_contains(strtolower($summary), 'chart')) {
+                $summary .= ' Showing a default distribution chart for the best-matching column.';
+            }
+        }
+
         if ($this->llm->isConfigured()) {
-            $enhanced = $this->llm->summarizeWithoutCode($prompt, $fallback['chart_spec'] ?? [], $fallback['stats']);
+            $enhanced = $this->llm->summarizeWithoutCode($prompt, $chartSpec ?? [], $fallback['stats']);
             if ($enhanced) {
                 $summary = $enhanced;
             }
@@ -82,11 +96,55 @@ class DatasetAnalysisOrchestrator
         $run->update([
             'status' => 'completed',
             'summary' => $summary,
-            'chart_spec' => $fallback['chart_spec'],
+            'chart_spec' => $chartSpec,
             'error_message' => $usedPython ? ($run->error_message ?? 'Python sandbox unavailable or failed; used built-in analyzer.') : null,
         ]);
 
         return $run->fresh();
+    }
+
+    private function promptWantsChart(string $prompt): bool
+    {
+        $lower = strtolower($prompt);
+
+        return str_contains($lower, 'chart')
+            || str_contains($lower, 'graph')
+            || str_contains($lower, 'plot')
+            || str_contains($lower, 'pie')
+            || str_contains($lower, 'bar')
+            || str_contains($lower, 'visual');
+    }
+
+    /** @param  array<string, mixed>|null  $chart */
+    private function normalizeChartSpec(?array $chart): ?array
+    {
+        if ($chart === null) {
+            return null;
+        }
+
+        $type = $chart['type'] ?? 'bar';
+        if ($type === 'scatter' && is_array($chart['points'] ?? null) && $chart['points'] !== []) {
+            return [
+                'type' => 'scatter',
+                'points' => $chart['points'],
+                'title' => $chart['title'] ?? null,
+            ];
+        }
+
+        $labels = $chart['labels'] ?? $chart['label'] ?? null;
+        $values = $chart['values'] ?? $chart['data'] ?? null;
+        if (! is_array($labels) || ! is_array($values) || $labels === [] || $values === []) {
+            return null;
+        }
+
+        $count = min(count($labels), count($values));
+
+        return [
+            'type' => in_array($type, ['line', 'graph', 'area'], true) ? 'line' : $type,
+            'labels' => array_values(array_slice($labels, 0, $count)),
+            'values' => array_map('floatval', array_values(array_slice($values, 0, $count))),
+            'title' => $chart['title'] ?? null,
+        ];
     }
 
     private function pythonAvailable(): bool

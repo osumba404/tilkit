@@ -12,7 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class PlatformDatasetController extends Controller
 {
@@ -49,10 +49,11 @@ class PlatformDatasetController extends Controller
         $overview = $acc->overview($dataset, $filters);
         $distributionA = $acc->distribution($dataset, $filters->dimensionA, $filters);
         $distributionB = $acc->distribution($dataset, $filters->dimensionB, $filters);
+        $lineSeries = $acc->lineGraphSeries($dataset, $filters);
         $accSection = 'overview';
 
         return view('platform.datasets.dashboard', compact(
-            'dataset', 'filters', 'overview', 'distributionA', 'distributionB', 'accSection',
+            'dataset', 'filters', 'overview', 'distributionA', 'distributionB', 'lineSeries', 'accSection',
         ));
     }
 
@@ -95,13 +96,18 @@ class PlatformDatasetController extends Controller
             ->with('status', 'Analysis complete.');
     }
 
-    public function chart(Request $request, PlatformDataset $dataset, PlatformAnalysisRun $run): StreamedResponse
+    public function chart(Request $request, PlatformDataset $dataset, PlatformAnalysisRun $run): BinaryFileResponse
     {
         $this->authorizeDataset($request, $dataset);
         abort_unless($run->platform_dataset_id === $dataset->id, 404);
         abort_unless($run->chart_image_path && Storage::disk('local')->exists($run->chart_image_path), 404);
 
-        return Storage::disk('local')->download($run->chart_image_path, 'chart.png');
+        $path = Storage::disk('local')->path($run->chart_image_path);
+
+        return response()->file($path, [
+            'Content-Type' => 'image/png',
+            'Content-Disposition' => 'inline; filename="chart.png"',
+        ]);
     }
 
     private function authorizedDataset(Request $request, PlatformDataset $dataset): PlatformDataset

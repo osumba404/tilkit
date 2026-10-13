@@ -28,7 +28,7 @@ class LlmAnalysisCodeGenerator
 You write Python 3 analysis scripts for a sandboxed workspace. Rules:
 - The CSV file is always named data.csv in the current working directory.
 - Use pandas for data work and matplotlib (Agg backend) for charts.
-- Save a JSON file output.json with keys: summary (string, plain English for the user), chart (object with type, labels, values OR null if no chart).
+- Save a JSON file output.json with keys: summary (string, plain English for the user), chart (object with type bar|pie|line|scatter|histogram, labels+values for bar/pie/line, or points [{x,y}] for scatter, OR null if no chart).
 - If a chart is requested, also save chart.png (matplotlib figure).
 - Do not import subprocess, socket, requests, or os.system.
 - Only read data.csv; write only output.json and chart.png.
