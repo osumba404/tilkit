@@ -164,4 +164,24 @@
     .tk-table-premium td {
         @apply border-b border-tk-line/80;
     }
+
+    .tk-link {
+        @apply text-sm text-tk-muted underline underline-offset-2 decoration-tk-line hover:text-tk-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-tk-accent/30 rounded-sm;
+    }
+
+    .tk-link-muted {
+        @apply tk-link no-underline hover:underline;
+    }
+
+    .tk-checkbox {
+        @apply rounded border-tk-line text-tk-accent shadow-tk-xs focus:ring-tk-accent/25;
+    }
+
+    .tk-public-eyebrow {
+        @apply text-xs font-medium uppercase tracking-tk-label text-tk-muted;
+    }
+
+    .tk-public-title {
+        @apply font-display text-3xl font-bold text-tk-ink mt-1 leading-tight;
+    }
 }

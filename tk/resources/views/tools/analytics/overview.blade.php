@@ -1,7 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <p class="text-xs text-tk-accent uppercase tracking-wide">Tool analytics</p>
-        <h2 class="text-2xl font-bold">{{ $tool->name }}</h2>
+        <x-page-header :title="$tool->name" eyebrow="Tool analytics" />
     </x-slot>
 
     <x-analytics.acc-shell context="tool" :acc-section="$accSection" :tool="$tool" title="Executive overview" subtitle="Performance at a glance for this collection tool">

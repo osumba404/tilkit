@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-2xl font-bold">Submission detail</h2>
+        <x-page-header title="Submission detail" />
         <p class="text-sm text-tk-muted font-mono">{{ $submission->client_uuid }}</p>
     </x-slot>
 

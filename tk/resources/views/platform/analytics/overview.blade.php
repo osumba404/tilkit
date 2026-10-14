@@ -1,7 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <p class="text-xs text-tk-accent uppercase tracking-wide">Platform</p>
-        <h2 class="text-2xl font-bold">Analytics Command Center</h2>
+        <x-page-header title="Analytics Command Center" eyebrow="Platform" />
     </x-slot>
 
     <x-analytics.acc-shell context="platform" :acc-section="'overview'" title="Executive overview" subtitle="Organization-wide field data performance">

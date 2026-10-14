@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-2xl font-bold">Data sources</h2>
+        <x-page-header title="Data sources" eyebrow="Platform" />
         <p class="text-sm text-tk-muted">Platform integration health</p>
     </x-slot>
 

@@ -8,7 +8,7 @@
             <h3 class="font-semibold mb-3">Ask a question</h3>
             <form method="POST" action="{{ route('platform.datasets.analyze.run', $dataset) }}" class="flex flex-col sm:flex-row gap-3">
                 @csrf
-                <input type="text" name="prompt" required placeholder="e.g. Draw a pie chart of expenses by category" class="flex-1 rounded-md border border-tk-line px-3 py-2 text-sm">
+                <input type="text" name="prompt" required placeholder="e.g. Draw a pie chart of expenses by category" class="tk-input flex-1 text-sm">
                 <button type="submit" class="tk-btn-primary text-sm shrink-0">Run analysis</button>
             </form>
             <p class="text-xs text-tk-muted mt-2">
