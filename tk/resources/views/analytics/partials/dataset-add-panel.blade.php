@@ -11,7 +11,7 @@
         'colors' => old('colors'),
     ];
 @endphp
-<div class="tk-card p-5 mb-6 border-2 border-dashed border-tk-accent/40" id="dataset-add-panel">
+<div class="tk-card p-6 mb-6 ring-2 ring-tk-accent/15 border-tk-accent/20" id="dataset-add-panel">
     <div class="flex flex-wrap justify-between gap-2 mb-4">
         <div>
             <h3 class="font-semibold text-sm">Add one visualization</h3>

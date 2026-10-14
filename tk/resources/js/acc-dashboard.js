@@ -31,7 +31,7 @@ Chart.register(
     Tooltip,
 );
 
-const palette = ['#0891b2', '#64748b', '#94a3b8', '#334155', '#0e7490', '#475569'];
+const palette = ['#0a7c94', '#5b6573', '#94a3b8', '#2a3441', '#08697d', '#475569'];
 
 function specPalette(spec) {
     if (Array.isArray(spec?.colors) && spec.colors.length) {

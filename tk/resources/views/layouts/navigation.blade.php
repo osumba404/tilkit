@@ -1,10 +1,13 @@
-<nav x-data="{ open: false }" class="bg-tk-surface border-b border-tk-line sticky top-0 z-40">
+<nav x-data="{ open: false }" class="tk-nav-shell sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
+        <div class="flex justify-between h-[4.25rem]">
             <div class="flex items-center gap-8">
-                <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
-                    <span class="font-semibold text-xl text-tk-ink tracking-tight">Tilkit</span>
-                    <span class="hidden sm:inline text-xs text-tk-muted uppercase tracking-wider">Data collection</span>
+                <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group">
+                    <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-tk-accent text-white text-sm font-bold shadow-tk-xs" aria-hidden="true">T</span>
+                    <span class="flex flex-col leading-tight">
+                        <span class="tk-nav-brand">Tilkit</span>
+                        <span class="tk-nav-tagline">Data collection</span>
+                    </span>
                 </a>
                 @auth
                 <div class="hidden sm:flex gap-1">
@@ -18,11 +21,11 @@
                 </div>
                 @endauth
             </div>
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2">
                 @auth
-                <x-dropdown align="right" width="48">
+                <x-dropdown align="right" width="48" contentClasses="tk-dropdown-panel">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 text-sm font-medium text-tk-muted hover:text-tk-ink">
+                        <button type="button" class="tk-btn-ghost text-sm px-3 py-2 rounded-lg border border-transparent hover:border-tk-line">
                             {{ Auth::user()->name }}
                         </button>
                     </x-slot>
@@ -37,8 +40,8 @@
                     </x-slot>
                 </x-dropdown>
                 @else
-                <a href="{{ route('login') }}" class="text-sm text-tk-muted hover:text-tk-accent">Log in</a>
-                <a href="{{ route('register') }}" class="tk-btn-primary text-sm py-1.5">Register</a>
+                <a href="{{ route('login') }}" class="tk-btn-ghost text-sm px-3">Log in</a>
+                <a href="{{ route('register') }}" class="tk-btn-primary text-sm py-2">Register</a>
                 @endauth
             </div>
         </div>

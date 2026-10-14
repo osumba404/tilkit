@@ -2,8 +2,8 @@
     <x-slot name="header">
         <div class="flex flex-wrap items-end justify-between gap-4">
             <div>
-                <h2 class="text-2xl font-bold text-tk-ink">Dashboard</h2>
-                <p class="text-sm text-tk-muted mt-1">Your tools and latest collected data</p>
+                <h2 class="font-display text-3xl font-bold text-tk-ink">Dashboard</h2>
+                <p class="tk-page-lead">Your tools and latest collected data</p>
             </div>
             <div class="flex flex-wrap gap-2">
                 <a href="{{ route('platform.datasets.index') }}" class="tk-btn-secondary">Upload & analyze data</a>
@@ -31,9 +31,9 @@
 
     <div class="grid lg:grid-cols-2 gap-8">
         <section>
-            <h3 class="font-semibold mb-4">Your tools</h3>
+            <h3 class="tk-section-title mb-4">Your tools</h3>
             @forelse ($tools as $tool)
-                <a href="{{ route('tools.show', $tool) }}" class="tk-card block p-4 mb-3 hover:border-tk-accent transition">
+                <a href="{{ route('tools.show', $tool) }}" class="tk-card-interactive block p-4 mb-3">
                     <div class="flex justify-between gap-4">
                         <div>
                             <p class="font-semibold">{{ $tool->name }}</p>
@@ -47,7 +47,7 @@
             @endforelse
         </section>
         <section>
-            <h3 class="font-semibold mb-4">Recent submissions</h3>
+            <h3 class="tk-section-title mb-4">Recent submissions</h3>
             @forelse ($recentSubmissions as $sub)
                 <div class="tk-card p-4 mb-3 text-sm">
                     <p class="font-medium">{{ $sub->form?->title ?? 'Form' }}</p>

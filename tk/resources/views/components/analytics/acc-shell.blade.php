@@ -9,9 +9,9 @@
 ])
 
 <div @class(['flex flex-col lg:flex-row gap-6 min-h-[60vh] w-full', 'dataset-acc-wide' => $wide])>
-    <aside @class(['acc-sidebar shrink-0 rounded-lg p-4 text-sm text-slate-200', 'w-full lg:w-52 xl:w-56' => $wide, 'w-full lg:w-56' => ! $wide])>
-        <p class="text-xs uppercase tracking-wide text-slate-400 mb-1">Analytics Command Center</p>
-        <p class="font-semibold text-white mb-4">
+    <aside @class(['acc-sidebar shrink-0 rounded-tk p-5 text-sm text-slate-200', 'w-full lg:w-52 xl:w-56' => $wide, 'w-full lg:w-56' => ! $wide])>
+        <p class="text-[0.65rem] uppercase tracking-tk-label text-slate-400 mb-1 font-medium">Analytics Command Center</p>
+        <p class="font-display font-semibold text-white mb-5 text-base leading-snug">
             @if ($context === 'platform')
                 Platform
             @elseif ($context === 'datasets')
@@ -51,10 +51,10 @@
         </nav>
     </aside>
     <div class="flex-1 min-w-0 w-full max-w-none">
-        <div class="mb-4">
-            <h2 class="text-xl font-bold">{{ $title }}</h2>
+        <div class="mb-6">
+            <h2 class="acc-page-title">{{ $title }}</h2>
             @if ($subtitle)
-                <p class="text-sm text-tk-muted">{{ $subtitle }}</p>
+                <p class="acc-page-subtitle">{{ $subtitle }}</p>
             @endif
         </div>
         {{ $slot }}

@@ -9,7 +9,7 @@ class DatasetPanelColors
     /** @return list<string> */
     public static function defaults(): array
     {
-        return ['#0891b2', '#64748b', '#94a3b8', '#334155', '#0e7490', '#475569'];
+        return ['#0a7c94', '#5b6573', '#94a3b8', '#2a3441', '#08697d', '#475569'];
     }
 
     /** @return list<string> */

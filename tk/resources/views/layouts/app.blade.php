@@ -8,28 +8,28 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('head')
 </head>
-<body class="font-body min-h-screen">
+<body class="min-h-screen">
     @include('layouts.navigation')
     @php
         $pageWrap = ($fullWidth ?? false)
-            ? 'w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10'
+            ? 'w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12'
             : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8';
     @endphp
     @if (isset($header))
-        <header class="border-b border-tk-line bg-tk-surface">
-            <div class="{{ $pageWrap }} py-6">
+        <header class="border-b border-tk-line/80 bg-tk-surface/90 backdrop-blur-sm">
+            <div class="{{ $pageWrap }} py-7">
                 {{ $header }}
             </div>
         </header>
     @endif
     @if (session('status'))
-        <div class="{{ $pageWrap }} pt-4">
-            <div class="rounded-md bg-tk-accent-soft border border-tk-accent/30 px-4 py-3 text-sm text-tk-ink">
+        <div class="{{ $pageWrap }} pt-5">
+            <div class="tk-status-banner" role="status">
                 {{ session('status') }}
             </div>
         </div>
     @endif
-    <main class="{{ $pageWrap }} py-8 w-full">
+    <main class="{{ $pageWrap }} py-8 lg:py-10 w-full">
         {{ $slot ?? '' }}
         @yield('content')
     </main>

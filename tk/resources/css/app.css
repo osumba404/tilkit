@@ -1,11 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap');
 
 [x-cloak] {
     display: none !important;
 }
 
 :root {
-    --font-body: Merriweather, Georgia, serif;
+    --font-ui: 'DM Sans', system-ui, sans-serif;
+    --font-display: Merriweather, Georgia, serif;
 }
 
 @tailwind base;
@@ -14,41 +15,114 @@
 
 @layer base {
     body {
-        font-family: var(--font-body);
+        font-family: var(--font-ui);
         @apply bg-tk-bg text-tk-ink antialiased;
+    }
+
+    h1,
+    h2,
+    h3,
+    .tk-font-display {
+        font-family: var(--font-display);
+        @apply text-tk-ink tracking-tight;
     }
 }
 
 @layer components {
     .tk-card {
-        @apply bg-tk-surface border border-tk-line rounded-lg shadow-sm;
+        @apply bg-tk-surface border border-tk-line/90 rounded-tk shadow-tk-xs ring-1 ring-black/[0.03];
     }
+
+    .tk-card-interactive {
+        @apply tk-card transition duration-200 hover:border-tk-line hover:shadow-tk-sm hover:ring-black/[0.04];
+    }
+
     .tk-btn {
-        @apply inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-semibold transition;
+        @apply inline-flex items-center justify-center rounded-lg px-4 py-2.5 text-sm font-semibold transition duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-tk-accent/35 focus-visible:ring-offset-2 focus-visible:ring-offset-tk-bg;
     }
+
     .tk-btn-primary {
-        @apply tk-btn bg-tk-accent text-white hover:opacity-90;
+        @apply tk-btn bg-tk-accent text-white shadow-tk-xs hover:bg-[#08697d] active:scale-[0.98];
     }
+
     .tk-btn-secondary {
-        @apply tk-btn border border-tk-line bg-white text-tk-ink hover:bg-tk-soft;
+        @apply tk-btn border border-tk-line bg-tk-surface text-tk-ink shadow-tk-xs hover:bg-tk-soft active:scale-[0.98];
     }
+
+    .tk-btn-ghost {
+        @apply tk-btn text-tk-muted hover:text-tk-ink hover:bg-tk-soft/80;
+    }
+
     .tk-stat {
         @apply tk-card p-5;
     }
+
     .tk-stat-label {
-        @apply text-sm text-tk-muted;
+        @apply text-xs font-medium uppercase tracking-tk-label text-tk-muted;
     }
+
     .tk-stat-value {
-        @apply mt-1 text-2xl font-semibold text-tk-ink;
+        @apply mt-2 text-2xl font-semibold text-tk-ink font-display;
     }
+
+    .tk-kpi {
+        @apply tk-card-interactive p-5;
+    }
+
+    .tk-kpi-label {
+        @apply text-xs font-medium uppercase tracking-tk-label text-tk-muted;
+    }
+
+    .tk-section-title {
+        @apply font-display text-lg font-bold text-tk-ink;
+    }
+
+    .tk-page-lead {
+        @apply text-sm text-tk-muted mt-1;
+    }
+
+    .tk-input {
+        @apply w-full rounded-lg border-tk-line bg-tk-surface text-tk-ink shadow-tk-xs placeholder:text-tk-muted/70 focus:border-tk-accent focus:ring-2 focus:ring-tk-accent/15;
+    }
+
+    .tk-nav-shell {
+        @apply bg-tk-surface/95 backdrop-blur-md border-b border-tk-line/80 shadow-[0_1px_0_0_rgba(15,20,25,0.04)];
+    }
+
+    .tk-nav-brand {
+        @apply font-display font-bold text-xl text-tk-ink tracking-tight;
+    }
+
+    .tk-nav-tagline {
+        @apply hidden sm:inline text-[0.65rem] text-tk-muted uppercase tracking-tk-label font-medium;
+    }
+
+    .tk-status-banner {
+        @apply rounded-tk border border-tk-accent/25 bg-tk-accent-soft px-4 py-3 text-sm text-tk-ink shadow-tk-xs;
+    }
+
+    .tk-dropdown-panel {
+        @apply rounded-tk bg-tk-surface py-1 shadow-tk-md ring-1 ring-black/[0.06];
+    }
+
     .acc-sidebar {
-        @apply bg-slate-800;
+        @apply bg-tk-sidebar border border-white/[0.06] shadow-tk-md;
     }
+
     .acc-nav-link {
-        @apply block rounded-md px-3 py-2 text-slate-300 hover:bg-slate-700 hover:text-white transition;
+        @apply block rounded-lg px-3 py-2.5 text-slate-300 transition border-l-2 border-transparent hover:bg-white/[0.06] hover:text-white;
     }
+
     .acc-nav-active {
-        @apply bg-slate-700 text-white font-medium;
+        @apply bg-white/[0.08] text-white font-semibold border-l-2 border-tk-accent;
+    }
+
+    .acc-page-title {
+        @apply font-display text-2xl font-bold text-tk-ink;
+    }
+
+    .acc-page-subtitle {
+        @apply text-sm text-tk-muted mt-1;
     }
 
     .dataset-acc-wide .dataset-panel-grid {
@@ -80,5 +154,14 @@
     .dataset-acc-wide .dataset-panel-card canvas {
         @apply w-full;
         max-height: none !important;
+    }
+
+    .tk-table-premium thead {
+        @apply bg-tk-soft text-left text-xs uppercase tracking-tk-label text-tk-muted;
+    }
+
+    .tk-table-premium th,
+    .tk-table-premium td {
+        @apply border-b border-tk-line/80;
     }
 }
