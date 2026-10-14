@@ -1,12 +1,10 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-wrap justify-between gap-4">
-            <div>
-                <h2 class="text-2xl font-bold">Settings — {{ $tool->name }}</h2>
-                <p class="text-sm text-tk-muted">Consent, branding, and locale for public collection</p>
-            </div>
-            <a href="{{ route('tools.show', $tool) }}" class="tk-btn-secondary">Back to tool</a>
-        </div>
+        <x-page-header :title="'Settings — '.$tool->name" subtitle="Consent, branding, and locale for public collection">
+            <x-slot:actions>
+                <a href="{{ route('tools.show', $tool) }}" class="tk-btn-secondary">Back to tool</a>
+            </x-slot:actions>
+        </x-page-header>
     </x-slot>
 
     <form method="POST" action="{{ route('tools.settings.update', $tool) }}" class="tk-card p-6 space-y-6 max-w-2xl">

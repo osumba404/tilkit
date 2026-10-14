@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-2xl font-bold">Review & quality</h2>
+        <x-page-header title="Review & quality" :subtitle="$tool->name" eyebrow="Tool analytics" />
         <p class="text-sm text-tk-muted">{{ $tool->name }}</p>
     </x-slot>
 

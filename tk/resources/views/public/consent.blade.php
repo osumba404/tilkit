@@ -1,15 +1,11 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ __('tk.consent_title', ['tool' => $tool->name]) }}</title>
-    @vite(['resources/css/app.css', 'resources/js/public-signature.js'])
-</head>
-<body class="font-body bg-tk-bg text-tk-ink min-h-screen">
-@include('public.partials.branding', ['tool' => $tool])
-<div class="max-w-xl mx-auto px-4 py-10">
-    <h1 class="text-2xl font-semibold">{{ __('tk.consent_heading') }}</h1>
+<x-layouts.public
+    :title="__('tk.consent_title', ['tool' => $tool->name])"
+    :vite="['resources/css/app.css', 'resources/js/public-signature.js']">
+    <x-slot:branding>
+        @include('public.partials.branding', ['tool' => $tool])
+    </x-slot:branding>
+
+    <h1 class="font-display text-2xl font-bold text-tk-ink">{{ __('tk.consent_heading') }}</h1>
     <div class="tk-card p-6 mt-6 prose prose-sm max-w-none text-tk-ink">
         {!! nl2br(e($tool->consent_text)) !!}
     </div>
@@ -17,7 +13,7 @@
     <form method="POST" action="{{ route('public.tools.consent.accept', $tool) }}" class="tk-card p-6 mt-6 space-y-4">
         @csrf
         <label class="flex items-start gap-2 text-sm">
-            <input type="checkbox" name="consent_ack" value="1" required class="mt-1 rounded border-tk-line text-tk-accent focus:ring-tk-accent">
+            <input type="checkbox" name="consent_ack" value="1" required class="tk-checkbox mt-1">
             <span>{{ $tool->consent_ack_label ?: __('tk.consent_ack_default') }}</span>
         </label>
 
@@ -37,6 +33,4 @@
 
         <button type="submit" class="tk-btn-primary">{{ __('tk.continue_to_form') }}</button>
     </form>
-</div>
-</body>
-</html>
+</x-layouts.public>

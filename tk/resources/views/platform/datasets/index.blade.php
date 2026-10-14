@@ -1,7 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-2xl font-bold">My datasets</h2>
-        <p class="text-sm text-tk-muted">Upload CSV or Excel for natural-language analysis</p>
+        <x-page-header title="My datasets" subtitle="Upload CSV or Excel for natural-language analysis" />
     </x-slot>
 
     <x-analytics.acc-shell context="datasets" acc-section="datasets" title="Dataset workspace" subtitle="Ingestion, mapping, and sandboxed analysis">

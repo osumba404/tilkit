@@ -30,15 +30,15 @@
 @endphp
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-wrap justify-between gap-4">
-            <div>
-                <h2 class="text-2xl font-semibold">Form builder - {{ $form->title }}</h2>
+        <div class="flex flex-wrap justify-between gap-4 w-full">
+            <div class="min-w-0 flex-1">
+                <x-page-header :title="'Form builder — '.$form->title" class="!block" />
                 @if ($form->currentVersion)
                     <p class="text-sm text-tk-muted mt-1">
                         Editing version {{ $form->currentVersion->version_no }}
                         ({{ $form->currentVersion->status }})
                         @if ($form->hasUnpublishedDraft() && ($live = $form->liveVersion()))
-                            - public form still uses published version {{ $live->version_no }} until you publish
+                            — public form still uses published version {{ $live->version_no }} until you publish
                         @endif
                     </p>
                 @endif

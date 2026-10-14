@@ -1,16 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Thank you — Tilkit</title>
-    @vite(['resources/css/app.css'])
-</head>
-<body class="font-body bg-tk-bg min-h-screen flex items-center justify-center px-4">
-    <div class="tk-card max-w-md p-8 text-center">
-        <h1 class="text-2xl font-bold">Thank you</h1>
-        <p class="text-tk-muted mt-3">Your responses for <strong>{{ $tool->name }}</strong> were recorded securely.</p>
-        <a href="{{ route('public.tools.collect', $tool) }}" class="tk-btn-primary inline-block mt-6">Submit another</a>
+<x-layouts.public title="Thank you — Tilkit" :centered="true">
+    <div class="tk-card p-8 text-center shadow-tk-md">
+        <h1 class="font-display text-2xl font-bold text-tk-ink">Thank you</h1>
+        <p class="text-tk-muted mt-3 text-sm">Your responses for <strong class="text-tk-ink">{{ $tool->name }}</strong> were recorded securely.</p>
+        <a href="{{ route('public.tools.collect', $tool) }}" class="tk-btn-primary inline-flex mt-6">Submit another</a>
     </div>
-</body>
-</html>
+</x-layouts.public>

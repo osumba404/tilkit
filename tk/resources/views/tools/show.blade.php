@@ -1,10 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-wrap justify-between gap-4">
-            <div>
-                <h2 class="text-2xl font-bold">{{ $tool->name }}</h2>
-                <p class="text-sm text-tk-muted font-mono">{{ $tool->code }} · Your role: {{ $capabilities->label() }}</p>
-            </div>
+        <x-page-header :title="$tool->name" :subtitle="$tool->code.' · Your role: '.$capabilities->label()">
+            <x-slot:actions>
             <div class="flex flex-wrap gap-2">
                 <a href="{{ route('platform.datasets.index') }}" class="tk-btn-secondary">My datasets</a>
                 @if ($capabilities->canViewAnalytics())
@@ -24,7 +21,8 @@
                     <a href="{{ route('tools.forms.create', $tool) }}" class="tk-btn-primary">New form</a>
                 @endif
             </div>
-        </div>
+            </x-slot:actions>
+        </x-page-header>
     </x-slot>
 
     @include('tools.partials.public-collection', ['tool' => $tool])

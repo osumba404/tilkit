@@ -1,15 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-wrap items-end justify-between gap-4">
-            <div>
-                <h2 class="font-display text-3xl font-bold text-tk-ink">Dashboard</h2>
-                <p class="tk-page-lead">Your tools and latest collected data</p>
-            </div>
-            <div class="flex flex-wrap gap-2">
+        <x-page-header title="Dashboard" subtitle="Your tools and latest collected data">
+            <x-slot:actions>
                 <a href="{{ route('platform.datasets.index') }}" class="tk-btn-secondary">Upload & analyze data</a>
                 <a href="{{ route('tools.create') }}" class="tk-btn-primary">New tool</a>
-            </div>
-        </div>
+            </x-slot:actions>
+        </x-page-header>
     </x-slot>
 
     @if ($platformStats)

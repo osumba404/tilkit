@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-2xl font-bold">{{ ($role ?? null)?->canViewAllSubmissions() ? 'Submissions' : 'My submissions' }} — {{ $tool->name }}</h2>
+        <x-page-header :title="(($role ?? null)?->canViewAllSubmissions() ? 'Submissions' : 'My submissions').' — '.$tool->name" />
     </x-slot>
 
     <form method="GET" class="tk-card p-4 mb-4 flex flex-wrap gap-3 items-end">

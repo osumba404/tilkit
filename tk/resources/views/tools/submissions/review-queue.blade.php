@@ -1,12 +1,10 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-wrap justify-between gap-4">
-            <div>
-                <h2 class="text-2xl font-bold">Review queue — {{ $tool->name }}</h2>
-                <p class="text-sm text-tk-muted">Submissions awaiting review</p>
-            </div>
-            <a href="{{ route('tools.submissions.index', $tool) }}" class="tk-btn-secondary">All submissions</a>
-        </div>
+        <x-page-header :title="'Review queue — '.$tool->name" subtitle="Submissions awaiting review">
+            <x-slot:actions>
+                <a href="{{ route('tools.submissions.index', $tool) }}" class="tk-btn-secondary">All submissions</a>
+            </x-slot:actions>
+        </x-page-header>
     </x-slot>
 
     <div class="tk-card overflow-hidden">
