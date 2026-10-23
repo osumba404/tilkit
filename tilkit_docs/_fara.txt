@@ -1,0 +1,710 @@
+296 
+FRR Vol 7(25):296-320 
+Towards a Replicable Innovative Tool for Adaptive Climate Monitoring and Weather 
+Forecasting Using Traditional Indigenous and Local Indicators to Strengthen Agro-
+Weather Resilience at Scale 
+Joab J. L. Osumba1*, Maren Radeny1, John W. Recha1, George W. Oroma2, Oscar Nzoka2, Joyce Mbingo2, Enock 
+Warinda3, Simon Mwale4 
+1 = CGIAR, International Livestock Research Institute (ILRI): J.Recha@cgiar.org; m.radeny@cgiar.org; 
+2 = SNV Netherlands Development Organization: goroma@snv.org; onzoka@snv.org; jmbingo@snv.org; 
+3 = Association for Strengthening Agricultural Research in Eastern and Central Africa (ASARECA): e.warinda@asareca.org 
+4 = Centre for Coordination of Agricultural Research and Development for Southern Africa (CCARDESA): SMwale@ccardesa.org 
+*Correspondence: Joab Osumba J.Osumba@cgiar.org Telephone: +254722408387 
+Citation: Osumba J.J. L., Radeny M, Recha J.W., Oroma G.W, Nzoka O, Mbingo J, Warinda E, and Mwale 
+S. (2023) Towards a Replicable Innovative Tool for Adaptive Climate Monitoring and Weather 
+Forecasting Using Traditional Indigenous and Local Indicators to Strengthen Agro -Weather Resilience at 
+Scale. FARA Research Report Vol 7(25):296-320. https://doi.org/10.59101/frr072325 
+Abstract 
+This paper presents lessons of a replicable innovative decision support tool to systematize traditional indigenous 
+knowledge base for local climate monitoring and weather forecasting. The methodological tool, herein called the 
+traditional indigenous and local knowledge tool (TILKIT), was conceptualized under two training-of-trainers 
+initiatives on Climate-Smart Agriculture (CSA) in East Africa from March 2016 to December 2021. The aim was to 
+build local momentum for consensus-based ethnographic weather monitoring, local weather forecasting and agro-
+weather advisory development for adoption by local stakeholders to improve agro-climatic extension service 
+delivery. The objective was to strengthen local capacity of smallholder farmer leaders, agribusiness value chain 
+partners, and field extension agents on the practical applications of indigenous climatology. Most of this indigenous 
+traditional knowledge or local technical knowledge (ITK or LTK) is now getting lost due to climate change and loss 
+of institutional memory but little effort is being made to identify and systematize the use of emerging ITK or LTK. It 
+is against this background that these initiatives conceptualised and developed an innovative approach to bridge the 
+gaps in order to address the challenges of salience, access, legitimacy, equity and integration of climate information 
+to meet users’ felt needs. The study adopted a transdisciplinary, participatory learning and action research (PLAR) 
+model to identify and confirm emerging local weather indicators and what they mean for local rainfall forecasting, 
+and to drive self-organization processes to bring indigenous climate knowledge into practical use in each community. 
+The tool emphasizes a consensus-based co-production of local weather forecasts and agro-weather advisories to 
+improve climate information services and extension service delivery. Testing and validation were conducted with 
+1,127 participants among various communities across Kenya, Tanzania and Uganda. Results comprise identified 
+ethnographic weather prediction indicators per locality, and their implications for local weather forecasting, which 
+for the first time is presented in probabilistic terms in a way local communities can associate with, and which can 
+compare and contrast empirically with conventional weather forecast language. The tool also provides actionable 
+agro-climate/ agro-weather advisories with appropriate lead times for local response, and a basis for strategic 
+seasonal planning and operational risk management decision-making. Evidence from this work can be packaged for 
+sensitization to influence policy reforms and decision-making at various levels among relevant stakeholders in the 
+region.  
+Keywords: Rainfed, climate risk, folklore ITK, community-based, early warning, lead time, planting window      
+1. Introduction 
+1.1 Context and background infromation  
+297 
+FRR Vol 7(25):296-320 
+Generating locality-specific and easily understandable local climate forecasts can enhance the capacity of 
+smallholder crop growers, livestock producers, aquaculture practitioners, pastoralists and agro 
+pastoralists (all herein henceforth referred to as “farmers”) and other agricultural stakeholders to use 
+climate forecasts to manage local climate risk [8]. This article describes an innovative community-based 
+adaptation (CbA) decision support tool for indigenous, traditional and local climate monitoring and 
+weather forecasting to strengthen climate risk management and resilience in agricultural production, 
+agricultural value chains and agribusinesses. The tool, applying indigenous, traditional and local 
+technical knowledge (ITK, LTK), rides on the back of transdisciplinary co -production and downscaling, 
+monitoring, forecasting, dissemination and communication of locality -specific weather forecasts and 
+agro-weather advisories (early warnings, alerts and suggestions) using consensus-based ethnographic 
+weather indicators to overcome the challenges of salience, access, legitimacy, equity, and integration of 
+climate information services into extension service delivery. Local community ownership of co -generated 
+weather forecasts simultaneously addresses these challenges to meet end users’ “felt needs” [9]. This 
+study tested the hypothesis that identifying, monitoring, analysing and tallying several traditional 
+indigenous and local indicators (TILI) of weather leads to determination of a local weather forecast to 
+enhance local adaptive capacity of smallholder farmers and pastoralists in Eastern Africa. A second test 
+was that authentic traditional/indigenous/local knowledge methods of weather forecasting using 
+authentic (non-mystical) experiences validated by local community members is more sustainable than the 
+mystical, ritualistic “rainmaker” model or the “elderlies-only” model.  
+Indigenous weather information (using agreed indicators) was observed, recorded, analysed, tallied and 
+reported to determine local weather forecast probabilities. The objective was to draw upon common 
+knowledge among local communities and not to rely only on the preserve of a few privileged members of 
+the community, viz the mystical, magical, elderly male “rainmakers” [10]. ICPAC and national 
+meteorological agencies have done pilot studies on forecast co-production and integration but the pilots 
+are heavily inclined towards mystical dimensions which is not replicable or testable beyond the local 
+community [10]–[12]. Currently there are weak mechanisms for collecting information on climate risks to 
+help tailor the subsequent content for proper integration. What often happens in such pilots is merely to 
+ask subjective questions about whether traditional weather predictions correlat e with conventional 
+forecasts, without any corresponding empirical comparison [15]. The tool presented here provides 
+opportunity for empirical comparison. Indigenous or traditional methods of weather forecasting using 
+authentic (non-mystical) experiences validated by local community members will be more sustainable 
+than the mystical, ritualistic rainmaker model. 
+Despite the availability of relatively more reliable forecasts from conventional meteorological services, 
+farmers seldom use their climate and weather information for farm level decision -making because they 
+are not adapted to the locality and it is difficult for farmers to access the information on time and in a 
+format that they can easily understand, so its uptake by small-scale farmers has been limited. Farmers 
+and pastoralists seldom use the coarse macro-weather forecasts for local level decision-making because 
+either they are not adapted to the locality or it is difficult for them to access the information on time or in 
+a format they can easily understand. It is against this background that this study was set to explore 
+options for applying community-based local indicators of indigenous and traditional weather forecasting 
+to support the needs of stallholder farmers and pastoralists, and communication gaps in forecast 
+information availability and usability to enhance local adaptive capacity of smallholder farmers in East 
+Africa [10], [16]. Several community workshops were held in the region to test a new decision-support 
+tool for forecast information generation, communication and usability to enhance local ada ptive capacity 
+of local communities. The study tested a new tool for local weather forecasting and advisory 
+development, communication and usability to enhance local adaptive capacity of smallholder farmers in 
+298 
+FRR Vol 7(25):296-320 
+the region. Through this improvement farmers and pastoralists will be able to take advantage of good 
+seasons and minimize risks in bad seasons. 
+At present, farmer and pastoralist access to seasonal forecasts is limited, and the ability of farmers and 
+pastoralists to interpret probabilistic climate information is inadequate. Local climate information needs 
+to be considered in strategic agricultural planning and tactical, operational decision -making [17], or even 
+in emergency response. Based on the weather information generated, the indicator assessment facilitates 
+the determination of local lead times for scalable strategic, tactical, operational and emergency decisions 
+in local agro-weather risk management, additional to conventional weather forecast, which often comes 
+late. Although ITK-LTK-based weather prediction is inbuilt and established among many local 
+communities in East Africa, systematic monitoring, observation and tallying of ITK -LTK for local weather 
+forecasting has never been attempted. This article systematizes in an ITK-LTK methodology and tool for 
+weather forecasting in East Africa using community-based studies from Kenya, Tanzania, and Uganda. 
+Improving agri-food systems and food security needs appropriate climate and weather risk management 
+strategies, including the use of climate and weather information to guide local level planning and 
+decision-making in the agriculture sector. Agricultural and agro pastoral production (crops, livestock and 
+fish) are critical to food security and are largely climate-dependent yet, in many localities, climate and 
+weather information services that effectively address the needs of farmers, fisherfolk and pastoralists are 
+very limited. Improving food security needs appropriate weather and climate-oriented risk management 
+strategies, including the use of weather and climate information to guide local level decision -making. 
+Access to timely, reliable, context-specific and user-friendly local seasonal weather and climate 
+information is critical to the resilience of agricultural producers and pastoralists, especially under 
+conditions of increased climate variability and unpredictable rainfall regimes occasioned by climate 
+change [20]. The high level of climate variability associated with climate change requires a new 
+methodology and tool to forecast and predict seasonal weather for strategic, tactical and emergency 
+decision-making by agricultural sector stakeholders, especially farmers [1]–[5], [5]–[7]. However, despite 
+significant progress in modern climate science scientific in Kenya, most of the seasonal weather forecasts 
+are not yet locality-specific, not yet accessible, not yet timely, and often not yet locally relevant nor locally 
+useable.  
+Indigenous Traditional Knowledge and Technologies (ITKT) variables and indicators have been used 
+widely by local communities in the past to assess and predict local weather conditions as an adaptation 
+measure for weather forecasting, climate prediction and water management to improve resilience in 
+agricultural production. Improving weather and climate forecasting through the integration of modern 
+science and ITK/ LTK is an area of growing interest and is an area in which indigenous peoples and local 
+communities, especially local communities’ women who mostly manage local natural resources, have 
+much to contribute [21]. For instance, the Maasai still predominantly use traditional methods based on 
+ITK/ LTK to manage livestock feeding (85.8%), livestock diseases (89.9%), livestock breeding (74.2%) and 
+livestock protection against predators and other incidental accidents [22]. More so, indigenous peoples 
+and local communities’ women are at the forefront of helping their communities manage these 
+challenges, through their key roles in identifying, applying, transmitting, and preserving the traditional 
+knowledge that builds and sustains the resilience of local communities in the face of shifting seasonal 
+weather patterns. The purpose and objective of this paper is to explore how climate information can be 
+made more accessible and relevant to rural people whose livelihoods depend on it. 
+299 
+FRR Vol 7(25):296-320 
+1.2 Purpose and objectives 
+The purpose was to develop a decision support tool for local climate monitoring and weather forecasting. 
+The objectives of the study were: 1) to explore traditional, indigenous and local weather prediction 
+indicators, 2) to draw upon what is common knowledge among local communities and not just what is a 
+preserve of only a few privileged (often mystical, magical rainmakers, elderly, male) rainmaker members 
+of the community, and 3) to interpret what the observation means for the season. 
+1.2 The gap – Literature Review  
+1.2.3 Challenges, gaps in and barriers to local climate monitoring and weather forecasting  
+Achieving forecast credibility with local communities using modern climate science among is a well -
+documented common problem faced by producers of scientific forecasts [23]. Currently there are weak 
+mechanisms for collecting information on climate risks to help tailor the subsequent content for proper 
+integration. For that reason, weather information as currently available in East Africa is mostly 
+inadequate, imprecise, incomprehensible and mostly unreliable, and rainfall information is mostly 
+provided in probabilities while farmers want the information in amounts. Some communities get climate 
+information, mostly through the media, but most do not know how to act on the i nformation received as 
+it is often either too general, full of jargon or does not just represent the situation prevailing in their area. 
+In the absence of reliable conventional weather information, many farmers and pastoralists resort to 
+indigenous climate knowledge to fill the gaps. In traditional societies weather predictors helped villagers 
+plan their agriculture activities based on how they sensed the forthcoming weather (human body 
+sensing) and what they observed in the surrounding nature (plants, anim als, birds, insects, heavenly 
+objects, etc.) – Table 1.  
+Table 1: Indicators of indigenous, traditional and local rainfall prediction  
+Item/object:  Source documentation 
+Observations of…. 
+• The Sun 
+[24],[25] 
+• The Moon [24],[25] 
+• The Stars   
+• The Clouds   [25] 
+• The Wind    [24] 
+• Dew [25]  
+• Etc.   
+Behaviour of  
+• Lightning/Thunder 
+[25] 
+• certain Flora/Plants/ Trees     [26] 
+• Termites  
+• certain Insects    [26] 
+• certain Reptiles     
+• certain of Birds   [26] 
+• certain Fauna/Animals [26],[25] 
+• Etc.   
+Feelings/ sensations/ reactions in the Human Body (e.g., 
+ambient temperature, humidity, etc.) 
+[25] 
+Etc.   
+ 
+300 
+FRR Vol 7(25):296-320 
+Majority of users trust traditional knowledge weather information more than conventional weather 
+forecasts. However, climate change is impacting previously reliable local indicators 1 of weather 
+prediction through disappearance or altering the attributes the indicators due to climate variability and 
+human induced activities, making traditional weather forecasting less dependable as currently designed 
+[27]. Further, the mystical or ritualistic “rainmaker” model of ITK/ LTK relied on by most of the local 
+communities is too secretive hence unsustainable, and the use of elderly members of the community for 
+that purpose is also not sustainable because individuals in this “elderly” genera tion are phasing out due 
+to natural attrition. 
+The role of indigenous and traditional knowledge in sustaining the livelihoods of Kenya's indigenous and 
+local communities has often been neglected in the climate and weather sector. Whereas the science of 
+long-term macroclimate forecasts is well advanced, short-term local implications of weather and seasonal 
+variations remain the least well addressed. Although progress has been made in providing climate 
+services in Kenya, there are significant gaps with regard to locality-specific forecasts, as well as 
+generating timely, reliable and user-friendly weather information. It is often argued that the problem 
+with scaling ITK/ LTK of weather and climate is because it is context-specific and is not often 
+documented, mainly sustained from one generation to another through oral history and local expertise or 
+skills, and that the elders who are the custodians of this knowledge, skills and experience are exiting the 
+scene, creating a wide inter-generational gap between the elders and the current generation. It is also 
+often argued that these challenges are likely to worsen with climate change, mainly due to the changing 
+behaviour and/or progressive disappearance of traditional indicators of local weather monitoring to 
+determine a forecast, a situation which, it is argued, threatens the ability of crop producers and pastoral 
+livestock keepers to cope with and adapt to climate change [28]. Often there is pressure on practitioners, 
+researchers and stakeholders to collect, preserve, validate and adopt these ITK/ LTK indicators. However, 
+the initiatives introduced so far to address this problem have been largel y project-based, ad hoc and 
+academic, with no clear decision-support tool to move the conversation to a practical and sustainable 
+model, always fizzling out as soon as the project closes.  
+What is basically needed in the changing circumstances is not necessarily the uniformity of indicators or 
+the presence historical experts or mystical/ritualistic rainmakers but a robust, easy to administer decision -
+support tool that can be owned by local communities and be applicable across different ethnographic and 
+socio-cultural contexts. Instead of looking back to mystical or ritualistic rainmakers (all male) who are 
+often secretive and not sustainable, or elders (all male) who are increasingly losing their grip on the 
+traditional knowledge due to climate change and/or leaving the scene by natural attrition, making it 
+irreplicable, unscalable and impossible to institutionalize [11], [29]–[31], it is possible to build a new set of 
+knowledge using a new tool by opening the conversation with the whole community (both male and 
+female, youthful and elderly) to identify emerging indicators and experiences [32]. This approach can 
+support empowerment of women and youth through recognizing and valuing their knowledge and roles 
+as change agents in using ITK/ LTK and can help to ensure that valuable ITK/ LTK held by local 
+communities’ women is not missed out in efforts to integrate scientific knowledge and ITK/ LTK of 
+climate solutions. Through the new tool, local indicators that have become increasingly less reliable can 
+be recalibrated and validated.  
+ 
+1 Such indicators may include biological (behaviour of plants, animals), ecological (behaviour of ecosystems, etc.), physical (behaviour 
+of objects and materials, position and motion of objects, water -related features e.g., dew, etc.), celestial or astrological features 
+(behaviour of whirlwinds, moon, etc.), behaviour of the human body (sensations), etc., all of which are validated through observation 
+and monitoring 
+301 
+FRR Vol 7(25):296-320 
+1.3 Decision-support tool for local climate monitoring, weather forecasting and advisory development    
+This paper systematizes an innovative decision-support tool, the traditional indigenous and local 
+knowledge tool (TILKIT), for local climate monitoring and weather forecasting in East Africa using 
+Climate-Smart Agriculture (CSA) training and capacity building activities in Kenya, Tanzania, and 
+Uganda. This is an early-warning and decision-support TILKIT tool for weather forecasting, tested and 
+validated in various local level training sessions with 1,127 participants among various communities 
+across East Africa from March 2016 to December 2019. It is a versatile Community -based Adaptation 
+(CbA) decision-support tool for local climate monitoring and weather forecasting developed for effective 
+validation and scaling of traditional climate monitoring and weather forecasting in various localities. The 
+tool emphasizes transdisciplinary monitoring, dissemination and communication of local climate and 
+weather forecasts and agro-weather advisories using consensus-based ethnographic indicators to 
+overcome the challenges of salience, access, legitimacy, equity, and integration of climate information into 
+extension services to satisfy users’ felt needs. It adopts a participatory learning and action research 
+(PLAR) model to drive self-organization processes and to bring ITK/ LTK of climate into the common 
+knowledge pool in each community. It is meant to build local capacity for local weather forecasts and 
+agro-weather advisories using consensus-based ethnographic weather indicators to improve climate 
+extension service delivery.  
+The accompanying methodology focuses on local climate risk management as the main basis for devising 
+adaptation strategies at local level. Identified local climate and weather indicators are observed, recorded, 
+analysed and reported. The approach is to 1) identify and confirm (i.e., groupworks propose and plenary 
+concurs) known local indicators that signal rain issues, 2) describe what that indicator means in terms 
+rainfall forecasting in the locality, 3) determine whether or not the indicator has be en observed in the 
+season, 4) where it has been observed (if already observed), and 5) interpret what the observation means 
+for the coming season – whether based on the indicator the rains can be normal, above normal or below 
+normal, where normal is defined as local historical expectation. Depending on the number of TILI 
+indicators the community identifies and the number of signs each indicator exhibits, it is possible to tally 
+the observations and estimate percentages of the normal, above or below normal r ainfall predictions in 
+the community, and then derive locally appropriate advisories for the season. Results comprise identified 
+ethnographic weather prediction indicators per locality, both celestial and environmental -biophysical, 
+and their implications for local weather forecasting.  
+2. Materials and Methods  
+2.1 Study area and target population  
+The study covers the three East African countries of Kenya, Tanzania and Uganda, targeting smallholder 
+farmer group leaders, agricultural extension agents, agricultural researchers and agro meteorologists, 
+action researchers, climate extension and input service providers, farmer organizations, private sector, the 
+media and other value chain actors. 
+2.2. Study design, approach & methodology 
+The study adopted a transdisciplinary, participatory learning and action research (PLAR) model to bring 
+indigenous, traditional and local climate knowledge into the common knowledge pool and to drive self -
+organization processes in each community, including feedback loops necessary for knowledge 
+integration, for a concurrent validation of methods and results, verified with scientific and technical 
+knowledge [34]. Terminologies were defined and translated into local language before further discussion. 
+302 
+FRR Vol 7(25):296-320 
+The testing was conducted from 2017 to 2021. Fieldwork conducted at different times within the period. 
+The scope of interventions covered: 
+1. Train agro-climate extension and input service providers, farmer organizations, private sector and 
+other value chain actors, in the use of ethnographic methods for local climate information service 
+delivery and feedback processes, and in the use and implementation of climate -informed agronomic 
+options at scale, through sustainable delivery channels and platforms  
+2. Support communities to co-generate and disseminate local ethnographic weather forecasts using 
+indigenous, traditional, natural, non-mystical indicators of community weather prediction to enhance 
+preventive climate risk management 
+3. Refine the tool 
+2.3. Conceptual framework for traditional indigenous and local weather forecasting  
+The concept of traditional weather forecasting among indigenous and local communities is premised on 
+the understanding that most elements of nature, lifeforms and weather correlate positively or negatively. 
+There are lifeforms and natural objects that behave in a way that if monitored can be used to understand 
+and predict weather events, thereby making forecasts from that understanding and prediction. The 
+conceptual framework for the study (presented in Figure 1) stems from the broad understanding of the 
+terminologies traditional, indigenous, cultural and ecological knowledge of local communities.  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Local weather 
+information needs 
+Local weather 
+information 
+communication 
+modalities 
+Nature of information (e.g., 
+onset, duration, amount, 
+etc.) 
+Type of information (e.g., 
+temperature, rainfall, etc.) 
+Local opportunities for 
+access and use of 
+weather information 
+and services  
+Channels of communication 
+(1) 
+Traditional 
+weather 
+indicator 
+monitoring 
+and 
+weather 
+forecasting 
+including 
+determinat
+ion of 
+forecast 
+probabilitie
+s  
+(2). 
+Developme
+nt and 
+disseminati
+on of agro-
+weather 
+advisories 
+based on 
+the 
+forecast 
+Nature of communication 
+Local community-based 
+climate and weather 
+information tool for a 
+resilient, transformative 
+adaptive capacity 
+pathway 
+Conventional, scientific 
+weather prediction  
+Indigenous, traditional 
+weather forecasting 
+Modalities (the “how”) of 
+strengthening the elements 
+Elements (attributes, the 
+“what”) of adaptive capacity 
+Increased 
+adaptive 
+capacity 
+of 
+smallhold
+er 
+farmers 
+(crop 
+growers, 
+livestock 
+producer
+s, and 
+aquacult
+ure 
+practition
+ers) 
+303 
+FRR Vol 7(25):296-320 
+ 
+Figure 1: Conceptual Framework  
+It is becoming increasingly accepted that the concept of Indigenous knowledge goes beyond this narrow 
+interpretation to include traditional and contextual knowledge of local communities, encompassing 
+cultural knowledge in its broadest sense, including all of the social, political, economic and spiritual 
+aspects of a local way of life [35]. The concept is based on the variables that feed into the innovative tool 
+for indigenous weather forecasting described in Figure 2. The concept comprises four key elements, viz., 
+knowledge of local climate risks and local vulnerabilities; monitoring of local weather using local 
+indicators, analysis and forecasting of weather hazards based on indicator behaviour, dissemination and 
+communication of advisories (warnings, alerts and suggestions) based on the forecasts; and local 
+capabilities to respond to the warnings generated and/or received. 
+2.4 Approach to data collection and data analysis 
+The study began with a desktop synthesis of relevant information. Fieldwork was conducted at different 
+times. FGD was conducted with community and group leaders and beneficiaries to explore climate 
+events, trends and forecasts. The indigenous weather indicators session was facilitated both in groups 
+and in plenary during the workshops and contributed by all participants to share their experiences, based 
+on the principle that traditional practice of rainfall forecasting is embedded in community experience and 
+socio-cultural beliefs. The facilitators deliberately omitted the common tendency of inviting known 
+mystical, ritualistic rainmakers to present their skills to the audience and use the same to predict the 
+forthcoming weather in the locality. Instead, the facilitators adopted a workshop plenary approach where 
+all the participants had an equal chance of contributing what they know about local traditional 
+forecasting of seasonal rainfall. The approach was to identify (=groups propose in groupwork) and 
+confirm (=plenary agrees in discussion) known local indicators that signal rain issues, describe what that 
+indicator means in terms rainfall forecasting in the locality, determine whether or not the indicator has 
+been observed in the season, and where it has been observed (if already observed). The last step was to 
+interpret what the observation means for the coming season – whether based on the indicator the rains 
+can be normal, above normal or below normal, where normal is defined as local historical expectation. 
+Depending on the number of indigenous indicators the community identifies and the number of signs 
+each indicator exhibits, it is possible to tally the observations and estimate percentages of local rainfall 
+predictions (the normal, above or below normal) in the community, with clear lead times, additional to 
+conventional seasonal weather forecast, which is often released too late for effective farm level pla nning. 
+A briefing was done to set the stage for scenario building and development of advisories through 
+groupwork. Facilitators first discussed several terminologies used in scenario development, using 
+participatory modes to translate them into vernacular and explaining the meaning of each. Once the 
+participants agreed they have understood the concepts, the facilitators divided them into discussion 
+groups on scenario planning and advisory development. Using the indigenous forecast generated by the 
+community participants and the conventional forecast presented by the meteorological service experts, 
+the workshop came up with areas that needed action. Group discussion was explained to entail mapping 
+of scenarios for the three weather/ rainfall conditions as it is likely to impact agricultural livelihoods. 
+Advisories were developed based on the scenarios presented. The mode of grouping was based on 
+commodity and locality, considering the target commodities and then nesting localities into the two 
+groupings. Participants were divided into two groups on that crop basis. The mode of grouping was 
+based administrative subunits forming the larger unit, considering the target commodity for the subunit 
+in the meantime. The developed scenarios and advisories were presented in plenary, discussed to assess 
+their validity and usefulness, and merged, integrated and packaged to reflect synergy and 
+304 
+FRR Vol 7(25):296-320 
+complementarity. This discussion was used as a forum to jump-start the process of communicating 
+advisories. Data was analysed using both qualitative and quantitative methods.  
+2.5 Implementation 
+At each workshop, engagement and dialogue about local climate was always started with historical 
+trends and impacts, before moving to the forecasts. Historical trend conversations revolved aroun d 
+hazards (meteorological/ biological/ physical), risks (agronomic/ ecological), impacts (economic/ social) 
+and opportunities (e.g., resources available, actors who can be approached, etc.). This part was used as an 
+icebreaking session to prepare the participants for the climate indicator identification and weather 
+forecasting exercise.  
+3. Results 
+Synthesized results are presented in this article in narrative texts, tables and figures.  
+2.1 Participation 
+The testing and validation were conducted with a total of 1,127 participants across various communities 
+in East Africa (Kenya, Tanzania, Uganda), from March 2016 to July 2021 (Table 2).  
+ 
+305 
+FRR Vol 7(25):296-320 
+Table 2: Participation results  
+ Country  Cohort Date Total # of 
+participants 
+Remarks  
+Kenya  Homa Bay and 
+Migori 
+March 2016 and 
+February 2017 
+129 STARCK+ Farmer representatives from one sub county in Migori and six sub counties in Homa Bay during 
+CSA trainings  
+Siaya March 2016 and 
+March 2017  
+150 STARCK+ Farmer representatives from five sub counties in Siaya during CSA trainings 
+Kisumu March 2017 67 STARCK+ Farmer representatives from six sub counties in Kisumu during CSA trainings 
+Kisumu  March 2019  33 CRAFT and AICCRA – representing two farmer aggregators reviewing for CRAFT the work done by 
+CCAFS from 2011 to 2018 
+Kitui and Nakuru August –
+September 2019 
+107 CRAFT and AICCRA – representing ten farmer aggregators and one local service provider 
+Nakuru, Kisumu, 
+Machakos, Narok, 
+Embu,  
+June– July 2021 87 CRAFT and AICCRA – representing Farm to Market Alliance or FtMA [Cereal Growers Association (CGA) 
+and Participatory Approaches for Integrated Development (PAFID)] and County Governments of Nakuru, 
+Narok, Machakos and Embu, in a collaboration between CRAFT and the FtMA Initiative implemented in 
+Kenya by World Food Programme (WFP) 
+Tanzania  Dodoma, Singida 
+and other venues  
+September – 
+December 2019 
+215 CRAFT – representing nine farmer aggregators 
+Uganda  Lira, Gulu and 
+other venues 
+July – 
+December 2019 
+339 CRAFT and AICCRA – representing 35 farmer aggregators  
+Total    1,127 Three countries; 6 years  
+306 
+FRR Vol 7(25):296-320 
+3.2 Local seasonal weather forecast results  
+A screenshot image of the TILKIT tool is presented in Figure 2, using actual groupwork sample. Results 
+of the discussion generally shows that different movements of certain insects, sounds of certain birds, 
+nature/speed/direction of wind, behaviour of certain frogs, behaviour of certain plants/trees, ebbing of the 
+lake tide, constellation of certain stars and specific feelings in the human body among other indicators 
+help to determine weather forecasts. 
+igure 2:  Example of actual groupwork output using the tool, Narok County, Kenya, July 2021  
+ 
+ 
+Source: author construct  
+A sample of identified TILKIT indicators for indigenous weather prediction are presented in Table 2, 
+where the column for dates and advisories are omitted to save space for illustrating the forecast. From 
+Table 2, it is shown that the shortest lead time in the forecast is one day. One-to-two-day or less than one 
+week lead times lead times can be used for emergency decisions. TILKIs with long lead times can be used 
+for strategic planning while those with short lead times can be used for tactical decision mak ing [37], [38]. 
+From Table 2, it is shown that the shortest lead time in the forecast is one day. One -to-two-day or less 
+than one week lead times lead times can be used for emergency deci sions on-farm. The longest lead time 
+indicated is three months. A lead time of two-to-three months can be used for strategic planning by the 
+community. Lead times of one week to one month can be used for tactical decisions in the community 
+and on the farm. The longest lead time indicated is three months. A lead time of two-to-three months can 
+be used for strategic seasonal planning by the community. Lead times of one week to one month can be 
+used for tactical and operations decisions in the community. 
+
+307 
+FRR Vol 7(25):296-320 
+Table 2: Local traditional weather forecast – in plenary at the community workshops 
+Only a few indicators presented to save space. Each community can test their own indicators  
+Indicator 
+category 
+A1  B2 C3 D4 E5 
+Traditional indicator of indigenous 
+weather prediction in the community/ 
+locality/ area  
+Description: Local meaning 
+for weather – Local        
+meaning       for 
+weather   in   the locality 
+(In terms of whether there 
+will be rain or drought, or 
+whether the rains will be 
+normal, more or less) 
+How long does it 
+take for the 
+prediction, after 
+witnessing the 
+indicator? 
+Forecast (Y=Yes) 
+In view of, and based on, the information 
+so far available from the weather 
+indicator, by the rating of this locality: Is 
+the rain for the season likely:  
+1) above normal or 
+2) normal,  
+3) below normal? 
+Celestial/ 
+Astrological 
+Whirling wind  
+from the lake 
+Depressed rain within a 
+week 
+1-2 weeks Y Below Normal 
+Whirlwind-to east Rainfall One week Y Above normal 
+Whirlwind-West wards Dry spell One week Y Below normal 
+When at Mwingi and the new moon faces 
+Tanzania 
+Dry spell  3 months Y Below normal 
+Full moon with halo (kivuuiyo) Rain expected 1-2 weeks Y Above normal 
+Physical Absence of dew on leaves in the morning Rain on the same day 1 day Y Normal 
+Morning Dew & fog Dry spell  1-2 weeks Y Below Normal 
+Lightning around Kisumu and Tinderet 
+area 
+Rainfall 2/3 months Y Above normal 
+ 
+Biological Regeneration of new leaves in acacia tree 
+species/ Acacia starts to sprout 
+rains are approaching 1-2 weeks Y Normal to above normal 
+ 
+Blooming of baobab trees. Rains in few weeks 2-3 weeks Y Normal 
+Shedding of leaves- Baobab Dry spell  1-2 weeks Y Below Normal 
+Frequent encounter of snakes, rodents and 
+rabbits etc out of their habits 
+Dry spell  One month 
+ 
+Y Below normal 
+ 
+Touching down of dragon flies Rain same day 1 day Y Normal to above normal (when they are 
+many) 
+Below normal (when they are few) 
+Livestock restlessness Dry spell  2 weeks Y Below normal 
+Livestock oversleeping More rain  2 weeks Y Above normal 
+Croaking of frogs Rain expected 1 to 2 weeks Y Normal 
+Bee migration Dry spell  1 to 2 weeks Y Below normal 
+ 
+308 
+FRR Vol 7(25):296-320 
+White butterflies 
+ 
+Rainfall  After-two weeks Y Above normal 
+White birds/ chebiswet Rainfall One day Y Above normal 
+ 
+Army worm Dry spell 2 months Y Below normal 
+Presence of red ants/ kumbe kumbe/ 
+kongaek 
+Rain  
+ 
+One week 
+ 
+Y Above normal 
+ 
+Human 
+body 
+behaviour 
+(sensing)  
+High temperature (Yiungu) 
+ 
+Rain  
+ 
+1 to 2 weeks 
+ 
+Y Above normal 
+ 
+Soil smell- “pleasant” Rain 1-2 weeks 
+ 
+Y Normal 
+Forecast for the season: Total tally for normal, above 
+normal and below normal scores; Summary of meanings 
+for the indicators; Summary of lead times for indicator 
+prediction 
+Above normal = 8 
+Normal to above normal = 6   
+Below normal = 10 
+Total = 24  
+Y Above normal = 33% 
+Normal to above normal = 25% 
+Below normal = 42% 
+Note: Indicators with long lead times can be used for strategic planning while those with short lead times can be used for tactical  and/or 
+emergency decision making(Garcia et al. 2010; World Meteorological Organization, World Meteorological Organization, and Organisation 
+Météorologique Mondiale 2011)(Garcia et al. 2010; World Meteorological Organization et al. 2011). In Table II the columns whi ch covered 
+questions on whether the meaning attached to the indicator has manifested, and based on that manifestation, when they expect the predictio n of 
+the manifestation to occur. Column for advisories based on that forecast is also omitted in this table. A screenshot image is  presented in Figure 1 to 
+illustrate the whole table. Note: The efficacy of the traditional forecast is premised on monitoring and observing as many lo cal indicators as 
+possible, tabulating the observations and their implications, and summing up their pred ictions to obtain forecast probabilities
+309 
+FRR Vol 7(25):296-320 
+3.1 Weather forecasting and agro weather advisory development using the TILKIT tool  
+Agro-weather advisories were prepared based on the scenarios developed following the conclusion of the 
+forecast in scenario outputs, providing options in line with the percentages of normal, above normal and 
+below normal forecasts. Facilitators first discussed several terminologies used in scenario development, 
+using participatory modes to translate them into vernacular and explaining the meaning of each. This 
+briefing was done to set the stage for group work. Once the participants agreed they have understood t he 
+concept, the facilitator divided them into discussion groups on scenario planning and advisory 
+development. Using the forecast presented by the participants, the workshops came up with areas that 
+needed to action. Group discussion was explained to entail mapping of scenarios for the three 
+weather/rainfall conditions as it is likely to impact agricultural livelihoods in general and 
+sorghum/cassava in particular. The developed scenarios and advisories were presented in plenary, 
+discussed to assess their validity and usefulness, and merged, integrated and packaged to reflect synergy 
+and complementarity. This discussion was used as a forum to jump-start the process of communicating 
+advisories. 
+3.2 Dissemination and communication of the developed agro weather advisories at community Level 
+Various actors agreed to disseminate advisory information arising from the process. They also request 
+conventional meteorological agencies to share targeted formal locality-specific climate weather forecast to 
+targeted recipients for comparison and validation. Matters of who will do the dissemination, and what 
+existing channels can be used, we discussed and agreed (Example in Figure 3. Short term updates (e.g., 
+weekly, monthly) were requested, based both on community monitoring and conventional climate 
+information services.  
+ 
+Figure 3: Group-A “Action Plan” and Agro-Weather Advisory “Dissemination Channels” for Homa Bay 
+County, MAM 2016.  
+Agro Weather Information Dissemination Channels at Community Level were listed as  
+• Radio: vernacular FM stations 
+• Television 
+• Newspapers/bulletins/ brochures 
+
+310 
+FRR Vol 7(25):296-320 
+• E-mail 
+• Phone: Bulk SMS, WhatsApp 
+• Internet: Websites, social media accounts 
+• Community based baraza meetings, field days, churches/ mosques, Funerals  
+Dissemination plan for implementation of advisories included 
+• Phone: Bulk SMS  
+• Advisories to be produced/printed and disseminated to all stakeholders, especially aggregators 
+and technical partners 
+3.5 Potential for integrating the TILKIT tool in weather forecasting strategies, policies and programs  
+There are many ongoing efforts aimed at improving climate forecasting and its use. Traditional weather 
+and climate forecasting is used by many indigenous communities globally as a guide in making vital 
+decisions that enable them to cope and adapt to the effects of the climate change-induced extremes in 
+weather variation [27]. The use of scientific and indigenous climate forecast information for farm level 
+decision making has been reported in Kenya among other countries (Lucio 1999, Ngugi 1999). These 
+initiatives support livelihood resilience and climate adaptation in the face of increased climate variability 
+and extremes, some of which have integrated Local and Traditional Knowledge (LTK) into service 
+development, improving the relevance, legitimacy, useability, and sustainability of the service. However, 
+so far LTK has not been integrated systematically into the development of climate services alongside 
+scientific knowledge [23]. However, the actual state of meaningful integration is limited and scientific 
+knowledge is typically prioritized in forecast production and service development [23]. The Kenya 
+Meteorological Department recognizes and works towards integrating and blending indigenous and 
+traditional forecasts with science-based predictions to produce more useable weather and climate data at 
+the local level [39]. In the process of developing the tool described in this paper, similarities and 
+differences between traditional/community and scientific forecast were identified and described. Some of 
+them are presented here. Similarities of indigenous and conventional forecasts were found to be as 
+follows:  
+✓ Both are based on observation of nature 
+✓ Both have a scientific basis 
+✓ Both can forecast onset and the quality of the season to come 
+✓ Both are accompanied by warnings on likely risks and hazards 
+✓ Both use signs/indicators and patterns 
+✓ Both use observance of wind 
+✓ Both can forecast below normal rainfall or an impending dry spell  
+Differences between traditional/community and scientific forecast as discussed are presented in Table 4.  
+Each of the two models of weather forecasting and climate information generation and dissemination has 
+its strengths and weaknesses, but each also provide opportunities for synergy between them.  

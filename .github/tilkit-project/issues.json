@@ -1,0 +1,158 @@
+[
+  {
+    "title": "[Epic] Phase 0 — Foundation & spec baseline",
+    "labels": ["epic", "phase-0", "tilkit"],
+    "milestone": "Phase 0 - Foundation",
+    "body": "## Goal\nLock the v4 workbook as the requirements baseline and de-risk before UI/mobile work.\n\n## Deliverables\n- [ ] Signed-off spec version (Master Template v4 + Raw vs Derived Register + Change Log)\n- [ ] Open questions doc resolved (corroboration, False Start, VCI3M classes, confirm/approve separation, West Africa NMHS products)\n- [ ] Pilot priority decision (SCLoWFER Ghana vs Green Schools Kenya)\n- [ ] `protocol_version` constant and TILKIT module layout in `tk/`\n- [ ] Golden fixtures extracted from demo workbook (11-row + frog trace metadata)\n\n## References\n- `tilkit_docs/_extracted.txt` (Developer Brief §10–11)\n- `tilkit_docs/TILKIT_Weather_Indicator_Log_v4_DEMO_hypothetical_data.xlsx`"
+  },
+  {
+    "title": "Phase 0: Document open questions and pilot priority",
+    "labels": ["phase-0", "tilkit", "documentation"],
+    "milestone": "Phase 0 - Foundation",
+    "body": "Resolve Developer Brief §11.4 items and record decisions in `docs/tilkit/open-questions.md`.\n\nParent epic: Phase 0"
+  },
+  {
+    "title": "Phase 0: Extract PHPUnit golden fixtures from v4 demo workbook",
+    "labels": ["phase-0", "tilkit", "testing"],
+    "milestone": "Phase 0 - Foundation",
+    "body": "Port frog weighting trace + 11-row demo scenarios as JSON/CSV fixtures under `tk/tests/Fixtures/Tilkit/`.\n\nParent epic: Phase 0"
+  },
+  {
+    "title": "[Epic] Phase 1 — Reference data & schema",
+    "labels": ["epic", "phase-1", "tilkit"],
+    "milestone": "Phase 1 - Schema",
+    "body": "## Goal\nDatabase model matching workbook entities (not 124 flat columns on one table).\n\n## Deliverables\n- [ ] Migrations: Organisation, Site (PostGIS-ready), Season, IndicatorCode, Indicator, IndicatorRecord, Sighting, EvidenceMedia, SeasonSettings\n- [ ] Unique constraint `(indicator_id, site_id, season_id)`\n- [ ] Seed Indicator Code Legend + Prior Multipliers from v4 xlsx\n- [ ] RBAC roles aligned to brief §7\n- [ ] Admin CRUD: codes, sites, seasons\n\n## References\n- Developer Brief §2 Domain model\n- `tilkit_docs/TILKIT_v4_Raw_vs_Derived_Data_Register_1.xlsx`"
+  },
+  {
+    "title": "Phase 1: Core TILKIT migrations and models",
+    "labels": ["phase-1", "tilkit", "backend"],
+    "milestone": "Phase 1 - Schema",
+    "body": "Implement Laravel models/migrations for Indicator, IndicatorRecord, Sighting with natural keys and audit fields.\n\nParent epic: Phase 1"
+  },
+  {
+    "title": "Phase 1: Seed indicator code legend and prior multipliers",
+    "labels": ["phase-1", "tilkit", "backend"],
+    "milestone": "Phase 1 - Schema",
+    "body": "Import from `TILKIT_Weather_Indicator_Log_Master_Template_v4_OND2026.xlsx` sheets.\n\nParent epic: Phase 1"
+  },
+  {
+    "title": "Phase 1: Admin UI for sites, seasons, and code legend",
+    "labels": ["phase-1", "tilkit", "frontend"],
+    "milestone": "Phase 1 - Schema",
+    "body": "Web admin using existing Tilkit UI shell; versioned code legend edits.\n\nParent epic: Phase 1"
+  },
+  {
+    "title": "[Epic] Phase 2 — Forecast rules engine (Excel parity)",
+    "labels": ["epic", "phase-2", "tilkit", "engine"],
+    "milestone": "Phase 2 - Engine",
+    "body": "## Goal\nSingle server-side rules engine; **must match workbook** for all fixtures.\n\n## Deliverables\n- [ ] Eligibility gate + exclusion reasons + reconciliation assertion\n- [ ] Weighting: rating-based → hit-rate-based; corroboration cap; decision relevance; optional prior\n- [ ] Tallies: simple, weighted, priority-adjusted + windows\n- [ ] Post-season scoring: Hit / Miss / False Start\n- [ ] CLI `tilkit:tally {site} {season}`\n- [ ] All golden tests green (frog trace, 11-row demo, 6-sign example)\n\n## References\n- Developer Brief §5 Forecast engine, §10.2–10.3 acceptance\n- `tilkit_docs/calculations/`"
+  },
+  {
+    "title": "Phase 2: Implement eligibility gate service",
+    "labels": ["phase-2", "tilkit", "engine"],
+    "milestone": "Phase 2 - Engine",
+    "body": "Pure functions; one exclusion reason per row; contested excluded.\n\nParent epic: Phase 2"
+  },
+  {
+    "title": "Phase 2: Implement weighting and phase switch (3 scored seasons)",
+    "labels": ["phase-2", "tilkit", "engine"],
+    "milestone": "Phase 2 - Engine",
+    "body": "Corroboration cap, prior switch rules, rating 0 handling.\n\nParent epic: Phase 2"
+  },
+  {
+    "title": "Phase 2: Implement tally engine (simple / weighted / priority-adjusted)",
+    "labels": ["phase-2", "tilkit", "engine"],
+    "milestone": "Phase 2 - Engine",
+    "body": "Immutable TallySnapshot; reconciliation OK.\n\nParent epic: Phase 2"
+  },
+  {
+    "title": "Phase 2: Golden tests — Excel parity suite",
+    "labels": ["phase-2", "tilkit", "testing", "engine"],
+    "milestone": "Phase 2 - Engine",
+    "body": "CI fails if engine output diverges from workbook fixtures.\n\nParent epic: Phase 2"
+  },
+  {
+    "title": "[Epic] Phase 3 — Sighting-first mobile + sync",
+    "labels": ["epic", "phase-3", "tilkit", "mobile"],
+    "milestone": "Phase 3 - Mobile",
+    "body": "## Goal\nOffline sightings as child events; never duplicate IndicatorRecord rows.\n\n## Deliverables\n- [ ] Laravel sync API (auth, RBAC, media, idempotent UUIDs)\n- [ ] Android offline MVP (site/season/indicator/sighting/photo/GPS)\n- [ ] Conflict queue for approvals/consent (no silent overwrite)\n- [ ] Optional SMS `SIGHT` adapter\n\n## References\n- Developer Brief §8 Field app + Sync"
+  },
+  {
+    "title": "Phase 3: TILKIT sync API and media upload",
+    "labels": ["phase-3", "tilkit", "backend"],
+    "milestone": "Phase 3 - Mobile",
+    "body": "Batched sync, sighting attach-only contract.\n\nParent epic: Phase 3"
+  },
+  {
+    "title": "Phase 3: Offline mobile MVP (Android-first)",
+    "labels": ["phase-3", "tilkit", "mobile"],
+    "milestone": "Phase 3 - Mobile",
+    "body": "Community Data List sighting path; Wi‑Fi-only media option.\n\nParent epic: Phase 3"
+  },
+  {
+    "title": "[Epic] Phase 4 — Workshop & validation (web)",
+    "labels": ["epic", "phase-4", "tilkit", "frontend"],
+    "milestone": "Phase 4 - Workshop",
+    "body": "## Goal\nReplace FGD/plenary paper flow; data desk queues.\n\n## Deliverables\n- [ ] Workshop mode (one question per screen, resumable, demographics BG–BK)\n- [ ] Validation chain: confirm / approve / verify + Contested handling\n- [ ] Pending-validation and duplicate review queues\n- [ ] Workshop / sighting / analyst views\n\n## References\n- Developer Brief §4 lifecycle, Community Data List tab"
+  },
+  {
+    "title": "Phase 4: Workshop capture UX",
+    "labels": ["phase-4", "tilkit", "frontend"],
+    "milestone": "Phase 4 - Workshop",
+    "body": "Facilitator-led group entry with large touch targets.\n\nParent epic: Phase 4"
+  },
+  {
+    "title": "Phase 4: Validation chain and data desk queues",
+    "labels": ["phase-4", "tilkit", "backend", "frontend"],
+    "milestone": "Phase 4 - Workshop",
+    "body": "Role-gated transitions; audit log.\n\nParent epic: Phase 4"
+  },
+  {
+    "title": "[Epic] Phase 5 — Integration, v4 modules, exports",
+    "labels": ["epic", "phase-5", "tilkit"],
+    "milestone": "Phase 5 - Integration",
+    "body": "## Goal\nFull seasonal cycle on web; consent on all exports.\n\n## Deliverables\n- [ ] NMHS ingest adapter (KMSA + Ghana pilot equivalent)\n- [ ] Integration session UI + ConsensusForecast\n- [ ] v4: calendar/CC flag, dissemination, residual risk, confidence (not in tally weight)\n- [ ] PDF/CSV/JSON exports with consent filters\n\n## References\n- Developer Brief §6 v4 modules"
+  },
+  {
+    "title": "Phase 5: Official outlook ingest adapter",
+    "labels": ["phase-5", "tilkit", "integration"],
+    "milestone": "Phase 5 - Integration",
+    "body": "Replaceable adapter per country/pilot.\n\nParent epic: Phase 5"
+  },
+  {
+    "title": "Phase 5: Tally dashboard and consensus forecast publication",
+    "labels": ["phase-5", "tilkit", "frontend"],
+    "milestone": "Phase 5 - Integration",
+    "body": "Side-by-side community vs official; immutable snapshots.\n\nParent epic: Phase 5"
+  },
+  {
+    "title": "Phase 5: Consent-aware exports (PDF, CSV, JSON)",
+    "labels": ["phase-5", "tilkit", "backend"],
+    "milestone": "Phase 5 - Integration",
+    "body": "Row-level policy on every read path.\n\nParent epic: Phase 5"
+  },
+  {
+    "title": "[Epic] Phase 6 — Migration, pilots, M&E",
+    "labels": ["epic", "phase-6", "tilkit"],
+    "milestone": "Phase 6 - Pilots",
+    "body": "## Goal\nPilot-ready deployment and Excel migration path.\n\n## Deliverables\n- [ ] v3/v4 Excel importers with column mapping\n- [ ] SCLoWFER site/season configuration\n- [ ] Green Schools configuration\n- [ ] Engine regression in CI on every change\n- [ ] M&E indicators aligned to pilot logframe\n\n## References\n- `tilkit_docs/Annex 1 - TILKIT Pilot Project Proposal.docx`"
+  },
+  {
+    "title": "Phase 6: Excel workbook importers (v3 → v4 transforms)",
+    "labels": ["phase-6", "tilkit", "backend"],
+    "milestone": "Phase 6 - Pilots",
+    "body": "Developer Brief §10.1 migration rules.\n\nParent epic: Phase 6"
+  },
+  {
+    "title": "Phase 6: Configure SCLoWFER Ghana tri-border pilot",
+    "labels": ["phase-6", "tilkit", "pilot"],
+    "milestone": "Phase 6 - Pilots",
+    "body": "Sites: Saru, Kluajon, Kalba, Konfusi.\n\nParent epic: Phase 6"
+  },
+  {
+    "title": "Phase 6: Configure Green Schools Kenya pilot",
+    "labels": ["phase-6", "tilkit", "pilot"],
+    "milestone": "Phase 6 - Pilots",
+    "body": "School hub model + KMD/NDMA product alignment.\n\nParent epic: Phase 6"
+  }
+]
