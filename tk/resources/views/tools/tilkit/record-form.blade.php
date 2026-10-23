@@ -16,6 +16,11 @@
         <div class="tk-card p-4 mb-4 text-sm text-tk-ink">{{ session('status') }}</div>
     @endif
 
+    <p class="text-sm text-tk-muted mb-4">
+        Capture follows the v4 <a href="{{ route('tools.tilkit.workbook', $tool) }}" class="text-tk-accent underline">Community Data List</a>
+        (sections A–E) and <strong>Sheet 1 — Indicator Log</strong> columns A–DT.
+    </p>
+
     @if ($isEdit)
         <div class="tk-card p-5 space-y-4 mb-6">
             <h3 class="tk-section-title text-base">Field sighting (updates N, O, CI, Z, AA, AB)</h3>
@@ -133,7 +138,7 @@
                                 <select name="workbook[{{ $letter }}]" class="tk-input">
                                     <option value="">—</option>
                                     @foreach (\App\Enums\Tilkit\ValidationStatus::cases() as $status)
-                                        <option value="{{ $status->value }}" @selected((string) $current === $status->value)>{{ str_replace('_', ' ', $status->value) }}</option>
+                                        <option value="{{ $status->value }}" @selected((string) $current === $status->value || (string) $current === $status->excelLabel())>{{ $status->excelLabel() }}</option>
                                     @endforeach
                                 </select>
                             @elseif ($letter === 'U')

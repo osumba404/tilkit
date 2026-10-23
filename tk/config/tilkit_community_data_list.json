@@ -1,0 +1,402 @@
+[
+  {
+    "section": "A. For every sign",
+    "num": 1,
+    "what": "The exact sign seen, in local words (e.g., \"frogs croaking at night near the dam\") and its local name",
+    "columns": "D, F",
+    "how": "Words",
+    "who": "Observer/ FGD",
+    "when": "FGD; each new sign",
+    "feeds": "Basis for the Indicator ID"
+  },
+  {
+    "section": "A. For every sign",
+    "num": 2,
+    "what": "Kind of sign: plant, animal, atmosphere, sky (sun/ moon/ stars), water, ritual or body",
+    "columns": "A, B",
+    "how": "One of the 7 category lines (01-PLT, 01-ANI, 02-ATM, 03-AST, 04-HYD, 05-RIT, 06-SEN)",
+    "who": "Observer/ FGD",
+    "when": "FGD",
+    "feeds": "Basis for the Indicator ID"
+  },
+  {
+    "section": "A. For every sign",
+    "num": 3,
+    "what": "Has it been seen this season?",
+    "columns": "N",
+    "how": "1 = Yes, 0 = No",
+    "who": "Observer",
+    "when": "Each sighting",
+    "feeds": "Gate: only 1 is counted"
+  },
+  {
+    "section": "A. For every sign",
+    "num": 4,
+    "what": "ONSET \u2014 when will the rains START, according to this sign?",
+    "columns": "P (earliest), Q (latest)",
+    "how": "Two dates, e.g. 20/10/2026 and 31/10/2026 (one date \u2192 earliest only)",
+    "who": "Observer, agreed by ITK holders",
+    "when": "FGD; update when seen",
+    "feeds": "Community onset window (rows 39\u201340, 43)"
+  },
+  {
+    "section": "A. For every sign",
+    "num": 5,
+    "what": "CESSATION \u2014 when will the rains END, according to this sign?",
+    "columns": "R (earliest), S (latest)",
+    "how": "Two dates, e.g. 05/01/2027 and 20/01/2027; blank if the sign says nothing about the end",
+    "who": "Observer, agreed by ITK holders",
+    "when": "FGD; update when seen",
+    "feeds": "Community cessation window (rows 41\u201342, 44)"
+  },
+  {
+    "section": "A. For every sign",
+    "num": 6,
+    "what": "DISTRIBUTION \u2014 how well will the rains be spread in time and place?",
+    "columns": "T",
+    "how": "3 Good (evenly spread), 2 Fair (some dry spells), 1 Poor (erratic, long dry spells), 0 Not sure",
+    "who": "Observer, agreed by ITK holders",
+    "when": "FGD; update when seen",
+    "feeds": "Distribution counts and weights (rows 47\u201350)"
+  },
+  {
+    "section": "A. For every sign",
+    "num": 7,
+    "what": "AMOUNT \u2014 how much rain does the sign point to?",
+    "columns": "U",
+    "how": "3 above normal, 2 normal, 1 below normal, 0 no prediction yet",
+    "who": "Observer, agreed by ITK holders",
+    "when": "FGD; update when seen",
+    "feeds": "Tercile tally (rows 11\u201314)"
+  },
+  {
+    "section": "A. For every sign",
+    "num": 8,
+    "what": "How reliable is the sign now?",
+    "columns": "M",
+    "how": "3 High, 2 Medium, 1 Low, 0 Not sure",
+    "who": "FGD/ ITK holders",
+    "when": "FGD",
+    "feeds": "Weight (stones) of the sign"
+  },
+  {
+    "section": "A. For every sign",
+    "num": 9,
+    "what": "How useful is it for a real decision?",
+    "columns": "V",
+    "how": "3 High, 2 Medium, 1 Low, 0 Not sure (see Weighting Options tab, section C, for indicative values by role)",
+    "who": "FGD",
+    "when": "FGD",
+    "feeds": "Weight (stones) of the sign"
+  },
+  {
+    "section": "A. For every sign",
+    "num": 10,
+    "what": "Confirmed by an ITK holder, FGD or plenary?",
+    "columns": "AC",
+    "how": "1 = Yes, 0 = No (names in Observed-by or Notes)",
+    "who": "ITK holder/ plenary",
+    "when": "FGD; weekly panel",
+    "feeds": "Gate; corroboration"
+  },
+  {
+    "section": "A. For every sign",
+    "num": 11,
+    "what": "Approved by a second (lead) ITK holder?",
+    "columns": "AD",
+    "how": "1 = Yes, 0 = No",
+    "who": "Lead ITK holder",
+    "when": "Weekly/ fortnightly panel",
+    "feeds": "Gate; corroboration"
+  },
+  {
+    "section": "A. For every sign",
+    "num": 12,
+    "what": "How widely is the sign accepted?",
+    "columns": "AP",
+    "how": "FGD-validated only / Community/Plenary-endorsed / Sub-community-specific / Provisional/emerging / Contested (exact dropdown wording)",
+    "who": "Plenary",
+    "when": "Plenary",
+    "feeds": "Gate: Contested is not counted"
+  },
+  {
+    "section": "B. With every sighting",
+    "num": 1,
+    "what": "Where and when it was seen",
+    "columns": "O",
+    "how": "Date and place, e.g. \"12/10/2026, Mutirithia dam\"",
+    "who": "Observer",
+    "when": "Each sighting",
+    "feeds": "Evidence"
+  },
+  {
+    "section": "B. With every sighting",
+    "num": 2,
+    "what": "How reliable was the sign in the past?",
+    "columns": "L",
+    "how": "3 High, 2 Medium, 1 Low, 0 Not sure",
+    "who": "FGD/ ITK holders",
+    "when": "FGD",
+    "feeds": "Stability flag"
+  },
+  {
+    "section": "B. With every sighting",
+    "num": 3,
+    "what": "Where does the sign hold true?",
+    "columns": "AR",
+    "how": "Whole ward, or riverine/ dam, highland/ hills, plains/ grazing areas",
+    "who": "FGD",
+    "when": "FGD",
+    "feeds": "Geographic scope"
+  },
+  {
+    "section": "B. With every sighting",
+    "num": 4,
+    "what": "Photos, GPS point and nearby landmark",
+    "columns": "Y\u2013AA",
+    "how": "At least 3 photos (all sides); GPS; landmark",
+    "who": "Observer (learners with ICT teacher)",
+    "when": "Each sighting",
+    "feeds": "Evidence"
+  },
+  {
+    "section": "B. With every sighting",
+    "num": 5,
+    "what": "Who observed it",
+    "columns": "AB",
+    "how": "Name or group",
+    "who": "Observer",
+    "when": "Each sighting",
+    "feeds": "Validation chain"
+  },
+  {
+    "section": "B. With every sighting",
+    "num": 6,
+    "what": "Consent to share",
+    "columns": "BC",
+    "how": "1 or 0, then sharing level (1\u20134) and credit",
+    "who": "ITK holder",
+    "when": "FGD",
+    "feeds": "Data sovereignty"
+  },
+  {
+    "section": "C. After the season",
+    "num": 1,
+    "what": "When did the rains actually START?",
+    "columns": "AS",
+    "how": "Date (dd/mm/yyyy)",
+    "who": "Observers, with rain gauge/ school station",
+    "when": "At onset",
+    "feeds": "Onset check (Early/ Within/ Late)"
+  },
+  {
+    "section": "C. After the season",
+    "num": 2,
+    "what": "When did the rains actually END?",
+    "columns": "AT",
+    "how": "Date (dd/mm/yyyy)",
+    "who": "Observers, with rain gauge/ school station",
+    "when": "At cessation",
+    "feeds": "Cessation check"
+  },
+  {
+    "section": "C. After the season",
+    "num": 3,
+    "what": "How well were the rains actually spread?",
+    "columns": "AU",
+    "how": "3 Good, 2 Fair, 1 Poor",
+    "who": "Observers, NDMA monitor, KMSA",
+    "when": "End of season",
+    "feeds": "Distribution check"
+  },
+  {
+    "section": "C. After the season",
+    "num": 4,
+    "what": "How much rain did the season actually bring?",
+    "columns": "AV",
+    "how": "3 above, 2 normal, 1 below",
+    "who": "Technical officer with community",
+    "when": "End of season",
+    "feeds": "Scoring"
+  },
+  {
+    "section": "C. After the season",
+    "num": 5,
+    "what": "Did this sign's prediction come true?",
+    "columns": "AZ",
+    "how": "Hit, Miss or False Start (using the onset, cessation, distribution and amount checks)",
+    "who": "ITK holders with technical officer",
+    "when": "January review",
+    "feeds": "Hit rate \u2192 next season's weight"
+  },
+  {
+    "section": "D. Not the community's task (data desk, technical officer, automatic)",
+    "num": 1,
+    "what": "Unique Indicator ID (from the Indicator Code Legend; same ID every season)",
+    "columns": "AH",
+    "how": "e.g. 01-ANI-FRO-001",
+    "who": "School data desk",
+    "when": "When entering",
+    "feeds": "Joins seasons; gate"
+  },
+  {
+    "section": "D. Not the community's task (data desk, technical officer, automatic)",
+    "num": 2,
+    "what": "Site and season, typed exactly as on the Tally tab",
+    "columns": "AI, AM",
+    "how": "e.g. Mutirithia; OND 2026",
+    "who": "School data desk",
+    "when": "When entering",
+    "feeds": "Selects rows for the tally"
+  },
+  {
+    "section": "D. Not the community's task (data desk, technical officer, automatic)",
+    "num": 3,
+    "what": "Verified against gauges and data",
+    "columns": "AE",
+    "how": "1 = Yes, 0 = No",
+    "who": "Extension officer/ NDMA monitor/ CDMS",
+    "when": "Weekly check",
+    "feeds": "Validation chain"
+  },
+  {
+    "section": "D. Not the community's task (data desk, technical officer, automatic)",
+    "num": 4,
+    "what": "Entered by",
+    "columns": "AF",
+    "how": "Name and date",
+    "who": "School data desk",
+    "when": "Weekly",
+    "feeds": "Accountability"
+  },
+  {
+    "section": "D. Not the community's task (data desk, technical officer, automatic)",
+    "num": 5,
+    "what": "Weights, checks and tally feed",
+    "columns": "AW\u2013AY, BL\u2013BT, CA\u2013CH, and v4 auto columns (CJ, CM, CP, CS\u2013CV, DH, DI, DK, DQ\u2013DT)",
+    "how": "Calculated \u2014 do not type",
+    "who": "Spreadsheet",
+    "when": "Automatic",
+    "feeds": "All tally figures"
+  },
+  {
+    "section": "E. Items asked in the FGD but missing from this list in v3, and new v4 items",
+    "num": 1,
+    "what": "What the sign predicts (onset, cessation, distribution, amount)",
+    "columns": "H",
+    "how": "Codes 1\u20134 (several allowed)",
+    "who": "FGD/ ITK holders",
+    "when": "FGD",
+    "feeds": "Which of P\u2013U to fill"
+  },
+  {
+    "section": "E. Items asked in the FGD but missing from this list in v3, and new v4 items",
+    "num": 2,
+    "what": "How the predicted weather will affect each livelihood/ sector",
+    "columns": "I, X",
+    "how": "Sector codes; ratings 3/2/1/0 with + or \u2212",
+    "who": "FGD",
+    "when": "FGD",
+    "feeds": "Impact-based advisory"
+  },
+  {
+    "section": "E. Items asked in the FGD but missing from this list in v3, and new v4 items",
+    "num": 3,
+    "what": "Is the sign ancient or new?",
+    "columns": "J",
+    "how": "3 ancient, 2 recent, 1 new, 0 not sure",
+    "who": "Elders/ ITK holders",
+    "when": "FGD",
+    "feeds": "Climate-change flag"
+  },
+  {
+    "section": "E. Items asked in the FGD but missing from this list in v3, and new v4 items",
+    "num": 4,
+    "what": "How long before the weather comes?",
+    "columns": "K",
+    "how": "3 months, 2 weeks, 1 days, 0 not sure",
+    "who": "ITK holders",
+    "when": "FGD",
+    "feeds": "Confidence score; decision horizon"
+  },
+  {
+    "section": "E. Items asked in the FGD but missing from this list in v3, and new v4 items",
+    "num": 5,
+    "what": "What should the community do?",
+    "columns": "W",
+    "how": "Words",
+    "who": "FGD/ plenary",
+    "when": "FGD",
+    "feeds": "Advisory, action plans"
+  },
+  {
+    "section": "E. Items asked in the FGD but missing from this list in v3, and new v4 items",
+    "num": 6,
+    "what": "Hazard, who is at risk, opportunity",
+    "columns": "BU, BV, BW",
+    "how": "Hazard number first; text; 1/0 + text",
+    "who": "FGD + intermediary officer",
+    "when": "FGD",
+    "feeds": "Priority weight; action plans"
+  },
+  {
+    "section": "E. Items asked in the FGD but missing from this list in v3, and new v4 items",
+    "num": 7,
+    "what": "Date sighted (as a date) and its normal month on the calendar",
+    "columns": "CI, CK, CL",
+    "how": "dd/mm/yyyy; local period name; month 1\u201312",
+    "who": "Observer; elders",
+    "when": "Each sighting; FGD",
+    "feeds": "Seasonal Indicator Calendar"
+  },
+  {
+    "section": "E. Items asked in the FGD but missing from this list in v3, and new v4 items",
+    "num": 8,
+    "what": "Has the sign changed? Why?",
+    "columns": "CN, CO",
+    "how": "Dropdowns",
+    "who": "Elders with technical officer",
+    "when": "FGD; January review",
+    "feeds": "Climate-change flag"
+  },
+  {
+    "section": "E. Items asked in the FGD but missing from this list in v3, and new v4 items",
+    "num": 9,
+    "what": "Pasture/ vegetation condition the sign points to",
+    "columns": "CQ",
+    "how": "3 Good, 2 Fair, 1 Poor, 0 Not sure",
+    "who": "Herders/ FGD",
+    "when": "FGD",
+    "feeds": "Vegetation index (Tally 67\u201374)"
+  },
+  {
+    "section": "E. Items asked in the FGD but missing from this list in v3, and new v4 items",
+    "num": 10,
+    "what": "Early action taken and its result",
+    "columns": "CW\u2013CZ",
+    "how": "Objective codes; timing; 1/0; 3/2/1/0",
+    "who": "Community reps + intermediary officer",
+    "when": "In season; January",
+    "feeds": "Anticipatory action"
+  },
+  {
+    "section": "E. Items asked in the FGD but missing from this list in v3, and new v4 items",
+    "num": 11,
+    "what": "Was the advisory shared, how, with whom, and did people act?",
+    "columns": "DA\u2013DG",
+    "how": "1/0; date; channel codes; numbers; %",
+    "who": "Community reps; school data desk",
+    "when": "After each advisory",
+    "feeds": "Communication (Tally 89\u201397)"
+  },
+  {
+    "section": "E. Items asked in the FGD but missing from this list in v3, and new v4 items",
+    "num": 12,
+    "what": "KMD/ KMSA tercile, NDMA phase, residual risk, message",
+    "columns": "DJ\u2013DP",
+    "how": "3/2/1; dropdown; 1/0 + text",
+    "who": "Intermediary officer with community",
+    "when": "Integration session",
+    "feeds": "Comparison, residual risk"
+  }
+]

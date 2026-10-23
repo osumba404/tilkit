@@ -4,14 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\DcProject;
 use App\Services\ToolAccessService;
+use App\Support\Tilkit\WeatherTool;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ToolController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request): View|RedirectResponse
     {
+        if (WeatherTool::singleToolMode()) {
+            $tool = WeatherTool::resolve();
+            if ($tool !== null && $request->user()->canAccessTool($tool)) {
+                return redirect()->route('tools.tilkit.overview', $tool);
+            }
+        }
+
         $user = $request->user();
         $query = DcProject::query()->withCount(['forms', 'submissions']);
 
@@ -24,13 +32,21 @@ class ToolController extends Controller
         return view('tools.index', compact('tools'));
     }
 
-    public function create(): View
+    public function create(): View|RedirectResponse
     {
+        if (WeatherTool::singleToolMode()) {
+            abort(404);
+        }
+
         return view('tools.create');
     }
 
     public function store(Request $request, ToolAccessService $access): RedirectResponse
     {
+        if (WeatherTool::singleToolMode()) {
+            abort(404);
+        }
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:160'],
             'purpose' => ['required', 'string', 'max:5000'],

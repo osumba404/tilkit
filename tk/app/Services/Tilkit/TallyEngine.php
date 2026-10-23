@@ -4,7 +4,9 @@ namespace App\Services\Tilkit;
 
 use App\Enums\Tilkit\TercileForecast;
 use App\Models\Tilkit\TilkitIndicatorRecord;
+use App\Models\Tilkit\TilkitSeason;
 use App\Models\Tilkit\TilkitSeasonSettings;
+use App\Models\Tilkit\TilkitSite;
 use App\Support\Tilkit\TallyResult;
 use Illuminate\Support\Collection;
 
@@ -12,23 +14,33 @@ class TallyEngine
 {
     public function __construct(
         private TilkitRecordEngine $recordEngine,
+        private WorkbookRecordService $workbook,
+        private EligibilityGate $gate,
     ) {}
 
     public function run(int $siteId, int $seasonId, ?TilkitSeasonSettings $settings = null): TallyResult
     {
+        $site = TilkitSite::query()->findOrFail($siteId);
+        $season = TilkitSeason::query()->findOrFail($seasonId);
+
         $records = TilkitIndicatorRecord::query()
             ->where('site_id', $siteId)
             ->where('season_id', $seasonId)
-            ->with(['indicator', 'workbookValues'])
+            ->with(['indicator', 'site', 'season', 'workbookValues'])
             ->get();
 
         $exclusionCounts = [];
         $counted = new Collection;
+        $rowsLoggedWithId = 0;
 
         foreach ($records as $record) {
+            if ($record->indicator?->indicator_uid) {
+                $rowsLoggedWithId++;
+            }
             $this->recordEngine->recalculate($record, $settings);
-            $record->refresh();
-            $gate = app(EligibilityGate::class)->evaluate($record);
+            $record->refresh()->load(['workbookValues', 'site', 'season', 'indicator']);
+            $map = $this->workbook->rawWorkbookMap($record);
+            $gate = $this->gate->evaluate($record, $site->name, $season->label, $map);
             if (! $gate->eligible) {
                 $key = $gate->exclusionReason ?? 'other';
                 $exclusionCounts[$key] = ($exclusionCounts[$key] ?? 0) + 1;
@@ -52,6 +64,8 @@ class TallyEngine
 
         [$onsetEarliest, $onsetLatest] = $this->meanOnsetWindow($counted);
 
+        $countedWithoutWeight = $counted->filter(fn (TilkitIndicatorRecord $r) => ($this->cellNumber($r, 'CG') ?? 0) <= 0)->count();
+
         return new TallyResult(
             siteId: $siteId,
             seasonId: $seasonId,
@@ -69,6 +83,11 @@ class TallyEngine
             isTieWeighted: $this->isTie($weighted['counts']),
             onsetEarliestMean: $onsetEarliest,
             onsetLatestMean: $onsetLatest,
+            rowsLoggedWithId: $rowsLoggedWithId,
+            countedWithoutWeight: $countedWithoutWeight,
+            leadingSimpleLabel: $this->tercileLabel($leadingSimple, $simple['counts']),
+            leadingWeightedLabel: $this->tercileLabel($leadingWeighted, $weighted['counts']),
+            simpleWeightedAgreeLabel: ($leadingSimple !== null && $leadingSimple === $leadingWeighted) ? 'Yes' : 'No',
         );
     }
 
@@ -94,7 +113,6 @@ class TallyEngine
     private function weightedTally(Collection $counted, string $weightColumn): array
     {
         $weights = [1 => 0.0, 2 => 0.0, 3 => 0.0];
-        $counts = [1 => 0, 2 => 0, 3 => 0];
         foreach ($counted as $record) {
             $t = $record->tercile_forecast;
             if (! ($t instanceof TercileForecast) || ! $t->isForecast()) {
@@ -102,9 +120,6 @@ class TallyEngine
             }
             $w = (float) ($this->cellNumber($record, $weightColumn) ?? 0);
             $weights[$t->value] += $w;
-            if ($w > 0) {
-                $counts[$t->value]++;
-            }
         }
         $total = array_sum($weights);
 
@@ -153,6 +168,21 @@ class TallyEngine
         }
 
         return count(array_filter($counts, fn ($v) => $v === $max)) > 1;
+    }
+
+    /** @param  array<int, int|float>  $counts */
+    private function tercileLabel(?int $tercile, array $counts): string
+    {
+        if ($tercile === null) {
+            return $this->isTie($counts) ? 'Tie' : '—';
+        }
+
+        return match ($tercile) {
+            3 => 'Above normal (Average)',
+            2 => 'Normal (Average)',
+            1 => 'Below normal (Average)',
+            default => '—',
+        };
     }
 
     /** @param  Collection<int, TilkitIndicatorRecord>  $counted */

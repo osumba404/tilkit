@@ -22,6 +22,18 @@ This Laravel app (`tk/`) is being aligned with the **TILKIT Weather Indicator Lo
 | `app/Services/Tilkit/*` | Rules engine (gate, weights, tally — phased) |
 | `app/Enums/Tilkit/*` | Tercile, ratings, validation status |
 | `tests/Fixtures/Tilkit/` | Golden cases ported from the v4 demo workbook |
+| `config/tilkit_workbook_sheets.json` | Titles for all 12 master-template sheets |
+| `config/tilkit_community_data_list.json` | Community Data List sections A–E (40 items) |
+
+### Workbook commands
+
+```bash
+php artisan tilkit:import-legend   # master template xlsx → indicator codes
+php artisan tilkit:import-demo {tool_id}
+php artisan tilkit:tally {site_id} {season_id} [--publish]
+```
+
+Web: `tools/{tool}/tilkit` (records), `.../tilkit/setup`, `.../tilkit/tally`, `.../tilkit/workbook`, `.../tilkit/calendar`.
 
 ## Alignment phases
 
@@ -32,4 +44,11 @@ Track detailed status in **[alignment-audit.md](./alignment-audit.md)** (living 
 3. **Phase 2** — Forecast engine with Excel parity tests  
 4. **Phase 3–6** — Mobile sync, workshop/validation, integration & v4 modules, migration & pilots  
 
-Each **tool** (`dc_projects`) can host TILKIT **sites** and **seasons** for a pilot (e.g. SCLoWFER, Green Schools).
+### Single-tool deployment (default)
+
+- **`TILKIT_SINGLE_TOOL=true`** — one `dc_projects` row (`TILKIT_TOOL_CODE`, default `tilkit-weather`) is created by `TilkitSeeder`; users cannot create extra tools.
+- **Workbook “data points”** (124 columns, Community Data List) live in **`config/*.json`**, not as seeded form fields or demo indicator rows.
+- **Operational data** (sites, seasons, indicator records) is entered in the app or imported deliberately; **`tilkit:import-demo`** is for PHPUnit and manual parity checks only.
+- Optional reference: **`tilkit:import-legend`** loads the code legend from the master xlsx when you need DB-backed UIDs.
+
+Sites and seasons are configured per deployment under that single tool (setup UI).

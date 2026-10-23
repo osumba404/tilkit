@@ -64,6 +64,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::match(['get', 'post'], 'tilkit/tally', [ToolTilkitAdminController::class, 'tally'])->name('tilkit.tally');
         Route::get('tilkit/data-desk', [ToolTilkitAdminController::class, 'dataDesk'])->name('tilkit.data-desk');
         Route::get('tilkit/export.csv', [ToolTilkitAdminController::class, 'exportCsv'])->name('tilkit.export.csv');
+        Route::get('tilkit/workbook', [ToolTilkitAdminController::class, 'workbookGuides'])->name('tilkit.workbook');
+        Route::get('tilkit/calendar', [ToolTilkitAdminController::class, 'calendar'])->name('tilkit.calendar');
         Route::get('analytics', [ToolAnalyticsController::class, 'show'])->name('analytics');
         Route::get('analytics/explorer', [ToolAnalyticsController::class, 'explorer'])->name('analytics.explorer');
         Route::get('analytics/review', [ToolAnalyticsController::class, 'review'])->name('analytics.review');

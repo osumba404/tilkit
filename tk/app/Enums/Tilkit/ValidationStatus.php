@@ -14,4 +14,16 @@ enum ValidationStatus: string
     {
         return $this === self::Contested;
     }
+
+    /** Wording from the Indicator Log AP dropdown (Community Data List). */
+    public function excelLabel(): string
+    {
+        return match ($this) {
+            self::FgdValidated => 'FGD-validated only',
+            self::CommunityPlenaryEndorsed => 'Community/Plenary-endorsed',
+            self::SubCommunitySpecific => 'Sub-community-specific',
+            self::ProvisionalEmerging => 'Provisional/emerging',
+            self::Contested => 'Contested',
+        };
+    }
 }

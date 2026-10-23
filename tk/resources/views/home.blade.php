@@ -1,10 +1,21 @@
 <x-layouts.site title="Tilkit — institutional data collection">
     <section class="py-6 sm:py-12">
         <h1 class="font-display font-bold text-4xl sm:text-5xl leading-tight max-w-2xl text-tk-ink">Build collection tools. Analyse field data. Govern with purpose.</h1>
-        <p class="mt-6 text-lg text-tk-muted max-w-2xl">Tilkit maps the full catalogue of data collection points—from XLSForm question types to sensors and channels—into a single platform. Create a tool, become its admin, and publish forms aligned with Kenya DPA governance.</p>
+        @php($weatherTool = \App\Support\Tilkit\WeatherTool::singleToolMode() ? \App\Support\Tilkit\WeatherTool::resolve() : null)
+        <p class="mt-6 text-lg text-tk-muted max-w-2xl">
+            @if ($weatherTool)
+                TILKIT Weather Indicator Log (v4 workbook): capture community signs, run eligibility and weighting, and publish seasonal tercile tallies—field definitions ship with the app, not in the database.
+            @else
+                Tilkit maps the full catalogue of data collection points—from XLSForm question types to sensors and channels—into a single platform. Create a tool, become its admin, and publish forms aligned with Kenya DPA governance.
+            @endif
+        </p>
         <div class="mt-10 flex flex-wrap gap-3">
             @auth
-                <a href="{{ route('tools.create') }}" class="tk-btn-primary">Create a tool</a>
+                @if ($weatherTool)
+                    <a href="{{ route('tools.tilkit.overview', $weatherTool) }}" class="tk-btn-primary">Open weather log</a>
+                @else
+                    <a href="{{ route('tools.create') }}" class="tk-btn-primary">Create a tool</a>
+                @endif
                 <a href="{{ route('dashboard') }}" class="tk-btn-secondary">Open dashboard</a>
             @else
                 <a href="{{ route('register') }}" class="tk-btn-primary">Get started free</a>

@@ -70,6 +70,15 @@
             @if ($result->onsetEarliestMean)
                 <p class="text-xs text-tk-muted">Mean onset window: {{ $result->onsetEarliestMean }} – {{ $result->onsetLatestMean ?? '—' }}</p>
             @endif
+            <div class="border-t border-tk-line pt-4 text-sm space-y-1">
+                <h4 class="font-semibold">Data check (matches Tally tab)</h4>
+                <p>Rows logged with ID: {{ $result->rowsLoggedWithId }}</p>
+                <p>Counted in tally: {{ $result->countedRows }}</p>
+                <p>Counted without weight (rating 0): {{ $result->countedWithoutWeight }}</p>
+                <p>Leading (simple): {{ $result->leadingSimpleLabel }}</p>
+                <p>Leading (weighted): {{ $result->leadingWeightedLabel }}</p>
+                <p>Simple and weighted agree? {{ $result->simpleWeightedAgreeLabel }}</p>
+            </div>
             @if ($result->exclusionCounts !== [])
                 <div class="text-xs">
                     <strong>Exclusions:</strong>

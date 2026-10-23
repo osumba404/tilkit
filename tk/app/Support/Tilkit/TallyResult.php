@@ -25,6 +25,11 @@ readonly class TallyResult
         public bool $isTieWeighted,
         public ?string $onsetEarliestMean,
         public ?string $onsetLatestMean,
+        public int $rowsLoggedWithId,
+        public int $countedWithoutWeight,
+        public string $leadingSimpleLabel,
+        public string $leadingWeightedLabel,
+        public string $simpleWeightedAgreeLabel,
     ) {}
 
     /** @return array<string, mixed> */
@@ -47,6 +52,11 @@ readonly class TallyResult
             'is_tie_weighted' => $this->isTieWeighted,
             'onset_earliest_mean' => $this->onsetEarliestMean,
             'onset_latest_mean' => $this->onsetLatestMean,
+            'rows_logged_with_id' => $this->rowsLoggedWithId,
+            'counted_without_weight' => $this->countedWithoutWeight,
+            'leading_simple_label' => $this->leadingSimpleLabel,
+            'leading_weighted_label' => $this->leadingWeightedLabel,
+            'simple_weighted_agree_label' => $this->simpleWeightedAgreeLabel,
         ];
     }
 }

@@ -12,8 +12,26 @@ use App\Support\Tilkit\GateResult;
  */
 class EligibilityGate
 {
-    public function evaluate(TilkitIndicatorRecord $record): GateResult
-    {
+    /** @param  array<string, mixed>|null  $workbookMap */
+    public function evaluate(
+        TilkitIndicatorRecord $record,
+        ?string $expectedSiteName = null,
+        ?string $expectedSeasonLabel = null,
+        ?array $workbookMap = null,
+    ): GateResult {
+        if ($expectedSiteName !== null && $workbookMap !== null) {
+            $ai = isset($workbookMap['AI']) ? trim((string) $workbookMap['AI']) : '';
+            if ($ai !== '' && strcasecmp($ai, $expectedSiteName) !== 0) {
+                return GateResult::excluded('other_site_season', 'Other site/ season (AI/AM mismatch)');
+            }
+        }
+        if ($expectedSeasonLabel !== null && $workbookMap !== null) {
+            $am = isset($workbookMap['AM']) ? trim((string) $workbookMap['AM']) : '';
+            if ($am !== '' && strcasecmp($am, $expectedSeasonLabel) !== 0) {
+                return GateResult::excluded('other_site_season', 'Other site/ season (AI/AM mismatch)');
+            }
+        }
+
         if ($record->indicator?->indicator_uid === null || $record->indicator->indicator_uid === '') {
             return GateResult::excluded('missing_indicator_uid', 'Missing Unique Indicator ID (AH)');
         }

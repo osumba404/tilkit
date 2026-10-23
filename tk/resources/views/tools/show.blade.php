@@ -4,7 +4,11 @@
             <x-slot:actions>
             <div class="flex flex-wrap gap-2">
                 <a href="{{ route('platform.datasets.index') }}" class="tk-btn-secondary">My datasets</a>
-                <a href="{{ route('tools.tilkit.overview', $tool) }}" class="tk-btn-secondary">TILKIT weather</a>
+                @if (\App\Support\Tilkit\WeatherTool::isWeatherModule($tool))
+                    <a href="{{ route('tools.tilkit.overview', $tool) }}" class="tk-btn-primary">Weather log</a>
+                @else
+                    <a href="{{ route('tools.tilkit.overview', $tool) }}" class="tk-btn-secondary">TILKIT weather</a>
+                @endif
                 @if ($capabilities->canViewAnalytics())
                     <a href="{{ route('tools.analytics', $tool) }}" class="tk-btn-secondary">Analytics</a>
                 @endif
@@ -19,7 +23,9 @@
                 @endif
                 @if ($capabilities->canManageTool())
                     <a href="{{ route('tools.settings.edit', $tool) }}" class="tk-btn-secondary">Settings</a>
-                    <a href="{{ route('tools.forms.create', $tool) }}" class="tk-btn-primary">New form</a>
+                    @unless (\App\Support\Tilkit\WeatherTool::isWeatherModule($tool))
+                        <a href="{{ route('tools.forms.create', $tool) }}" class="tk-btn-primary">New form</a>
+                    @endunless
                 @endif
             </div>
             </x-slot:actions>

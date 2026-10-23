@@ -5,9 +5,11 @@ namespace App\Providers;
 use App\Models\DcForm;
 use App\Models\DcProject;
 use App\Models\DcSubmission;
+use App\Support\Tilkit\WeatherTool;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,6 +27,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        View::composer(['layouts.navigation', 'layouts.app'], function ($view): void {
+            $view->with('tilkitWeatherTool', WeatherTool::singleToolMode() ? WeatherTool::resolve() : null);
+        });
+
         Blueprint::macro('auditColumns', function (bool $userForeignKeys = true): void {
             /** @var Blueprint $this */
             $this->timestamp('created_at')->useCurrent();

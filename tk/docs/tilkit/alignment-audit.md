@@ -4,7 +4,30 @@ Cross-check between **spec documents** (`tilkit_docs/`, Developer Brief in `_ext
 
 **Related docs:** [README](./README.md) · [Open questions](./open-questions.md) · [Fixtures README](../../tests/Fixtures/Tilkit/README.md)
 
-**Last reviewed:** 2026-10-23
+**Last reviewed:** 2026-10-23 (engine + demo parity pass)
+
+---
+
+## v4 workbook — 12 sheets ↔ platform
+
+Source files: `TILKIT_Weather_Indicator_Log_Master_Template_v4_OND2026.xlsx` and `TILKIT_Weather_Indicator_Log_v4_DEMO_hypothetical_data.xlsx`. Catalog: `config/tilkit_workbook_sheets.json`.
+
+| Sheet | Platform |
+|-------|----------|
+| How to Use | `tools/{tool}/tilkit/workbook` — workbook guides view |
+| Community Data List | `config/tilkit_community_data_list.json` + guides; record form still stage-grid, not full A–E wizard |
+| Sheet 1 — Indicator Log | 124-column register, `WorkbookRecordService`, `ToolTilkitWeatherController`, derived via `TilkitRecordEngine` |
+| Seasonal Tercile Tally | `TallyEngine`, `tools/{tool}/tilkit/tally`, `tilkit:tally`, optional snapshot publish |
+| Seasonal Indicator Calendar | `tools/{tool}/tilkit/calendar` (CI–CP columns) |
+| Indicator Code Legend | `tilkit_indicator_codes`; `php artisan tilkit:import-legend` from master xlsx |
+| Prior Multipliers | `tilkit_indicator_codes.prior_multiplier`; partial vs full matrix sheet |
+| Weighting Options | `TilkitSeasonSettings`, `ConfidenceScoreCalculator`, season settings UI |
+| Barriers Addressed | Reference only in guides (no separate module) |
+| Framework Crosswalk | Reference only in guides |
+| References | Reference only in guides |
+| Change Log v4 | Spec traceability in `tilkit_docs/`; import transforms not automated |
+
+**Demo data:** `tests/Fixtures/Tilkit/demo_workbook_full.json` + `php artisan tilkit:import-demo {tool}`; parity test Mutirithia OND 2026.
 
 ---
 
@@ -27,7 +50,7 @@ Cross-check between **spec documents** (`tilkit_docs/`, Developer Brief in `_ext
 | Risk | Status | Mitigation | Epic / issue |
 |------|--------|------------|----------------|
 | **Two capture paths** — native TILKIT module vs generic form builder | `[x]` | Legacy `WeatherIndicatorLogToolSeeder` / field catalog removed (2026-10-23); use `tools/{tool}/tilkit` only | — |
-| **Data saved without certified tally** — full workbook capture without Phase 2 engine | `[~]` | UI label “capture only”; block forecast publication until golden tests green | Phase 2, Phase 5 |
+| **Data saved without certified tally** — full workbook capture without Phase 2 engine | `[~]` | Engine + demo parity test green; extend golden suite (6-sign, full exclusion matrix) before pilot sign-off | Phase 2, Phase 5 |
 | **Canonical vs workbook drift** — `tilkit_indicator_records` vs `tilkit_workbook_values` | `[~]` | Single write path via `WorkbookRecordService`; expand sync or drop duplicate columns | Phase 1 |
 | **Open product decisions** change engine math | `[ ]` | Resolve `open-questions.md` before tally finalisation | Phase 0 |
 
@@ -45,7 +68,7 @@ Cross-check between **spec documents** (`tilkit_docs/`, Developer Brief in `_ext
 | Open questions documented | Brief §11.4 | `docs/tilkit/open-questions.md` | `[~]` doc exists; decisions mostly open |
 | Pilot priority (SCLoWFER vs Green Schools) | Brief §11.4 #9 | — | `[ ]` |
 | Signed-off spec version (xlsx + Change Log) | Phase 0 epic | Docs in `tilkit_docs/`; no formal sign-off recorded | `[ ]` |
-| Golden fixtures from demo workbook | Brief §10.2 | `tests/Fixtures/Tilkit/gate_eligible_frog.json` only | `[~]` |
+| Golden fixtures from demo workbook | Brief §10.2 | `gate_eligible_frog.json`, `demo_workbook_full.json`, `TilkitDemoTallyParityTest` | `[~]` |
 
 **Child issues**
 
@@ -65,15 +88,15 @@ Cross-check between **spec documents** (`tilkit_docs/`, Developer Brief in `_ext
 | Season, Site, IndicatorCode, Indicator, IndicatorRecord | Brief §2, §4.2 | Migrations `2026_10_23_120000_*`; models under `app/Models/Tilkit/` | `[x]` |
 | Sighting as child of record | Brief §4 updated entity model | `tilkit_sightings` + `TilkitSighting` | `[x]` schema only |
 | Evidence media (photos) | Column Y | `tilkit_workbook_media`; upload in `ToolTilkitWeatherController` | `[~]` |
-| Season settings (Weighting Options) | Brief §6.6, v4 tab | `tilkit_season_settings` table | `[ ]` no model/UI |
+| Season settings (Weighting Options) | Brief §6.6, v4 tab | `TilkitSeasonSettings` + admin season settings UI | `[~]` hazard-by-BU not fully wired |
 | Unique `(indicator_id, site_id, season_id)` | Brief §6 data rules | Migration unique index; `TilkitWeatherSchemaTest` | `[x]` |
 | Workbook cell storage (not 124 columns on one row) | Brief §4.2 | `tilkit_workbook_values` + `WorkbookRecordService` | `[x]` |
 | Raw capture UI (all 90 raw fields) | Register stages | `record-form.blade.php` + `WorkbookColumnRegistry::rawColumnsByStage()` | `[~]` grid form; not sighting-first |
 | Derived columns not client-writable | Brief §5 personas | `assertRawColumn()`; read-only section on edit | `[x]` |
-| Reference columns AH / AI / AM from relations | Indicator Log | `storeReferenceColumns()` | `[x]` |
-| Seed code legend + prior multipliers from v4 xlsx | Phase 1 epic | `tilkit_indicator_codes` empty unless manual | `[ ]` |
+| Reference columns AH–AM from relations | Indicator Log | `storeReferenceColumns()` (AH–AI, AJ–AL ward/county/country, AM) | `[x]` |
+| Seed code legend + prior multipliers from v4 xlsx | Phase 1 epic | `tilkit:import-legend` (157 codes from master) | `[~]` prior matrix import partial |
 | RBAC by provider (observer, ITK, data desk, …) | Brief §5, Register | TILKIT routes use `assertCanView` only | `[ ]` |
-| Admin CRUD: sites, seasons, codes | Phase 1 epic | No TILKIT admin UI | `[ ]` |
+| Admin CRUD: sites, seasons, codes | Phase 1 epic | `ToolTilkitAdminController` setup + data desk | `[~]` codes via import, not full CRUD |
 | Organisation entity | Phase 1 epic deliverable | Uses `dc_projects` as tool host | `[~]` intentional platform pattern |
 
 **Child issues**
@@ -94,24 +117,24 @@ Cross-check between **spec documents** (`tilkit_docs/`, Developer Brief in `_ext
 |-------|------|-------------------|--------|
 | Gate: UID, sighted, confirmed, approved | Brief §4.3 gate | `EligibilityGate` | `[x]` |
 | Gate: contested excluded; tercile 1/2/3 | Brief §4.3 | `ValidationStatus::excludedFromTally()`; `TercileForecast::isForecast()` | `[x]` |
-| Gate: one exclusion reason per row | Brief §10.3 | `GateResult` reason codes | `[~]` not persisted to column **CE** |
-| Gate: duplicate / first-record (**DT**) | v4 Change Log | DB unique prevents 2 rows; no DT derivation | `[ ]` |
-| Gate: site/season scope in tally context | Brief §4.3 | Enforced by query scope (when tally exists) | `[ ]` |
-| Persist **CE** tally status (derived) | v4 single source of truth | `storeDerivedValues` exists; not wired on recalc | `[ ]` |
-| Weighting phase switch (≥3 scored seasons) | Brief §4.3 | `config` `scored_seasons_for_hit_rate` | `[ ]` no engine |
-| Corroboration cap (base weight max 2) | Brief §4.3 | — | `[ ]` |
-| Final weight = base × decision relevance | Brief §4.3 | — | `[ ]` |
-| Optional literature prior (rating phase only) | Brief §4.3 | `tilkit_season_settings.use_prior_multiplier` unused | `[ ]` |
-| Simple / weighted / priority-adjusted tallies | Brief §10.2 table | — | `[ ]` |
-| Reconciliation: counted rows = tally total | Brief §10.3 | — | `[ ]` |
-| Ties reported, not silently resolved | Brief §4.3 | — | `[ ]` |
+| Gate: one exclusion reason per row | Brief §10.3 | `GateResult` → **CE** on recalc | `[x]` |
+| Gate: duplicate / first-record (**DT**) | v4 Change Log | Derived on recalc; DB unique on insert | `[~]` |
+| Gate: site/season scope in tally context | Brief §4.3 | `TilkitEngineService::runTally` scoped | `[x]` |
+| Persist **CE** tally status (derived) | v4 single source of truth | `TilkitRecordEngine` + `storeDerivedValues` | `[x]` |
+| Weighting phase switch (≥3 scored seasons) | Brief §4.3 | `WeightingService` + `IndicatorHistoryService` | `[~]` needs scored-season fixtures |
+| Corroboration cap (base weight max 2) | Brief §4.3 | `WeightingService` | `[x]` |
+| Final weight = base × decision relevance | Brief §4.3 | `WeightingService` / record engine | `[x]` |
+| Optional literature prior (rating phase only) | Brief §4.3 | Season setting flag + code prior | `[~]` |
+| Simple / weighted / priority-adjusted tallies | Brief §10.2 table | `TallyEngine` | `[x]` |
+| Reconciliation: counted rows = tally total | Brief §10.3 | `TallyResult::reconciliationOk` | `[x]` |
+| Ties reported, not silently resolved | Brief §4.3 | Tally exposes tie flag | `[~]` |
 | Post-season Hit / Miss / False Start | Brief lifecycle | `SeasonOutcome` enum; no scoring loop | `[ ]` |
-| CLI `tilkit:tally {site} {season}` | Phase 2 epic | — | `[ ]` |
-| Frog trace fixture parity | Brief §10.2 | Partial gate fixture only | `[ ]` |
-| 11-row demo (duplicate, contested, …) | Brief §10.2 | — | `[ ]` |
-| 6-sign OND 2026 (50/17/33 vs 55/14/31 vs 58/10/32) | Brief §10.2 | — | `[ ]` |
-| Confidence score **not** in tally weight | Brief §10.3, §6.6 | — | `[ ]` |
-| Rating 0 excluded from averages / stability | Brief §10.3 | — | `[ ]` |
+| CLI `tilkit:tally {site} {season}` | Phase 2 epic | `TilkitTallyCommand` | `[x]` |
+| Frog trace fixture parity | Brief §10.2 | `TilkitEngineTest` final weight 6 | `[x]` |
+| 11-row demo (duplicate, contested, …) | Brief §10.2 | Imported as 10 DB rows; tally 8 counted | `[~]` |
+| 6-sign OND 2026 (50/17/33 vs 55/14/31 vs 58/10/32) | Brief §10.2 | Not isolated test yet | `[ ]` |
+| Confidence score **not** in tally weight | Brief §10.3, §6.6 | **DQ** separate from tally weights | `[x]` |
+| Rating 0 excluded from averages / stability | Brief §10.3 | WeightingService rules | `[~]` |
 
 **Child issues**
 
@@ -153,7 +176,7 @@ Cross-check between **spec documents** (`tilkit_docs/`, Developer Brief in `_ext
 | Separation confirm vs approve (same person?) | `open-questions.md` #5 | — | `[ ]` |
 | Pending-validation queue | Brief §6.5 | — | `[ ]` |
 | Duplicate review queue | Brief §11.3 | — | `[ ]` |
-| Controlled dropdowns (AP, U, M, V, …) | xlsx validation lists | Mixed selects + free text | `[~]` |
+| Controlled dropdowns (AP, U, M, V, …) | xlsx validation lists | AP uses Excel labels via `ValidationStatus::excelLabel()` | `[~]` |
 | Demographics BG–BK | Brief equity | Form includes via register | `[~]` |
 | Persona-specific views (observer vs data desk) | Register `provided_by` | — | `[ ]` |
 
@@ -167,20 +190,20 @@ Cross-check between **spec documents** (`tilkit_docs/`, Developer Brief in `_ext
 
 | Check | Spec | Platform evidence | Status |
 |-------|------|-------------------|--------|
-| Seasonal Tercile Tally dashboard (site + season) | Brief §7 web app | — | `[ ]` |
-| Immutable forecast snapshots | Brief §10.3, §11.3 | — | `[ ]` |
+| Seasonal Tercile Tally dashboard (site + season) | Brief §7 web app | Admin tally view + CLI | `[~]` |
+| Immutable forecast snapshots | Brief §10.3, §11.3 | `tilkit_tally_snapshots` on publish | `[~]` |
 | KMSA / KMD outlook ingest + agreement | Columns DJ–DL | — | `[ ]` |
 | NDMA phase / VCI3M | Brief §6.2, §6.5 | — | `[ ]` |
-| Calendar & climate-change flag (CI–CP) | Brief §6.1 | Columns in register only | `[ ]` |
+| Calendar & climate-change flag (CI–CP) | Brief §6.1 | Admin calendar view + register columns | `[~]` |
 | Vegetation index CQ–CT | Brief §6.2 | — | `[ ]` |
 | Anticipatory action triggers CU–CZ | Brief §6.3 | — | `[ ]` |
 | Dissemination effectiveness DA–DI | Brief §6.4 | — | `[ ]` |
 | Residual risk DM–DP | Brief §6.5 | — | `[ ]` |
-| Confidence & hazard priority (DQ–DS) | Weighting Options tab | — | `[ ]` |
+| Confidence & hazard priority (DQ–DS) | Weighting Options tab | DQ on record; DR partial | `[~]` |
 | Consensus forecast / integration session (BF, …) | Brief §7 | — | `[ ]` |
 | Consent BC enforced on every export | Brief §9 | Partial parse in `WorkbookRecordService` | `[ ]` |
 | Do-no-harm BB blocks dissemination | Brief §9 | Stored on record; no gate | `[ ]` |
-| PDF / CSV / JSON exports (column order contractual) | Brief §10.1 | — | `[ ]` |
+| PDF / CSV / JSON exports (column order contractual) | Brief §10.1 | CSV export route (partial column set) | `[~]` |
 
 **Child issues:** Phase 5: Official outlook ingest adapter · Phase 5: Tally dashboard and consensus forecast publication · Phase 5: Consent-aware exports (PDF, CSV, JSON)
 
@@ -212,7 +235,10 @@ Cross-check between **spec documents** (`tilkit_docs/`, Developer Brief in `_ext
 | One row per indicator × site × season | `tilkit_indicator_records`, unique index |
 | Raw cell writes | `WorkbookRecordService::storeRawValues` |
 | Derived cell writes | `WorkbookRecordService::storeDerivedValues` (engine only) |
-| Eligibility (partial) | `EligibilityGate`, `GateResult` |
+| Eligibility + derived row | `EligibilityGate`, `TilkitRecordEngine`, `TilkitEngineService` |
+| Tally | `TallyEngine`, `TilkitEngineService::runTally` |
+| Admin / tally UI | `ToolTilkitAdminController` |
+| Workbook sheets + community list | `WorkbookSheetCatalog`, `CommunityDataListRegistry`, JSON configs |
 | Web entry | `ToolTilkitWeatherController`, `tools/tilkit/*` routes |
 | Acceptance fixtures | `tests/Fixtures/Tilkit/` |
 
@@ -223,10 +249,10 @@ Cross-check between **spec documents** (`tilkit_docs/`, Developer Brief in `_ext
 Before calling a pilot “on TILKIT digital” rather than the xlsx:
 
 1. `[ ]` Phase 0 open questions **#1, #2, #5** decided and encoded in config.
-2. `[ ]` Phase 2 golden tests **all green** (frog, 11-row, 6-sign).
+2. `[~]` Phase 2 golden tests **all green** (frog + demo tally green; 6-sign isolated test pending).
 3. `[x]` Single capture path — native TILKIT module (`ToolTilkitWeatherController` + workbook values).
-4. `[ ]` Code legend seeded from master template for that pilot.
-5. `[ ]` Sites, seasons, and season settings configured and versioned.
+4. `[~]` Code legend seeded from master template for that pilot (`tilkit:import-legend`).
+5. `[~]` Sites, seasons, and season settings configured and versioned (setup UI exists).
 6. `[ ]` UI states forecasts are **not certified** until (2) passes.
 
 ---
@@ -237,3 +263,4 @@ Before calling a pilot “on TILKIT digital” rather than the xlsx:
 |------|--------|
 | 2026-10-23 | Initial audit from doc vs platform review; tied to `issues.json` epics Phases 0–6 |
 | 2026-10-23 | Removed legacy generic-form capture (`WeatherIndicatorLogToolSeeder`, `WeatherIndicatorLogFieldCatalog`) |
+| 2026-10-23 | Engine, tally, demo parity, 12-sheet config, admin routes; AP Excel labels; AJ–AL reference sync |
