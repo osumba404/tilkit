@@ -89,7 +89,7 @@ class ToolTilkitWeatherController extends Controller
         $access->assertCanView($request->user(), $tool);
         $this->assertRecordBelongsToTool($tool, $record);
 
-        $record->load(['indicator', 'site', 'season', 'workbookMedia', 'workbookValues']);
+        $record->load(['indicator', 'site', 'season', 'workbookMedia', 'workbookValues', 'sightings']);
 
         $derivedMap = [];
         foreach ($record->workbookValues->where('is_derived', true) as $cell) {

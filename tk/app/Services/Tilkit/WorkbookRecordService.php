@@ -38,9 +38,12 @@ class WorkbookRecordService
                 );
             }
 
-            $this->syncCanonicalFromWorkbook($record->fresh(['workbookValues']));
+            $record = $record->fresh(['workbookValues']);
+            $this->syncCanonicalFromWorkbook($record);
+            $fresh = TilkitIndicatorRecord::query()->with(['workbookValues', 'indicator'])->findOrFail($record->id);
+            app(TilkitEngineService::class)->recalculateRecord($fresh);
 
-            return $record->fresh(['workbookValues']);
+            return TilkitIndicatorRecord::query()->with(['workbookValues', 'indicator'])->findOrFail($record->id);
         });
     }
 
@@ -75,6 +78,9 @@ class WorkbookRecordService
                     continue;
                 }
                 $kind = WorkbookColumnRegistry::inputKind($meta);
+                if (is_numeric($value) && ! in_array($kind, ['yes_no', 'date', 'json'], true)) {
+                    $kind = WorkbookColumnRegistry::inputKind($meta) === 'rating' ? 'rating' : 'number';
+                }
                 $normalized = WorkbookValueNormalizer::normalize($value, $kind);
 
                 TilkitWorkbookValue::query()->updateOrCreate(
@@ -208,6 +214,11 @@ class WorkbookRecordService
     private function mapValidationStatus(mixed $value): ValidationStatus
     {
         $v = strtolower(str_replace(' ', '_', (string) $value));
+        foreach (ValidationStatus::cases() as $case) {
+            if ($v === $case->value) {
+                return $case;
+            }
+        }
 
         return match (true) {
             str_contains($v, 'contest') => ValidationStatus::Contested,

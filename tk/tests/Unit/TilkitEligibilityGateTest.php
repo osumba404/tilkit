@@ -46,5 +46,6 @@ class TilkitEligibilityGateTest extends TestCase
 
         $this->assertFalse($result->eligible);
         $this->assertSame('contested', $result->exclusionReason);
+        $this->assertStringContainsString('Contested', $result->tallyStatusLabel);
     }
 }

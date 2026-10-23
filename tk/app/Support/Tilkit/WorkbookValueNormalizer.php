@@ -27,6 +27,10 @@ class WorkbookValueNormalizer
                 ...$empty,
                 'value_number' => self::rating($value),
             ],
+            'number' => [
+                ...$empty,
+                'value_number' => self::number($value),
+            ],
             'date' => [
                 ...$empty,
                 'value_date' => self::date($value),
@@ -67,6 +71,11 @@ class WorkbookValueNormalizer
         }
 
         return null;
+    }
+
+    private static function number(mixed $value): ?float
+    {
+        return is_numeric($value) ? (float) $value : null;
     }
 
     private static function rating(mixed $value): ?float

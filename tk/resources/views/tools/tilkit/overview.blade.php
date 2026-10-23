@@ -26,13 +26,19 @@
 
     <div class="flex flex-wrap gap-3 mb-6">
         <a href="{{ route('tools.tilkit.records.create', $tool) }}" class="tk-btn-primary">New indicator record</a>
+        <a href="{{ route('tools.tilkit.setup', $tool) }}" class="tk-btn-secondary">Setup</a>
+        <a href="{{ route('tools.tilkit.tally', $tool) }}" class="tk-btn-secondary">Tercile tally</a>
+        <a href="{{ route('tools.tilkit.data-desk', $tool) }}" class="tk-btn-secondary">Data desk</a>
+        <a href="{{ route('tools.tilkit.settings', $tool) }}" class="tk-btn-secondary">Season settings</a>
+        <a href="{{ route('tools.tilkit.export.csv', $tool) }}" class="tk-btn-secondary">Export CSV</a>
     </div>
 
     <div class="tk-card p-6 space-y-4 mb-6">
-        <h3 class="tk-section-title">Workbook capture</h3>
+        <h3 class="tk-section-title">Workbook capture &amp; engine</h3>
         <p class="text-sm text-tk-muted">
-            All <strong class="text-tk-ink">{{ $rawFieldCount }}</strong> raw columns from the v4 Indicator Log (A–DT) are stored per record in
-            <code class="text-xs">tilkit_workbook_values</code>, keyed by Excel column letter. Derived columns (34) are computed server-side in Phase 2.
+            All <strong class="text-tk-ink">{{ $rawFieldCount }}</strong> raw columns are stored in
+            <code class="text-xs">tilkit_workbook_values</code>. On each save the server recalculates derived fields (CE, weights, CG, DS, …) and supports
+            simple / weighted / priority-adjusted tallies with reconciliation. Publish snapshots from the tally screen before sharing forecasts externally.
         </p>
     </div>
 

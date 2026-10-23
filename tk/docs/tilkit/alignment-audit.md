@@ -26,7 +26,7 @@ Cross-check between **spec documents** (`tilkit_docs/`, Developer Brief in `_ext
 
 | Risk | Status | Mitigation | Epic / issue |
 |------|--------|------------|----------------|
-| **Two capture paths** — native TILKIT module vs generic `WeatherIndicatorLogToolSeeder` / `WeatherIndicatorLogFieldCatalog` | `[~]` | Pick one pilot path; deprecate or gate the other | Phase 1, Phase 4 |
+| **Two capture paths** — native TILKIT module vs generic form builder | `[x]` | Legacy `WeatherIndicatorLogToolSeeder` / field catalog removed (2026-10-23); use `tools/{tool}/tilkit` only | — |
 | **Data saved without certified tally** — full workbook capture without Phase 2 engine | `[~]` | UI label “capture only”; block forecast publication until golden tests green | Phase 2, Phase 5 |
 | **Canonical vs workbook drift** — `tilkit_indicator_records` vs `tilkit_workbook_values` | `[~]` | Single write path via `WorkbookRecordService`; expand sync or drop duplicate columns | Phase 1 |
 | **Open product decisions** change engine math | `[ ]` | Resolve `open-questions.md` before tally finalisation | Phase 0 |
@@ -83,8 +83,6 @@ Cross-check between **spec documents** (`tilkit_docs/`, Developer Brief in `_ext
 | Phase 1: Core TILKIT migrations and models | Rows above through unique constraint |
 | Phase 1: Seed indicator code legend and prior multipliers | Seed from master template xlsx |
 | Phase 1: Admin UI for sites, seasons, and code legend | Admin CRUD rows |
-
-**Extra alignment note:** `database/seeders/WeatherIndicatorLogToolSeeder.php` builds **generic forms**, not the 124-column contract — treat as legacy/conceptual unless explicitly retired.
 
 ---
 
@@ -226,7 +224,7 @@ Before calling a pilot “on TILKIT digital” rather than the xlsx:
 
 1. `[ ]` Phase 0 open questions **#1, #2, #5** decided and encoded in config.
 2. `[ ]` Phase 2 golden tests **all green** (frog, 11-row, 6-sign).
-3. `[ ]` Single capture path agreed (native module vs generic forms).
+3. `[x]` Single capture path — native TILKIT module (`ToolTilkitWeatherController` + workbook values).
 4. `[ ]` Code legend seeded from master template for that pilot.
 5. `[ ]` Sites, seasons, and season settings configured and versioned.
 6. `[ ]` UI states forecasts are **not certified** until (2) passes.
@@ -238,3 +236,4 @@ Before calling a pilot “on TILKIT digital” rather than the xlsx:
 | Date | Change |
 |------|--------|
 | 2026-10-23 | Initial audit from doc vs platform review; tied to `issues.json` epics Phases 0–6 |
+| 2026-10-23 | Removed legacy generic-form capture (`WeatherIndicatorLogToolSeeder`, `WeatherIndicatorLogFieldCatalog`) |

@@ -18,6 +18,7 @@ use App\Http\Controllers\ToolController;
 use App\Http\Controllers\ToolFormController;
 use App\Http\Controllers\ToolInvitationController;
 use App\Http\Controllers\ToolSubmissionController;
+use App\Http\Controllers\ToolTilkitAdminController;
 use App\Http\Controllers\ToolTilkitWeatherController;
 use Illuminate\Support\Facades\Route;
 
@@ -53,6 +54,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('tilkit/records', [ToolTilkitWeatherController::class, 'storeRecord'])->name('tilkit.records.store');
         Route::get('tilkit/records/{record}', [ToolTilkitWeatherController::class, 'editRecord'])->name('tilkit.records.edit');
         Route::patch('tilkit/records/{record}', [ToolTilkitWeatherController::class, 'updateRecord'])->name('tilkit.records.update');
+        Route::post('tilkit/records/{record}/sightings', [ToolTilkitAdminController::class, 'storeSighting'])->name('tilkit.records.sightings.store');
+        Route::get('tilkit/setup', [ToolTilkitAdminController::class, 'setup'])->name('tilkit.setup');
+        Route::post('tilkit/setup/sites', [ToolTilkitAdminController::class, 'storeSite'])->name('tilkit.setup.site');
+        Route::post('tilkit/setup/seasons', [ToolTilkitAdminController::class, 'storeSeason'])->name('tilkit.setup.season');
+        Route::post('tilkit/setup/indicators', [ToolTilkitAdminController::class, 'storeIndicator'])->name('tilkit.setup.indicator');
+        Route::get('tilkit/settings', [ToolTilkitAdminController::class, 'seasonSettings'])->name('tilkit.settings');
+        Route::post('tilkit/settings', [ToolTilkitAdminController::class, 'updateSeasonSettings'])->name('tilkit.settings.update');
+        Route::match(['get', 'post'], 'tilkit/tally', [ToolTilkitAdminController::class, 'tally'])->name('tilkit.tally');
+        Route::get('tilkit/data-desk', [ToolTilkitAdminController::class, 'dataDesk'])->name('tilkit.data-desk');
+        Route::get('tilkit/export.csv', [ToolTilkitAdminController::class, 'exportCsv'])->name('tilkit.export.csv');
         Route::get('analytics', [ToolAnalyticsController::class, 'show'])->name('analytics');
         Route::get('analytics/explorer', [ToolAnalyticsController::class, 'explorer'])->name('analytics.explorer');
         Route::get('analytics/review', [ToolAnalyticsController::class, 'review'])->name('analytics.review');

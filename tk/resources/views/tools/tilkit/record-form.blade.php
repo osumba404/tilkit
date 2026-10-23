@@ -16,6 +16,41 @@
         <div class="tk-card p-4 mb-4 text-sm text-tk-ink">{{ session('status') }}</div>
     @endif
 
+    @if ($isEdit)
+        <div class="tk-card p-5 space-y-4 mb-6">
+            <h3 class="tk-section-title text-base">Field sighting (updates N, O, CI, Z, AA, AB)</h3>
+            <form method="POST" action="{{ route('tools.tilkit.records.sightings.store', [$tool, $record]) }}" class="grid md:grid-cols-2 gap-4">
+                @csrf
+                <div>
+                    <label class="text-xs text-tk-muted block mb-1">Date sighted</label>
+                    <input type="date" name="sighted_at" required class="tk-input">
+                </div>
+                <div>
+                    <label class="text-xs text-tk-muted block mb-1">Place</label>
+                    <input type="text" name="place_text" class="tk-input">
+                </div>
+                <div>
+                    <label class="text-xs text-tk-muted block mb-1">Landmark</label>
+                    <input type="text" name="landmark" class="tk-input">
+                </div>
+                <div>
+                    <label class="text-xs text-tk-muted block mb-1">Observed by</label>
+                    <input type="text" name="observed_by" class="tk-input">
+                </div>
+                <div class="md:col-span-2">
+                    <button type="submit" class="tk-btn-secondary">Add sighting to this record</button>
+                </div>
+            </form>
+            @if ($record->sightings->isNotEmpty())
+                <ul class="text-xs text-tk-muted space-y-1">
+                    @foreach ($record->sightings as $s)
+                        <li>{{ $s->sighted_at->format('Y-m-d') }} — {{ $s->place_text ?? '—' }}</li>
+                    @endforeach
+                </ul>
+            @endif
+        </div>
+    @endif
+
     <form method="POST"
         action="{{ $isEdit ? route('tools.tilkit.records.update', [$tool, $record]) : route('tools.tilkit.records.store', $tool) }}"
         enctype="multipart/form-data"
@@ -94,6 +129,22 @@
                                         <option value="{{ $v }}" @selected((string) $current === (string) $v)>{{ $label }}</option>
                                     @endforeach
                                 </select>
+                            @elseif ($letter === 'AP')
+                                <select name="workbook[{{ $letter }}]" class="tk-input">
+                                    <option value="">—</option>
+                                    @foreach (\App\Enums\Tilkit\ValidationStatus::cases() as $status)
+                                        <option value="{{ $status->value }}" @selected((string) $current === $status->value)>{{ str_replace('_', ' ', $status->value) }}</option>
+                                    @endforeach
+                                </select>
+                            @elseif ($letter === 'U')
+                                <select name="workbook[{{ $letter }}]" class="tk-input">
+                                    <option value="">—</option>
+                                    @foreach (\App\Enums\Tilkit\TercileForecast::cases() as $t)
+                                        @if ($t->isForecast())
+                                            <option value="{{ $t->value }}" @selected((string) $current === (string) $t->value)>{{ $t->label() }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
                             @elseif ($kind === 'date')
                                 <input type="date" name="workbook[{{ $letter }}]" value="{{ $current }}" class="tk-input">
                             @elseif ($kind === 'json')
@@ -120,7 +171,7 @@
                 <summary class="cursor-pointer font-semibold text-tk-ink list-none">
                     Derived responses (read-only, {{ count($derivedColumns) }} columns)
                 </summary>
-                <p class="text-xs text-tk-muted mt-2 mb-4">Filled by the TILKIT engine when Phase 2 parity runs; not editable here.</p>
+                <p class="text-xs text-tk-muted mt-2 mb-4">Recalculated on save; not editable here.</p>
                 <div class="grid md:grid-cols-2 gap-3 text-sm">
                     @foreach ($derivedColumns as $col)
                         @php
