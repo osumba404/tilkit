@@ -1,0 +1,1242 @@
+[
+  {
+    "column": "A",
+    "field": "Indicator category",
+    "key": "indicator_category",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Describing the sign",
+    "provided_by": "ITK holders and FGD participants (facilitator leads)",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "B",
+    "field": "Indicator type (and sub-type)",
+    "key": "indicator_type_and_sub_type",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Describing the sign",
+    "provided_by": "ITK holders and FGD participants (facilitator leads)",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "C",
+    "field": "Specific indicator (local, English, scientific name)",
+    "key": "specific_indicator_local_english_scientific_name",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Describing the sign",
+    "provided_by": "ITK holders and FGD participants (facilitator leads)",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "D",
+    "field": "Indicator behaviour",
+    "key": "indicator_behaviour",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Describing the sign",
+    "provided_by": "ITK holders and FGD participants (facilitator leads)",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "E",
+    "field": "Prediction in local words",
+    "key": "prediction_in_local_words",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Describing the sign",
+    "provided_by": "ITK holders and FGD participants (facilitator leads)",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "F",
+    "field": "Locality/ landscape description",
+    "key": "locality_landscape_description",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Describing the sign",
+    "provided_by": "ITK holders and FGD participants (facilitator leads)",
+    "derived": false,
+    "filled_in_demo": false
+  },
+  {
+    "column": "G",
+    "field": "Ethnic community (language of the local name)",
+    "key": "ethnic_community_language_of_the_local_name",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Describing the sign",
+    "provided_by": "ITK holders and FGD participants (facilitator leads)",
+    "derived": false,
+    "filled_in_demo": false
+  },
+  {
+    "column": "H",
+    "field": "What it predicts (onset, cessation, distribution, amount)",
+    "key": "what_it_predicts_onset_cessation_distribution_amount",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Describing the sign",
+    "provided_by": "ITK holders and FGD participants (facilitator leads)",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "I",
+    "field": "Sector impacts (impact-based application)",
+    "key": "sector_impacts_impact_based_application",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Describing the sign",
+    "provided_by": "ITK holders and FGD participants (facilitator leads)",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "J",
+    "field": "Indicator history (3 ancient … 1 new)",
+    "key": "indicator_history_3_ancient_1_new",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Describing the sign",
+    "provided_by": "Elders/ ITK holders",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "K",
+    "field": "Lead time class (3 months, 2 weeks, 1 days)",
+    "key": "lead_time_class_3_months_2_weeks_1_days",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Describing the sign",
+    "provided_by": "ITK holders",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "L",
+    "field": "Historical reliability rating",
+    "key": "historical_reliability_rating",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Describing the sign",
+    "provided_by": "ITK holders/ FGD",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "M",
+    "field": "Current reliability rating",
+    "key": "current_reliability_rating",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Forecast from this sign",
+    "provided_by": "ITK holders/ FGD",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "N",
+    "field": "Sighted this season (1/0)",
+    "key": "sighted_this_season_1_0",
+    "group": "Raw – field sighting (observers)",
+    "stage": "Sighting",
+    "provided_by": "Community observers",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "O",
+    "field": "Where and when sighted (text)",
+    "key": "where_and_when_sighted_text",
+    "group": "Raw – field sighting (observers)",
+    "stage": "Sighting",
+    "provided_by": "Community observers",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "P",
+    "field": "Predicted onset – earliest date",
+    "key": "predicted_onset_earliest_date",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Forecast from this sign",
+    "provided_by": "FGD, agreed by ITK holders",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "Q",
+    "field": "Predicted onset – latest date",
+    "key": "predicted_onset_latest_date",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Forecast from this sign",
+    "provided_by": "FGD, agreed by ITK holders",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "R",
+    "field": "Predicted cessation – earliest date",
+    "key": "predicted_cessation_earliest_date",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Forecast from this sign",
+    "provided_by": "FGD, agreed by ITK holders",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "S",
+    "field": "Predicted cessation – latest date",
+    "key": "predicted_cessation_latest_date",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Forecast from this sign",
+    "provided_by": "FGD, agreed by ITK holders",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "T",
+    "field": "Predicted distribution (3/2/1/0)",
+    "key": "predicted_distribution_3_2_1_0",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Forecast from this sign",
+    "provided_by": "FGD, agreed by ITK holders",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "U",
+    "field": "Tercile from this indicator (3/2/1/0)",
+    "key": "tercile_from_this_indicator_3_2_1_0",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Forecast from this sign",
+    "provided_by": "FGD, agreed by ITK holders",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "V",
+    "field": "Decision relevance (3/2/1/0)",
+    "key": "decision_relevance_3_2_1_0",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Forecast from this sign",
+    "provided_by": "FGD",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "W",
+    "field": "Recommended actions/ strategies",
+    "key": "recommended_actions_strategies",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Forecast from this sign",
+    "provided_by": "FGD/ plenary",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "X",
+    "field": "Sector impact rating (± per sector)",
+    "key": "sector_impact_rating_per_sector",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Forecast from this sign",
+    "provided_by": "FGD",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "Y",
+    "field": "Photos (at least three)",
+    "key": "photos_at_least_three",
+    "group": "Raw – field sighting (observers)",
+    "stage": "Sighting",
+    "provided_by": "Observers; learners with ICT teacher",
+    "derived": false,
+    "filled_in_demo": false
+  },
+  {
+    "column": "Z",
+    "field": "GPS location",
+    "key": "gps_location",
+    "group": "Raw – field sighting (observers)",
+    "stage": "Sighting",
+    "provided_by": "Observers; learners with ICT teacher",
+    "derived": false,
+    "filled_in_demo": false
+  },
+  {
+    "column": "AA",
+    "field": "Landmark near GPS point",
+    "key": "landmark_near_gps_point",
+    "group": "Raw – field sighting (observers)",
+    "stage": "Sighting",
+    "provided_by": "Community observers",
+    "derived": false,
+    "filled_in_demo": false
+  },
+  {
+    "column": "AB",
+    "field": "Observed by",
+    "key": "observed_by",
+    "group": "Raw – field sighting (observers)",
+    "stage": "Sighting",
+    "provided_by": "Community observers",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "AC",
+    "field": "Confirmed (1/0)",
+    "key": "confirmed_1_0",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Validation",
+    "provided_by": "ITK holder or FGD/ plenary",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "AD",
+    "field": "Approved (1/0)",
+    "key": "approved_1_0",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Validation",
+    "provided_by": "Lead ITK holder",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "AE",
+    "field": "Verified by technical expert (1/0)",
+    "key": "verified_by_technical_expert_1_0",
+    "group": "Raw – technical/ official",
+    "stage": "Verification",
+    "provided_by": "Extension officer/ NDMA monitor/ County Director of Meteorological Services",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "AF",
+    "field": "Entered by (name, date)",
+    "key": "entered_by_name_date",
+    "group": "Raw – record keeping",
+    "stage": "Record keeping",
+    "provided_by": "School data desk/ rapporteur",
+    "derived": false,
+    "filled_in_demo": false
+  },
+  {
+    "column": "AG",
+    "field": "Reliability analysis (free text)",
+    "key": "reliability_analysis_free_text",
+    "group": "Raw – technical/ official",
+    "stage": "Season review",
+    "provided_by": "ITK holders with technical officer",
+    "derived": false,
+    "filled_in_demo": false
+  },
+  {
+    "column": "AH",
+    "field": "Unique Indicator ID",
+    "key": "unique_indicator_id",
+    "group": "Raw – record keeping",
+    "stage": "Record keeping",
+    "provided_by": "School data desk",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "AI",
+    "field": "Community/ site",
+    "key": "community_site",
+    "group": "Raw – record keeping",
+    "stage": "Record keeping",
+    "provided_by": "School data desk",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "AJ",
+    "field": "Ward/ location",
+    "key": "ward_location",
+    "group": "Raw – record keeping",
+    "stage": "Record keeping",
+    "provided_by": "School data desk",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "AK",
+    "field": "County/ region",
+    "key": "county_region",
+    "group": "Raw – record keeping",
+    "stage": "Record keeping",
+    "provided_by": "School data desk",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "AL",
+    "field": "Country",
+    "key": "country",
+    "group": "Raw – record keeping",
+    "stage": "Record keeping",
+    "provided_by": "School data desk",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "AM",
+    "field": "Season/ year",
+    "key": "season_year",
+    "group": "Raw – record keeping",
+    "stage": "Record keeping",
+    "provided_by": "School data desk",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "AN",
+    "field": "Date of data collection",
+    "key": "date_of_data_collection",
+    "group": "Raw – record keeping",
+    "stage": "Record keeping",
+    "provided_by": "School data desk/ rapporteur",
+    "derived": false,
+    "filled_in_demo": false
+  },
+  {
+    "column": "AO",
+    "field": "Language of local name/ description",
+    "key": "language_of_local_name_description",
+    "group": "Raw – record keeping",
+    "stage": "Record keeping",
+    "provided_by": "School data desk/ rapporteur",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "AP",
+    "field": "Validation status",
+    "key": "validation_status",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Validation",
+    "provided_by": "Plenary",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "AQ",
+    "field": "Groups recognising/ disputing the sign",
+    "key": "groups_recognising_disputing_the_sign",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Validation",
+    "provided_by": "Plenary",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "AR",
+    "field": "Geographic scope of applicability",
+    "key": "geographic_scope_of_applicability",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Validation",
+    "provided_by": "FGD/ plenary",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "AS",
+    "field": "Actual onset date",
+    "key": "actual_onset_date",
+    "group": "Raw – technical/ official",
+    "stage": "Season outcome",
+    "provided_by": "Technical officer (rain gauge, school station, KMD/ KMSA, NDMA)",
+    "derived": false,
+    "filled_in_demo": false
+  },
+  {
+    "column": "AT",
+    "field": "Actual cessation date",
+    "key": "actual_cessation_date",
+    "group": "Raw – technical/ official",
+    "stage": "Season outcome",
+    "provided_by": "Technical officer (rain gauge, school station, KMD/ KMSA, NDMA)",
+    "derived": false,
+    "filled_in_demo": false
+  },
+  {
+    "column": "AU",
+    "field": "Actual distribution (3/2/1)",
+    "key": "actual_distribution_3_2_1",
+    "group": "Raw – technical/ official",
+    "stage": "Season outcome",
+    "provided_by": "Technical officer (rain gauges, NDMA, KMD/ KMSA)",
+    "derived": false,
+    "filled_in_demo": false
+  },
+  {
+    "column": "AV",
+    "field": "Actual season class (3/2/1)",
+    "key": "actual_season_class_3_2_1",
+    "group": "Raw – technical/ official",
+    "stage": "Season outcome",
+    "provided_by": "Technical officer with community",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "AW",
+    "field": "Onset check (Early/ Within/ Late)",
+    "key": "onset_check_early_within_late",
+    "group": "Derived – automatic",
+    "stage": "Season outcome",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "AX",
+    "field": "Cessation check",
+    "key": "cessation_check",
+    "group": "Derived – automatic",
+    "stage": "Season outcome",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "AY",
+    "field": "Distribution check",
+    "key": "distribution_check",
+    "group": "Derived – automatic",
+    "stage": "Season outcome",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "AZ",
+    "field": "Outcome: Hit/ Miss/ False Start",
+    "key": "outcome_hit_miss_false_start",
+    "group": "Raw – technical/ official",
+    "stage": "Season review",
+    "provided_by": "ITK holders with technical officer",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "BA",
+    "field": "Notes on reliability/ composites",
+    "key": "notes_on_reliability_composites",
+    "group": "Raw – technical/ official",
+    "stage": "Season review",
+    "provided_by": "ITK holders with technical officer (facilitator)",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "BB",
+    "field": "Do-no-harm/ safety flag (1/0)",
+    "key": "do_no_harm_safety_flag_1_0",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Safety and governance",
+    "provided_by": "ITK holders; reviewed by technical expert",
+    "derived": false,
+    "filled_in_demo": false
+  },
+  {
+    "column": "BC",
+    "field": "Consent/ data-sharing level",
+    "key": "consent_data_sharing_level",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Safety and governance",
+    "provided_by": "ITK holders",
+    "derived": false,
+    "filled_in_demo": false
+  },
+  {
+    "column": "BD",
+    "field": "Audio/ video reference",
+    "key": "audio_video_reference",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Safety and governance",
+    "provided_by": "ITK holders (recorded by rapporteur)",
+    "derived": false,
+    "filled_in_demo": false
+  },
+  {
+    "column": "BE",
+    "field": "Cross-reference/ duplicate link",
+    "key": "cross_reference_duplicate_link",
+    "group": "Raw – record keeping",
+    "stage": "Record keeping",
+    "provided_by": "School data desk",
+    "derived": false,
+    "filled_in_demo": false
+  },
+  {
+    "column": "BF",
+    "field": "Integrated Consensus Forecast reference",
+    "key": "integrated_consensus_forecast_reference",
+    "group": "Raw – technical/ official",
+    "stage": "Action plans and references",
+    "provided_by": "Integration team",
+    "derived": false,
+    "filled_in_demo": false
+  },
+  {
+    "column": "BG",
+    "field": "Number of observers",
+    "key": "number_of_observers",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Who contributed",
+    "provided_by": "Facilitator/ rapporteur",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "BH",
+    "field": "Gender composition",
+    "key": "gender_composition",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Who contributed",
+    "provided_by": "Facilitator/ rapporteur",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "BI",
+    "field": "Age/ generation composition",
+    "key": "age_generation_composition",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Who contributed",
+    "provided_by": "Facilitator/ rapporteur",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "BJ",
+    "field": "Livelihood of observers",
+    "key": "livelihood_of_observers",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Who contributed",
+    "provided_by": "Facilitator/ rapporteur",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "BK",
+    "field": "Person(s) with disability included",
+    "key": "person_s_with_disability_included",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Who contributed",
+    "provided_by": "Facilitator/ rapporteur",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "BL",
+    "field": "Corroboration count",
+    "key": "corroboration_count",
+    "group": "Derived – automatic",
+    "stage": "Calibration",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "BM",
+    "field": "Scored seasons",
+    "key": "scored_seasons",
+    "group": "Derived – automatic",
+    "stage": "Calibration",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "BN",
+    "field": "Hit count",
+    "key": "hit_count",
+    "group": "Derived – automatic",
+    "stage": "Calibration",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "BO",
+    "field": "Miss count",
+    "key": "miss_count",
+    "group": "Derived – automatic",
+    "stage": "Calibration",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "BP",
+    "field": "False-start count",
+    "key": "false_start_count",
+    "group": "Derived – automatic",
+    "stage": "Calibration",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "BQ",
+    "field": "Hit rate",
+    "key": "hit_rate",
+    "group": "Derived – automatic",
+    "stage": "Calibration",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "BR",
+    "field": "Miss rate",
+    "key": "miss_rate",
+    "group": "Derived – automatic",
+    "stage": "Calibration",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "BS",
+    "field": "False-start rate",
+    "key": "false_start_rate",
+    "group": "Derived – automatic",
+    "stage": "Calibration",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "BT",
+    "field": "Weighting phase (rating- or hit-rate-based)",
+    "key": "weighting_phase_rating_or_hit_rate_based",
+    "group": "Derived – automatic",
+    "stage": "Calibration",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "BU",
+    "field": "Hazard type (main hazard first)",
+    "key": "hazard_type_main_hazard_first",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Hazard, risk, opportunity",
+    "provided_by": "FGD with intermediary officer",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "BV",
+    "field": "Risk/ impact – who or what is exposed",
+    "key": "risk_impact_who_or_what_is_exposed",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Hazard, risk, opportunity",
+    "provided_by": "FGD with intermediary officer",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "BW",
+    "field": "Opportunity flag and description",
+    "key": "opportunity_flag_and_description",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Hazard, risk, opportunity",
+    "provided_by": "FGD with intermediary officer",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "BX",
+    "field": "Community Representatives Action reference",
+    "key": "community_representatives_action_reference",
+    "group": "Raw – technical/ official",
+    "stage": "Action plans and references",
+    "provided_by": "Community representatives",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "BY",
+    "field": "Intermediary Officer Action reference",
+    "key": "intermediary_officer_action_reference",
+    "group": "Raw – technical/ official",
+    "stage": "Action plans and references",
+    "provided_by": "Intermediary officer",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "BZ",
+    "field": "Integrated Action reference",
+    "key": "integrated_action_reference",
+    "group": "Raw – technical/ official",
+    "stage": "Action plans and references",
+    "provided_by": "Integration team",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "CA",
+    "field": "Base Weight",
+    "key": "base_weight",
+    "group": "Derived – automatic",
+    "stage": "Weighting and tally feed",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "CB",
+    "field": "Final Weight",
+    "key": "final_weight",
+    "group": "Derived – automatic",
+    "stage": "Weighting and tally feed",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "CC",
+    "field": "Stability flag",
+    "key": "stability_flag",
+    "group": "Derived – automatic",
+    "stage": "Weighting and tally feed",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "CD",
+    "field": "Duplicate check",
+    "key": "duplicate_check",
+    "group": "Derived – automatic",
+    "stage": "Weighting and tally feed",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "CE",
+    "field": "Tally status (counted or why excluded)",
+    "key": "tally_status_counted_or_why_excluded",
+    "group": "Derived – automatic",
+    "stage": "Weighting and tally feed",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "CF",
+    "field": "Global prior multiplier",
+    "key": "global_prior_multiplier",
+    "group": "Derived – automatic",
+    "stage": "Weighting and tally feed",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "CG",
+    "field": "Tally weight",
+    "key": "tally_weight",
+    "group": "Derived – automatic",
+    "stage": "Weighting and tally feed",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "CH",
+    "field": "Tally weight as a number",
+    "key": "tally_weight_as_a_number",
+    "group": "Derived – automatic",
+    "stage": "Weighting and tally feed",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "CI",
+    "field": "Date sighted (date)",
+    "key": "date_sighted_date",
+    "group": "Raw – field sighting (observers)",
+    "stage": "Sighting",
+    "provided_by": "Community observers",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "CJ",
+    "field": "Month sighted",
+    "key": "month_sighted",
+    "group": "Derived – automatic",
+    "stage": "Calendar and change",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "CK",
+    "field": "Local calendar period",
+    "key": "local_calendar_period",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Calendar and change",
+    "provided_by": "Elders/ ITK holders",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "CL",
+    "field": "Expected month on the calendar",
+    "key": "expected_month_on_the_calendar",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Calendar and change",
+    "provided_by": "Elders/ ITK holders",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "CM",
+    "field": "Calendar shift (months)",
+    "key": "calendar_shift_months",
+    "group": "Derived – automatic",
+    "stage": "Calendar and change",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "CN",
+    "field": "Observed change in the sign",
+    "key": "observed_change_in_the_sign",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Calendar and change",
+    "provided_by": "Elders/ ITK holders",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "CO",
+    "field": "Likely driver of the change",
+    "key": "likely_driver_of_the_change",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Calendar and change",
+    "provided_by": "Elders, agreed with technical officer",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "CP",
+    "field": "Climate-change signal flag",
+    "key": "climate_change_signal_flag",
+    "group": "Derived – automatic",
+    "stage": "Calendar and change",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "CQ",
+    "field": "Predicted vegetation/ pasture condition",
+    "key": "predicted_vegetation_pasture_condition",
+    "group": "Raw – workshop (FGD/ plenary)",
+    "stage": "Vegetation",
+    "provided_by": "Herders and FGD",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "CR",
+    "field": "Actual 3-month VCI (VCI3M)",
+    "key": "actual_3_month_vci_vci3m",
+    "group": "Raw – technical/ official",
+    "stage": "Vegetation",
+    "provided_by": "Technical officer (NDMA monthly bulletin)",
+    "derived": false,
+    "filled_in_demo": false
+  },
+  {
+    "column": "CS",
+    "field": "Actual vegetation class",
+    "key": "actual_vegetation_class",
+    "group": "Derived – automatic",
+    "stage": "Vegetation",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "CT",
+    "field": "Vegetation check",
+    "key": "vegetation_check",
+    "group": "Derived – automatic",
+    "stage": "Vegetation",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "CU",
+    "field": "Lead time available (days)",
+    "key": "lead_time_available_days",
+    "group": "Derived – automatic",
+    "stage": "Anticipatory action",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "CV",
+    "field": "Decision horizon",
+    "key": "decision_horizon",
+    "group": "Derived – automatic",
+    "stage": "Anticipatory action",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "CW",
+    "field": "Objectives served by early action",
+    "key": "objectives_served_by_early_action",
+    "group": "Raw – community follow-up (representatives)",
+    "stage": "Early action",
+    "provided_by": "Community representatives with intermediary officer",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "CX",
+    "field": "Action timing",
+    "key": "action_timing",
+    "group": "Raw – community follow-up (representatives)",
+    "stage": "Early action",
+    "provided_by": "Community representatives with intermediary officer",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "CY",
+    "field": "Early action implemented (1/0)",
+    "key": "early_action_implemented_1_0",
+    "group": "Raw – community follow-up (representatives)",
+    "stage": "Early action",
+    "provided_by": "Community representatives with intermediary officer",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "CZ",
+    "field": "Result of the action",
+    "key": "result_of_the_action",
+    "group": "Raw – community follow-up (representatives)",
+    "stage": "Early action",
+    "provided_by": "Community representatives with intermediary officer",
+    "derived": false,
+    "filled_in_demo": false
+  },
+  {
+    "column": "DA",
+    "field": "Advisory disseminated (1/0)",
+    "key": "advisory_disseminated_1_0",
+    "group": "Raw – community follow-up (representatives)",
+    "stage": "Dissemination",
+    "provided_by": "Community representatives",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "DB",
+    "field": "Date disseminated",
+    "key": "date_disseminated",
+    "group": "Raw – community follow-up (representatives)",
+    "stage": "Dissemination",
+    "provided_by": "Community representatives",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "DC",
+    "field": "Channels used",
+    "key": "channels_used",
+    "group": "Raw – community follow-up (representatives)",
+    "stage": "Dissemination",
+    "provided_by": "Community representatives",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "DD",
+    "field": "People reached",
+    "key": "people_reached",
+    "group": "Raw – community follow-up (representatives)",
+    "stage": "Dissemination",
+    "provided_by": "Community representatives/ school data desk",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "DE",
+    "field": "Women, youth or PWD reached",
+    "key": "women_youth_or_pwd_reached",
+    "group": "Raw – community follow-up (representatives)",
+    "stage": "Dissemination",
+    "provided_by": "Community representatives/ school data desk",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "DF",
+    "field": "% who understood",
+    "key": "who_understood",
+    "group": "Raw – community follow-up (representatives)",
+    "stage": "Dissemination",
+    "provided_by": "Extension officer (feedback spot checks)",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "DG",
+    "field": "% who acted",
+    "key": "who_acted",
+    "group": "Raw – community follow-up (representatives)",
+    "stage": "Dissemination",
+    "provided_by": "Extension officer (feedback spot checks)",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "DH",
+    "field": "Warning lead (days)",
+    "key": "warning_lead_days",
+    "group": "Derived – automatic",
+    "stage": "Dissemination",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "DI",
+    "field": "Inclusion share",
+    "key": "inclusion_share",
+    "group": "Derived – automatic",
+    "stage": "Dissemination",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "DJ",
+    "field": "KMD/ KMSA county outlook tercile",
+    "key": "kmd_kmsa_county_outlook_tercile",
+    "group": "Raw – technical/ official",
+    "stage": "Official products and residual risk",
+    "provided_by": "Intermediary officer (KMD/ KMSA county outlook)",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "DK",
+    "field": "Agreement with KMD/ KMSA",
+    "key": "agreement_with_kmd_kmsa",
+    "group": "Derived – automatic",
+    "stage": "Official products and residual risk",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "DL",
+    "field": "NDMA drought phase",
+    "key": "ndma_drought_phase",
+    "group": "Raw – technical/ official",
+    "stage": "Official products and residual risk",
+    "provided_by": "Intermediary officer (NDMA bulletin)",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "DM",
+    "field": "Residual risk flag (1/0)",
+    "key": "residual_risk_flag_1_0",
+    "group": "Raw – technical/ official",
+    "stage": "Official products and residual risk",
+    "provided_by": "Intermediary officer with community",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "DN",
+    "field": "Residual risk description",
+    "key": "residual_risk_description",
+    "group": "Raw – technical/ official",
+    "stage": "Official products and residual risk",
+    "provided_by": "Intermediary officer with community",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "DO",
+    "field": "Residual risk in an action plan (1/0)",
+    "key": "residual_risk_in_an_action_plan_1_0",
+    "group": "Raw – technical/ official",
+    "stage": "Official products and residual risk",
+    "provided_by": "Intermediary officer with community",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "DP",
+    "field": "Suggested message for KMD/ KMSA or NDMA",
+    "key": "suggested_message_for_kmd_kmsa_or_ndma",
+    "group": "Raw – technical/ official",
+    "stage": "Official products and residual risk",
+    "provided_by": "Intermediary officer with community",
+    "derived": false,
+    "filled_in_demo": true
+  },
+  {
+    "column": "DQ",
+    "field": "Confidence score (0–100)",
+    "key": "confidence_score_0_100",
+    "group": "Derived – automatic",
+    "stage": "Confidence and priority",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "DR",
+    "field": "Hazard priority factor",
+    "key": "hazard_priority_factor",
+    "group": "Derived – automatic",
+    "stage": "Confidence and priority",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "DS",
+    "field": "Priority-adjusted weight",
+    "key": "priority_adjusted_weight",
+    "group": "Derived – automatic",
+    "stage": "Confidence and priority",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  },
+  {
+    "column": "DT",
+    "field": "First-record marker",
+    "key": "first_record_marker",
+    "group": "Derived – automatic",
+    "stage": "Confidence and priority",
+    "provided_by": "Spreadsheet (automatic)",
+    "derived": true,
+    "filled_in_demo": true
+  }
+]

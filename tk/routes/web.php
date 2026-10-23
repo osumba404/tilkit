@@ -18,6 +18,7 @@ use App\Http\Controllers\ToolController;
 use App\Http\Controllers\ToolFormController;
 use App\Http\Controllers\ToolInvitationController;
 use App\Http\Controllers\ToolSubmissionController;
+use App\Http\Controllers\ToolTilkitWeatherController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
@@ -47,6 +48,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('tools/{tool}')->name('tools.')->group(function () {
         Route::post('invitations', [ToolInvitationController::class, 'store'])->name('invitations.store');
+        Route::get('tilkit', [ToolTilkitWeatherController::class, 'overview'])->name('tilkit.overview');
+        Route::get('tilkit/records/create', [ToolTilkitWeatherController::class, 'createRecord'])->name('tilkit.records.create');
+        Route::post('tilkit/records', [ToolTilkitWeatherController::class, 'storeRecord'])->name('tilkit.records.store');
+        Route::get('tilkit/records/{record}', [ToolTilkitWeatherController::class, 'editRecord'])->name('tilkit.records.edit');
+        Route::patch('tilkit/records/{record}', [ToolTilkitWeatherController::class, 'updateRecord'])->name('tilkit.records.update');
         Route::get('analytics', [ToolAnalyticsController::class, 'show'])->name('analytics');
         Route::get('analytics/explorer', [ToolAnalyticsController::class, 'explorer'])->name('analytics.explorer');
         Route::get('analytics/review', [ToolAnalyticsController::class, 'review'])->name('analytics.review');

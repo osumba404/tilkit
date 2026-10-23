@@ -1,0 +1,17 @@
+{
+  "description": "Minimal eligible record for gate unit tests (aligned to v4 coding rules)",
+  "record": {
+    "indicator_uid": "01-ANI-FRO-001",
+    "sighted": true,
+    "confirmed": true,
+    "approved": true,
+    "validation_status": "community_plenary_endorsed",
+    "tercile_forecast": 3,
+    "current_reliability": 3,
+    "decision_relevance": 3
+  },
+  "expect": {
+    "eligible": true,
+    "exclusion_reason": null
+  }
+}

@@ -90,6 +90,21 @@ class DcProject extends Model
         return $this->hasMany(ToolScheduledExport::class, 'project_id');
     }
 
+    public function tilkitSites(): HasMany
+    {
+        return $this->hasMany(\App\Models\Tilkit\TilkitSite::class, 'project_id');
+    }
+
+    public function tilkitSeasons(): HasMany
+    {
+        return $this->hasMany(\App\Models\Tilkit\TilkitSeason::class, 'project_id');
+    }
+
+    public function tilkitIndicators(): HasMany
+    {
+        return $this->hasMany(\App\Models\Tilkit\TilkitIndicator::class, 'project_id');
+    }
+
     public function requiresConsentGate(): bool
     {
         return filled(trim((string) $this->consent_text));

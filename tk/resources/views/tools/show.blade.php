@@ -4,6 +4,7 @@
             <x-slot:actions>
             <div class="flex flex-wrap gap-2">
                 <a href="{{ route('platform.datasets.index') }}" class="tk-btn-secondary">My datasets</a>
+                <a href="{{ route('tools.tilkit.overview', $tool) }}" class="tk-btn-secondary">TILKIT weather</a>
                 @if ($capabilities->canViewAnalytics())
                     <a href="{{ route('tools.analytics', $tool) }}" class="tk-btn-secondary">Analytics</a>
                 @endif

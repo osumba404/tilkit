@@ -1,6 +1,20 @@
 <?php
 
 return [
+    /*
+    | TILKIT weather indicator module (Traditional Indigenous and Local Knowledge).
+    | Workbook spec: tilkit_docs/TILKIT_Weather_Indicator_Log_Master_Template_v4_OND2026.xlsx
+    */
+    'weather' => [
+        'protocol_version' => env('TILKIT_WEATHER_PROTOCOL', 'v4-2026-10-19'),
+        'docs_path' => env('TILKIT_DOCS_PATH', base_path('../tilkit_docs')),
+        'column_register_path' => config_path('tilkit_weather_column_register.json'),
+        'engine' => [
+            'scored_seasons_for_hit_rate' => (int) env('TILKIT_WEATHER_SCORED_SEASONS', 3),
+            'corroboration_cap_until' => 2,
+        ],
+    ],
+
     'dataset_analysis' => [
         'python_binary' => env('TILKIT_PYTHON_BIN', 'python'),
         'max_rows' => (int) env('TILKIT_DATASET_MAX_ROWS', 100000),
