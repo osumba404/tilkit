@@ -14,6 +14,7 @@ class TilkitRecordEngine
         private WeightingService $weighting,
         private WorkbookRecordService $workbook,
         private ConfidenceScoreCalculator $confidence,
+        private V4FieldDeriver $v4,
     ) {}
 
     public function recalculate(TilkitIndicatorRecord $record, ?TilkitSeasonSettings $settings = null): void
@@ -33,15 +34,27 @@ class TilkitRecordEngine
             $record->season?->label,
             $map,
         );
+        $hazardFactor = $this->v4->hazardPriorityFactor($map, $settings);
         $weights = $this->weighting->compute(
             $record,
             $hist,
             $settings,
-            $this->hazardFactor($settings),
+            $hazardFactor,
         );
 
         $leadDays = $this->leadTimeDays($map);
+        $kmsaAgreement = $this->v4->kmsaAgreement(
+            $record->tercile_forecast?->isForecast() ? $record->tercile_forecast->value : null,
+            $map,
+            $settings,
+        );
+        $map['DK'] = $kmsaAgreement;
         $dq = $this->confidence->score($record, $hist, $map, $weights->baseWeight, $weights->stabilityFlag, $settings);
+
+        $vci = $settings?->ndma_vci3m ?? (isset($map['CR']) && is_numeric($map['CR']) ? (float) $map['CR'] : null);
+        $cs = $this->v4->vegetationClassFromVci($vci);
+        $cq = isset($map['CQ']) && is_numeric($map['CQ']) ? (int) $map['CQ'] : null;
+        $cp = $this->v4->climateChangeFlag($map, $hist, $weights->stabilityFlag, $hist->hitRate());
 
         $derived = [
             'BL' => $hist->corroboration,
@@ -59,25 +72,25 @@ class TilkitRecordEngine
             'CF' => $weights->priorMultiplier,
             'CG' => $weights->tallyWeight,
             'CH' => $weights->tallyWeight,
+            'DR' => $hazardFactor,
             'DS' => $weights->priorityAdjustedWeight,
             'DT' => $this->gate->evaluateDuplicateMarker($record),
             'CJ' => $this->monthFromDate($map['CI'] ?? $map['O'] ?? null),
             'CM' => $this->calendarShift($map),
+            'CP' => $cp,
+            'CS' => $cs,
+            'CT' => $this->v4->vegetationCheck($cq, $cs),
             'CU' => $leadDays,
             'CV' => $this->decisionHorizon($leadDays),
+            'DI' => $this->v4->inclusionShare($map),
+            'DH' => $this->v4->warningLeadDays($map),
+            'DK' => $kmsaAgreement,
             'DQ' => $dq,
         ];
 
         $derived = array_filter($derived, fn ($v) => $v !== null && $v !== '');
 
         $this->workbook->storeDerivedValues($record, $derived);
-    }
-
-    private function hazardFactor(?TilkitSeasonSettings $settings): float
-    {
-        $hazards = $settings?->settings['hazard_priority'] ?? [];
-
-        return (float) ($hazards['default'] ?? 1.0);
     }
 
     /** @param  array<string, mixed>  $map */

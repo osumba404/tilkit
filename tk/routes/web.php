@@ -18,6 +18,7 @@ use App\Http\Controllers\ToolController;
 use App\Http\Controllers\ToolFormController;
 use App\Http\Controllers\ToolInvitationController;
 use App\Http\Controllers\ToolSubmissionController;
+use App\Http\Controllers\Api\TilkitSyncController;
 use App\Http\Controllers\ToolTilkitAdminController;
 use App\Http\Controllers\ToolTilkitWeatherController;
 use Illuminate\Support\Facades\Route;
@@ -43,6 +44,8 @@ Route::get('/f/{form:code}/thanks', [PublicFormController::class, 'thanks'])->na
 Route::get('/reference', FieldReferenceController::class)->name('reference');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::post('/api/tilkit/sightings', [TilkitSyncController::class, 'storeSighting'])->name('api.tilkit.sightings.store');
+
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
     Route::resource('tools', ToolController::class)->only(['index', 'create', 'store', 'show']);
@@ -53,6 +56,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('tilkit/records/create', [ToolTilkitWeatherController::class, 'createRecord'])->name('tilkit.records.create');
         Route::post('tilkit/records', [ToolTilkitWeatherController::class, 'storeRecord'])->name('tilkit.records.store');
         Route::get('tilkit/records/{record}', [ToolTilkitWeatherController::class, 'editRecord'])->name('tilkit.records.edit');
+        Route::get('tilkit/records/{record}/wizard/{section}', [ToolTilkitWeatherController::class, 'wizard'])->name('tilkit.records.wizard');
+        Route::patch('tilkit/records/{record}/wizard/{section}', [ToolTilkitWeatherController::class, 'updateWizard'])->name('tilkit.records.wizard.update');
         Route::patch('tilkit/records/{record}', [ToolTilkitWeatherController::class, 'updateRecord'])->name('tilkit.records.update');
         Route::post('tilkit/records/{record}/sightings', [ToolTilkitAdminController::class, 'storeSighting'])->name('tilkit.records.sightings.store');
         Route::get('tilkit/setup', [ToolTilkitAdminController::class, 'setup'])->name('tilkit.setup');
@@ -64,6 +69,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::match(['get', 'post'], 'tilkit/tally', [ToolTilkitAdminController::class, 'tally'])->name('tilkit.tally');
         Route::get('tilkit/data-desk', [ToolTilkitAdminController::class, 'dataDesk'])->name('tilkit.data-desk');
         Route::get('tilkit/export.csv', [ToolTilkitAdminController::class, 'exportCsv'])->name('tilkit.export.csv');
+        Route::get('tilkit/export.json', [ToolTilkitAdminController::class, 'exportJson'])->name('tilkit.export.json');
+        Route::post('tilkit/integration', [ToolTilkitAdminController::class, 'publishConsensus'])->name('tilkit.integration.publish');
         Route::get('tilkit/workbook', [ToolTilkitAdminController::class, 'workbookGuides'])->name('tilkit.workbook');
         Route::get('tilkit/calendar', [ToolTilkitAdminController::class, 'calendar'])->name('tilkit.calendar');
         Route::get('analytics', [ToolAnalyticsController::class, 'show'])->name('analytics');

@@ -8,8 +8,11 @@ use App\Models\Tilkit\TilkitIndicatorRecord;
 use App\Models\Tilkit\TilkitSeason;
 use App\Models\Tilkit\TilkitSite;
 use App\Models\Tilkit\TilkitWorkbookMedia;
+use App\Services\Tilkit\SeasonOutcomeScoringService;
+use App\Services\Tilkit\TilkitSignOffGuard;
 use App\Services\Tilkit\WorkbookRecordService;
 use App\Services\ToolAccessService;
+use App\Support\Tilkit\CommunityDataListRegistry;
 use App\Support\Tilkit\WorkbookColumnRegistry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -80,8 +83,8 @@ class ToolTilkitWeatherController extends Controller
         $this->storePhotos($request, $record);
 
         return redirect()
-            ->route('tools.tilkit.records.edit', [$tool, $record])
-            ->with('status', 'Indicator record saved with full workbook raw fields.');
+            ->route('tools.tilkit.records.wizard', [$tool, $record, 'A'])
+            ->with('status', 'Indicator record created — continue in the Community Data List wizard.');
     }
 
     public function editRecord(Request $request, DcProject $tool, TilkitIndicatorRecord $record, ToolAccessService $access, WorkbookRecordService $workbook): View
@@ -132,13 +135,71 @@ class ToolTilkitWeatherController extends Controller
             'workbook_photos.*' => ['file', 'image', 'max:8192'],
         ]);
 
-        $workbook->storeRawValues($record, $validated['workbook'] ?? []);
+        $raw = $validated['workbook'] ?? [];
+        $raw = app(TilkitSignOffGuard::class)->applySignOff($record, $request->user(), $raw);
+        $workbook->storeRawValues($record, $raw);
         $workbook->storeReferenceColumns($record->fresh());
         $this->storePhotos($request, $record);
+
+        if ($request->boolean('score_outcome')) {
+            app(SeasonOutcomeScoringService::class)->persistOutcome($record->fresh());
+        }
 
         return redirect()
             ->route('tools.tilkit.records.edit', [$tool, $record])
             ->with('status', 'Workbook fields updated.');
+    }
+
+    public function wizard(Request $request, DcProject $tool, TilkitIndicatorRecord $record, string $section, ToolAccessService $access, WorkbookRecordService $workbook): View
+    {
+        $access->assertCanView($request->user(), $tool);
+        $this->assertRecordBelongsToTool($tool, $record);
+        $section = strtoupper($section);
+        abort_unless(preg_match('/^[A-E]$/', $section), 404);
+
+        $record->load(['indicator', 'site', 'season', 'sightings', 'workbookMedia']);
+        $letters = CommunityDataListRegistry::columnLettersForSectionKey($section);
+        $columns = array_values(array_filter(
+            WorkbookColumnRegistry::rawColumns(),
+            fn (array $col) => in_array($col['column'], $letters, true)
+        ));
+        $checklist = CommunityDataListRegistry::itemsForSectionKey($section);
+        $workbookValues = $workbook->rawWorkbookMap($record);
+
+        return view('tools.tilkit.record-wizard', [
+            'tool' => $tool,
+            'record' => $record,
+            'section' => $section,
+            'checklist' => $checklist,
+            'columns' => $columns,
+            'workbookValues' => $workbookValues,
+            'sections' => ['A', 'B', 'C', 'D', 'E'],
+        ]);
+    }
+
+    public function updateWizard(Request $request, DcProject $tool, TilkitIndicatorRecord $record, string $section, ToolAccessService $access, WorkbookRecordService $workbook): RedirectResponse
+    {
+        $access->assertCanView($request->user(), $tool);
+        $this->assertRecordBelongsToTool($tool, $record);
+        $section = strtoupper($section);
+
+        $validated = $request->validate([
+            'workbook' => ['nullable', 'array'],
+            'workbook.*' => ['nullable'],
+        ]);
+        $raw = $validated['workbook'] ?? [];
+        $raw = app(TilkitSignOffGuard::class)->applySignOff($record, $request->user(), $raw);
+        $workbook->storeRawValues($record, $raw);
+        $workbook->storeReferenceColumns($record->fresh());
+
+        $next = $request->input('next_section');
+        if (is_string($next) && preg_match('/^[A-E]$/', strtoupper($next))) {
+            return redirect()->route('tools.tilkit.records.wizard', [$tool, $record, strtoupper($next)])
+                ->with('status', "Section {$section} saved.");
+        }
+
+        return redirect()->route('tools.tilkit.records.edit', [$tool, $record])
+            ->with('status', 'Workshop sections saved.');
     }
 
     /** @param  array<string, mixed>  $validated */

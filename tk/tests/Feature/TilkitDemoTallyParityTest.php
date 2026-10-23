@@ -7,21 +7,19 @@ use App\Models\Tilkit\TilkitSite;
 use App\Models\User;
 use App\Services\Tilkit\TilkitEngineService;
 use App\Services\Tilkit\WorkbookDemoImporter;
-use App\Services\ToolAccessService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Support\TilkitTestTool;
 use Tests\TestCase;
 
 class TilkitDemoTallyParityTest extends TestCase
 {
     use RefreshDatabase;
+    use TilkitTestTool;
 
     public function test_demo_workbook_ond_2026_tally_matches_excel(): void
     {
         $user = User::factory()->create();
-        $tool = app(ToolAccessService::class)->createTool($user, [
-            'name' => 'TILKIT Demo parity',
-            'purpose' => 'v4 demo workbook',
-        ]);
+        $tool = $this->tilkitToolFor($user);
 
         $fixture = base_path('tests/Fixtures/Tilkit/demo_workbook_full.json');
         app(WorkbookDemoImporter::class)->importFixture($tool, $fixture);

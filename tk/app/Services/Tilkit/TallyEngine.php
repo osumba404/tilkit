@@ -16,6 +16,7 @@ class TallyEngine
         private TilkitRecordEngine $recordEngine,
         private WorkbookRecordService $workbook,
         private EligibilityGate $gate,
+        private TallyIntegrationService $integration,
     ) {}
 
     public function run(int $siteId, int $seasonId, ?TilkitSeasonSettings $settings = null): TallyResult
@@ -66,7 +67,7 @@ class TallyEngine
 
         $countedWithoutWeight = $counted->filter(fn (TilkitIndicatorRecord $r) => ($this->cellNumber($r, 'CG') ?? 0) <= 0)->count();
 
-        return new TallyResult(
+        $result = new TallyResult(
             siteId: $siteId,
             seasonId: $seasonId,
             countedRows: $counted->count(),
@@ -89,6 +90,8 @@ class TallyEngine
             leadingWeightedLabel: $this->tercileLabel($leadingWeighted, $weighted['counts']),
             simpleWeightedAgreeLabel: ($leadingSimple !== null && $leadingSimple === $leadingWeighted) ? 'Yes' : 'No',
         );
+
+        return $result->withIntegration($this->integration->enrich($result, $counted, $settings));
     }
 
     /** @param  Collection<int, TilkitIndicatorRecord>  $counted */

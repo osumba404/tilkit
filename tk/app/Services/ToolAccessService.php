@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\ToolMemberRole;
 use App\Models\DcProject;
+use App\Support\Tilkit\WeatherTool;
 use App\Support\ToolCapabilities;
 use App\Models\DcSubmission;
 use App\Models\ToolMember;
@@ -16,6 +17,10 @@ class ToolAccessService
 {
     public function createTool(User $owner, array $attributes): DcProject
     {
+        if (WeatherTool::singleToolMode()) {
+            abort(403, 'This deployment uses a single TILKIT weather tool; creating additional tools is disabled.');
+        }
+
         return DB::transaction(function () use ($owner, $attributes): DcProject {
             $code = $attributes['code'] ?? Str::slug($attributes['name']);
             $code = Str::lower(Str::limit($code, 40, ''));

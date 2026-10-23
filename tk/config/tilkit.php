@@ -37,6 +37,8 @@ return [
         'engine' => [
             'scored_seasons_for_hit_rate' => (int) env('TILKIT_WEATHER_SCORED_SEASONS', 3),
             'corroboration_cap_until' => 2,
+            'separate_confirm_approve' => env('TILKIT_SEPARATE_CONFIRM_APPROVE', true),
+            'false_start_counts_in_scored_seasons' => true,
         ],
     ],
 

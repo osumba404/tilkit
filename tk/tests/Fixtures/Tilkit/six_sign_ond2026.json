@@ -1,0 +1,16 @@
+{
+  "description": "Weighting Options worked example — 6 signs, OND 2026 (Brief §10.2)",
+  "expected": {
+    "simple": {"3": 50, "2": 16.67, "1": 33.33},
+    "weighted": {"3": 60.87, "2": 17.39, "1": 21.74},
+    "priority_adjusted": {"3": 62.69, "2": 17.91, "1": 19.4}
+  },
+  "rows": [
+    {"AH": "01-ANI-FRO-001", "AI": "Six-sign demo", "AM": "OND 2026", "N": 1, "AC": 1, "AD": 1, "AP": "Community/Plenary-endorsed", "U": 3, "M": 3, "V": 3, "BU": 2},
+    {"AH": "02-ATM-CLD-001", "AI": "Six-sign demo", "AM": "OND 2026", "N": 1, "AC": 1, "AD": 1, "AP": "Community/Plenary-endorsed", "U": 3, "M": 2, "V": 2, "BU": 2},
+    {"AH": "03-PLT-TRE-001", "AI": "Six-sign demo", "AM": "OND 2026", "N": 1, "AC": 1, "AD": 1, "AP": "FGD-validated only", "U": 3, "M": 2, "V": 2, "BU": 1},
+    {"AH": "03-ANI-BRD-001", "AI": "Six-sign demo", "AM": "OND 2026", "N": 1, "AC": 1, "AD": 1, "AP": "Community/Plenary-endorsed", "U": 2, "M": 2, "V": 2, "BU": 1},
+    {"AH": "02-ATM-WND-001", "AI": "Six-sign demo", "AM": "OND 2026", "N": 1, "AC": 1, "AD": 1, "AP": "Community/Plenary-endorsed", "U": 1, "M": 2, "V": 2, "BU": 4},
+    {"AH": "01-AST-MON-001", "AI": "Six-sign demo", "AM": "OND 2026", "N": 1, "AC": 1, "AD": 1, "AP": "Community/Plenary-endorsed", "U": 1, "M": 1, "V": 1, "BU": 1}
+  ]
+}

@@ -9,14 +9,15 @@ use App\Models\Tilkit\TilkitSeason;
 use App\Models\Tilkit\TilkitSite;
 use App\Models\User;
 use App\Services\Tilkit\WorkbookRecordService;
-use App\Services\ToolAccessService;
 use App\Support\Tilkit\WorkbookColumnRegistry;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Support\TilkitTestTool;
 use Tests\TestCase;
 
 class TilkitWorkbookCaptureTest extends TestCase
 {
     use RefreshDatabase;
+    use TilkitTestTool;
 
     public function test_column_register_matches_v4_workbook_shape(): void
     {
@@ -82,10 +83,7 @@ class TilkitWorkbookCaptureTest extends TestCase
     private function makeRecord(): TilkitIndicatorRecord
     {
         $user = User::factory()->create();
-        $tool = app(ToolAccessService::class)->createTool($user, [
-            'name' => 'Workbook capture',
-            'purpose' => 'Test',
-        ]);
+        $tool = $this->tilkitToolFor($user);
 
         $site = TilkitSite::query()->create([
             'project_id' => $tool->id,

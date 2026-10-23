@@ -8,21 +8,19 @@ use App\Models\Tilkit\TilkitIndicatorRecord;
 use App\Models\Tilkit\TilkitSeason;
 use App\Models\Tilkit\TilkitSite;
 use App\Models\User;
-use App\Services\ToolAccessService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Support\TilkitTestTool;
 use Tests\TestCase;
 
 class TilkitWeatherSchemaTest extends TestCase
 {
     use RefreshDatabase;
+    use TilkitTestTool;
 
     public function test_tool_tilkit_overview_requires_auth(): void
     {
         $user = User::factory()->create();
-        $tool = app(ToolAccessService::class)->createTool($user, [
-            'name' => 'TILKIT Auth Test',
-            'purpose' => 'Test tool for TILKIT routes.',
-        ]);
+        $tool = $this->tilkitToolFor($user);
 
         $this->get(route('tools.tilkit.overview', $tool))->assertRedirect();
     }
@@ -30,10 +28,7 @@ class TilkitWeatherSchemaTest extends TestCase
     public function test_indicator_record_unique_per_site_season(): void
     {
         $user = User::factory()->create();
-        $tool = app(ToolAccessService::class)->createTool($user, [
-            'name' => 'TILKIT Schema Test',
-            'purpose' => 'Test tool for TILKIT schema.',
-        ]);
+        $tool = $this->tilkitToolFor($user);
 
         $site = TilkitSite::query()->create([
             'project_id' => $tool->id,

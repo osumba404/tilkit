@@ -44,6 +44,9 @@ class TilkitIndicatorRecord extends Model
         'demographics',
         'extended_attributes',
         'entered_by',
+        'confirmed_by_user_id',
+        'approved_by_user_id',
+        'verified_by_user_id',
     ];
 
     protected static function booted(): void

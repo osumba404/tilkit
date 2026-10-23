@@ -32,6 +32,32 @@ class CommunityDataListRegistry
         return $groups;
     }
 
+    /** @return list<array<string, mixed>> Items for section key A–E */
+    public static function itemsForSectionKey(string $key): array
+    {
+        if (! preg_match('/^[A-E]$/', $key)) {
+            return [];
+        }
+
+        return array_values(array_filter(
+            self::items(),
+            fn (array $item) => str_starts_with((string) ($item['section'] ?? ''), $key.'.')
+        ));
+    }
+
+    /** @return list<string> Unique column letters for a section key */
+    public static function columnLettersForSectionKey(string $key): array
+    {
+        $letters = [];
+        foreach (self::itemsForSectionKey($key) as $item) {
+            foreach (self::parseColumns($item['columns'] ?? '') as $letter) {
+                $letters[$letter] = true;
+            }
+        }
+
+        return array_keys($letters);
+    }
+
     /** @return list<string> Column letters referenced in the community data list */
     public static function allColumnLetters(): array
     {

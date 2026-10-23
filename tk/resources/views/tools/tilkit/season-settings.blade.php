@@ -33,7 +33,23 @@
                 <input type="checkbox" name="use_prior_multiplier" value="1" @checked($settings->use_prior_multiplier)>
                 Apply global literature prior (rating-based indicators only)
             </label>
-            <p class="text-xs text-tk-muted">Hazard priority defaults (drought/flood 1.5) are stored in settings JSON; extend in a later admin pass.</p>
+            <div>
+                <label class="text-xs text-tk-muted">KMSA county outlook tercile (DJ)</label>
+                <select name="kmsa_outlook_tercile" class="tk-input">
+                    <option value="">—</option>
+                    @foreach ([3 => 'Above normal', 2 => 'Normal', 1 => 'Below normal'] as $v => $l)
+                        <option value="{{ $v }}" @selected($settings->kmsa_outlook_tercile == $v)>{{ $l }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
+                <label class="text-xs text-tk-muted">NDMA drought phase (DL)</label>
+                <input type="text" name="ndma_drought_phase" value="{{ $settings->ndma_drought_phase }}" class="tk-input" placeholder="Normal, Alert, …">
+            </div>
+            <div>
+                <label class="text-xs text-tk-muted">NDMA VCI3M ward value (CR ingest)</label>
+                <input type="number" step="0.01" name="ndma_vci3m" value="{{ $settings->ndma_vci3m }}" class="tk-input" min="0" max="100">
+            </div>
             <button class="tk-btn-primary">Save &amp; recalculate records</button>
         </form>
     @endif

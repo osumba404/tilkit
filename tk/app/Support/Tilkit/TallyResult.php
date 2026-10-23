@@ -30,7 +30,37 @@ readonly class TallyResult
         public string $leadingSimpleLabel,
         public string $leadingWeightedLabel,
         public string $simpleWeightedAgreeLabel,
+        public array $integration = [],
     ) {}
+
+    /** @param  array<string, mixed>  $integration */
+    public function withIntegration(array $integration): self
+    {
+        return new self(
+            siteId: $this->siteId,
+            seasonId: $this->seasonId,
+            countedRows: $this->countedRows,
+            simple: $this->simple,
+            weighted: $this->weighted,
+            priorityAdjusted: $this->priorityAdjusted,
+            leadingSimple: $this->leadingSimple,
+            leadingWeighted: $this->leadingWeighted,
+            leadingPriority: $this->leadingPriority,
+            simpleWeightedAgree: $this->simpleWeightedAgree,
+            reconciliation: $this->reconciliation,
+            exclusionCounts: $this->exclusionCounts,
+            isTieSimple: $this->isTieSimple,
+            isTieWeighted: $this->isTieWeighted,
+            onsetEarliestMean: $this->onsetEarliestMean,
+            onsetLatestMean: $this->onsetLatestMean,
+            rowsLoggedWithId: $this->rowsLoggedWithId,
+            countedWithoutWeight: $this->countedWithoutWeight,
+            leadingSimpleLabel: $this->leadingSimpleLabel,
+            leadingWeightedLabel: $this->leadingWeightedLabel,
+            simpleWeightedAgreeLabel: $this->simpleWeightedAgreeLabel,
+            integration: $integration,
+        );
+    }
 
     /** @return array<string, mixed> */
     public function toArray(): array
@@ -57,6 +87,7 @@ readonly class TallyResult
             'leading_simple_label' => $this->leadingSimpleLabel,
             'leading_weighted_label' => $this->leadingWeightedLabel,
             'simple_weighted_agree_label' => $this->simpleWeightedAgreeLabel,
+            'integration' => $this->integration,
         ];
     }
 }

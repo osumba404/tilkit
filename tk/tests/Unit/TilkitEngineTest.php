@@ -14,14 +14,15 @@ use App\Services\Tilkit\IndicatorHistoryService;
 use App\Services\Tilkit\WorkbookRecordService;
 use App\Services\Tilkit\TilkitEngineService;
 use App\Services\Tilkit\WeightingService;
-use App\Services\ToolAccessService;
 use App\Support\Tilkit\IndicatorHistory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Support\TilkitTestTool;
 use Tests\TestCase;
 
 class TilkitEngineTest extends TestCase
 {
     use RefreshDatabase;
+    use TilkitTestTool;
 
     public function test_frog_first_season_weight_cap_final_six(): void
     {
@@ -78,7 +79,7 @@ class TilkitEngineTest extends TestCase
     private function makeRecord(array $attrs): TilkitIndicatorRecord
     {
         $user = User::factory()->create();
-        $tool = app(ToolAccessService::class)->createTool($user, ['name' => 'Engine test', 'purpose' => 'Test']);
+        $tool = $this->tilkitToolFor($user);
         $site = TilkitSite::query()->create(['project_id' => $tool->id, 'name' => 'Site', 'country' => 'KE']);
         $season = TilkitSeason::query()->create([
             'project_id' => $tool->id,

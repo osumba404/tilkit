@@ -35,7 +35,7 @@ class ConfidenceScoreCalculator
             'validation_breadth' => $this->validationBreadth($record->validation_status),
             'lead_time' => $this->leadTimeScore($workbookMap['K'] ?? null),
             'stability' => $stabilityFlag ? 0.25 : 1.0,
-            'kmsa_agreement' => 0.5,
+            'kmsa_agreement' => $this->kmsaAgreementScore($workbookMap['DK'] ?? null),
             'observers' => min(1.0, ((float) ($workbookMap['BG'] ?? 0)) / 3.0),
             'verified' => ($record->verified ?? false) ? 1.0 : 0.0,
         ];
@@ -57,6 +57,16 @@ class ConfidenceScoreCalculator
             ValidationStatus::SubCommunitySpecific => 0.5,
             ValidationStatus::ProvisionalEmerging => 0.25,
             ValidationStatus::Contested => 0.0,
+            default => 0.5,
+        };
+    }
+
+    private function kmsaAgreementScore(mixed $dk): float
+    {
+        return match ($dk) {
+            'Agrees' => 1.0,
+            'Differs by one class' => 0.5,
+            'Opposite' => 0.0,
             default => 0.5,
         };
     }

@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\DcProject;
 use App\Models\User;
+use App\Services\ToolAccessService;
 use App\Support\Tilkit\WeatherTool;
 use Database\Seeders\TilkitSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -46,5 +47,46 @@ class TilkitSingleToolTest extends TestCase
         $this->actingAs($admin)
             ->get(route('dashboard'))
             ->assertRedirect(route('tools.tilkit.overview', WeatherTool::resolve()));
+    }
+
+    public function test_create_tool_via_service_is_forbidden(): void
+    {
+        config(['tilkit.weather.single_tool.enabled' => true]);
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->post(route('tools.store'), [
+                'name' => 'Extra tool',
+                'purpose' => 'Should not be allowed',
+                'lawful_basis' => 'consent',
+            ])
+            ->assertNotFound();
+
+        $this->expectException(\Symfony\Component\HttpKernel\Exception\HttpException::class);
+        app(ToolAccessService::class)->createTool($user, [
+            'name' => 'Extra',
+            'purpose' => 'Blocked',
+        ]);
+    }
+
+    public function test_routes_for_non_canonical_tool_return_not_found(): void
+    {
+        config(['tilkit.weather.single_tool.enabled' => true]);
+        $user = User::factory()->create();
+        WeatherTool::ensureForUser($user);
+
+        $legacy = DcProject::query()->create([
+            'code' => 'legacy-other-tool',
+            'name' => 'Legacy',
+            'module' => 'data_collection',
+            'purpose' => 'Old row',
+            'lawful_basis' => 'consent',
+            'status' => 'active',
+            'owner_user_id' => $user->id,
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('tools.tilkit.overview', $legacy))
+            ->assertNotFound();
     }
 }

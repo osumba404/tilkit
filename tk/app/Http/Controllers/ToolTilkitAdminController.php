@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Tilkit\ValidationStatus;
 use App\Models\DcProject;
 use App\Models\Tilkit\TilkitIndicator;
 use App\Models\Tilkit\TilkitIndicatorCode;
@@ -12,6 +11,9 @@ use App\Models\Tilkit\TilkitSeasonSettings;
 use App\Models\Tilkit\TilkitSite;
 use App\Models\Tilkit\TilkitSighting;
 use App\Models\Tilkit\TilkitTallySnapshot;
+use App\Models\Tilkit\TilkitConsensusForecast;
+use App\Services\Tilkit\DataDeskService;
+use App\Services\Tilkit\TilkitConsentGate;
 use App\Services\Tilkit\TilkitEngineService;
 use App\Services\Tilkit\WorkbookRecordService;
 use App\Services\ToolAccessService;
@@ -145,6 +147,9 @@ class ToolTilkitAdminController extends Controller
             'site_id' => ['required', 'exists:tilkit_sites,id'],
             'season_id' => ['required', 'exists:tilkit_seasons,id'],
             'use_prior_multiplier' => ['nullable', 'boolean'],
+            'kmsa_outlook_tercile' => ['nullable', 'integer', 'in:0,1,2,3'],
+            'ndma_drought_phase' => ['nullable', 'string', 'max:40'],
+            'ndma_vci3m' => ['nullable', 'numeric', 'min:0', 'max:100'],
         ]);
         $settings = TilkitSeasonSettings::query()->updateOrCreate(
             ['site_id' => $data['site_id'], 'season_id' => $data['season_id']],
@@ -152,6 +157,9 @@ class ToolTilkitAdminController extends Controller
                 'use_prior_multiplier' => $request->boolean('use_prior_multiplier'),
                 'settings' => TilkitSeasonSettings::defaultSettings(),
                 'protocol_version' => config('tilkit.weather.protocol_version'),
+                'kmsa_outlook_tercile' => $data['kmsa_outlook_tercile'] ?? null,
+                'ndma_drought_phase' => $data['ndma_drought_phase'] ?? null,
+                'ndma_vci3m' => isset($data['ndma_vci3m']) ? (float) $data['ndma_vci3m'] : null,
             ]
         );
         app(TilkitEngineService::class)->recalculateSiteSeason($settings->site_id, $settings->season_id);
@@ -206,31 +214,15 @@ class ToolTilkitAdminController extends Controller
         ]);
     }
 
-    public function dataDesk(Request $request, DcProject $tool, ToolAccessService $access): View
+    public function dataDesk(Request $request, DcProject $tool, ToolAccessService $access, DataDeskService $desk): View
     {
         $access->assertCanView($request->user(), $tool);
 
-        $records = TilkitIndicatorRecord::query()
-            ->whereHas('indicator', fn ($q) => $q->where('project_id', $tool->id))
-            ->with(['indicator', 'site', 'season', 'workbookValues'])
-            ->latest('updated_at')
-            ->limit(100)
-            ->get()
-            ->map(function (TilkitIndicatorRecord $record) {
-                $ce = $record->workbookValues->firstWhere('column_letter', 'CE');
+        $records = $desk->queueForTool($tool);
+        $pending = $records->filter(fn ($r) => $r['queue'] !== 'ok');
+        $byQueue = $records->groupBy('queue');
 
-                return [
-                    'record' => $record,
-                    'tally_status' => $ce?->value_text ?? '—',
-                    'needs_confirm' => ! $record->confirmed,
-                    'needs_approve' => ! $record->approved,
-                    'contested' => $record->validation_status === ValidationStatus::Contested,
-                ];
-            });
-
-        $pending = $records->filter(fn ($r) => $r['needs_confirm'] || $r['needs_approve'] || $r['contested']);
-
-        return view('tools.tilkit.data-desk', compact('tool', 'records', 'pending'));
+        return view('tools.tilkit.data-desk', compact('tool', 'records', 'pending', 'byQueue'));
     }
 
     public function storeSighting(Request $request, DcProject $tool, TilkitIndicatorRecord $record, ToolAccessService $access, WorkbookRecordService $workbook): RedirectResponse
@@ -266,14 +258,11 @@ class ToolTilkitAdminController extends Controller
         return back()->with('status', 'Sighting recorded on this indicator row.');
     }
 
-    public function exportCsv(Request $request, DcProject $tool, ToolAccessService $access, WorkbookRecordService $workbook): StreamedResponse
+    public function exportCsv(Request $request, DcProject $tool, ToolAccessService $access, WorkbookRecordService $workbook, TilkitConsentGate $consent): StreamedResponse
     {
         $access->assertCanView($request->user(), $tool);
 
-        $records = TilkitIndicatorRecord::query()
-            ->whereHas('indicator', fn ($q) => $q->where('project_id', $tool->id))
-            ->with(['workbookValues', 'indicator'])
-            ->get();
+        $records = $this->exportableRecords($tool, $consent, $request->boolean('include_blocked'));
 
         $columns = WorkbookColumnRegistry::all();
 
@@ -297,6 +286,76 @@ class ToolTilkitAdminController extends Controller
             }
             fclose($out);
         }, 'tilkit-workbook-export.csv', ['Content-Type' => 'text/csv']);
+    }
+
+    public function exportJson(Request $request, DcProject $tool, ToolAccessService $access, WorkbookRecordService $workbook, TilkitConsentGate $consent): StreamedResponse
+    {
+        $access->assertCanView($request->user(), $tool);
+        $records = $this->exportableRecords($tool, $consent, false);
+        $columns = WorkbookColumnRegistry::all();
+        $payload = [];
+        foreach ($records as $record) {
+            $map = $workbook->rawWorkbookMap($record);
+            $row = ['indicator_uid' => $record->indicator?->indicator_uid];
+            foreach ($columns as $col) {
+                $letter = $col['column'];
+                if ($col['derived']) {
+                    $cell = $record->workbookValues->firstWhere('column_letter', $letter);
+                    $row[$letter] = $cell?->value_number ?? $cell?->value_text;
+                } else {
+                    $row[$letter] = $map[$letter] ?? null;
+                }
+            }
+            $payload[] = $row;
+        }
+
+        return response()->streamDownload(
+            fn () => print (json_encode(['protocol' => config('tilkit.weather.protocol_version'), 'rows' => $payload], JSON_PRETTY_PRINT)),
+            'tilkit-workbook-export.json',
+            ['Content-Type' => 'application/json'],
+        );
+    }
+
+    public function publishConsensus(Request $request, DcProject $tool, ToolAccessService $access, TilkitEngineService $engine): RedirectResponse
+    {
+        $access->assertCanView($request->user(), $tool);
+        $data = $request->validate([
+            'site_id' => ['required', 'exists:tilkit_sites,id'],
+            'season_id' => ['required', 'exists:tilkit_seasons,id'],
+            'integrated_tercile' => ['required', 'integer', 'in:1,2,3'],
+            'advisory_message' => ['required', 'string', 'max:5000'],
+            'publish_snapshot' => ['nullable', 'boolean'],
+        ]);
+        $result = $engine->runTally((int) $data['site_id'], (int) $data['season_id'], $request->boolean('publish_snapshot'), $request->user()->id);
+        $settings = TilkitSeasonSettings::query()->where('site_id', $data['site_id'])->where('season_id', $data['season_id'])->first();
+        $forecast = TilkitConsensusForecast::query()->create([
+            'site_id' => $data['site_id'],
+            'season_id' => $data['season_id'],
+            'label' => 'Integration '.now()->format('Y-m-d H:i'),
+            'community_tercile' => $result->leadingWeighted ?? $result->leadingSimple,
+            'kmsa_tercile' => $settings?->kmsa_outlook_tercile,
+            'integrated_tercile' => (int) $data['integrated_tercile'],
+            'advisory_message' => $data['advisory_message'],
+            'created_by' => $request->user()->id,
+        ]);
+
+        return redirect()->route('tools.tilkit.tally', [$tool, 'site_id' => $data['site_id'], 'season_id' => $data['season_id']])
+            ->with('status', "Consensus forecast #{$forecast->id} published (BF).");
+    }
+
+    /** @return \Illuminate\Support\Collection<int, TilkitIndicatorRecord> */
+    private function exportableRecords(DcProject $tool, TilkitConsentGate $consent, bool $includeBlocked): \Illuminate\Support\Collection
+    {
+        $records = TilkitIndicatorRecord::query()
+            ->whereHas('indicator', fn ($q) => $q->where('project_id', $tool->id))
+            ->with(['workbookValues', 'indicator'])
+            ->get();
+
+        if ($includeBlocked) {
+            return $records;
+        }
+
+        return $records->filter(fn (TilkitIndicatorRecord $r) => $consent->canExport($r));
     }
 
     private function assertRecordBelongsToTool(DcProject $tool, TilkitIndicatorRecord $record): void

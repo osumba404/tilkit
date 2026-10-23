@@ -86,7 +86,36 @@
                         {{ $reason }} ({{ $count }})@if(!$loop->last), @endif
                     @endforeach
                 </div>
+            @if (! empty($result->integration))
+                <div class="border-t border-tk-line pt-4 text-sm space-y-2">
+                    <h4 class="font-semibold">v4 integration (KMSA / NDMA / triggers)</h4>
+                    <p>Mean confidence (DQ): {{ $result->integration['mean_confidence_dq'] ?? '—' }}</p>
+                    <p>Community vegetation index: {{ $result->integration['vegetation_index'] ?? '—' }}</p>
+                    <p>KMSA agreement (DK): {{ $result->integration['kmsa_agreement'] ?? '—' }}</p>
+                    <p class="text-xs text-tk-muted">{{ $result->integration['integration_note'] ?? '' }}</p>
+                    @if (! empty($result->integration['triggers']))
+                        <ul class="list-disc list-inside text-amber-800">
+                            @foreach ($result->integration['triggers'] as $trigger)
+                                <li>{{ $trigger }}</li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
             @endif
+            <form method="POST" action="{{ route('tools.tilkit.integration.publish', $tool) }}" class="border-t border-tk-line pt-4 space-y-3 max-w-xl">
+                @csrf
+                <input type="hidden" name="site_id" value="{{ $siteId }}">
+                <input type="hidden" name="season_id" value="{{ $seasonId }}">
+                <h4 class="font-semibold text-sm">Publish consensus forecast (BF)</h4>
+                <select name="integrated_tercile" class="tk-input" required>
+                    <option value="3">Above normal</option>
+                    <option value="2">Normal</option>
+                    <option value="1">Below normal</option>
+                </select>
+                <textarea name="advisory_message" class="tk-input" rows="3" required placeholder="Joint advisory message…"></textarea>
+                <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="publish_snapshot" value="1"> Snapshot tally</label>
+                <button class="tk-btn-secondary text-sm">Save integration session</button>
+            </form>
         </div>
     @endif
 

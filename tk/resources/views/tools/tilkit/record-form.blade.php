@@ -22,37 +22,12 @@
     </p>
 
     @if ($isEdit)
+        <p class="mb-4">
+            <a href="{{ route('tools.tilkit.records.wizard', [$tool, $record, 'A']) }}" class="tk-btn-primary text-sm">Workshop wizard (A–E)</a>
+        </p>
         <div class="tk-card p-5 space-y-4 mb-6">
-            <h3 class="tk-section-title text-base">Field sighting (updates N, O, CI, Z, AA, AB)</h3>
-            <form method="POST" action="{{ route('tools.tilkit.records.sightings.store', [$tool, $record]) }}" class="grid md:grid-cols-2 gap-4">
-                @csrf
-                <div>
-                    <label class="text-xs text-tk-muted block mb-1">Date sighted</label>
-                    <input type="date" name="sighted_at" required class="tk-input">
-                </div>
-                <div>
-                    <label class="text-xs text-tk-muted block mb-1">Place</label>
-                    <input type="text" name="place_text" class="tk-input">
-                </div>
-                <div>
-                    <label class="text-xs text-tk-muted block mb-1">Landmark</label>
-                    <input type="text" name="landmark" class="tk-input">
-                </div>
-                <div>
-                    <label class="text-xs text-tk-muted block mb-1">Observed by</label>
-                    <input type="text" name="observed_by" class="tk-input">
-                </div>
-                <div class="md:col-span-2">
-                    <button type="submit" class="tk-btn-secondary">Add sighting to this record</button>
-                </div>
-            </form>
-            @if ($record->sightings->isNotEmpty())
-                <ul class="text-xs text-tk-muted space-y-1">
-                    @foreach ($record->sightings as $s)
-                        <li>{{ $s->sighted_at->format('Y-m-d') }} — {{ $s->place_text ?? '—' }}</li>
-                    @endforeach
-                </ul>
-            @endif
+            <h3 class="tk-section-title text-base">Field sighting</h3>
+            @include('tools.tilkit.partials.sighting-form', ['tool' => $tool, 'record' => $record])
         </div>
     @endif
 

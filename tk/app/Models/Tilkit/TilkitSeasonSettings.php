@@ -15,6 +15,9 @@ class TilkitSeasonSettings extends Model
         'use_prior_multiplier',
         'settings',
         'protocol_version',
+        'kmsa_outlook_tercile',
+        'ndma_drought_phase',
+        'ndma_vci3m',
     ];
 
     protected function casts(): array

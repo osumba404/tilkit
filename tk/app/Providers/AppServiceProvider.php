@@ -46,10 +46,19 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Route::bind('tool', function (string $value): DcProject {
-            return DcProject::query()
+            $project = DcProject::query()
                 ->where('code', $value)
                 ->orWhere('id', $value)
                 ->firstOrFail();
+
+            if (WeatherTool::singleToolMode()) {
+                $canonical = WeatherTool::resolve();
+                if ($canonical === null || $project->getKey() !== $canonical->getKey()) {
+                    abort(404);
+                }
+            }
+
+            return $project;
         });
 
         Route::bind('form', function (string $value): DcForm {

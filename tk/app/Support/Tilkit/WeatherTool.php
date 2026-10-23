@@ -34,6 +34,18 @@ class WeatherTool
         return DcProject::query()->where('code', static::configuredCode())->first();
     }
 
+    public static function assertCanonical(DcProject $tool): void
+    {
+        if (! static::singleToolMode()) {
+            return;
+        }
+
+        $canonical = static::resolve();
+        if ($canonical === null || $tool->getKey() !== $canonical->getKey()) {
+            abort(404);
+        }
+    }
+
     public static function ensureForUser(User $owner): DcProject
     {
         $attributes = config('tilkit.weather.single_tool.project', []);
