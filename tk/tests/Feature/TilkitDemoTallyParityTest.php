@@ -2,9 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Models\Tilkit\TilkitIndicatorRecord;
 use App\Models\Tilkit\TilkitSeason;
 use App\Models\Tilkit\TilkitSite;
+use App\Models\Tilkit\TilkitWeightReview;
 use App\Models\User;
+use App\Services\Tilkit\ClimateWeightReviewService;
 use App\Services\Tilkit\TilkitEngineService;
 use App\Services\Tilkit\WorkbookDemoImporter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -27,7 +30,19 @@ class TilkitDemoTallyParityTest extends TestCase
         $site = TilkitSite::query()->where('project_id', $tool->id)->where('name', 'Mutirithia (DEMO)')->firstOrFail();
         $season = TilkitSeason::query()->where('project_id', $tool->id)->where('label', 'OND 2026')->firstOrFail();
 
-        $result = app(TilkitEngineService::class)->runTally($site->id, $season->id);
+        $engine = app(TilkitEngineService::class);
+        $engine->recalculateSiteSeason($site->id, $season->id);
+        $recordIds = TilkitIndicatorRecord::query()
+            ->where('site_id', $site->id)
+            ->where('season_id', $season->id)
+            ->pluck('id');
+        $reviews = TilkitWeightReview::query()->whereIn('indicator_record_id', $recordIds)->where('status', 'pending')->get();
+        $signOff = app(ClimateWeightReviewService::class);
+        foreach ($reviews as $review) {
+            $signOff->signOff($review, $user);
+        }
+
+        $result = $engine->runTally($site->id, $season->id);
 
         $this->assertSame(8, $result->countedRows);
         // Excel lists 11 rows for the site/season (incl. duplicate frog row); DB keeps one record per indicator.

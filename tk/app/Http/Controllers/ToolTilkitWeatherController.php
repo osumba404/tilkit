@@ -9,6 +9,7 @@ use App\Models\Tilkit\TilkitSeason;
 use App\Models\Tilkit\TilkitSite;
 use App\Models\Tilkit\TilkitWorkbookMedia;
 use App\Services\Tilkit\SeasonOutcomeScoringService;
+use App\Services\Tilkit\TilkitPersonaService;
 use App\Services\Tilkit\TilkitSignOffGuard;
 use App\Services\Tilkit\WorkbookRecordService;
 use App\Services\ToolAccessService;
@@ -123,7 +124,7 @@ class ToolTilkitWeatherController extends Controller
         ]);
     }
 
-    public function updateRecord(Request $request, DcProject $tool, TilkitIndicatorRecord $record, ToolAccessService $access, WorkbookRecordService $workbook): RedirectResponse
+    public function updateRecord(Request $request, DcProject $tool, TilkitIndicatorRecord $record, ToolAccessService $access, WorkbookRecordService $workbook, TilkitPersonaService $personas): RedirectResponse
     {
         $access->assertCanView($request->user(), $tool);
         $this->assertRecordBelongsToTool($tool, $record);
@@ -136,6 +137,7 @@ class ToolTilkitWeatherController extends Controller
         ]);
 
         $raw = $validated['workbook'] ?? [];
+        $this->assertPersonaForWorkbookFields($personas, $request->user(), $tool, $raw);
         $raw = app(TilkitSignOffGuard::class)->applySignOff($record, $request->user(), $raw);
         $workbook->storeRawValues($record, $raw);
         $workbook->storeReferenceColumns($record->fresh());
@@ -177,7 +179,7 @@ class ToolTilkitWeatherController extends Controller
         ]);
     }
 
-    public function updateWizard(Request $request, DcProject $tool, TilkitIndicatorRecord $record, string $section, ToolAccessService $access, WorkbookRecordService $workbook): RedirectResponse
+    public function updateWizard(Request $request, DcProject $tool, TilkitIndicatorRecord $record, string $section, ToolAccessService $access, WorkbookRecordService $workbook, TilkitPersonaService $personas): RedirectResponse
     {
         $access->assertCanView($request->user(), $tool);
         $this->assertRecordBelongsToTool($tool, $record);
@@ -188,6 +190,7 @@ class ToolTilkitWeatherController extends Controller
             'workbook.*' => ['nullable'],
         ]);
         $raw = $validated['workbook'] ?? [];
+        $this->assertPersonaForWorkbookFields($personas, $request->user(), $tool, $raw);
         $raw = app(TilkitSignOffGuard::class)->applySignOff($record, $request->user(), $raw);
         $workbook->storeRawValues($record, $raw);
         $workbook->storeReferenceColumns($record->fresh());
@@ -225,6 +228,21 @@ class ToolTilkitWeatherController extends Controller
             $record->indicator && $record->indicator->project_id === $tool->id,
             404
         );
+    }
+
+    /** @param  array<string, mixed>  $workbook */
+    private function assertPersonaForWorkbookFields(TilkitPersonaService $personas, \App\Models\User $user, DcProject $tool, array $workbook): void
+    {
+        $persona = $personas->personaFor($user, $tool);
+        if (array_key_exists('AC', $workbook) && ! $persona->canConfirm()) {
+            abort(403, 'Your role cannot set Confirmed (AC).');
+        }
+        if (array_key_exists('AD', $workbook) && ! $persona->canApprove()) {
+            abort(403, 'Your role cannot set Approved (AD).');
+        }
+        if (array_key_exists('AE', $workbook) && ! $persona->canVerify()) {
+            abort(403, 'Your role cannot set Verified (AE).');
+        }
     }
 
     private function storePhotos(Request $request, TilkitIndicatorRecord $record): void

@@ -119,4 +119,9 @@ class TilkitIndicatorRecord extends Model
     {
         return $this->hasMany(TilkitWorkbookMedia::class, 'indicator_record_id');
     }
+
+    public function weightReviews(): HasMany
+    {
+        return $this->hasMany(TilkitWeightReview::class, 'indicator_record_id');
+    }
 }

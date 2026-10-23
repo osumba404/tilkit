@@ -12,7 +12,11 @@ use App\Models\Tilkit\TilkitSite;
 use App\Models\Tilkit\TilkitSighting;
 use App\Models\Tilkit\TilkitTallySnapshot;
 use App\Models\Tilkit\TilkitConsensusForecast;
+use App\Models\Tilkit\TilkitWeightReview;
+use App\Services\Tilkit\ClimateWeightReviewService;
 use App\Services\Tilkit\DataDeskService;
+use App\Services\Tilkit\TilkitPersonaService;
+use App\Services\Tilkit\WorkbookXlsxExporter;
 use App\Services\Tilkit\TilkitConsentGate;
 use App\Services\Tilkit\TilkitEngineService;
 use App\Services\Tilkit\WorkbookRecordService;
@@ -214,20 +218,56 @@ class ToolTilkitAdminController extends Controller
         ]);
     }
 
-    public function dataDesk(Request $request, DcProject $tool, ToolAccessService $access, DataDeskService $desk): View
+    public function dataDesk(Request $request, DcProject $tool, ToolAccessService $access, DataDeskService $desk, TilkitPersonaService $personas): View
     {
         $access->assertCanView($request->user(), $tool);
+        $personas->assert($request->user(), $tool, fn ($p) => $p->canDataDesk());
 
         $records = $desk->queueForTool($tool);
         $pending = $records->filter(fn ($r) => $r['queue'] !== 'ok');
         $byQueue = $records->groupBy('queue');
+        $weightReviews = TilkitWeightReview::query()
+            ->whereHas('record.indicator', fn ($q) => $q->where('project_id', $tool->id))
+            ->where('status', 'pending')
+            ->with(['record.indicator', 'record.site', 'record.season'])
+            ->get();
 
-        return view('tools.tilkit.data-desk', compact('tool', 'records', 'pending', 'byQueue'));
+        return view('tools.tilkit.data-desk', compact('tool', 'records', 'pending', 'byQueue', 'weightReviews'));
     }
 
-    public function storeSighting(Request $request, DcProject $tool, TilkitIndicatorRecord $record, ToolAccessService $access, WorkbookRecordService $workbook): RedirectResponse
+    public function signOffWeightReview(Request $request, DcProject $tool, TilkitWeightReview $review, ToolAccessService $access, TilkitPersonaService $personas, ClimateWeightReviewService $reviews): RedirectResponse
     {
         $access->assertCanView($request->user(), $tool);
+        $personas->assert($request->user(), $tool, fn ($p) => $p->canSignOffWeightReview());
+        abort_unless($review->record?->indicator?->project_id === $tool->id, 404);
+
+        $data = $request->validate(['notes' => ['nullable', 'string', 'max:2000']]);
+        $reviews->signOff($review, $request->user(), $data['notes'] ?? null);
+        app(TilkitEngineService::class)->recalculateRecord($review->record);
+
+        return back()->with('status', 'Climate weight review signed off.');
+    }
+
+    public function exportXlsx(Request $request, DcProject $tool, ToolAccessService $access, WorkbookXlsxExporter $exporter): StreamedResponse|\Symfony\Component\HttpFoundation\BinaryFileResponse
+    {
+        $access->assertCanView($request->user(), $tool);
+        abort_unless($request->user()->toolCapabilitiesFor($tool)->canExportData(), 403);
+
+        $records = TilkitIndicatorRecord::query()
+            ->whereHas('indicator', fn ($q) => $q->where('project_id', $tool->id))
+            ->with(['workbookValues', 'indicator'])
+            ->get();
+
+        $path = storage_path('app/tilkit-export-'.uniqid('', true).'.xlsx');
+        $exporter->writeToPath($records, $path);
+
+        return response()->download($path, 'tilkit-indicator-log.xlsx')->deleteFileAfterSend(true);
+    }
+
+    public function storeSighting(Request $request, DcProject $tool, TilkitIndicatorRecord $record, ToolAccessService $access, WorkbookRecordService $workbook, TilkitPersonaService $personas): RedirectResponse
+    {
+        $access->assertCanView($request->user(), $tool);
+        $personas->assert($request->user(), $tool, fn ($p) => $p->canLogSighting());
         $this->assertRecordBelongsToTool($tool, $record);
 
         $data = $request->validate([
@@ -316,9 +356,10 @@ class ToolTilkitAdminController extends Controller
         );
     }
 
-    public function publishConsensus(Request $request, DcProject $tool, ToolAccessService $access, TilkitEngineService $engine): RedirectResponse
+    public function publishConsensus(Request $request, DcProject $tool, ToolAccessService $access, TilkitEngineService $engine, TilkitPersonaService $personas): RedirectResponse
     {
         $access->assertCanView($request->user(), $tool);
+        $personas->assert($request->user(), $tool, fn ($p) => $p->canManageIntegration());
         $data = $request->validate([
             'site_id' => ['required', 'exists:tilkit_sites,id'],
             'season_id' => ['required', 'exists:tilkit_seasons,id'],

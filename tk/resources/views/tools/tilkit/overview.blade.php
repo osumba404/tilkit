@@ -32,6 +32,7 @@
         <a href="{{ route('tools.tilkit.settings', $tool) }}" class="tk-btn-secondary">Season settings</a>
         <a href="{{ route('tools.tilkit.export.csv', $tool) }}" class="tk-btn-secondary">Export CSV</a>
         <a href="{{ route('tools.tilkit.export.json', $tool) }}" class="tk-btn-secondary">Export JSON</a>
+        <a href="{{ route('tools.tilkit.export.xlsx', $tool) }}" class="tk-btn-secondary">Export xlsx</a>
         <a href="{{ route('tools.tilkit.workbook', $tool) }}" class="tk-btn-secondary">12-sheet guide</a>
         <a href="{{ route('tools.tilkit.calendar', $tool) }}" class="tk-btn-secondary">Indicator calendar</a>
     </div>

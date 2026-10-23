@@ -58,6 +58,10 @@ class EligibilityGate
             return GateResult::excluded('invalid_tercile', 'No valid tercile forecast (U)');
         }
 
+        if (app(ClimateWeightReviewService::class)->hasPendingReview($record)) {
+            return GateResult::excluded('climate_review_pending', 'Climate-change weight review pending (CP STRONG)');
+        }
+
         return GateResult::eligible('Counted in tally');
     }
 

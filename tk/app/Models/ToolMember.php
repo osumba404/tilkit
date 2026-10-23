@@ -18,6 +18,7 @@ class ToolMember extends Model
         'project_id',
         'user_id',
         'role',
+        'tilkit_persona',
         'can_export',
         'can_publish_forms',
         'joined_at',

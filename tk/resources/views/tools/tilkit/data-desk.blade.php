@@ -7,6 +7,27 @@
         </x-page-header>
     </x-slot>
 
+    @if (session('status'))
+        <div class="tk-card p-4 mb-4 text-sm">{{ session('status') }}</div>
+    @endif
+
+    @if ($weightReviews->isNotEmpty())
+        <div class="tk-card p-5 mb-6 border-amber-200">
+            <h3 class="font-semibold mb-3">Climate weight reviews (CP STRONG)</h3>
+            <ul class="space-y-3 text-sm">
+                @foreach ($weightReviews as $review)
+                    <li class="flex flex-wrap justify-between gap-2 items-center">
+                        <span>{{ $review->record->indicator?->indicator_uid }} · {{ $review->record->site?->name }}</span>
+                        <form method="POST" action="{{ route('tools.tilkit.weight-reviews.sign-off', [$tool, $review]) }}">
+                            @csrf
+                            <button type="submit" class="tk-btn-secondary text-xs">Sign off review</button>
+                        </form>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         @foreach (['pending_validation' => 'Pending validation', 'pending_verify' => 'Pending verify', 'contested' => 'Contested', 'climate_review' => 'Climate STRONG', 'blank_relevance' => 'Blank relevance'] as $key => $label)
             <div class="tk-stat">

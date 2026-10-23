@@ -18,12 +18,9 @@ class WorkbookDemoImporter
         private WorkbookRecordService $workbook,
     ) {}
 
-    /** @return array{records: int, sites: int, seasons: int} */
-    public function importFixture(DcProject $tool, string $fixturePath): array
+    /** @param  list<array<string, mixed>>  $rows */
+    public function importRows(DcProject $tool, array $rows): array
     {
-        $payload = json_decode(file_get_contents($fixturePath), true, 512, JSON_THROW_ON_ERROR);
-        $rows = $payload['rows'] ?? [];
-
         return DB::transaction(function () use ($tool, $rows): array {
             $sites = [];
             $seasons = [];
@@ -80,6 +77,14 @@ class WorkbookDemoImporter
                 'seasons' => count($seasons),
             ];
         });
+    }
+
+    /** @return array{records: int, sites: int, seasons: int} */
+    public function importFixture(DcProject $tool, string $fixturePath): array
+    {
+        $payload = json_decode(file_get_contents($fixturePath), true, 512, JSON_THROW_ON_ERROR);
+
+        return $this->importRows($tool, $payload['rows'] ?? []);
     }
 
     /** @param  array<string, mixed>  $row */

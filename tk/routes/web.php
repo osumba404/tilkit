@@ -70,6 +70,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('tilkit/data-desk', [ToolTilkitAdminController::class, 'dataDesk'])->name('tilkit.data-desk');
         Route::get('tilkit/export.csv', [ToolTilkitAdminController::class, 'exportCsv'])->name('tilkit.export.csv');
         Route::get('tilkit/export.json', [ToolTilkitAdminController::class, 'exportJson'])->name('tilkit.export.json');
+        Route::get('tilkit/export.xlsx', [ToolTilkitAdminController::class, 'exportXlsx'])->name('tilkit.export.xlsx');
+        Route::post('tilkit/weight-reviews/{review}/sign-off', [ToolTilkitAdminController::class, 'signOffWeightReview'])->name('tilkit.weight-reviews.sign-off');
         Route::post('tilkit/integration', [ToolTilkitAdminController::class, 'publishConsensus'])->name('tilkit.integration.publish');
         Route::get('tilkit/workbook', [ToolTilkitAdminController::class, 'workbookGuides'])->name('tilkit.workbook');
         Route::get('tilkit/calendar', [ToolTilkitAdminController::class, 'calendar'])->name('tilkit.calendar');

@@ -15,6 +15,7 @@ class TilkitRecordEngine
         private WorkbookRecordService $workbook,
         private ConfidenceScoreCalculator $confidence,
         private V4FieldDeriver $v4,
+        private ClimateWeightReviewService $climateReviews,
     ) {}
 
     public function recalculate(TilkitIndicatorRecord $record, ?TilkitSeasonSettings $settings = null): void
@@ -91,6 +92,7 @@ class TilkitRecordEngine
         $derived = array_filter($derived, fn ($v) => $v !== null && $v !== '');
 
         $this->workbook->storeDerivedValues($record, $derived);
+        $this->climateReviews->syncFromDerivedFlag($record, $cp);
     }
 
     /** @param  array<string, mixed>  $map */
