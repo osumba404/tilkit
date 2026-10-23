@@ -3,7 +3,11 @@
         <x-page-header title="Dashboard" subtitle="Your tools and latest collected data">
             <x-slot:actions>
                 <a href="{{ route('platform.datasets.index') }}" class="tk-btn-secondary">Upload & analyze data</a>
-                <a href="{{ route('tools.create') }}" class="tk-btn-primary">New tool</a>
+                @if ($tilkitWeatherTool ?? null)
+                    <a href="{{ route('tools.tilkit.overview', $tilkitWeatherTool) }}" class="tk-btn-primary">Weather log</a>
+                @else
+                    <a href="{{ route('tools.create') }}" class="tk-btn-primary">New tool</a>
+                @endif
             </x-slot:actions>
         </x-page-header>
     </x-slot>
@@ -39,7 +43,11 @@
                     </div>
                 </a>
             @empty
-                <p class="text-tk-muted text-sm">No tools yet. <a href="{{ route('tools.create') }}" class="text-tk-accent underline">Create your first tool</a>.</p>
+                @if ($tilkitWeatherTool ?? null)
+                    <p class="text-tk-muted text-sm">Weather log is not available for your account yet. Ask an administrator for access.</p>
+                @else
+                    <p class="text-tk-muted text-sm">No tools yet. <a href="{{ route('tools.create') }}" class="text-tk-accent underline">Create your first tool</a>.</p>
+                @endif
             @endforelse
         </section>
         <section>

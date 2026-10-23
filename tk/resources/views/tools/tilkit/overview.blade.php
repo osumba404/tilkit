@@ -31,6 +31,8 @@
         <a href="{{ route('tools.tilkit.data-desk', $tool) }}" class="tk-btn-secondary">Data desk</a>
         <a href="{{ route('tools.tilkit.settings', $tool) }}" class="tk-btn-secondary">Season settings</a>
         <a href="{{ route('tools.tilkit.export.csv', $tool) }}" class="tk-btn-secondary">Export CSV</a>
+        <a href="{{ route('tools.tilkit.workbook', $tool) }}" class="tk-btn-secondary">12-sheet guide</a>
+        <a href="{{ route('tools.tilkit.calendar', $tool) }}" class="tk-btn-secondary">Indicator calendar</a>
     </div>
 
     <div class="tk-card p-6 space-y-4 mb-6">

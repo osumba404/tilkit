@@ -15,7 +15,9 @@ use App\Models\Tilkit\TilkitTallySnapshot;
 use App\Services\Tilkit\TilkitEngineService;
 use App\Services\Tilkit\WorkbookRecordService;
 use App\Services\ToolAccessService;
+use App\Support\Tilkit\CommunityDataListRegistry;
 use App\Support\Tilkit\WorkbookColumnRegistry;
+use App\Support\Tilkit\WorkbookSheetCatalog;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -23,6 +25,43 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ToolTilkitAdminController extends Controller
 {
+    public function workbookGuides(Request $request, DcProject $tool, ToolAccessService $access): View
+    {
+        $access->assertCanView($request->user(), $tool);
+
+        return view('tools.tilkit.workbook-guides', [
+            'tool' => $tool,
+            'sheets' => WorkbookSheetCatalog::sheets(),
+            'communitySections' => CommunityDataListRegistry::bySection(),
+        ]);
+    }
+
+    public function calendar(Request $request, DcProject $tool, ToolAccessService $access): View
+    {
+        $access->assertCanView($request->user(), $tool);
+
+        $records = TilkitIndicatorRecord::query()
+            ->whereHas('indicator', fn ($q) => $q->where('project_id', $tool->id))
+            ->with(['indicator', 'site', 'season', 'workbookValues'])
+            ->get()
+            ->map(function (TilkitIndicatorRecord $record) {
+                $vals = $record->workbookValues->keyBy('column_letter');
+
+                return [
+                    'record' => $record,
+                    'ci' => $vals->get('CI')?->value_date?->format('Y-m-d') ?? $vals->get('CI')?->value_text,
+                    'ck' => $vals->get('CK')?->value_text,
+                    'cl' => $vals->get('CL')?->value_number ?? $vals->get('CL')?->value_text,
+                    'cm' => $vals->get('CM')?->value_number,
+                    'cn' => $vals->get('CN')?->value_text,
+                    'co' => $vals->get('CO')?->value_text,
+                    'cp' => $vals->get('CP')?->value_text,
+                ];
+            });
+
+        return view('tools.tilkit.calendar', compact('tool', 'records'));
+    }
+
     public function setup(Request $request, DcProject $tool, ToolAccessService $access): View
     {
         $access->assertCanView($request->user(), $tool);

@@ -13,6 +13,7 @@ class TilkitRecordEngine
         private IndicatorHistoryService $history,
         private WeightingService $weighting,
         private WorkbookRecordService $workbook,
+        private ConfidenceScoreCalculator $confidence,
     ) {}
 
     public function recalculate(TilkitIndicatorRecord $record, ?TilkitSeasonSettings $settings = null): void
@@ -25,7 +26,13 @@ class TilkitRecordEngine
             ->first();
 
         $hist = $this->history->forIndicator($record->indicator_id);
-        $gate = $this->gate->evaluate($record);
+        $map = $this->workbook->rawWorkbookMap($record);
+        $gate = $this->gate->evaluate(
+            $record,
+            $record->site?->name,
+            $record->season?->label,
+            $map,
+        );
         $weights = $this->weighting->compute(
             $record,
             $hist,
@@ -33,8 +40,8 @@ class TilkitRecordEngine
             $this->hazardFactor($settings),
         );
 
-        $map = $this->workbook->rawWorkbookMap($record);
         $leadDays = $this->leadTimeDays($map);
+        $dq = $this->confidence->score($record, $hist, $map, $weights->baseWeight, $weights->stabilityFlag, $settings);
 
         $derived = [
             'BL' => $hist->corroboration,
@@ -58,6 +65,7 @@ class TilkitRecordEngine
             'CM' => $this->calendarShift($map),
             'CU' => $leadDays,
             'CV' => $this->decisionHorizon($leadDays),
+            'DQ' => $dq,
         ];
 
         $derived = array_filter($derived, fn ($v) => $v !== null && $v !== '');

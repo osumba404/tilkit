@@ -164,6 +164,9 @@ class WorkbookRecordService
         $this->storeRawValues($record, array_filter([
             'AH' => $record->indicator?->indicator_uid,
             'AI' => $record->site?->name,
+            'AJ' => $record->site?->ward,
+            'AK' => $record->site?->county,
+            'AL' => $record->site?->country,
             'AM' => $record->season?->label,
         ], fn ($v) => $v !== null && $v !== ''));
     }

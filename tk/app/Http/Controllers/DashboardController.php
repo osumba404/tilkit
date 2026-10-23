@@ -5,14 +5,23 @@ namespace App\Http\Controllers;
 use App\Models\DcProject;
 use App\Models\DcSubmission;
 use App\Services\AnalyticsService;
+use App\Support\Tilkit\WeatherTool;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function __invoke(Request $request, AnalyticsService $analytics): View
+    public function __invoke(Request $request, AnalyticsService $analytics): View|RedirectResponse
     {
         $user = $request->user();
+
+        if (WeatherTool::singleToolMode()) {
+            $tool = WeatherTool::resolve();
+            if ($tool !== null && $user->canAccessTool($tool)) {
+                return redirect()->route('tools.tilkit.overview', $tool);
+            }
+        }
 
         $toolIds = $user->isSuperAdmin()
             ? DcProject::query()->pluck('id')

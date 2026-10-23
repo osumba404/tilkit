@@ -52,6 +52,16 @@ class TilkitSeasonSettings extends Model
                 'above_normal_weighted_share' => 50,
                 'confidence_floor' => 50,
             ],
+            'confidence_weights' => [
+                'track_record' => 25,
+                'corroboration' => 15,
+                'validation_breadth' => 15,
+                'lead_time' => 10,
+                'stability' => 10,
+                'kmsa_agreement' => 10,
+                'observers' => 5,
+                'verified' => 10,
+            ],
         ];
     }
 
