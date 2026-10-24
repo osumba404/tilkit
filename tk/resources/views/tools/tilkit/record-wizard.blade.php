@@ -21,6 +21,11 @@
     </nav>
 
     @if ($section === 'B')
+        <div class="tk-callout mb-6 text-sm">
+            Column <span class="font-mono text-tk-accent">Y</span> (photos) is uploaded on the
+            <a href="{{ route('tools.tilkit.records.edit', [$tool, $record]) }}" class="text-tk-accent underline">full workbook grid</a>
+            - at least three images recommended per sign.
+        </div>
         <div class="tk-card p-5 mb-6">
             <h3 class="font-semibold mb-3">Log a sighting (child event - does not create a new row)</h3>
             @include('tools.tilkit.partials.sighting-form', ['tool' => $tool, 'record' => $record])
@@ -36,17 +41,24 @@
         </ol>
     </div>
 
-    <form method="POST" action="{{ route('tools.tilkit.records.wizard.update', [$tool, $record, $section]) }}" class="tk-card p-6 space-y-4 animate-tk-fade-in-up">
+    <form method="POST" action="{{ route('tools.tilkit.records.wizard.update', [$tool, $record, $section]) }}" class="tk-card p-6 animate-tk-fade-in-up">
         @csrf
         @method('PATCH')
+        <div class="grid md:grid-cols-2 gap-4">
         @foreach ($columns as $col)
             @continue(\App\Support\Tilkit\WorkbookInputSpec::skipInForm($col))
             @php
                 $letter = $col['column'];
                 $current = old("workbook.{$letter}", $workbookValues[$letter] ?? '');
             @endphp
-            <x-tilkit.workbook-field :col="$col" :current="$current" />
+            <x-tilkit.workbook-field
+                :col="$col"
+                :current="$current"
+                :center-lat="$record->site?->latitude"
+                :center-lng="$record->site?->longitude"
+            />
         @endforeach
+        </div>
         <div class="flex flex-wrap gap-3 pt-4">
             @php $idx = array_search($section, $sections, true); @endphp
             @if ($idx !== false && $idx < count($sections) - 1)

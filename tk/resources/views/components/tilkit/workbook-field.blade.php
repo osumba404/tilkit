@@ -1,4 +1,4 @@
-@props(['col', 'current' => ''])
+@props(['col', 'current' => '', 'centerLat' => null, 'centerLng' => null])
 
 @php
     $letter = $col['column'];
@@ -7,7 +7,13 @@
     $consent = $kind === 'consent' ? \App\Support\Tilkit\WorkbookCapturePreparer::splitConsent($current) : null;
 @endphp
 
-<div {{ $attributes->merge(['class' => 'tk-field']) }}>
+@php
+    $fieldSpan = match ($kind) {
+        'gps', 'consent', 'textarea', 'json' => ' md:col-span-2',
+        default => '',
+    };
+@endphp
+<div {{ $attributes->merge(['class' => 'tk-field'.$fieldSpan]) }}>
     <label class="text-xs text-tk-muted block mb-1">
         <span class="font-mono text-tk-accent">{{ $letter }}</span>
         {{ $col['field'] }}
@@ -88,19 +94,28 @@
             @break
 
         @case('consent')
-            <div class="grid sm:grid-cols-3 gap-2">
-                <select name="workbook[BC_level]" class="tk-input" aria-label="Consent sharing level">
-                    <option value="">Level -</option>
+            <div class="grid sm:grid-cols-3 gap-3">
+                <div>
+                    <span class="text-[0.65rem] uppercase tracking-tk-label text-tk-muted block mb-1">Sharing level</span>
+                    <select name="workbook[BC_level]" class="tk-input" aria-label="Consent sharing level">
+                    <option value="">Choose level</option>
                     @foreach ([1, 2, 3, 4] as $lvl)
                         <option value="{{ $lvl }}" @selected($consent['level'] === (string) $lvl)>Level {{ $lvl }}</option>
                     @endforeach
                 </select>
-                <select name="workbook[BC_share]" class="tk-input" aria-label="Consent to share">
-                    <option value="">Share -</option>
+                </div>
+                <div>
+                    <span class="text-[0.65rem] uppercase tracking-tk-label text-tk-muted block mb-1">May share?</span>
+                    <select name="workbook[BC_share]" class="tk-input" aria-label="Consent to share">
+                    <option value="">Choose</option>
                     <option value="1" @selected($consent['share'] === '1')>Yes (1)</option>
                     <option value="0" @selected($consent['share'] === '0')>No (0)</option>
                 </select>
-                <input type="text" name="workbook[BC_credit]" value="{{ $consent['credit'] }}" class="tk-input" placeholder="Credit / attribution">
+                </div>
+                <div>
+                    <span class="text-[0.65rem] uppercase tracking-tk-label text-tk-muted block mb-1">Credit / attribution</span>
+                    <input type="text" name="workbook[BC_credit]" value="{{ $consent['credit'] }}" class="tk-input" placeholder="Community or individual">
+                </div>
             </div>
             @break
 
@@ -117,10 +132,16 @@
             @break
 
         @case('gps')
-            <div class="grid grid-cols-2 gap-2">
-                <input type="number" step="any" name="workbook[Z_lat]" value="{{ $gps['lat'] }}" class="tk-input" placeholder="Latitude" aria-label="GPS latitude">
-                <input type="number" step="any" name="workbook[Z_lng]" value="{{ $gps['lng'] }}" class="tk-input" placeholder="Longitude" aria-label="GPS longitude">
-            </div>
+            <x-tilkit.gps-map
+                lat-name="workbook[Z_lat]"
+                lng-name="workbook[Z_lng]"
+                :lat="$gps['lat']"
+                :lng="$gps['lng']"
+                :center-lat="$centerLat"
+                :center-lng="$centerLng"
+                lat-label="GPS latitude (Z)"
+                lng-label="GPS longitude (Z)"
+            />
             @break
 
         @case('json')

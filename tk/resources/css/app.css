@@ -272,6 +272,26 @@
         @apply inline-flex h-9 w-9 items-center justify-center rounded-lg border border-transparent text-tk-muted transition duration-150 hover:border-tk-line hover:bg-tk-soft/80 hover:text-tk-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-tk-accent/35 focus-visible:ring-offset-2 focus-visible:ring-offset-tk-bg;
     }
 
+    .tk-gps-map-canvas {
+        min-height: 14rem;
+        z-index: 0;
+    }
+
+    .tk-gps-map .leaflet-container {
+        font-family: inherit;
+        background: rgb(var(--tk-soft));
+    }
+
+    .dark .tk-gps-map .leaflet-container,
+    .dark .tk-gps-map-view .leaflet-container {
+        filter: brightness(0.92) contrast(1.05);
+    }
+
+    .tk-gps-map-view .leaflet-container {
+        font-family: inherit;
+        background: rgb(var(--tk-soft));
+    }
+
     .tk-dropdown-panel {
         @apply rounded-tk bg-tk-surface py-1 shadow-tk-md ring-1 ring-black/[0.06];
     }

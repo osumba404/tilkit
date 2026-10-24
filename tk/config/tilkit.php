@@ -36,6 +36,10 @@ return [
             'min_scan_row' => 5,
             'uid_column' => 'AH',
         ],
+        'demo' => [
+            'owner_email' => env('TILKIT_DEMO_OWNER_EMAIL', 'osumbaevans21@gmail.com'),
+            'min_records_before_skip' => (int) env('TILKIT_DEMO_MIN_RECORDS_SKIP', 120),
+        ],
         'engine' => [
             'scored_seasons_for_hit_rate' => (int) env('TILKIT_WEATHER_SCORED_SEASONS', 3),
             'corroboration_cap_until' => 2,

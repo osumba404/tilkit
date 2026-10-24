@@ -4,34 +4,64 @@
         <label class="text-xs text-tk-muted block mb-1">Date sighted (CI)</label>
         <input type="date" name="sighted_at" required class="tk-input">
     </div>
-    <div class="md:col-span-2">
-        <label class="text-xs text-tk-muted block mb-1">Where and when sighted (O)</label>
-        <textarea name="place_text" rows="2" class="tk-input" placeholder="Place description and context"></textarea>
-    </div>
-    <div>
-        <label class="text-xs text-tk-muted block mb-1">GPS latitude (Z)</label>
-        <input type="number" step="any" name="latitude" class="tk-input" placeholder="-1.234567">
-    </div>
-    <div>
-        <label class="text-xs text-tk-muted block mb-1">GPS longitude (Z)</label>
-        <input type="number" step="any" name="longitude" class="tk-input" placeholder="36.789012">
-    </div>
-    <div>
-        <label class="text-xs text-tk-muted block mb-1">Landmark (AA)</label>
-        <input type="text" name="landmark" class="tk-input" placeholder="Landmark near GPS">
-    </div>
     <div>
         <label class="text-xs text-tk-muted block mb-1">Observed by (AB)</label>
         <input type="text" name="observed_by" class="tk-input" placeholder="Observer name or group">
     </div>
     <div class="md:col-span-2">
-        <button type="submit" class="tk-btn-secondary">Add sighting</button>
+        <label class="text-xs text-tk-muted block mb-1">Where and when sighted (O)</label>
+        <textarea name="place_text" rows="2" class="tk-input" placeholder="Place description and context"></textarea>
+    </div>
+    <div class="md:col-span-2">
+        <p class="text-xs text-tk-muted mb-2"><span class="font-mono text-tk-accent">Z</span> GPS location - tap the map or use your location</p>
+        <x-tilkit.gps-map
+            lat-name="latitude"
+            lng-name="longitude"
+            :center-lat="$record->site?->latitude"
+            :center-lng="$record->site?->longitude"
+            lat-label="Latitude"
+            lng-label="Longitude"
+        />
+    </div>
+    <div class="md:col-span-2">
+        <label class="text-xs text-tk-muted block mb-1">Landmark (AA)</label>
+        <input type="text" name="landmark" class="tk-input" placeholder="Landmark near the pin (tree, school, river bend…)">
+    </div>
+    <div class="md:col-span-2">
+        <button type="submit" class="tk-btn-primary">Add sighting</button>
     </div>
 </form>
 @if ($record->sightings->isNotEmpty())
-    <ul class="mt-4 text-xs text-tk-muted space-y-1">
+    <ul class="mt-6 space-y-3">
         @foreach ($record->sightings as $s)
-            <li>{{ $s->sighted_at->format('Y-m-d') }} - {{ $s->place_text ?? '-' }} ({{ $s->uuid }})</li>
+            <li class="tk-card p-3 text-sm">
+                <div class="flex flex-wrap justify-between gap-2">
+                    <span class="font-medium text-tk-ink">{{ $s->sighted_at->format('Y-m-d') }}</span>
+                    @if ($s->latitude !== null && $s->longitude !== null)
+                        <a href="https://www.openstreetmap.org/?mlat={{ $s->latitude }}&amp;mlon={{ $s->longitude }}#map=16/{{ $s->latitude }}/{{ $s->longitude }}"
+                           class="text-tk-accent text-xs underline" target="_blank" rel="noopener noreferrer">Open on map</a>
+                    @endif
+                </div>
+                <p class="text-tk-muted mt-1">{{ $s->place_text ?? 'No place description' }}</p>
+                @if ($s->landmark)
+                    <p class="text-xs text-tk-muted mt-1"><span class="text-tk-ink">Landmark:</span> {{ $s->landmark }}</p>
+                @endif
+                @if ($s->latitude !== null && $s->longitude !== null)
+                    <p class="text-xs font-mono text-tk-muted mt-1">{{ $s->latitude }}, {{ $s->longitude }}</p>
+                    <x-tilkit.gps-map-view
+                        :points="[[
+                            'lat' => (float) $s->latitude,
+                            'lng' => (float) $s->longitude,
+                            'label' => $s->sighted_at->format('Y-m-d'),
+                            'detail' => $s->place_text ?? 'Field sighting',
+                            'kind' => 'sighting',
+                        ]]"
+                        height="h-40"
+                        :legend="false"
+                        class="mt-3"
+                    />
+                @endif
+            </li>
         @endforeach
     </ul>
 @endif

@@ -13,7 +13,11 @@
 
     @include('tools.tilkit.partials.subnav')
 
-    <div class="grid md:grid-cols-3 gap-4 mb-8 tk-stagger">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-6 gap-4 mb-8 tk-stagger">
+        <div class="tk-stat">
+            <p class="tk-stat-label">Workbook rows</p>
+            <p class="tk-stat-value">{{ number_format($summary['total_records'] ?? 0) }}</p>
+        </div>
         <div class="tk-stat">
             <p class="tk-stat-label">Sites</p>
             <p class="tk-stat-value">{{ $tool->tilkit_sites_count }}</p>
@@ -26,7 +30,48 @@
             <p class="tk-stat-label">Indicators</p>
             <p class="tk-stat-value">{{ $tool->tilkit_indicators_count }}</p>
         </div>
+        <div class="tk-stat">
+            <p class="tk-stat-label">Approved</p>
+            <p class="tk-stat-value">{{ number_format($summary['approved'] ?? 0) }}</p>
+        </div>
+        <div class="tk-stat">
+            <p class="tk-stat-label">Sightings</p>
+            <p class="tk-stat-value">{{ number_format($summary['field_sightings'] ?? 0) }}</p>
+        </div>
     </div>
+
+    @if (($summary['total_records'] ?? 0) > 0)
+        <div class="tk-card p-6 mb-8 animate-tk-fade-in-up">
+            <div class="flex flex-wrap justify-between items-start gap-4 mb-4">
+                <div>
+                    <h3 class="tk-section-title">Dataset at a glance</h3>
+                    <p class="text-sm text-tk-muted mt-1">Workbook capture across sites and seasons - open Analysis for charts and validation breakdown.</p>
+                </div>
+                <a href="{{ route('tools.tilkit.insights', $tool) }}" class="tk-btn-primary text-sm">Open analysis hub</a>
+            </div>
+            <x-tilkit.gps-map-view :points="$mapPoints" height="h-64" class="mb-6" />
+            <div class="grid md:grid-cols-2 gap-6">
+                <ul class="space-y-2">
+                    @foreach (collect($summary['by_site'] ?? [])->take(5) as $row)
+                        <x-tilkit.insight-bar
+                            :label="$row['site']"
+                            :count="$row['count']"
+                            :max="$summary['site_max'] ?? 1"
+                        />
+                    @endforeach
+                </ul>
+                <ul class="space-y-2">
+                    @foreach (collect($summary['by_season'] ?? [])->take(5) as $row)
+                        <x-tilkit.insight-bar
+                            :label="$row['season']"
+                            :count="$row['count']"
+                            :max="$summary['season_max'] ?? 1"
+                        />
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    @endif
 
     @if (\App\Support\Tilkit\WeatherTool::singleToolMode())
         <div class="tk-callout mb-8 animate-tk-fade-in-up">

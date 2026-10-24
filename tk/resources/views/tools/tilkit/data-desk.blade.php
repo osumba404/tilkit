@@ -9,6 +9,12 @@
 
     @include('tools.tilkit.partials.subnav')
 
+    <div class="tk-card p-5 mb-6">
+        <h3 class="tk-section-title text-base mb-3">Quality desk · locations</h3>
+        <p class="text-sm text-tk-muted mb-4">Pins show where workbook GPS and field sightings were captured while you work validation queues.</p>
+        <x-tilkit.gps-map-view :points="$mapPoints" height="h-64" />
+    </div>
+
     @if (session('status'))
         <div class="tk-card p-4 mb-4 text-sm">{{ session('status') }}</div>
     @endif

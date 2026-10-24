@@ -35,6 +35,11 @@
         <button type="submit" class="tk-btn-secondary">Filter</button>
     </form>
 
+    <div class="tk-card p-5 mb-6">
+        <h3 class="tk-section-title text-base mb-3">Records on map</h3>
+        <x-tilkit.gps-map-view :points="$mapPoints" height="h-72" />
+    </div>
+
     <div class="tk-card overflow-hidden animate-tk-scale-in">
         <table class="w-full text-sm tk-table-hover">
             <thead class="bg-tk-soft text-left text-xs uppercase tracking-tk-label text-tk-muted">

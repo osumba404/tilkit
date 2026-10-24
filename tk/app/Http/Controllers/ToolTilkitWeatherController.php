@@ -9,6 +9,7 @@ use App\Models\Tilkit\TilkitSeason;
 use App\Models\Tilkit\TilkitSite;
 use App\Models\Tilkit\TilkitWorkbookMedia;
 use App\Services\Tilkit\SeasonOutcomeScoringService;
+use App\Services\Tilkit\TilkitInsightsService;
 use App\Services\Tilkit\TilkitPersonaService;
 use App\Services\Tilkit\TilkitSignOffGuard;
 use App\Services\Tilkit\WorkbookRecordService;
@@ -22,11 +23,12 @@ use Illuminate\View\View;
 
 class ToolTilkitWeatherController extends Controller
 {
-    public function overview(Request $request, DcProject $tool, ToolAccessService $access): View
+    public function overview(Request $request, DcProject $tool, ToolAccessService $access, TilkitInsightsService $insights): View
     {
         $access->assertCanView($request->user(), $tool);
 
         $tool->loadCount(['tilkitSites', 'tilkitSeasons', 'tilkitIndicators']);
+        $summary = $insights->summary($tool);
         $records = TilkitIndicatorRecord::query()
             ->whereHas('indicator', fn ($q) => $q->where('project_id', $tool->id))
             ->with(['indicator', 'site', 'season'])
@@ -41,6 +43,8 @@ class ToolTilkitWeatherController extends Controller
             'tool' => $tool,
             'protocol' => $protocol,
             'records' => $records,
+            'summary' => $summary,
+            'mapPoints' => $insights->mapPointsForTool($tool),
             'rawFieldCount' => $rawFieldCount,
             'tilkitNav' => 'overview',
         ]);

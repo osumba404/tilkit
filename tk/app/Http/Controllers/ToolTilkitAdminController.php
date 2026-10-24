@@ -53,11 +53,15 @@ class ToolTilkitAdminController extends Controller
 
         $records = $query->latest('updated_at')->paginate(30)->withQueryString();
 
+        $siteId = $request->filled('site_id') ? $request->integer('site_id') : null;
+        $seasonId = $request->filled('season_id') ? $request->integer('season_id') : null;
+
         return view('tools.tilkit.records-index', [
             'tool' => $tool,
             'records' => $records,
             'sites' => TilkitSite::query()->where('project_id', $tool->id)->orderBy('name')->get(),
             'seasons' => TilkitSeason::query()->where('project_id', $tool->id)->orderBy('label')->get(),
+            'mapPoints' => app(TilkitInsightsService::class)->mapPointsForTool($tool, $siteId, $seasonId),
             'tilkitNav' => 'records',
         ]);
     }
@@ -70,6 +74,7 @@ class ToolTilkitAdminController extends Controller
             'tool' => $tool,
             'summary' => $insights->summary($tool),
             'recentRecords' => $insights->recentRecords($tool),
+            'mapPoints' => $insights->mapPointsForTool($tool),
             'tilkitNav' => 'insights',
         ]);
     }
@@ -277,7 +282,7 @@ class ToolTilkitAdminController extends Controller
         ]);
     }
 
-    public function dataDesk(Request $request, DcProject $tool, ToolAccessService $access, DataDeskService $desk, TilkitPersonaService $personas): View
+    public function dataDesk(Request $request, DcProject $tool, ToolAccessService $access, DataDeskService $desk, TilkitPersonaService $personas, TilkitInsightsService $insights): View
     {
         $access->assertCanView($request->user(), $tool);
         $personas->assert($request->user(), $tool, fn ($p) => $p->canDataDesk());
@@ -297,6 +302,7 @@ class ToolTilkitAdminController extends Controller
             'pending' => $pending,
             'byQueue' => $byQueue,
             'weightReviews' => $weightReviews,
+            'mapPoints' => $insights->mapPointsForTool($tool),
             'tilkitNav' => 'desk',
         ]);
     }

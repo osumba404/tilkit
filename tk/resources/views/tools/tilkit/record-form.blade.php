@@ -90,7 +90,12 @@
                             $letter = $col['column'];
                             $current = old("workbook.{$letter}", $workbookValues[$letter] ?? '');
                         @endphp
-                        <x-tilkit.workbook-field :col="$col" :current="$current" />
+                        <x-tilkit.workbook-field
+                            :col="$col"
+                            :current="$current"
+                            :center-lat="$isEdit ? $record->site?->latitude : null"
+                            :center-lng="$isEdit ? $record->site?->longitude : null"
+                        />
                     @endforeach
                 </div>
             </details>
