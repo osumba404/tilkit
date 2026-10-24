@@ -1,6 +1,7 @@
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { destroyDatasetCharts, initDatasetAccCharts } from './acc-dashboard.js';
+import { messageFromApiResponse } from './json-api-error';
 
 function jsonHeaders() {
     return {
@@ -43,7 +44,7 @@ async function submitPanelForm(form, methodOverride = null) {
         const data = await response.json().catch(() => ({}));
 
         if (!response.ok) {
-            showFormError(data.errors?.panel || data.message || 'Could not update panel.');
+            showFormError(messageFromApiResponse(data, 'Could not update panel.'));
             return;
         }
 

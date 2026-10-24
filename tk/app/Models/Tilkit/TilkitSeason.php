@@ -32,6 +32,11 @@ class TilkitSeason extends Model
 
     public function monthRangeLabel(): string
     {
+        $name = trim((string) ($this->label ?? ''));
+        if ($name !== '') {
+            return $name;
+        }
+
         if ($this->start_month && $this->end_month) {
             return \App\Support\Tilkit\SeasonMonthRange::labelFromMonths(
                 (int) $this->start_month,
@@ -39,7 +44,19 @@ class TilkitSeason extends Model
             );
         }
 
-        return (string) $this->label;
+        return 'Season';
+    }
+
+    public function calendarMonthRangeLabel(): string
+    {
+        if ($this->start_month && $this->end_month) {
+            return \App\Support\Tilkit\SeasonMonthRange::labelFromMonths(
+                (int) $this->start_month,
+                (int) $this->end_month,
+            );
+        }
+
+        return '';
     }
 
     public function project(): BelongsTo

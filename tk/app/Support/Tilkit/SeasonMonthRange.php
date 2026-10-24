@@ -23,15 +23,25 @@ class SeasonMonthRange
         ];
     }
 
-    public static function labelFromMonths(int $startMonth, int $endMonth): string
+    /** @return array<int, string> */
+    public static function shortMonthOptions(): array
     {
-        $short = [
+        return [
             1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'May', 6 => 'Jun',
             7 => 'Jul', 8 => 'Aug', 9 => 'Sep', 10 => 'Oct', 11 => 'Nov', 12 => 'Dec',
         ];
+    }
+
+    public static function labelFromMonths(int $startMonth, int $endMonth): string
+    {
+        $short = self::shortMonthOptions();
         $start = $short[$startMonth] ?? (string) $startMonth;
         $end = $short[$endMonth] ?? (string) $endMonth;
 
-        return $startMonth === $endMonth ? $start : "{$start}–{$end}";
+        if ($startMonth === $endMonth) {
+            return $start;
+        }
+
+        return "{$start}–{$end}";
     }
 }

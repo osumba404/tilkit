@@ -26,11 +26,14 @@ use App\Services\Tilkit\WorkbookRecordService;
 use App\Services\ToolAccessService;
 use App\Support\Tilkit\CommunityDataListRegistry;
 use App\Support\Tilkit\IndicatorCodeLegendGrouper;
+use App\Support\Tilkit\SeasonMonthCoverage;
 use App\Support\Tilkit\SeasonMonthRange;
 use App\Support\Tilkit\WorkbookColumnRegistry;
 use App\Support\Tilkit\WorkbookSheetCatalog;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -160,10 +163,26 @@ class ToolTilkitAdminController extends Controller
         $access->assertCanView($request->user(), $tool);
         $program = $this->programs->active($tool);
 
+        $programs = $this->programs->programsFor($tool);
+        $sitesByProgram = TilkitSite::query()
+            ->where('project_id', $tool->id)
+            ->whereIn('program_id', $programs->pluck('id'))
+            ->orderBy('name')
+            ->get()
+            ->groupBy('program_id');
+        $seasonsByProgram = TilkitSeason::query()
+            ->where('project_id', $tool->id)
+            ->whereIn('program_id', $programs->pluck('id'))
+            ->orderBy('start_month')
+            ->get()
+            ->groupBy('program_id');
+
         return view('tools.tilkit.setup', [
             'tool' => $tool,
             'activeProgram' => $program,
-            'programs' => $this->programs->programsFor($tool),
+            'programs' => $programs,
+            'sitesByProgram' => $sitesByProgram,
+            'seasonsByProgram' => $seasonsByProgram,
             'sites' => $this->programs->sitesQuery($tool)->get(),
             'seasons' => $this->programs->seasonsQuery($tool)->get(),
             'legendGroups' => app(IndicatorCodeLegendGrouper::class)->groupedLegend(),
@@ -171,17 +190,25 @@ class ToolTilkitAdminController extends Controller
             'geographyContinentsUrl' => route('tools.tilkit.geography.continents', $tool),
             'geographyCountriesUrl' => route('tools.tilkit.geography.countries', $tool),
             'seasonMonths' => SeasonMonthRange::monthOptions(),
+            'seasonMonthShort' => SeasonMonthRange::shortMonthOptions(),
+            'setupProgramUrl' => route('tools.tilkit.setup.program', $tool),
+            'setupProgramUpdateUrl' => route('tools.tilkit.setup.program.update', [$tool, 0]),
+            'setupSeasonUrl' => route('tools.tilkit.setup.season', $tool),
+            'setupSiteUrl' => route('tools.tilkit.setup.site', $tool),
             'tilkitNav' => 'setup',
         ]);
     }
 
-    public function storeProgram(Request $request, DcProject $tool, ToolAccessService $access): RedirectResponse
+    public function storeProgram(Request $request, DcProject $tool, ToolAccessService $access): RedirectResponse|JsonResponse
     {
         $access->assertCanView($request->user(), $tool);
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:160'],
-            'description' => ['nullable', 'string', 'max:2000'],
-        ]);
+        $data = $request->validate(
+            [
+                'name' => $this->programNameRules($tool),
+                'description' => ['nullable', 'string', 'max:2000'],
+            ],
+            $this->programValidationMessages(),
+        );
 
         $program = TilkitProgram::query()->create([
             ...$data,
@@ -189,7 +216,42 @@ class ToolTilkitAdminController extends Controller
         ]);
         $this->programs->setActive($tool, $program->id);
 
-        return back()->with('status', 'Program created. Sites and seasons you add now belong to this program.');
+        if ($request->wantsJson()) {
+            return response()->json([
+                'program_id' => $program->id,
+                'name' => $program->name,
+                'message' => 'Program created.',
+            ]);
+        }
+
+        return back()->with('status', 'Program created. Continue with seasons and sites in the wizard.');
+    }
+
+    public function updateProgram(Request $request, DcProject $tool, TilkitProgram $program, ToolAccessService $access): RedirectResponse|JsonResponse
+    {
+        $access->assertCanView($request->user(), $tool);
+        abort_unless((int) $program->project_id === (int) $tool->id, 404);
+
+        $data = $request->validate(
+            [
+                'name' => $this->programNameRules($tool, $program),
+                'description' => ['nullable', 'string', 'max:2000'],
+            ],
+            $this->programValidationMessages(),
+        );
+
+        $program->update($data);
+        $this->programs->setActive($tool, $program->id);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'program_id' => $program->id,
+                'name' => $program->name,
+                'message' => 'Program updated.',
+            ]);
+        }
+
+        return back()->with('status', 'Program updated.');
     }
 
     public function switchProgram(Request $request, DcProject $tool, ToolAccessService $access): RedirectResponse
@@ -203,22 +265,28 @@ class ToolTilkitAdminController extends Controller
         return back()->with('status', 'Active program updated.');
     }
 
-    public function storeSite(Request $request, DcProject $tool, ToolAccessService $access, GeographyCatalogService $geo): RedirectResponse
+    public function storeSite(Request $request, DcProject $tool, ToolAccessService $access, GeographyCatalogService $geo): RedirectResponse|JsonResponse
     {
         $access->assertCanView($request->user(), $tool);
-        $program = $this->programs->active($tool);
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:120'],
-            'continent' => ['required', 'string', 'max:60'],
-            'country' => ['required', 'string', 'size:2'],
-            'county' => ['nullable', 'string', 'max:120'],
-            'ward' => ['nullable', 'string', 'max:120'],
-            'primary_language' => ['nullable', 'string', 'max:40'],
-        ]);
+        $programId = (int) $request->input('program_id');
+        $data = $request->validate(
+            [
+                'program_id' => $this->programIdRule($tool),
+                'name' => $this->siteNameRules($tool, $programId),
+                'continent' => ['required', 'string', 'max:60'],
+                'country' => ['required', 'string', 'size:2'],
+                'county' => ['nullable', 'string', 'max:120'],
+                'ward' => ['nullable', 'string', 'max:120'],
+                'primary_language' => ['nullable', 'string', 'max:40'],
+            ],
+            $this->siteValidationMessages(),
+        );
+        $programId = (int) $data['program_id'];
+        $this->programs->setActive($tool, $programId);
         $countryCode = strtoupper($data['country']);
-        TilkitSite::query()->create([
+        $site = TilkitSite::query()->create([
             'project_id' => $tool->id,
-            'program_id' => $program->id,
+            'program_id' => $programId,
             'name' => $data['name'],
             'continent' => $data['continent'],
             'country' => $countryCode,
@@ -228,30 +296,153 @@ class ToolTilkitAdminController extends Controller
             'primary_language' => $data['primary_language'] ?? null,
         ]);
 
-        return back()->with('status', 'Site added.');
+        $program = TilkitProgram::query()->findOrFail($programId);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'site_id' => $site->id,
+                'name' => $site->name,
+                'message' => 'Site added.',
+            ]);
+        }
+
+        return back()->with('status', 'Site added to '.$program->name.'.');
     }
 
-    public function storeSeason(Request $request, DcProject $tool, ToolAccessService $access): RedirectResponse
+    public function storeSeason(Request $request, DcProject $tool, ToolAccessService $access): RedirectResponse|JsonResponse
     {
         $access->assertCanView($request->user(), $tool);
-        $program = $this->programs->active($tool);
-        $data = $request->validate([
-            'start_month' => ['required', 'integer', 'min:1', 'max:12'],
-            'end_month' => ['required', 'integer', 'min:1', 'max:12'],
-        ]);
-        $label = SeasonMonthRange::labelFromMonths((int) $data['start_month'], (int) $data['end_month']);
-        TilkitSeason::query()->create([
-            'label' => $label,
-            'start_month' => (int) $data['start_month'],
-            'end_month' => (int) $data['end_month'],
+        $programId = (int) $request->input('program_id');
+        $data = $request->validate(
+            [
+                'program_id' => $this->programIdRule($tool),
+                'label' => $this->seasonLabelRules($tool, $programId),
+                'start_month' => ['required', 'integer', 'min:1', 'max:12'],
+                'end_month' => ['required', 'integer', 'min:1', 'max:12'],
+            ],
+            $this->seasonValidationMessages(),
+        );
+        $programId = (int) $data['program_id'];
+        $startMonth = (int) $data['start_month'];
+        $endMonth = (int) $data['end_month'];
+
+        $existing = TilkitSeason::query()
+            ->where('project_id', $tool->id)
+            ->where('program_id', $programId)
+            ->orderBy('start_month')
+            ->get();
+        $coverage = SeasonMonthCoverage::coverageMap($existing);
+        $error = SeasonMonthCoverage::validateNextRange($coverage, $startMonth, $endMonth, $existing);
+        if ($error !== null) {
+            if ($request->wantsJson()) {
+                return response()->json(['message' => $error], 422);
+            }
+
+            return back()->withErrors(['start_month' => $error])->withInput();
+        }
+
+        $this->programs->setActive($tool, $programId);
+        $season = TilkitSeason::query()->create([
+            'label' => trim($data['label']),
+            'start_month' => $startMonth,
+            'end_month' => $endMonth,
             'starts_on' => null,
             'ends_on' => null,
             'project_id' => $tool->id,
-            'program_id' => $program->id,
+            'program_id' => $programId,
             'protocol_version' => config('tilkit.weather.protocol_version'),
         ]);
 
-        return back()->with('status', 'Season added.');
+        $allSeasons = $existing->push($season);
+        $updatedCoverage = SeasonMonthCoverage::coverageMap($allSeasons);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'season_id' => $season->id,
+                'label' => $season->label,
+                'start_month' => $season->start_month,
+                'end_month' => $season->end_month,
+                'months_complete' => SeasonMonthCoverage::isComplete($updatedCoverage),
+                'next_start_month' => SeasonMonthCoverage::nextSeasonStartMonth($allSeasons),
+                'message' => 'Season added.',
+            ]);
+        }
+
+        $program = TilkitProgram::query()->findOrFail($programId);
+
+        return back()->with('status', 'Season added to '.$program->name.'.');
+    }
+
+    /** @return array<int, mixed> */
+    private function programIdRule(DcProject $tool): array
+    {
+        return [
+            'required',
+            'integer',
+            Rule::exists('tilkit_programs', 'id')->where('project_id', $tool->id),
+        ];
+    }
+
+    /** @return array<int, mixed> */
+    private function programNameRules(DcProject $tool, ?TilkitProgram $ignore = null): array
+    {
+        $unique = Rule::unique('tilkit_programs', 'name')->where('project_id', $tool->id);
+        if ($ignore !== null) {
+            $unique->ignore($ignore->id);
+        }
+
+        return ['required', 'string', 'max:160', $unique];
+    }
+
+    /** @return array<string, string> */
+    private function programValidationMessages(): array
+    {
+        return [
+            'name.required' => 'Enter a name for this program or initiative.',
+            'name.unique' => 'A program with this name already exists. Choose a different name or use Edit on the existing program.',
+        ];
+    }
+
+    /** @return array<int, mixed> */
+    private function siteNameRules(DcProject $tool, int $programId): array
+    {
+        return [
+            'required',
+            'string',
+            'max:120',
+            Rule::unique('tilkit_sites', 'name')
+                ->where(fn ($query) => $query->where('project_id', $tool->id)->where('program_id', $programId)),
+        ];
+    }
+
+    /** @return array<string, string> */
+    private function siteValidationMessages(): array
+    {
+        return [
+            'name.required' => 'Enter a name for this monitoring site.',
+            'name.unique' => 'This program already has a site with that name. Use a different site name.',
+        ];
+    }
+
+    /** @return array<int, mixed> */
+    private function seasonLabelRules(DcProject $tool, int $programId): array
+    {
+        return [
+            'required',
+            'string',
+            'max:80',
+            Rule::unique('tilkit_seasons', 'label')
+                ->where(fn ($query) => $query->where('project_id', $tool->id)->where('program_id', $programId)),
+        ];
+    }
+
+    /** @return array<string, string> */
+    private function seasonValidationMessages(): array
+    {
+        return [
+            'label.required' => 'Give this season a name (for example MAM 2025 or Long rains).',
+            'label.unique' => 'This program already has a season with that name. Choose a different name.',
+        ];
     }
 
     public function seasonSettings(Request $request, DcProject $tool, ToolAccessService $access): View

@@ -155,8 +155,33 @@
         @apply rounded-tk border border-tk-accent/25 bg-tk-accent-soft px-4 py-3 text-sm text-tk-ink shadow-tk-xs animate-tk-fade-in-down;
     }
 
+    .tk-error-banner {
+        @apply rounded-tk border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-tk-ink shadow-tk-xs animate-tk-fade-in-down;
+    }
+
     .tk-page-content {
         @apply animate-tk-fade-in-up;
+    }
+
+    .tk-modal-overlay {
+        @apply fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto overscroll-contain;
+    }
+
+    .tk-modal-backdrop {
+        @apply fixed inset-0 bg-tk-ink/50 backdrop-blur-sm;
+    }
+
+    .tk-modal-panel {
+        @apply relative z-10 flex w-full max-w-lg max-h-[min(90dvh,720px)] flex-col overflow-hidden tk-card shadow-tk-lg;
+    }
+
+    .tk-modal-panel-body {
+        @apply flex-1 overflow-y-auto overscroll-contain px-6 pb-6 min-h-0;
+    }
+
+    html.tk-modal-open,
+    html.tk-modal-open body {
+        @apply overflow-hidden;
     }
 
     .tk-stagger > * {

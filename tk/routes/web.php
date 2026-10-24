@@ -67,6 +67,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('tilkit/records/{record}/sightings', [ToolTilkitAdminController::class, 'storeSighting'])->name('tilkit.records.sightings.store');
         Route::get('tilkit/setup', [ToolTilkitAdminController::class, 'setup'])->name('tilkit.setup');
         Route::post('tilkit/setup/programs', [ToolTilkitAdminController::class, 'storeProgram'])->name('tilkit.setup.program');
+        Route::patch('tilkit/setup/programs/{program}', [ToolTilkitAdminController::class, 'updateProgram'])->name('tilkit.setup.program.update');
         Route::post('tilkit/program', [ToolTilkitAdminController::class, 'switchProgram'])->name('tilkit.program.switch');
         Route::get('tilkit/geography/continents', [TilkitGeographyController::class, 'continents'])->name('tilkit.geography.continents');
         Route::get('tilkit/geography/countries', [TilkitGeographyController::class, 'countries'])->name('tilkit.geography.countries');
