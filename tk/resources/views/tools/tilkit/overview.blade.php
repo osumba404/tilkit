@@ -11,6 +11,8 @@
         </x-page-header>
     </x-slot>
 
+    @include('tools.tilkit.partials.subnav')
+
     <div class="grid md:grid-cols-3 gap-4 mb-6">
         <div class="tk-stat">
             <p class="tk-stat-label">Sites</p>
@@ -56,6 +58,10 @@
     </div>
 
     @if ($records->isNotEmpty())
+        <div class="flex justify-between items-center mb-3">
+            <h3 class="tk-section-title">Recent records</h3>
+            <a href="{{ route('tools.tilkit.records.index', $tool) }}" class="text-sm text-tk-accent">View all</a>
+        </div>
         <div class="tk-card overflow-hidden">
             <table class="w-full text-sm">
                 <thead class="bg-tk-soft text-left text-xs uppercase tracking-tk-label text-tk-muted">

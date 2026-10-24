@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DcForm;
 use App\Models\DcProject;
+use App\Support\Tilkit\WeatherTool;
 use App\Support\FieldTypeHelper;
 use App\Services\FormBuilderService;
 use App\Services\ToolAccessService;
@@ -18,6 +19,11 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ToolFormController extends Controller
 {
+    private function assertNotTilkitWeatherModule(DcProject $tool): void
+    {
+        abort_if(WeatherTool::isWeatherModule($tool), 404);
+    }
+
     /** @param  array<int, array<string, mixed>>  $choices */
     private function assignChoiceValues(array $choices): array
     {
@@ -53,6 +59,7 @@ class ToolFormController extends Controller
 
     public function create(Request $request, DcProject $tool, ToolAccessService $access): View
     {
+        $this->assertNotTilkitWeatherModule($tool);
         $access->assertCanManage($request->user(), $tool);
 
         return view('tools.forms.create', compact('tool'));
@@ -60,6 +67,7 @@ class ToolFormController extends Controller
 
     public function store(Request $request, DcProject $tool, ToolAccessService $access, FormBuilderService $builder): RedirectResponse
     {
+        $this->assertNotTilkitWeatherModule($tool);
         $access->assertCanManage($request->user(), $tool);
 
         $validated = $request->validate([
@@ -76,6 +84,7 @@ class ToolFormController extends Controller
 
     public function builder(Request $request, DcProject $tool, DcForm $form, ToolAccessService $access, FormBuilderService $builder): View
     {
+        $this->assertNotTilkitWeatherModule($tool);
         $access->assertCanManage($request->user(), $tool);
         abort_unless($form->project_id === $tool->id, 404);
 
@@ -88,6 +97,7 @@ class ToolFormController extends Controller
 
     public function saveBuilder(Request $request, DcProject $tool, DcForm $form, ToolAccessService $access, FormBuilderService $builder, ToolAuditService $audit): RedirectResponse
     {
+        $this->assertNotTilkitWeatherModule($tool);
         $access->assertCanManage($request->user(), $tool);
         abort_unless($form->project_id === $tool->id, 404);
 
@@ -157,6 +167,7 @@ class ToolFormController extends Controller
 
     public function publish(Request $request, DcProject $tool, DcForm $form, ToolAccessService $access, FormBuilderService $builder, ToolAuditService $audit): RedirectResponse
     {
+        $this->assertNotTilkitWeatherModule($tool);
         $access->assertCanPublishForms($request->user(), $tool);
         abort_unless($form->project_id === $tool->id, 404);
 
@@ -173,6 +184,7 @@ class ToolFormController extends Controller
 
     public function duplicate(Request $request, DcProject $tool, DcForm $form, ToolAccessService $access, FormBuilderService $builder, ToolAuditService $audit): RedirectResponse
     {
+        $this->assertNotTilkitWeatherModule($tool);
         $access->assertCanManage($request->user(), $tool);
         abort_unless($form->project_id === $tool->id, 404);
 
@@ -184,6 +196,7 @@ class ToolFormController extends Controller
 
     public function importCsv(Request $request, DcProject $tool, DcForm $form, ToolAccessService $access, FormBuilderService $builder): RedirectResponse
     {
+        $this->assertNotTilkitWeatherModule($tool);
         $access->assertCanManage($request->user(), $tool);
         abort_unless($form->project_id === $tool->id, 404);
 
@@ -218,6 +231,7 @@ class ToolFormController extends Controller
         ToolAccessService $access,
         XlsFormService $xlsform,
     ): StreamedResponse {
+        $this->assertNotTilkitWeatherModule($tool);
         $access->assertCanManage($request->user(), $tool);
         abort_unless($form->project_id === $tool->id, 404);
 
@@ -236,6 +250,7 @@ class ToolFormController extends Controller
         XlsFormService $xlsform,
         ToolAuditService $audit,
     ): RedirectResponse {
+        $this->assertNotTilkitWeatherModule($tool);
         $access->assertCanManage($request->user(), $tool);
         abort_unless($form->project_id === $tool->id, 404);
 

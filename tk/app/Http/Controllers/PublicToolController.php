@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DcProject;
+use App\Support\Tilkit\WeatherTool;
 use App\Services\DuplicateDetectionService;
 use App\Services\PublicFormValidationService;
 use App\Services\SubmissionDraftService;
@@ -21,6 +22,7 @@ class PublicToolController extends Controller
 {
     public function collect(DcProject $tool, SubmissionDraftService $drafts, Request $request): View|RedirectResponse
     {
+        abort_if(WeatherTool::isWeatherModule($tool), 404);
         abort_unless($tool->public_collection_enabled, 404);
 
         if ($tool->requiresConsentGate() && ! session('tool_consent_'.$tool->id)) {

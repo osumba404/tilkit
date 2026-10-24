@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\RedirectsTilkitWeatherModule;
 use App\Models\DcProject;
 use App\Models\DcSubmission;
 use App\Services\ToolAccessService;
@@ -10,8 +11,14 @@ use Illuminate\View\View;
 
 class ToolSubmissionController extends Controller
 {
-    public function index(Request $request, DcProject $tool, ToolAccessService $access): View
+    use RedirectsTilkitWeatherModule;
+
+    public function index(Request $request, DcProject $tool, ToolAccessService $access): View|\Illuminate\Http\RedirectResponse
     {
+        if ($redirect = $this->redirectIfTilkitWeatherModule($tool, 'records')) {
+            return $redirect;
+        }
+
         $access->assertCanView($request->user(), $tool);
         $role = $request->user()->toolRoleFor($tool);
 
@@ -33,8 +40,12 @@ class ToolSubmissionController extends Controller
         return view('tools.submissions.index', compact('tool', 'submissions', 'forms', 'role'));
     }
 
-    public function show(Request $request, DcProject $tool, DcSubmission $submission, ToolAccessService $access): View
+    public function show(Request $request, DcProject $tool, DcSubmission $submission, ToolAccessService $access): View|\Illuminate\Http\RedirectResponse
     {
+        if ($redirect = $this->redirectIfTilkitWeatherModule($tool, 'records')) {
+            return $redirect;
+        }
+
         $access->assertCanViewSubmission($request->user(), $tool, $submission);
 
         $submission->load(['form', 'formVersion.fields', 'answers.field', 'collector']);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Concerns\BuildsAccToolContext;
+use App\Http\Controllers\Concerns\RedirectsTilkitWeatherModule;
 use App\Models\DcProject;
 use App\Models\DcSubmission;
 use App\Services\AnalyticsService;
@@ -15,9 +16,14 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class ToolAnalyticsController extends Controller
 {
     use BuildsAccToolContext;
+    use RedirectsTilkitWeatherModule;
 
-    public function show(Request $request, DcProject $tool, AnalyticsService $analytics, ToolAccessService $access): View
+    public function show(Request $request, DcProject $tool, AnalyticsService $analytics, ToolAccessService $access): View|\Illuminate\Http\RedirectResponse
     {
+        if ($redirect = $this->redirectIfTilkitWeatherModule($tool, 'insights')) {
+            return $redirect;
+        }
+
         $access->assertCanViewAnalytics($request->user(), $tool);
         extract($this->accToolContext($request, $tool));
 
@@ -34,8 +40,12 @@ class ToolAnalyticsController extends Controller
         ));
     }
 
-    public function explorer(Request $request, DcProject $tool, AnalyticsService $analytics, ToolAccessService $access): View
+    public function explorer(Request $request, DcProject $tool, AnalyticsService $analytics, ToolAccessService $access): View|\Illuminate\Http\RedirectResponse
     {
+        if ($redirect = $this->redirectIfTilkitWeatherModule($tool, 'records')) {
+            return $redirect;
+        }
+
         $access->assertCanViewAnalytics($request->user(), $tool);
         extract($this->accToolContext($request, $tool));
 
@@ -49,8 +59,12 @@ class ToolAnalyticsController extends Controller
         return view('tools.analytics.explorer', compact('tool', 'filters', 'forms', 'submissions', 'accSection'));
     }
 
-    public function review(Request $request, DcProject $tool, AnalyticsService $analytics, ToolAccessService $access): View
+    public function review(Request $request, DcProject $tool, AnalyticsService $analytics, ToolAccessService $access): View|\Illuminate\Http\RedirectResponse
     {
+        if ($redirect = $this->redirectIfTilkitWeatherModule($tool, 'data-desk')) {
+            return $redirect;
+        }
+
         $access->assertCanViewAnalytics($request->user(), $tool);
         extract($this->accToolContext($request, $tool));
 
@@ -60,8 +74,12 @@ class ToolAnalyticsController extends Controller
         return view('tools.analytics.review', compact('tool', 'filters', 'forms', 'review', 'accSection'));
     }
 
-    public function reports(Request $request, DcProject $tool, ToolAccessService $access): View
+    public function reports(Request $request, DcProject $tool, ToolAccessService $access): View|\Illuminate\Http\RedirectResponse
     {
+        if ($redirect = $this->redirectIfTilkitWeatherModule($tool, 'insights')) {
+            return $redirect;
+        }
+
         $access->assertCanViewAnalytics($request->user(), $tool);
         extract($this->accToolContext($request, $tool));
 
@@ -86,8 +104,12 @@ class ToolAnalyticsController extends Controller
         );
     }
 
-    public function export(Request $request, DcProject $tool, ToolAccessService $access): StreamedResponse
+    public function export(Request $request, DcProject $tool, ToolAccessService $access): StreamedResponse|\Illuminate\Http\RedirectResponse
     {
+        if ($redirect = $this->redirectIfTilkitWeatherModule($tool, 'export')) {
+            return $redirect;
+        }
+
         $access->assertCanExport($request->user(), $tool);
 
         $filename = 'tilkit-'.$tool->code.'-submissions-'.now()->format('Y-m-d').'.csv';

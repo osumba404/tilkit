@@ -15,6 +15,7 @@ use App\Models\Tilkit\TilkitConsensusForecast;
 use App\Models\Tilkit\TilkitWeightReview;
 use App\Services\Tilkit\ClimateWeightReviewService;
 use App\Services\Tilkit\DataDeskService;
+use App\Services\Tilkit\TilkitInsightsService;
 use App\Services\Tilkit\TilkitPersonaService;
 use App\Services\Tilkit\WorkbookXlsxExporter;
 use App\Services\Tilkit\TilkitConsentGate;
@@ -31,6 +32,63 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ToolTilkitAdminController extends Controller
 {
+    public function recordsIndex(Request $request, DcProject $tool, ToolAccessService $access): View
+    {
+        $access->assertCanView($request->user(), $tool);
+
+        $query = TilkitIndicatorRecord::query()
+            ->whereHas('indicator', fn ($q) => $q->where('project_id', $tool->id))
+            ->with(['indicator', 'site', 'season']);
+
+        if ($request->filled('site_id')) {
+            $query->where('site_id', $request->integer('site_id'));
+        }
+        if ($request->filled('season_id')) {
+            $query->where('season_id', $request->integer('season_id'));
+        }
+        if ($request->filled('q')) {
+            $term = '%'.$request->string('q').'%';
+            $query->whereHas('indicator', fn ($q) => $q->where('indicator_uid', 'like', $term));
+        }
+
+        $records = $query->latest('updated_at')->paginate(30)->withQueryString();
+
+        return view('tools.tilkit.records-index', [
+            'tool' => $tool,
+            'records' => $records,
+            'sites' => TilkitSite::query()->where('project_id', $tool->id)->orderBy('name')->get(),
+            'seasons' => TilkitSeason::query()->where('project_id', $tool->id)->orderBy('label')->get(),
+            'tilkitNav' => 'records',
+        ]);
+    }
+
+    public function insights(Request $request, DcProject $tool, ToolAccessService $access, TilkitInsightsService $insights): View
+    {
+        $access->assertCanView($request->user(), $tool);
+
+        return view('tools.tilkit.insights', [
+            'tool' => $tool,
+            'summary' => $insights->summary($tool),
+            'recentRecords' => $insights->recentRecords($tool),
+            'tilkitNav' => 'insights',
+        ]);
+    }
+
+    public function team(Request $request, DcProject $tool, ToolAccessService $access): View
+    {
+        $access->assertCanManage($request->user(), $tool);
+
+        $tool->load([
+            'members.user',
+            'invitations' => fn ($q) => $q->whereNull('accepted_at')->where('expires_at', '>', now()),
+        ]);
+
+        return view('tools.tilkit.team', [
+            'tool' => $tool,
+            'tilkitNav' => 'team',
+        ]);
+    }
+
     public function workbookGuides(Request $request, DcProject $tool, ToolAccessService $access): View
     {
         $access->assertCanView($request->user(), $tool);
@@ -78,6 +136,7 @@ class ToolTilkitAdminController extends Controller
             'seasons' => TilkitSeason::query()->where('project_id', $tool->id)->orderBy('label')->get(),
             'indicators' => TilkitIndicator::query()->where('project_id', $tool->id)->with('code')->orderBy('indicator_uid')->get(),
             'codes' => TilkitIndicatorCode::query()->orderBy('code')->limit(200)->get(),
+            'tilkitNav' => 'setup',
         ]);
     }
 
@@ -232,7 +291,14 @@ class ToolTilkitAdminController extends Controller
             ->with(['record.indicator', 'record.site', 'record.season'])
             ->get();
 
-        return view('tools.tilkit.data-desk', compact('tool', 'records', 'pending', 'byQueue', 'weightReviews'));
+        return view('tools.tilkit.data-desk', [
+            'tool' => $tool,
+            'records' => $records,
+            'pending' => $pending,
+            'byQueue' => $byQueue,
+            'weightReviews' => $weightReviews,
+            'tilkitNav' => 'desk',
+        ]);
     }
 
     public function signOffWeightReview(Request $request, DcProject $tool, TilkitWeightReview $review, ToolAccessService $access, TilkitPersonaService $personas, ClimateWeightReviewService $reviews): RedirectResponse

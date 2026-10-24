@@ -11,6 +11,8 @@
         <div class="tk-card p-4 mb-4 text-sm">{{ session('status') }}</div>
     @endif
 
+    @include('tools.tilkit.partials.subnav')
+
     <div class="grid lg:grid-cols-3 gap-6">
         <div class="tk-card p-5 space-y-4">
             <h3 class="tk-section-title text-base">Sites</h3>

@@ -53,6 +53,9 @@ Route::middleware(['auth', 'verified', 'tilkit.platform'])->group(function () {
     Route::prefix('tools/{tool}')->name('tools.')->group(function () {
         Route::post('invitations', [ToolInvitationController::class, 'store'])->name('invitations.store');
         Route::get('tilkit', [ToolTilkitWeatherController::class, 'overview'])->name('tilkit.overview');
+        Route::get('tilkit/records', [ToolTilkitAdminController::class, 'recordsIndex'])->name('tilkit.records.index');
+        Route::get('tilkit/insights', [ToolTilkitAdminController::class, 'insights'])->name('tilkit.insights');
+        Route::get('tilkit/team', [ToolTilkitAdminController::class, 'team'])->name('tilkit.team');
         Route::get('tilkit/records/create', [ToolTilkitWeatherController::class, 'createRecord'])->name('tilkit.records.create');
         Route::post('tilkit/records', [ToolTilkitWeatherController::class, 'storeRecord'])->name('tilkit.records.store');
         Route::get('tilkit/records/{record}', [ToolTilkitWeatherController::class, 'editRecord'])->name('tilkit.records.edit');

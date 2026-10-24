@@ -36,7 +36,13 @@ class ToolTilkitWeatherController extends Controller
         $protocol = config('tilkit.weather.protocol_version');
         $rawFieldCount = count(WorkbookColumnRegistry::rawColumns());
 
-        return view('tools.tilkit.overview', compact('tool', 'protocol', 'records', 'rawFieldCount'));
+        return view('tools.tilkit.overview', [
+            'tool' => $tool,
+            'protocol' => $protocol,
+            'records' => $records,
+            'rawFieldCount' => $rawFieldCount,
+            'tilkitNav' => 'overview',
+        ]);
     }
 
     public function createRecord(Request $request, DcProject $tool, ToolAccessService $access): View

@@ -7,6 +7,8 @@
         </x-page-header>
     </x-slot>
 
+    @include('tools.tilkit.partials.subnav')
+
     @if (session('status'))
         <div class="tk-card p-4 mb-4 text-sm">{{ session('status') }}</div>
     @endif

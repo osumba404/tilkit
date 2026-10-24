@@ -27,6 +27,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        View::composer('tools.tilkit.*', function ($view): void {
+            $data = $view->getData();
+            if (isset($data['tool']) && auth()->check() && ! array_key_exists('capabilities', $data)) {
+                $view->with('capabilities', auth()->user()->toolCapabilitiesFor($data['tool']));
+            }
+        });
+
         View::composer(['layouts.navigation', 'layouts.app'], function ($view): void {
             if (! WeatherTool::singleToolMode()) {
                 $view->with('tilkitWeatherTool', null);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\RedirectsTilkitWeatherModule;
 use App\Mail\SubmissionReviewStatusMail;
 use App\Models\DcProject;
 use App\Models\DcSubmission;
@@ -14,10 +15,16 @@ use Illuminate\View\View;
 
 class ToolSubmissionReviewController extends Controller
 {
+    use RedirectsTilkitWeatherModule;
+
     private const STATUSES = ['submitted', 'in_review', 'approved', 'rejected'];
 
-    public function queue(Request $request, DcProject $tool, ToolAccessService $access): View
+    public function queue(Request $request, DcProject $tool, ToolAccessService $access): View|\Illuminate\Http\RedirectResponse
     {
+        if ($redirect = $this->redirectIfTilkitWeatherModule($tool, 'data-desk')) {
+            return $redirect;
+        }
+
         $capabilities = $request->user()->toolCapabilitiesFor($tool);
         abort_unless($capabilities->canReviewSubmissions(), 403);
 

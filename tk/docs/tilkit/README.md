@@ -52,3 +52,5 @@ Track detailed status in **[alignment-audit.md](./alignment-audit.md)** (living 
 - Optional reference: **`tilkit:import-legend`** loads the code legend from the master xlsx when you need DB-backed UIDs.
 
 Sites and seasons are configured per deployment under that single tool (setup UI).
+
+**In-app flow:** Weather log subnav covers **Capture → Records → Analysis → Tally → Data desk → Setup → Team**. Generic form builder / submission analytics redirect here; workbook CSV/JSON/xlsx exports live on the weather log home.

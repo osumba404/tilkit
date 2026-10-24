@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DcProject;
+use App\Support\Tilkit\WeatherTool;
 use App\Models\ToolInvitation;
 use App\Enums\ToolMemberRole;
 use App\Services\ToolAccessService;
@@ -78,8 +79,12 @@ class ToolInvitationController extends Controller
 
         $member->load('project');
 
-        return redirect()
-            ->route('tools.show', $member->project)
-            ->with('status', 'You joined '.$member->project->name.' as a field collector.');
+        $project = $member->project;
+        $route = WeatherTool::isWeatherModule($project)
+            ? route('tools.tilkit.overview', $project)
+            : route('tools.show', $project);
+
+        return redirect($route)
+            ->with('status', 'You joined '.$project->name.'.');
     }
 }

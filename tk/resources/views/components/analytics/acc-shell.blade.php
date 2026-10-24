@@ -31,7 +31,11 @@
             @elseif ($context === 'datasets')
                 <a href="{{ route('platform.datasets.index') }}" class="acc-nav-link @if($accSection === 'datasets') acc-nav-active @endif">My datasets</a>
                 <a href="{{ route('dashboard') }}" class="acc-nav-link">Dashboard</a>
-                <a href="{{ route('tools.index') }}" class="acc-nav-link">Tools</a>
+                @if (\App\Support\Tilkit\WeatherTool::isWeatherModule($tool))
+                    <a href="{{ route('tools.tilkit.overview', $tool) }}" class="acc-nav-link">Weather log</a>
+                @else
+                    <a href="{{ route('tools.index') }}" class="acc-nav-link">Tools</a>
+                @endif
                 @if (Auth::user()->isSuperAdmin())
                     <a href="{{ route('platform.analytics.overview') }}" class="acc-nav-link mt-4 border-t border-slate-600 pt-3">Platform analytics</a>
                 @endif
@@ -46,7 +50,11 @@
                 <a href="{{ route('tools.analytics.review', $tool) }}" class="acc-nav-link @if($accSection === 'review') acc-nav-active @endif">Review & quality</a>
                 <a href="{{ route('tools.analytics.reports', $tool) }}" class="acc-nav-link @if($accSection === 'reports') acc-nav-active @endif">Reports</a>
                 <a href="{{ route('platform.datasets.index') }}" class="acc-nav-link @if($accSection === 'datasets') acc-nav-active @endif">My datasets</a>
-                <a href="{{ route('tools.show', $tool) }}" class="acc-nav-link mt-4 border-t border-slate-600 pt-3">← Tool home</a>
+                @if (\App\Support\Tilkit\WeatherTool::isWeatherModule($tool))
+                    <a href="{{ route('tools.tilkit.insights', $tool) }}" class="acc-nav-link mt-4 border-t border-slate-600 pt-3">← Analysis hub</a>
+                @else
+                    <a href="{{ route('tools.show', $tool) }}" class="acc-nav-link mt-4 border-t border-slate-600 pt-3">← Tool home</a>
+                @endif
             @endif
         </nav>
     </aside>

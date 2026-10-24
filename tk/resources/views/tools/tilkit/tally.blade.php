@@ -15,6 +15,8 @@
         </x-page-header>
     </x-slot>
 
+    @include('tools.tilkit.partials.subnav', ['tilkitNav' => 'tally'])
+
     <form method="POST" action="{{ route('tools.tilkit.tally', $tool) }}" class="tk-card p-5 flex flex-wrap gap-4 items-end mb-6">
         @csrf
         <div>
