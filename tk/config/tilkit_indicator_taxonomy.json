@@ -1,0 +1,20 @@
+{
+  "categories": {
+    "01": "Biological / ecological",
+    "02": "Atmospheric / physical / meteorological",
+    "03": "Astronomical / astrological / celestial",
+    "04": "Hydrological",
+    "05": "Ritual / divinatory",
+    "06": "Sensory / human body"
+  },
+  "types": {
+    "01-PLT": "Plants",
+    "01-ANI": "Animals",
+    "02-ATM": "Atmosphere",
+    "03-AST": "Sky (sun, moon, stars)",
+    "04-HYD": "Water",
+    "05-RIT": "Ritual",
+    "06-SEN": "Sensory / body"
+  },
+  "category_order": ["01", "02", "03", "04", "05", "06"]
+}

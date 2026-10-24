@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\DcForm;
 use App\Models\DcProject;
 use App\Models\DcSubmission;
+use App\Services\Tilkit\TilkitProgramContext;
 use App\Support\Tilkit\WeatherTool;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +32,11 @@ class AppServiceProvider extends ServiceProvider
             $data = $view->getData();
             if (isset($data['tool']) && auth()->check() && ! array_key_exists('capabilities', $data)) {
                 $view->with('capabilities', auth()->user()->toolCapabilitiesFor($data['tool']));
+            }
+            if (isset($data['tool']) && ! array_key_exists('activeProgram', $data)) {
+                $programs = app(TilkitProgramContext::class);
+                $view->with('activeProgram', $programs->active($data['tool']));
+                $view->with('tilkitPrograms', $programs->programsFor($data['tool']));
             }
         });
 

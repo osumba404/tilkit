@@ -27,6 +27,8 @@ class WorkbookDemoImporter
             $indicators = [];
             $count = 0;
 
+            $program = app(TilkitProgramContext::class)->ensureDefault($tool);
+
             foreach ($rows as $row) {
                 unset($row['_excel_row']);
                 $siteName = (string) ($row['AI'] ?? 'Unknown site');
@@ -34,12 +36,20 @@ class WorkbookDemoImporter
                 $uid = (string) ($row['AH'] ?? '');
 
                 $site = $sites[$siteName] ??= TilkitSite::query()->firstOrCreate(
-                    ['project_id' => $tool->id, 'name' => $siteName],
-                    ['country' => 'KE']
+                    ['program_id' => $program->id, 'name' => $siteName],
+                    [
+                        'project_id' => $tool->id,
+                        'country' => 'KE',
+                        'country_name' => 'Kenya',
+                        'continent' => 'Africa',
+                    ],
                 );
                 $season = $seasons[$seasonLabel] ??= TilkitSeason::query()->firstOrCreate(
-                    ['project_id' => $tool->id, 'label' => $seasonLabel],
-                    ['protocol_version' => config('tilkit.weather.protocol_version')]
+                    ['program_id' => $program->id, 'label' => $seasonLabel],
+                    [
+                        'project_id' => $tool->id,
+                        'protocol_version' => config('tilkit.weather.protocol_version'),
+                    ],
                 );
 
                 $indicator = $indicators[$uid] ??= $this->resolveIndicator($tool, $uid, $row);

@@ -40,6 +40,19 @@ return [
             'owner_email' => env('TILKIT_DEMO_OWNER_EMAIL', 'osumbaevans21@gmail.com'),
             'min_records_before_skip' => (int) env('TILKIT_DEMO_MIN_RECORDS_SKIP', 120),
         ],
+        'geography' => [
+            // Full country list (region = continent). Not stored in DB; cached in Laravel cache only.
+            'countries_json_url' => env(
+                'TILKIT_GEOGRAPHY_COUNTRIES_URL',
+                'https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/json/countries.json',
+            ),
+            // Optional: REST Countries v5 (requires free API key) — used only if key is set and primary fetch fails.
+            'restcountries_v5_url' => env(
+                'TILKIT_GEOGRAPHY_RESTCOUNTRIES_V5_URL',
+                'https://restcountries.com/v5/countries',
+            ),
+            'restcountries_api_key' => env('TILKIT_GEOGRAPHY_RESTCOUNTRIES_API_KEY'),
+        ],
         'engine' => [
             'scored_seasons_for_hit_rate' => (int) env('TILKIT_WEATHER_SCORED_SEASONS', 3),
             'corroboration_cap_until' => 2,

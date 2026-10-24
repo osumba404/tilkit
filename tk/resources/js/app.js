@@ -1,5 +1,6 @@
 import './bootstrap';
 import './form-builder';
+import './tk-details-panels';
 
 import Alpine from 'alpinejs';
 

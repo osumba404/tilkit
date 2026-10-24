@@ -10,6 +10,7 @@ use App\Models\Tilkit\TilkitSite;
 use App\Models\Tilkit\TilkitWorkbookMedia;
 use App\Services\Tilkit\SeasonOutcomeScoringService;
 use App\Services\Tilkit\TilkitInsightsService;
+use App\Services\Tilkit\TilkitProgramContext;
 use App\Services\Tilkit\TilkitPersonaService;
 use App\Services\Tilkit\TilkitSignOffGuard;
 use App\Services\Tilkit\WorkbookRecordService;
@@ -23,6 +24,10 @@ use Illuminate\View\View;
 
 class ToolTilkitWeatherController extends Controller
 {
+    public function __construct(
+        private TilkitProgramContext $programs,
+    ) {}
+
     public function overview(Request $request, DcProject $tool, ToolAccessService $access, TilkitInsightsService $insights): View
     {
         $access->assertCanView($request->user(), $tool);
@@ -57,8 +62,8 @@ class ToolTilkitWeatherController extends Controller
         return view('tools.tilkit.record-form', [
             'tool' => $tool,
             'record' => null,
-            'sites' => TilkitSite::query()->where('project_id', $tool->id)->orderBy('name')->get(),
-            'seasons' => TilkitSeason::query()->where('project_id', $tool->id)->orderBy('label')->get(),
+            'sites' => $this->programs->sitesQuery($tool)->get(),
+            'seasons' => $this->programs->seasonsQuery($tool)->get(),
             'indicators' => TilkitIndicator::query()->where('project_id', $tool->id)->orderBy('indicator_uid')->get(),
             'stageGroups' => WorkbookColumnRegistry::rawColumnsByStage(),
             'workbookValues' => [],
@@ -126,8 +131,8 @@ class ToolTilkitWeatherController extends Controller
         return view('tools.tilkit.record-form', [
             'tool' => $tool,
             'record' => $record,
-            'sites' => TilkitSite::query()->where('project_id', $tool->id)->orderBy('name')->get(),
-            'seasons' => TilkitSeason::query()->where('project_id', $tool->id)->orderBy('label')->get(),
+            'sites' => $this->programs->sitesQuery($tool)->get(),
+            'seasons' => $this->programs->seasonsQuery($tool)->get(),
             'indicators' => TilkitIndicator::query()->where('project_id', $tool->id)->orderBy('indicator_uid')->get(),
             'stageGroups' => WorkbookColumnRegistry::rawColumnsByStage(),
             'workbookValues' => $workbook->rawWorkbookMap($record),
@@ -224,13 +229,15 @@ class ToolTilkitWeatherController extends Controller
             TilkitIndicator::query()->where('project_id', $tool->id)->where('id', $validated['indicator_id'])->exists(),
             422
         );
+        $site = TilkitSite::query()->where('project_id', $tool->id)->where('id', $validated['site_id'])->first();
+        $season = TilkitSeason::query()->where('project_id', $tool->id)->where('id', $validated['season_id'])->first();
+        abort_unless($site !== null && $season !== null, 422);
         abort_unless(
-            TilkitSite::query()->where('project_id', $tool->id)->where('id', $validated['site_id'])->exists(),
-            422
-        );
-        abort_unless(
-            TilkitSeason::query()->where('project_id', $tool->id)->where('id', $validated['season_id'])->exists(),
-            422
+            $site->program_id !== null
+            && $season->program_id !== null
+            && (int) $site->program_id === (int) $season->program_id,
+            422,
+            'Site and season must belong to the same program.',
         );
     }
 

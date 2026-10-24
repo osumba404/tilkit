@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\DcProject;
-use App\Models\Tilkit\TilkitIndicator;
 use App\Models\Tilkit\TilkitIndicatorCode;
 use App\Models\Tilkit\TilkitIndicatorRecord;
+use App\Models\Tilkit\TilkitProgram;
 use App\Models\Tilkit\TilkitSeason;
 use App\Models\Tilkit\TilkitSeasonSettings;
 use App\Models\Tilkit\TilkitSite;
@@ -15,6 +15,8 @@ use App\Models\Tilkit\TilkitConsensusForecast;
 use App\Models\Tilkit\TilkitWeightReview;
 use App\Services\Tilkit\ClimateWeightReviewService;
 use App\Services\Tilkit\DataDeskService;
+use App\Services\Tilkit\GeographyCatalogService;
+use App\Services\Tilkit\TilkitProgramContext;
 use App\Services\Tilkit\TilkitInsightsService;
 use App\Services\Tilkit\TilkitPersonaService;
 use App\Services\Tilkit\WorkbookXlsxExporter;
@@ -23,6 +25,7 @@ use App\Services\Tilkit\TilkitEngineService;
 use App\Services\Tilkit\WorkbookRecordService;
 use App\Services\ToolAccessService;
 use App\Support\Tilkit\CommunityDataListRegistry;
+use App\Support\Tilkit\IndicatorCodeLegendGrouper;
 use App\Support\Tilkit\WorkbookColumnRegistry;
 use App\Support\Tilkit\WorkbookSheetCatalog;
 use Illuminate\Http\RedirectResponse;
@@ -32,12 +35,18 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ToolTilkitAdminController extends Controller
 {
+    public function __construct(
+        private TilkitProgramContext $programs,
+    ) {}
+
     public function recordsIndex(Request $request, DcProject $tool, ToolAccessService $access): View
     {
         $access->assertCanView($request->user(), $tool);
+        $program = $this->programs->active($tool);
 
         $query = TilkitIndicatorRecord::query()
             ->whereHas('indicator', fn ($q) => $q->where('project_id', $tool->id))
+            ->whereHas('site', fn ($q) => $q->where('program_id', $program->id))
             ->with(['indicator', 'site', 'season']);
 
         if ($request->filled('site_id')) {
@@ -59,8 +68,8 @@ class ToolTilkitAdminController extends Controller
         return view('tools.tilkit.records-index', [
             'tool' => $tool,
             'records' => $records,
-            'sites' => TilkitSite::query()->where('project_id', $tool->id)->orderBy('name')->get(),
-            'seasons' => TilkitSeason::query()->where('project_id', $tool->id)->orderBy('label')->get(),
+            'sites' => $this->programs->sitesQuery($tool)->get(),
+            'seasons' => $this->programs->seasonsQuery($tool)->get(),
             'mapPoints' => app(TilkitInsightsService::class)->mapPointsForTool($tool, $siteId, $seasonId),
             'tilkitNav' => 'records',
         ]);
@@ -134,28 +143,74 @@ class ToolTilkitAdminController extends Controller
     public function setup(Request $request, DcProject $tool, ToolAccessService $access): View
     {
         $access->assertCanView($request->user(), $tool);
+        $program = $this->programs->active($tool);
 
         return view('tools.tilkit.setup', [
             'tool' => $tool,
-            'sites' => TilkitSite::query()->where('project_id', $tool->id)->orderBy('name')->get(),
-            'seasons' => TilkitSeason::query()->where('project_id', $tool->id)->orderBy('label')->get(),
-            'indicators' => TilkitIndicator::query()->where('project_id', $tool->id)->with('code')->orderBy('indicator_uid')->get(),
-            'codes' => TilkitIndicatorCode::query()->orderBy('code')->limit(200)->get(),
+            'activeProgram' => $program,
+            'programs' => $this->programs->programsFor($tool),
+            'sites' => $this->programs->sitesQuery($tool)->get(),
+            'seasons' => $this->programs->seasonsQuery($tool)->get(),
+            'legendGroups' => app(IndicatorCodeLegendGrouper::class)->groupedLegend(),
+            'legendCodeCount' => TilkitIndicatorCode::query()->whereNull('deprecated_at')->count(),
+            'geographyContinentsUrl' => route('tools.tilkit.geography.continents', $tool),
+            'geographyCountriesUrl' => route('tools.tilkit.geography.countries', $tool),
             'tilkitNav' => 'setup',
         ]);
     }
 
-    public function storeSite(Request $request, DcProject $tool, ToolAccessService $access): RedirectResponse
+    public function storeProgram(Request $request, DcProject $tool, ToolAccessService $access): RedirectResponse
     {
         $access->assertCanView($request->user(), $tool);
         $data = $request->validate([
+            'name' => ['required', 'string', 'max:160'],
+            'description' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $program = TilkitProgram::query()->create([
+            ...$data,
+            'project_id' => $tool->id,
+        ]);
+        $this->programs->setActive($tool, $program->id);
+
+        return back()->with('status', 'Program created. Sites and seasons you add now belong to this program.');
+    }
+
+    public function switchProgram(Request $request, DcProject $tool, ToolAccessService $access): RedirectResponse
+    {
+        $access->assertCanView($request->user(), $tool);
+        $data = $request->validate([
+            'program_id' => ['required', 'integer', 'exists:tilkit_programs,id'],
+        ]);
+        $this->programs->setActive($tool, (int) $data['program_id']);
+
+        return back()->with('status', 'Active program updated.');
+    }
+
+    public function storeSite(Request $request, DcProject $tool, ToolAccessService $access, GeographyCatalogService $geo): RedirectResponse
+    {
+        $access->assertCanView($request->user(), $tool);
+        $program = $this->programs->active($tool);
+        $data = $request->validate([
             'name' => ['required', 'string', 'max:120'],
-            'ward' => ['nullable', 'string', 'max:120'],
+            'continent' => ['required', 'string', 'max:60'],
+            'country' => ['required', 'string', 'size:2'],
             'county' => ['nullable', 'string', 'max:120'],
-            'country' => ['nullable', 'string', 'size:2'],
+            'ward' => ['nullable', 'string', 'max:120'],
             'primary_language' => ['nullable', 'string', 'max:40'],
         ]);
-        TilkitSite::query()->create([...$data, 'project_id' => $tool->id, 'country' => $data['country'] ?? 'KE']);
+        $countryCode = strtoupper($data['country']);
+        TilkitSite::query()->create([
+            'project_id' => $tool->id,
+            'program_id' => $program->id,
+            'name' => $data['name'],
+            'continent' => $data['continent'],
+            'country' => $countryCode,
+            'country_name' => $geo->countryName($countryCode),
+            'county' => $data['county'] ?? null,
+            'ward' => $data['ward'] ?? null,
+            'primary_language' => $data['primary_language'] ?? null,
+        ]);
 
         return back()->with('status', 'Site added.');
     }
@@ -163,38 +218,27 @@ class ToolTilkitAdminController extends Controller
     public function storeSeason(Request $request, DcProject $tool, ToolAccessService $access): RedirectResponse
     {
         $access->assertCanView($request->user(), $tool);
+        $program = $this->programs->active($tool);
         $data = $request->validate([
-            'label' => ['required', 'string', 'max:40'],
+            'label' => ['required', 'string', 'max:120'],
             'starts_on' => ['nullable', 'date'],
-            'ends_on' => ['nullable', 'date'],
+            'ends_on' => ['nullable', 'date', 'after_or_equal:starts_on'],
         ]);
         TilkitSeason::query()->create([
             ...$data,
             'project_id' => $tool->id,
+            'program_id' => $program->id,
             'protocol_version' => config('tilkit.weather.protocol_version'),
         ]);
 
         return back()->with('status', 'Season added.');
     }
 
-    public function storeIndicator(Request $request, DcProject $tool, ToolAccessService $access): RedirectResponse
-    {
-        $access->assertCanView($request->user(), $tool);
-        $data = $request->validate([
-            'indicator_uid' => ['required', 'string', 'max:32', 'unique:tilkit_indicators,indicator_uid'],
-            'indicator_code_id' => ['required', 'exists:tilkit_indicator_codes,id'],
-            'local_name' => ['nullable', 'string', 'max:200'],
-        ]);
-        TilkitIndicator::query()->create([...$data, 'project_id' => $tool->id]);
-
-        return back()->with('status', 'Indicator registered.');
-    }
-
     public function seasonSettings(Request $request, DcProject $tool, ToolAccessService $access): View
     {
         $access->assertCanView($request->user(), $tool);
-        $sites = TilkitSite::query()->where('project_id', $tool->id)->orderBy('name')->get();
-        $seasons = TilkitSeason::query()->where('project_id', $tool->id)->orderBy('label')->get();
+        $sites = $this->programs->sitesQuery($tool)->get();
+        $seasons = $this->programs->seasonsQuery($tool)->get();
         $siteId = (int) $request->query('site_id', $sites->first()?->id);
         $seasonId = (int) $request->query('season_id', $seasons->first()?->id);
         $settings = null;
@@ -239,8 +283,8 @@ class ToolTilkitAdminController extends Controller
     public function tally(Request $request, DcProject $tool, ToolAccessService $access, TilkitEngineService $engine): View|RedirectResponse
     {
         $access->assertCanView($request->user(), $tool);
-        $sites = TilkitSite::query()->where('project_id', $tool->id)->orderBy('name')->get();
-        $seasons = TilkitSeason::query()->where('project_id', $tool->id)->orderBy('label')->get();
+        $sites = $this->programs->sitesQuery($tool)->get();
+        $seasons = $this->programs->seasonsQuery($tool)->get();
 
         if ($request->isMethod('post')) {
             $data = $request->validate([

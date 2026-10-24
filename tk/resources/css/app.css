@@ -208,11 +208,15 @@
     }
 
     .tk-details-panel {
-        @apply tk-card overflow-hidden transition-shadow duration-300 open:shadow-tk-sm;
+        @apply overflow-hidden rounded-tk border border-tk-line bg-tk-surface transition-shadow duration-300 ease-out;
+    }
+
+    .tk-details-panel[open] {
+        @apply shadow-tk-sm;
     }
 
     .tk-details-panel > summary {
-        @apply cursor-pointer list-none flex w-full items-center gap-2 p-5 font-semibold text-tk-ink transition-colors duration-200 hover:bg-tk-soft/50;
+        @apply cursor-pointer list-none flex w-full items-center gap-2 px-4 py-3 font-semibold text-sm text-tk-ink transition-colors duration-200 ease-out hover:bg-tk-soft/60;
     }
 
     .tk-details-panel-count {
@@ -225,15 +229,36 @@
 
     .tk-details-panel > summary::after {
         content: '';
-        @apply w-2 h-2 border-r-2 border-b-2 border-tk-muted rotate-45 transition-transform duration-300 shrink-0 ml-4;
+        @apply ml-3 h-2 w-2 shrink-0 border-r-2 border-b-2 border-tk-muted transition-transform duration-300 ease-out;
+        transform: rotate(45deg);
     }
 
     .tk-details-panel[open] > summary::after {
-        @apply -rotate-[135deg] mt-1;
+        transform: rotate(-135deg) translateY(2px);
     }
 
     .tk-details-panel[open] > summary {
-        @apply border-b border-tk-line/80 bg-tk-soft/30;
+        @apply border-b border-tk-line/80 bg-tk-soft/40;
+    }
+
+    .tk-details-panel-body {
+        @apply overflow-hidden will-change-[height];
+    }
+
+    .tk-details-panel-inner {
+        @apply opacity-0 transition-opacity duration-300 ease-out;
+    }
+
+    .tk-details-panel[open] .tk-details-panel-inner {
+        @apply opacity-100;
+    }
+
+    .tk-details-panel.tk-details-panel--card {
+        @apply tk-card border-tk-line;
+    }
+
+    .tk-details-panel.tk-details-panel--card > summary {
+        @apply p-5 text-base;
     }
 
     .tk-wizard-tab {

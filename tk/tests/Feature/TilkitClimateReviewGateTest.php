@@ -5,8 +5,10 @@ namespace Tests\Feature;
 use App\Models\Tilkit\TilkitIndicator;
 use App\Models\Tilkit\TilkitIndicatorCode;
 use App\Models\Tilkit\TilkitIndicatorRecord;
+use App\Models\Tilkit\TilkitProgram;
 use App\Models\Tilkit\TilkitSeason;
 use App\Models\Tilkit\TilkitSite;
+use App\Services\Tilkit\TilkitProgramContext;
 use App\Models\Tilkit\TilkitWeightReview;
 use App\Models\User;
 use App\Services\Tilkit\TilkitEngineService;
@@ -23,9 +25,18 @@ class TilkitClimateReviewGateTest extends TestCase
     {
         $user = User::factory()->create();
         $tool = $this->tilkitToolFor($user);
-        $site = TilkitSite::query()->create(['project_id' => $tool->id, 'name' => 'Site', 'country' => 'KE']);
+        $program = TilkitProgram::query()->create(['project_id' => $tool->id, 'name' => 'Test program']);
+        app(TilkitProgramContext::class)->setActive($tool, $program->id);
+        $site = TilkitSite::query()->create([
+            'project_id' => $tool->id,
+            'program_id' => $program->id,
+            'name' => 'Site',
+            'continent' => 'Africa',
+            'country' => 'KE',
+        ]);
         $season = TilkitSeason::query()->create([
             'project_id' => $tool->id,
+            'program_id' => $program->id,
             'label' => 'OND 2026',
             'protocol_version' => config('tilkit.weather.protocol_version'),
         ]);

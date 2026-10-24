@@ -98,13 +98,17 @@ class TilkitWorkbookCaptureTest extends TestCase
         $user = User::factory()->create();
         $tool = $this->tilkitToolFor($user);
 
+        $program = \App\Models\Tilkit\TilkitProgram::query()->create(['project_id' => $tool->id, 'name' => 'Test program']);
         $site = TilkitSite::query()->create([
             'project_id' => $tool->id,
+            'program_id' => $program->id,
             'name' => 'Site A',
+            'continent' => 'Africa',
             'country' => 'KE',
         ]);
         $season = TilkitSeason::query()->create([
             'project_id' => $tool->id,
+            'program_id' => $program->id,
             'label' => 'OND 2026',
             'protocol_version' => config('tilkit.weather.protocol_version'),
         ]);

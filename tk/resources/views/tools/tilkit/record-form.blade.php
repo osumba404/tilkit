@@ -76,12 +76,12 @@
         @endif
 
         @foreach ($stageGroups as $stage => $columns)
-            <details class="tk-details-panel mb-3" @if($loop->first) open @endif>
-                <summary>
+            <x-tilkit.details-panel variant="card" :open="$loop->first">
+                <x-slot:summary>
                     <span class="min-w-0 flex-1 pr-4">{{ $stage }}</span>
                     <span class="tk-details-panel-count">{{ count($columns) }} fields</span>
-                </summary>
-                <div class="p-5 pt-4 grid md:grid-cols-2 gap-4 animate-tk-fade-in">
+                </x-slot:summary>
+                <div class="p-5 pt-4 grid md:grid-cols-2 gap-4">
                     @foreach ($columns as $col)
                         @php
                             if (\App\Support\Tilkit\WorkbookInputSpec::skipInForm($col)) {
@@ -98,7 +98,7 @@
                         />
                     @endforeach
                 </div>
-            </details>
+            </x-tilkit.details-panel>
         @endforeach
 
         <div class="tk-card p-5">
@@ -110,12 +110,13 @@
         </div>
 
         @if ($isEdit && isset($derivedColumns) && $derivedColumns !== [])
-            <details class="tk-card p-5">
-                <summary class="cursor-pointer font-semibold text-tk-ink list-none">
-                    Derived responses (read-only, {{ count($derivedColumns) }} columns)
-                </summary>
-                <p class="text-xs text-tk-muted mt-2 mb-4">Recalculated on save; not editable here.</p>
-                <div class="grid md:grid-cols-2 gap-3 text-sm">
+            <x-tilkit.details-panel variant="card">
+                <x-slot:summary>
+                    <span class="flex-1">Derived responses (read-only)</span>
+                    <span class="tk-details-panel-count">{{ count($derivedColumns) }} columns</span>
+                </x-slot:summary>
+                <p class="text-xs text-tk-muted mb-4 px-5 pt-4">Recalculated on save; not editable here.</p>
+                <div class="grid md:grid-cols-2 gap-3 text-sm px-5 pb-5">
                     @foreach ($derivedColumns as $col)
                         @php
                             $letter = $col['column'];
@@ -128,7 +129,7 @@
                         </div>
                     @endforeach
                 </div>
-            </details>
+            </x-tilkit.details-panel>
         @endif
 
         <div class="flex gap-3">

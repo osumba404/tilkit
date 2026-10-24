@@ -90,6 +90,11 @@ class DcProject extends Model
         return $this->hasMany(ToolScheduledExport::class, 'project_id');
     }
 
+    public function tilkitPrograms(): HasMany
+    {
+        return $this->hasMany(\App\Models\Tilkit\TilkitProgram::class, 'project_id');
+    }
+
     public function tilkitSites(): HasMany
     {
         return $this->hasMany(\App\Models\Tilkit\TilkitSite::class, 'project_id');

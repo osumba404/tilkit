@@ -7,6 +7,7 @@ use App\Enums\Tilkit\ValidationStatus;
 use App\Models\Tilkit\TilkitIndicator;
 use App\Models\Tilkit\TilkitIndicatorCode;
 use App\Models\Tilkit\TilkitIndicatorRecord;
+use App\Models\Tilkit\TilkitProgram;
 use App\Models\Tilkit\TilkitSeason;
 use App\Models\Tilkit\TilkitSite;
 use App\Models\User;
@@ -80,9 +81,17 @@ class TilkitEngineTest extends TestCase
     {
         $user = User::factory()->create();
         $tool = $this->tilkitToolFor($user);
-        $site = TilkitSite::query()->create(['project_id' => $tool->id, 'name' => 'Site', 'country' => 'KE']);
+        $program = TilkitProgram::query()->create(['project_id' => $tool->id, 'name' => 'Test program']);
+        $site = TilkitSite::query()->create([
+            'project_id' => $tool->id,
+            'program_id' => $program->id,
+            'name' => 'Site',
+            'continent' => 'Africa',
+            'country' => 'KE',
+        ]);
         $season = TilkitSeason::query()->create([
             'project_id' => $tool->id,
+            'program_id' => $program->id,
             'label' => 'OND 2026',
             'protocol_version' => config('tilkit.weather.protocol_version'),
         ]);

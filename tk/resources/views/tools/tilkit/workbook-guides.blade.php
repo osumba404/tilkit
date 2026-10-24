@@ -20,9 +20,9 @@
         <h3 class="tk-section-title mb-4">Community Data List - capture checklist</h3>
         <p class="text-sm text-tk-muted mb-6">Mirrors the <strong>Community Data List</strong> sheet: what to capture, when, and which Indicator Log columns it feeds.</p>
         @foreach ($communitySections as $section => $items)
-            <details class="mb-4 border border-tk-line rounded-lg p-4" @if(str_starts_with($section, 'A.')) open @endif>
-                <summary class="cursor-pointer font-medium">{{ $section }}</summary>
-                <ol class="mt-3 space-y-2 text-sm list-decimal ps-5">
+            <x-tilkit.details-panel class="mb-4" :open="str_starts_with($section, 'A.')">
+                <x-slot:summary>{{ $section }}</x-slot:summary>
+                <ol class="space-y-2 px-4 pb-4 pt-3 text-sm list-decimal ps-5">
                     @foreach ($items as $item)
                         <li>
                             <span class="font-mono text-tk-accent text-xs">{{ $item['columns'] }}</span>
@@ -31,7 +31,7 @@
                         </li>
                     @endforeach
                 </ol>
-            </details>
+            </x-tilkit.details-panel>
         @endforeach
     </div>
 </x-app-layout>
