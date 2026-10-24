@@ -13,7 +13,7 @@
 
     @include('tools.tilkit.partials.subnav')
 
-    <div class="grid md:grid-cols-3 gap-4 mb-6">
+    <div class="grid md:grid-cols-3 gap-4 mb-8 tk-stagger">
         <div class="tk-stat">
             <p class="tk-stat-label">Sites</p>
             <p class="tk-stat-value">{{ $tool->tilkit_sites_count }}</p>
@@ -28,24 +28,48 @@
         </div>
     </div>
 
-    <div class="flex flex-wrap gap-3 mb-6">
-        <a href="{{ route('tools.tilkit.records.create', $tool) }}" class="tk-btn-primary">New indicator record</a>
-        <a href="{{ route('tools.tilkit.setup', $tool) }}" class="tk-btn-secondary">Setup</a>
-        <a href="{{ route('tools.tilkit.tally', $tool) }}" class="tk-btn-secondary">Tercile tally</a>
-        <a href="{{ route('tools.tilkit.data-desk', $tool) }}" class="tk-btn-secondary">Data desk</a>
-        <a href="{{ route('tools.tilkit.settings', $tool) }}" class="tk-btn-secondary">Season settings</a>
-        <a href="{{ route('tools.tilkit.export.csv', $tool) }}" class="tk-btn-secondary">Export CSV</a>
-        <a href="{{ route('tools.tilkit.export.json', $tool) }}" class="tk-btn-secondary">Export JSON</a>
-        <a href="{{ route('tools.tilkit.export.xlsx', $tool) }}" class="tk-btn-secondary">Export xlsx</a>
-        <a href="{{ route('tools.tilkit.workbook', $tool) }}" class="tk-btn-secondary">12-sheet guide</a>
-        <a href="{{ route('tools.tilkit.calendar', $tool) }}" class="tk-btn-secondary">Indicator calendar</a>
+    @if (\App\Support\Tilkit\WeatherTool::singleToolMode())
+        <div class="tk-callout mb-8 animate-tk-fade-in-up">
+            One shared weather log for the platform. Use
+            <a href="{{ route('tools.tilkit.setup', $tool) }}" class="text-tk-accent font-medium underline underline-offset-2">Setup</a>
+            to add sites and seasons per community or study—not a separate tool per location.
+        </div>
+    @endif
+
+    <div class="tk-action-grid tk-stagger">
+        <a href="{{ route('tools.tilkit.records.create', $tool) }}" class="tk-action-tile">
+            <span class="tk-action-tile-title">New indicator record</span>
+            <span class="tk-action-tile-desc">Workshop capture and v4 workbook fields</span>
+        </a>
+        <a href="{{ route('tools.tilkit.records.index', $tool) }}" class="tk-action-tile">
+            <span class="tk-action-tile-title">Browse records</span>
+            <span class="tk-action-tile-desc">Filter by site, season, and indicator ID</span>
+        </a>
+        <a href="{{ route('tools.tilkit.tally', $tool) }}" class="tk-action-tile">
+            <span class="tk-action-tile-title">Tercile tally</span>
+            <span class="tk-action-tile-desc">Simple, weighted, and priority-adjusted forecasts</span>
+        </a>
+        <a href="{{ route('tools.tilkit.data-desk', $tool) }}" class="tk-action-tile">
+            <span class="tk-action-tile-title">Data desk</span>
+            <span class="tk-action-tile-desc">Validation queues and climate reviews</span>
+        </a>
+        <a href="{{ route('tools.tilkit.insights', $tool) }}" class="tk-action-tile">
+            <span class="tk-action-tile-title">Analysis hub</span>
+            <span class="tk-action-tile-desc">Counts, calendar, and season settings</span>
+        </a>
+        <a href="{{ route('tools.tilkit.workbook', $tool) }}" class="tk-action-tile">
+            <span class="tk-action-tile-title">12-sheet guide</span>
+            <span class="tk-action-tile-desc">Community Data List and workbook reference</span>
+        </a>
     </div>
 
-    @if (\App\Support\Tilkit\WeatherTool::singleToolMode())
-        <p class="text-sm text-tk-muted mb-6">
-            This is the platform weather log—use <a href="{{ route('tools.tilkit.setup', $tool) }}" class="text-tk-accent underline">Setup</a> to add sites and seasons for each community or study area. You do not create a separate tool per location.
-        </p>
-    @endif
+    <div class="flex flex-wrap gap-2 mb-8">
+        <a href="{{ route('tools.tilkit.settings', $tool) }}" class="tk-btn-secondary text-xs">Season settings</a>
+        <a href="{{ route('tools.tilkit.export.csv', $tool) }}" class="tk-btn-secondary text-xs">Export CSV</a>
+        <a href="{{ route('tools.tilkit.export.json', $tool) }}" class="tk-btn-secondary text-xs">Export JSON</a>
+        <a href="{{ route('tools.tilkit.export.xlsx', $tool) }}" class="tk-btn-secondary text-xs">Export xlsx</a>
+        <a href="{{ route('tools.tilkit.calendar', $tool) }}" class="tk-btn-secondary text-xs">Calendar</a>
+    </div>
 
     <div class="tk-card p-6 space-y-4 mb-6">
         <h3 class="tk-section-title">Workbook capture &amp; engine</h3>
@@ -62,8 +86,8 @@
             <h3 class="tk-section-title">Recent records</h3>
             <a href="{{ route('tools.tilkit.records.index', $tool) }}" class="text-sm text-tk-accent">View all</a>
         </div>
-        <div class="tk-card overflow-hidden">
-            <table class="w-full text-sm">
+        <div class="tk-card overflow-hidden animate-tk-scale-in">
+            <table class="w-full text-sm tk-table-hover">
                 <thead class="bg-tk-soft text-left text-xs uppercase tracking-tk-label text-tk-muted">
                     <tr>
                         <th class="p-3">Indicator</th>

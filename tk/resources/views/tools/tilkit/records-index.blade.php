@@ -35,8 +35,8 @@
         <button type="submit" class="tk-btn-secondary">Filter</button>
     </form>
 
-    <div class="tk-card overflow-hidden">
-        <table class="w-full text-sm">
+    <div class="tk-card overflow-hidden animate-tk-scale-in">
+        <table class="w-full text-sm tk-table-hover">
             <thead class="bg-tk-soft text-left text-xs uppercase tracking-tk-label text-tk-muted">
                 <tr>
                     <th class="p-3">Indicator</th>

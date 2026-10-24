@@ -1,21 +1,26 @@
-@php($active = $tilkitNav ?? 'overview')
-<nav class="flex flex-wrap gap-2 mb-6 text-sm border-b border-tk-line pb-4" aria-label="Weather log sections">
-    <a href="{{ route('tools.tilkit.overview', $tool) }}"
-       class="px-3 py-1.5 rounded-lg {{ $active === 'overview' ? 'bg-tk-accent text-white' : 'text-tk-muted hover:bg-tk-soft' }}">Home</a>
-    <a href="{{ route('tools.tilkit.records.create', $tool) }}"
-       class="px-3 py-1.5 rounded-lg {{ $active === 'capture' ? 'bg-tk-accent text-white' : 'text-tk-muted hover:bg-tk-soft' }}">Capture</a>
-    <a href="{{ route('tools.tilkit.records.index', $tool) }}"
-       class="px-3 py-1.5 rounded-lg {{ $active === 'records' ? 'bg-tk-accent text-white' : 'text-tk-muted hover:bg-tk-soft' }}">Records</a>
-    <a href="{{ route('tools.tilkit.insights', $tool) }}"
-       class="px-3 py-1.5 rounded-lg {{ $active === 'insights' ? 'bg-tk-accent text-white' : 'text-tk-muted hover:bg-tk-soft' }}">Analysis</a>
-    <a href="{{ route('tools.tilkit.tally', $tool) }}"
-       class="px-3 py-1.5 rounded-lg {{ $active === 'tally' ? 'bg-tk-accent text-white' : 'text-tk-muted hover:bg-tk-soft' }}">Tally</a>
-    <a href="{{ route('tools.tilkit.data-desk', $tool) }}"
-       class="px-3 py-1.5 rounded-lg {{ $active === 'desk' ? 'bg-tk-accent text-white' : 'text-tk-muted hover:bg-tk-soft' }}">Data desk</a>
-    <a href="{{ route('tools.tilkit.setup', $tool) }}"
-       class="px-3 py-1.5 rounded-lg {{ $active === 'setup' ? 'bg-tk-accent text-white' : 'text-tk-muted hover:bg-tk-soft' }}">Setup</a>
-    @if ($capabilities->canManageTool() ?? false)
+@php
+    $active = $tilkitNav ?? 'overview';
+    $canManageTeam = isset($capabilities) && $capabilities->canManageTool();
+@endphp
+<nav class="tk-tilkit-subnav animate-tk-fade-in" aria-label="Weather log sections">
+    @foreach ([
+        ['id' => 'overview', 'label' => 'Home', 'route' => 'tools.tilkit.overview'],
+        ['id' => 'capture', 'label' => 'Capture', 'route' => 'tools.tilkit.records.create'],
+        ['id' => 'records', 'label' => 'Records', 'route' => 'tools.tilkit.records.index'],
+        ['id' => 'insights', 'label' => 'Analysis', 'route' => 'tools.tilkit.insights'],
+        ['id' => 'tally', 'label' => 'Tally', 'route' => 'tools.tilkit.tally'],
+        ['id' => 'desk', 'label' => 'Data desk', 'route' => 'tools.tilkit.data-desk'],
+        ['id' => 'setup', 'label' => 'Setup', 'route' => 'tools.tilkit.setup'],
+    ] as $link)
+        <a href="{{ route($link['route'], $tool) }}"
+           class="tk-tilkit-subnav-link {{ $active === $link['id'] ? 'is-active' : '' }}">
+            {{ $link['label'] }}
+        </a>
+    @endforeach
+    @if ($canManageTeam)
         <a href="{{ route('tools.tilkit.team', $tool) }}"
-           class="px-3 py-1.5 rounded-lg {{ $active === 'team' ? 'bg-tk-accent text-white' : 'text-tk-muted hover:bg-tk-soft' }}">Team</a>
+           class="tk-tilkit-subnav-link {{ $active === 'team' ? 'is-active' : '' }}">
+            Team
+        </a>
     @endif
 </nav>

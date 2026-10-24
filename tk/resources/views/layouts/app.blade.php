@@ -29,7 +29,7 @@
             </div>
         </div>
     @endif
-    <main class="{{ $pageWrap }} py-8 lg:py-10 w-full">
+    <main class="{{ $pageWrap }} py-8 lg:py-10 w-full tk-page-content {{ request()->routeIs('tools.tilkit.*') ? 'tk-page-tilkit' : '' }}">
         {{ $slot ?? '' }}
         @yield('content')
     </main>

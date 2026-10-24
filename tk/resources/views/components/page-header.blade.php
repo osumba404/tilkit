@@ -1,6 +1,6 @@
 @props(['title', 'eyebrow' => null, 'subtitle' => null])
 
-<div {{ $attributes->merge(['class' => 'flex flex-wrap justify-between items-start gap-4']) }}>
+<div {{ $attributes->merge(['class' => 'flex flex-wrap justify-between items-start gap-4 animate-tk-fade-in-down']) }}>
     <div class="min-w-0">
         @if ($eyebrow)
             <p class="text-xs font-medium uppercase tracking-tk-label text-tk-accent mb-1">{{ $eyebrow }}</p>

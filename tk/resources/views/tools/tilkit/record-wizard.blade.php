@@ -11,11 +11,11 @@
         <div class="tk-card p-4 mb-4 text-sm">{{ session('status') }}</div>
     @endif
 
-    <nav class="flex flex-wrap gap-2 mb-6 text-sm">
+    <nav class="flex flex-wrap gap-2 mb-8 text-sm animate-tk-fade-in">
         @foreach ($sections as $s)
             <a href="{{ route('tools.tilkit.records.wizard', [$tool, $record, $s]) }}"
-               class="px-3 py-1 rounded-full border {{ $s === $section ? 'bg-tk-accent text-white border-tk-accent' : 'border-tk-line text-tk-muted' }}">
-                {{ $s }}
+               class="tk-wizard-tab {{ $s === $section ? 'tk-wizard-tab-active' : 'tk-wizard-tab-inactive' }}">
+                Section {{ $s }}
             </a>
         @endforeach
     </nav>
@@ -36,7 +36,7 @@
         </ol>
     </div>
 
-    <form method="POST" action="{{ route('tools.tilkit.records.wizard.update', [$tool, $record, $section]) }}" class="tk-card p-6 space-y-4">
+    <form method="POST" action="{{ route('tools.tilkit.records.wizard.update', [$tool, $record, $section]) }}" class="tk-card p-6 space-y-4 animate-tk-fade-in-up">
         @csrf
         @method('PATCH')
         @foreach ($columns as $col)

@@ -7,7 +7,7 @@
     $consent = $kind === 'consent' ? \App\Support\Tilkit\WorkbookCapturePreparer::splitConsent($current) : null;
 @endphp
 
-<div {{ $attributes->merge(['class' => '']) }}>
+<div {{ $attributes->merge(['class' => 'tk-field']) }}>
     <label class="text-xs text-tk-muted block mb-1">
         <span class="font-mono text-tk-accent">{{ $letter }}</span>
         {{ $col['field'] }}

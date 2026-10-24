@@ -16,7 +16,22 @@
 @layer base {
     body {
         font-family: var(--font-ui);
-        @apply bg-tk-bg text-tk-ink antialiased;
+        @apply text-tk-ink antialiased;
+        background-color: #f3f5f7;
+        background-image:
+            radial-gradient(ellipse 120% 80% at 100% -20%, rgb(10 124 148 / 0.08), transparent 55%),
+            radial-gradient(ellipse 80% 50% at 0% 100%, rgb(15 20 25 / 0.04), transparent 50%);
+        background-attachment: fixed;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
     }
 
     h1,
@@ -30,11 +45,11 @@
 
 @layer components {
     .tk-card {
-        @apply bg-tk-surface border border-tk-line/90 rounded-tk shadow-tk-xs ring-1 ring-black/[0.03];
+        @apply bg-tk-surface/95 border border-tk-line/90 rounded-tk shadow-tk-xs ring-1 ring-black/[0.03] backdrop-blur-sm;
     }
 
     .tk-card-interactive {
-        @apply tk-card transition duration-200 hover:border-tk-line hover:shadow-tk-sm hover:ring-black/[0.04];
+        @apply tk-card transition-all duration-300 ease-out hover:border-tk-accent/25 hover:shadow-tk-md hover:-translate-y-0.5 hover:ring-tk-accent/10;
     }
 
     .tk-btn {
@@ -42,11 +57,11 @@
     }
 
     .tk-btn-primary {
-        @apply tk-btn bg-tk-accent text-white shadow-tk-xs hover:bg-[#08697d] active:scale-[0.98];
+        @apply tk-btn bg-tk-accent text-white shadow-tk-sm hover:bg-[#08697d] hover:shadow-md active:scale-[0.98];
     }
 
     .tk-btn-secondary {
-        @apply tk-btn border border-tk-line bg-tk-surface text-tk-ink shadow-tk-xs hover:bg-tk-soft active:scale-[0.98];
+        @apply tk-btn border border-tk-line bg-tk-surface text-tk-ink shadow-tk-xs hover:border-tk-accent/30 hover:bg-tk-accent-soft/40 active:scale-[0.98];
     }
 
     .tk-btn-ghost {
@@ -54,7 +69,7 @@
     }
 
     .tk-stat {
-        @apply tk-card p-5;
+        @apply tk-card p-5 transition-all duration-300 hover:shadow-tk-sm hover:border-tk-accent/20;
     }
 
     .tk-stat-label {
@@ -82,7 +97,11 @@
     }
 
     .tk-input {
-        @apply w-full rounded-lg border-tk-line bg-tk-surface text-tk-ink shadow-tk-xs placeholder:text-tk-muted/70 focus:border-tk-accent focus:ring-2 focus:ring-tk-accent/15;
+        @apply w-full rounded-lg border border-tk-line bg-tk-surface text-tk-ink shadow-tk-xs placeholder:text-tk-muted/70 transition-all duration-200 focus:border-tk-accent focus:ring-2 focus:ring-tk-accent/20 focus:shadow-tk-sm;
+    }
+
+    .tk-field:focus-within label {
+        @apply text-tk-accent;
     }
 
     .tk-nav-shell {
@@ -98,7 +117,104 @@
     }
 
     .tk-status-banner {
-        @apply rounded-tk border border-tk-accent/25 bg-tk-accent-soft px-4 py-3 text-sm text-tk-ink shadow-tk-xs;
+        @apply rounded-tk border border-tk-accent/25 bg-tk-accent-soft px-4 py-3 text-sm text-tk-ink shadow-tk-xs animate-tk-fade-in-down;
+    }
+
+    .tk-page-content {
+        @apply animate-tk-fade-in-up;
+    }
+
+    .tk-stagger > * {
+        @apply animate-tk-fade-in-up;
+    }
+
+    .tk-stagger > *:nth-child(1) { animation-delay: 0ms; }
+    .tk-stagger > *:nth-child(2) { animation-delay: 45ms; }
+    .tk-stagger > *:nth-child(3) { animation-delay: 90ms; }
+    .tk-stagger > *:nth-child(4) { animation-delay: 135ms; }
+    .tk-stagger > *:nth-child(5) { animation-delay: 180ms; }
+    .tk-stagger > *:nth-child(6) { animation-delay: 225ms; }
+
+    .tk-tilkit-subnav {
+        @apply flex gap-1 p-1 mb-8 rounded-xl bg-tk-soft/80 border border-tk-line/80 shadow-tk-xs overflow-x-auto;
+        scroll-behavior: smooth;
+    }
+
+    .tk-tilkit-subnav-link {
+        @apply relative shrink-0 px-4 py-2.5 rounded-lg text-sm font-medium text-tk-muted transition-all duration-200 whitespace-nowrap;
+    }
+
+    .tk-tilkit-subnav-link:hover {
+        @apply text-tk-ink bg-white/70;
+    }
+
+    .tk-tilkit-subnav-link.is-active {
+        @apply text-white bg-tk-accent shadow-tk-sm;
+    }
+
+    .tk-action-grid {
+        @apply grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-8;
+    }
+
+    .tk-action-tile {
+        @apply tk-card-interactive flex flex-col gap-1 p-4 no-underline text-inherit;
+    }
+
+    .tk-action-tile-title {
+        @apply font-semibold text-tk-ink text-sm;
+    }
+
+    .tk-action-tile-desc {
+        @apply text-xs text-tk-muted leading-relaxed;
+    }
+
+    .tk-details-panel {
+        @apply tk-card overflow-hidden transition-shadow duration-300 open:shadow-tk-sm;
+    }
+
+    .tk-details-panel > summary {
+        @apply cursor-pointer list-none flex flex-wrap justify-between items-center gap-2 p-5 font-semibold text-tk-ink transition-colors duration-200 hover:bg-tk-soft/50;
+    }
+
+    .tk-details-panel > summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .tk-details-panel > summary::after {
+        content: '';
+        @apply w-2 h-2 border-r-2 border-b-2 border-tk-muted rotate-45 transition-transform duration-300 shrink-0 ml-4;
+    }
+
+    .tk-details-panel[open] > summary::after {
+        @apply -rotate-[135deg] mt-1;
+    }
+
+    .tk-details-panel[open] > summary {
+        @apply border-b border-tk-line/80 bg-tk-soft/30;
+    }
+
+    .tk-wizard-tab {
+        @apply px-4 py-2 rounded-full text-sm font-medium border transition-all duration-200;
+    }
+
+    .tk-wizard-tab-active {
+        @apply bg-tk-accent text-white border-tk-accent shadow-tk-sm scale-[1.02];
+    }
+
+    .tk-wizard-tab-inactive {
+        @apply border-tk-line text-tk-muted hover:border-tk-accent/40 hover:text-tk-ink hover:bg-white;
+    }
+
+    .tk-table-hover tbody tr {
+        @apply transition-colors duration-150;
+    }
+
+    .tk-table-hover tbody tr:hover {
+        @apply bg-tk-accent-soft/35;
+    }
+
+    .tk-callout {
+        @apply rounded-tk border border-tk-accent/20 bg-gradient-to-br from-tk-accent-soft/80 to-white/80 p-4 text-sm text-tk-muted leading-relaxed;
     }
 
     .tk-dropdown-panel {

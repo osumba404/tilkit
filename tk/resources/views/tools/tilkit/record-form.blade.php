@@ -76,12 +76,12 @@
         @endif
 
         @foreach ($stageGroups as $stage => $columns)
-            <details class="tk-card p-5 group" @if($loop->first) open @endif>
-                <summary class="cursor-pointer font-semibold text-tk-ink list-none flex justify-between">
+            <details class="tk-details-panel mb-3" @if($loop->first) open @endif>
+                <summary>
                     <span>{{ $stage }}</span>
                     <span class="text-xs text-tk-muted font-normal">{{ count($columns) }} fields</span>
                 </summary>
-                <div class="mt-4 grid md:grid-cols-2 gap-4">
+                <div class="p-5 pt-4 grid md:grid-cols-2 gap-4 animate-tk-fade-in">
                     @foreach ($columns as $col)
                         @php
                             if (\App\Support\Tilkit\WorkbookInputSpec::skipInForm($col)) {

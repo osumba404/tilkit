@@ -1,4 +1,4 @@
-<form method="POST" action="{{ route('tools.tilkit.records.sightings.store', [$tool, $record]) }}" class="grid md:grid-cols-2 gap-4">
+<form method="POST" action="{{ route('tools.tilkit.records.sightings.store', [$tool, $record]) }}" class="grid md:grid-cols-2 gap-4 tk-stagger">
     @csrf
     <div>
         <label class="text-xs text-tk-muted block mb-1">Date sighted (CI)</label>

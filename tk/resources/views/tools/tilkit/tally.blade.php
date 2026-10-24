@@ -88,6 +88,7 @@
                         {{ $reason }} ({{ $count }})@if(!$loop->last), @endif
                     @endforeach
                 </div>
+            @endif
             @if (! empty($result->integration))
                 <div class="border-t border-tk-line pt-4 text-sm space-y-2">
                     <h4 class="font-semibold">v4 integration (KMSA / NDMA / triggers)</h4>

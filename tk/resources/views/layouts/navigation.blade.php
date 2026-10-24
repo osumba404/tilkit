@@ -3,7 +3,7 @@
         <div class="flex justify-between h-[4.25rem]">
             <div class="flex items-center gap-8">
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group">
-                    <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-tk-accent text-white text-sm font-bold shadow-tk-xs" aria-hidden="true">T</span>
+                    <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-tk-accent text-white text-sm font-bold shadow-tk-sm transition-transform duration-300 group-hover:scale-105 group-hover:shadow-tk-md" aria-hidden="true">T</span>
                     <span class="flex flex-col leading-tight">
                         <span class="tk-nav-brand">Tilkit</span>
                         <span class="tk-nav-tagline">Data collection</span>

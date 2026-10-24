@@ -30,7 +30,7 @@
         </div>
     @endif
 
-    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 tk-stagger">
         @foreach (['pending_validation' => 'Pending validation', 'pending_verify' => 'Pending verify', 'contested' => 'Contested', 'climate_review' => 'Climate STRONG', 'blank_relevance' => 'Blank relevance'] as $key => $label)
             <div class="tk-stat">
                 <p class="tk-stat-label">{{ $label }}</p>

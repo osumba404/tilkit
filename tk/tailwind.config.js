@@ -41,6 +41,35 @@ export default {
             letterSpacing: {
                 'tk-label': '0.08em',
             },
+            keyframes: {
+                'tk-fade-in': {
+                    '0%': { opacity: '0' },
+                    '100%': { opacity: '1' },
+                },
+                'tk-fade-in-up': {
+                    '0%': { opacity: '0', transform: 'translateY(10px)' },
+                    '100%': { opacity: '1', transform: 'translateY(0)' },
+                },
+                'tk-fade-in-down': {
+                    '0%': { opacity: '0', transform: 'translateY(-6px)' },
+                    '100%': { opacity: '1', transform: 'translateY(0)' },
+                },
+                'tk-scale-in': {
+                    '0%': { opacity: '0', transform: 'scale(0.97)' },
+                    '100%': { opacity: '1', transform: 'scale(1)' },
+                },
+                'tk-slide-in-right': {
+                    '0%': { opacity: '0', transform: 'translateX(8px)' },
+                    '100%': { opacity: '1', transform: 'translateX(0)' },
+                },
+            },
+            animation: {
+                'tk-fade-in': 'tk-fade-in 0.35s ease-out both',
+                'tk-fade-in-up': 'tk-fade-in-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both',
+                'tk-fade-in-down': 'tk-fade-in-down 0.4s ease-out both',
+                'tk-scale-in': 'tk-scale-in 0.35s ease-out both',
+                'tk-slide-in-right': 'tk-slide-in-right 0.4s ease-out both',
+            },
         },
     },
 

@@ -10,7 +10,7 @@
 
     @include('tools.tilkit.partials.subnav')
 
-    <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8 tk-stagger">
         @foreach ([
             'total_records' => 'Total records',
             'sighted' => 'Sighted',
