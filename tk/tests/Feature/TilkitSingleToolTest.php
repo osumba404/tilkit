@@ -69,6 +69,35 @@ class TilkitSingleToolTest extends TestCase
         ]);
     }
 
+    public function test_user_with_legacy_tools_lands_on_embedded_weather_log(): void
+    {
+        config(['tilkit.weather.single_tool.enabled' => true]);
+        $user = User::factory()->create();
+
+        $legacy = DcProject::query()->create([
+            'code' => 'ghana_ikit_weather_indicator_log',
+            'name' => 'TILKIT — Indigenous Weather Indicator Log',
+            'module' => 'tilkit_weather',
+            'purpose' => 'Old manual tool',
+            'lawful_basis' => 'consent',
+            'status' => 'active',
+            'owner_user_id' => $user->id,
+        ]);
+        \App\Models\ToolMember::query()->create([
+            'project_id' => $legacy->id,
+            'user_id' => $user->id,
+            'role' => \App\Enums\ToolMemberRole::Admin,
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('dashboard'))
+            ->assertRedirect(route('tools.tilkit.overview', WeatherTool::resolve()));
+
+        $this->assertNotNull(WeatherTool::resolve());
+        $this->assertSame('tilkit-weather', WeatherTool::resolve()->code);
+        $this->assertTrue($user->fresh()->canAccessTool(WeatherTool::resolve()));
+    }
+
     public function test_routes_for_non_canonical_tool_return_not_found(): void
     {
         config(['tilkit.weather.single_tool.enabled' => true]);

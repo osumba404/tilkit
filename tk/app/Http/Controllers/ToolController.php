@@ -14,10 +14,11 @@ class ToolController extends Controller
     public function index(Request $request): View|RedirectResponse
     {
         if (WeatherTool::singleToolMode()) {
-            $tool = WeatherTool::resolve();
-            if ($tool !== null && $request->user()->canAccessTool($tool)) {
-                return redirect()->route('tools.tilkit.overview', $tool);
-            }
+            $user = $request->user();
+            $tool = WeatherTool::ensurePlatformTool($user);
+            WeatherTool::ensureMember($user);
+
+            return redirect()->route('tools.tilkit.overview', $tool);
         }
 
         $user = $request->user();
@@ -61,8 +62,12 @@ class ToolController extends Controller
             ->with('status', 'Tool created. You are its administrator.');
     }
 
-    public function show(Request $request, DcProject $tool, ToolAccessService $access): View
+    public function show(Request $request, DcProject $tool, ToolAccessService $access): View|RedirectResponse
     {
+        if (WeatherTool::singleToolMode() && WeatherTool::isWeatherModule($tool)) {
+            return redirect()->route('tools.tilkit.overview', $tool);
+        }
+
         $access->assertCanView($request->user(), $tool);
         $tool->load([
             'forms' => fn ($q) => $q->latest(),

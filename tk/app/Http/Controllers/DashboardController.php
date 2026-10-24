@@ -17,10 +17,10 @@ class DashboardController extends Controller
         $user = $request->user();
 
         if (WeatherTool::singleToolMode()) {
-            $tool = WeatherTool::resolve();
-            if ($tool !== null && $user->canAccessTool($tool)) {
-                return redirect()->route('tools.tilkit.overview', $tool);
-            }
+            $tool = WeatherTool::ensurePlatformTool($user);
+            WeatherTool::ensureMember($user);
+
+            return redirect()->route('tools.tilkit.overview', $tool);
         }
 
         $toolIds = $user->isSuperAdmin()

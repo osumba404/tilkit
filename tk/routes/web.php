@@ -43,7 +43,7 @@ Route::get('/f/{form:code}/thanks', [PublicFormController::class, 'thanks'])->na
 
 Route::get('/reference', FieldReferenceController::class)->name('reference');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'tilkit.platform'])->group(function () {
     Route::post('/api/tilkit/sightings', [TilkitSyncController::class, 'storeSighting'])->name('api.tilkit.sightings.store');
 
     Route::get('/dashboard', DashboardController::class)->name('dashboard');

@@ -1,7 +1,9 @@
 <x-layouts.site title="Tilkit — institutional data collection">
     <section class="py-6 sm:py-12">
         <h1 class="font-display font-bold text-4xl sm:text-5xl leading-tight max-w-2xl text-tk-ink">Build collection tools. Analyse field data. Govern with purpose.</h1>
-        @php($weatherTool = \App\Support\Tilkit\WeatherTool::singleToolMode() ? \App\Support\Tilkit\WeatherTool::resolve() : null)
+        @php($weatherTool = \App\Support\Tilkit\WeatherTool::singleToolMode()
+            ? (auth()->user() ? \App\Support\Tilkit\WeatherTool::ensurePlatformTool(auth()->user()) : \App\Support\Tilkit\WeatherTool::resolve())
+            : null)
         <p class="mt-6 text-lg text-tk-muted max-w-2xl">
             @if ($weatherTool)
                 TILKIT Weather Indicator Log (v4 workbook): capture community signs, run eligibility and weighting, and publish seasonal tercile tallies—field definitions ship with the app, not in the database.
@@ -28,8 +30,8 @@
                 <dd class="mt-2 text-sm text-tk-muted">Sixteen families from the field reference guide — text, geo, media, clinical, aggregate, and more.</dd>
             </div>
             <div class="tk-card p-6">
-                <dt class="font-display font-semibold text-tk-ink">Tool-scoped admin</dt>
-                <dd class="mt-2 text-sm text-tk-muted">Every account can spin up a tool; the creator becomes administrator for forms, members, and exports.</dd>
+                <dt class="font-display font-semibold text-tk-ink">{{ $weatherTool ? 'Sites & seasons' : 'Tool-scoped admin' }}</dt>
+                <dd class="mt-2 text-sm text-tk-muted">{{ $weatherTool ? 'One shared weather log for the platform. Add sites and seasons per community or study—no new tool per location.' : 'Every account can spin up a tool; the creator becomes administrator for forms, members, and exports.' }}</dd>
             </div>
             <div class="tk-card p-6">
                 <dt class="font-display font-semibold text-tk-ink">Analysis dashboard</dt>

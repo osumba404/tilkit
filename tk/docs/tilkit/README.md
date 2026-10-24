@@ -46,7 +46,7 @@ Track detailed status in **[alignment-audit.md](./alignment-audit.md)** (living 
 
 ### Single-tool deployment (default)
 
-- **`TILKIT_SINGLE_TOOL=true`** — one `dc_projects` row (`TILKIT_TOOL_CODE`, default `tilkit-weather`) is created by `TilkitSeeder`; users cannot create extra tools.
+- **`TILKIT_SINGLE_TOOL=true`** (default) — one embedded `dc_projects` row (`TILKIT_TOOL_CODE`, default `tilkit-weather`) is auto-provisioned on sign-in; users cannot create extra tools. Use **Setup → sites & seasons** for each community or study—not a new tool per location. Run `php artisan tilkit:ensure-platform-tool` after deploy if needed.
 - **Workbook “data points”** (124 columns, Community Data List) live in **`config/*.json`**, not as seeded form fields or demo indicator rows.
 - **Operational data** (sites, seasons, indicator records) is entered in the app or imported deliberately; **`tilkit:import-demo`** is for PHPUnit and manual parity checks only.
 - Optional reference: **`tilkit:import-legend`** loads the code legend from the master xlsx when you need DB-backed UIDs.

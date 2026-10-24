@@ -2,6 +2,7 @@
 
 namespace App\Support\Tilkit;
 
+use App\Enums\PlatformRole;
 use App\Enums\ToolMemberRole;
 use App\Models\DcProject;
 use App\Models\ToolMember;
@@ -32,6 +33,51 @@ class WeatherTool
     public static function resolve(): ?DcProject
     {
         return DcProject::query()->where('code', static::configuredCode())->first();
+    }
+
+    /** Create the one platform tool if missing (owner = first super admin or acting user). */
+    public static function ensurePlatformTool(?User $actingUser = null): DcProject
+    {
+        $existing = static::resolve();
+        if ($existing !== null) {
+            return $existing;
+        }
+
+        $owner = User::query()
+            ->where('platform_role', PlatformRole::SuperAdmin)
+            ->orderBy('id')
+            ->first()
+            ?? $actingUser
+            ?? User::query()->orderBy('id')->first();
+
+        if ($owner === null) {
+            abort(503, 'TILKIT weather tool cannot be provisioned without a user account.');
+        }
+
+        return static::ensureForUser($owner);
+    }
+
+    /** Grant access to the embedded tool; does not replace an existing membership role. */
+    public static function ensureMember(User $user, ?ToolMemberRole $role = null): void
+    {
+        if ($user->isSuperAdmin()) {
+            return;
+        }
+
+        $tool = static::ensurePlatformTool($user);
+        if ($user->toolMembershipFor($tool) !== null) {
+            return;
+        }
+
+        $role ??= ToolMemberRole::tryFrom(
+            (string) config('tilkit.weather.single_tool.default_member_role', ToolMemberRole::Member->value)
+        ) ?? ToolMemberRole::Member;
+
+        ToolMember::query()->create([
+            'project_id' => $tool->id,
+            'user_id' => $user->id,
+            'role' => $role,
+        ]);
     }
 
     public static function assertCanonical(DcProject $tool): void

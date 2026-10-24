@@ -13,6 +13,8 @@ return [
         'single_tool' => [
             'enabled' => env('TILKIT_SINGLE_TOOL', true),
             'code' => env('TILKIT_TOOL_CODE', 'tilkit-weather'),
+            // New sign-ins receive this role on the embedded tool (not a separate project per study).
+            'default_member_role' => env('TILKIT_DEFAULT_MEMBER_ROLE', 'member'),
             'project' => [
                 'name' => env('TILKIT_TOOL_NAME', 'TILKIT Weather Indicator Log'),
                 'purpose' => 'Traditional indigenous and local knowledge weather indicators — v4 workbook capture and tally.',

@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'super_admin' => \App\Http\Middleware\EnsureSuperAdmin::class,
+            'tilkit.platform' => \App\Http\Middleware\EnsureTilkitPlatformTool::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

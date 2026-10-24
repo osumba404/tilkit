@@ -28,7 +28,17 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         View::composer(['layouts.navigation', 'layouts.app'], function ($view): void {
-            $view->with('tilkitWeatherTool', WeatherTool::singleToolMode() ? WeatherTool::resolve() : null);
+            if (! WeatherTool::singleToolMode()) {
+                $view->with('tilkitWeatherTool', null);
+
+                return;
+            }
+
+            $user = auth()->user();
+            $tool = $user !== null
+                ? WeatherTool::ensurePlatformTool($user)
+                : WeatherTool::resolve();
+            $view->with('tilkitWeatherTool', $tool);
         });
 
         Blueprint::macro('auditColumns', function (bool $userForeignKeys = true): void {

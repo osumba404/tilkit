@@ -4,7 +4,9 @@
             :title="'TILKIT weather — '.$tool->name"
             subtitle="Community indicator monitoring aligned to workbook v4 (protocol {{ $protocol }})">
             <x-slot:actions>
-                <a href="{{ route('tools.show', $tool) }}" class="tk-btn-secondary">Back to tool</a>
+                @unless (\App\Support\Tilkit\WeatherTool::singleToolMode())
+                    <a href="{{ route('tools.show', $tool) }}" class="tk-btn-secondary">Back to tool</a>
+                @endunless
             </x-slot:actions>
         </x-page-header>
     </x-slot>
@@ -36,6 +38,12 @@
         <a href="{{ route('tools.tilkit.workbook', $tool) }}" class="tk-btn-secondary">12-sheet guide</a>
         <a href="{{ route('tools.tilkit.calendar', $tool) }}" class="tk-btn-secondary">Indicator calendar</a>
     </div>
+
+    @if (\App\Support\Tilkit\WeatherTool::singleToolMode())
+        <p class="text-sm text-tk-muted mb-6">
+            This is the platform weather log—use <a href="{{ route('tools.tilkit.setup', $tool) }}" class="text-tk-accent underline">Setup</a> to add sites and seasons for each community or study area. You do not create a separate tool per location.
+        </p>
+    @endif
 
     <div class="tk-card p-6 space-y-4 mb-6">
         <h3 class="tk-section-title">Workbook capture &amp; engine</h3>
