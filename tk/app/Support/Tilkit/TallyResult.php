@@ -8,6 +8,8 @@ readonly class TallyResult
     /** @param  array<int, array{weight: float, percent: float}>  $weighted */
     /** @param  array<int, array{weight: float, percent: float}>  $priorityAdjusted */
     /** @param  array<string, int>  $exclusionCounts */
+    /** @param  array<string, mixed>  $timingSummary */
+    /** @param  array<string, mixed>|null  $distributionOutlook */
     public function __construct(
         public int $siteId,
         public int $seasonId,
@@ -31,6 +33,8 @@ readonly class TallyResult
         public string $leadingWeightedLabel,
         public string $simpleWeightedAgreeLabel,
         public array $integration = [],
+        public array $timingSummary = [],
+        public ?array $distributionOutlook = null,
     ) {}
 
     /** @param  array<string, mixed>  $integration */
@@ -59,6 +63,8 @@ readonly class TallyResult
             leadingWeightedLabel: $this->leadingWeightedLabel,
             simpleWeightedAgreeLabel: $this->simpleWeightedAgreeLabel,
             integration: $integration,
+            timingSummary: $this->timingSummary,
+            distributionOutlook: $this->distributionOutlook,
         );
     }
 
@@ -88,6 +94,8 @@ readonly class TallyResult
             'leading_weighted_label' => $this->leadingWeightedLabel,
             'simple_weighted_agree_label' => $this->simpleWeightedAgreeLabel,
             'integration' => $this->integration,
+            'timing_summary' => $this->timingSummary,
+            'distribution_outlook' => $this->distributionOutlook,
         ];
     }
 }

@@ -8,6 +8,10 @@ use App\Support\Tilkit\IndicatorHistory;
 
 class IndicatorHistoryService
 {
+    public function __construct(
+        private EligibilityGate $gate,
+    ) {}
+
     public function forIndicator(int $indicatorId, ?int $throughRecordId = null): IndicatorHistory
     {
         $query = TilkitIndicatorRecord::query()
@@ -15,10 +19,11 @@ class IndicatorHistoryService
             ->when($throughRecordId, fn ($q) => $q->where('id', '<=', $throughRecordId));
 
         $records = $query->get();
+        $deduped = $records->filter(fn (TilkitIndicatorRecord $r) => $this->gate->isFirstRecord($r));
 
-        $corroboration = $records->filter(fn (TilkitIndicatorRecord $r) => $r->confirmed && $r->approved)->count();
+        $corroboration = $deduped->filter(fn (TilkitIndicatorRecord $r) => $r->confirmed && $r->approved)->count();
 
-        $scored = $records->filter(fn (TilkitIndicatorRecord $r) => $r->season_outcome !== null);
+        $scored = $deduped->filter(fn (TilkitIndicatorRecord $r) => $r->season_outcome !== null);
 
         $hits = $scored->filter(fn (TilkitIndicatorRecord $r) => $r->season_outcome === SeasonOutcome::Hit)->count();
         $misses = $scored->filter(fn (TilkitIndicatorRecord $r) => $r->season_outcome === SeasonOutcome::Miss)->count();

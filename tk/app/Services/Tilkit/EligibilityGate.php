@@ -36,6 +36,13 @@ class EligibilityGate
             return GateResult::excluded('missing_indicator_uid', 'Missing Unique Indicator ID (AH)');
         }
 
+        if (! $this->isFirstRecord($record)) {
+            return GateResult::excluded(
+                'duplicate',
+                'Excluded: duplicate (later row with same ID, site and season)',
+            );
+        }
+
         if (! $record->sighted) {
             return GateResult::excluded('not_sighted', 'Not sighted (N)');
         }
@@ -67,6 +74,65 @@ class EligibilityGate
 
     public function evaluateDuplicateMarker(TilkitIndicatorRecord $record): int
     {
-        return 1;
+        return $this->isFirstRecord($record) ? 1 : 0;
+    }
+
+    public function isFirstRecord(TilkitIndicatorRecord $record): bool
+    {
+        if ($record->indicator_id === null || $record->site_id === null || $record->season_id === null) {
+            return true;
+        }
+
+        if ($record->id === null) {
+            return true;
+        }
+
+        return ! TilkitIndicatorRecord::query()
+            ->where('indicator_id', $record->indicator_id)
+            ->where('site_id', $record->site_id)
+            ->where('season_id', $record->season_id)
+            ->where('id', '<', $record->id)
+            ->exists();
+    }
+
+    public static function ceCountsInTally(?string $ceLabel): bool
+    {
+        $ce = trim((string) $ceLabel);
+
+        return $ce !== '' && str_starts_with($ce, 'Counted');
+    }
+
+    public static function exclusionKeyFromCeLabel(string $ceLabel): string
+    {
+        $ce = strtolower($ceLabel);
+        if (str_contains($ce, 'duplicate')) {
+            return 'duplicate';
+        }
+        if (str_contains($ce, 'not sighted')) {
+            return 'not_sighted';
+        }
+        if (str_contains($ce, 'not confirmed')) {
+            return 'not_confirmed';
+        }
+        if (str_contains($ce, 'not approved')) {
+            return 'not_approved';
+        }
+        if (str_contains($ce, 'contested')) {
+            return 'contested';
+        }
+        if (str_contains($ce, 'tercile') || str_contains($ce, 'no valid')) {
+            return 'invalid_tercile';
+        }
+        if (str_contains($ce, 'other site') || str_contains($ce, 'season')) {
+            return 'other_site_season';
+        }
+        if (str_contains($ce, 'climate')) {
+            return 'climate_review_pending';
+        }
+        if (str_contains($ce, 'missing') && str_contains($ce, 'id')) {
+            return 'missing_indicator_uid';
+        }
+
+        return 'other';
     }
 }

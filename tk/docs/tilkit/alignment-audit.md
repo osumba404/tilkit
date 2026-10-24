@@ -20,7 +20,7 @@ Source files: `TILKIT_Weather_Indicator_Log_Master_Template_v4_OND2026.xlsx` and
 | Seasonal Tercile Tally | `TallyEngine`, `tools/{tool}/tilkit/tally`, `tilkit:tally`, optional snapshot publish |
 | Seasonal Indicator Calendar | `tools/{tool}/tilkit/calendar` (CI–CP columns) |
 | Indicator Code Legend | `tilkit_indicator_codes`; `php artisan tilkit:import-legend` from master xlsx |
-| Prior Multipliers | `tilkit_indicator_codes.prior_multiplier`; partial vs full matrix sheet |
+| Prior Multipliers | `PriorMultiplierMatrix` + `config/tilkit_prior_matrix.json`; DB `prior_multiplier` overrides |
 | Weighting Options | `TilkitSeasonSettings`, `ConfidenceScoreCalculator`, season settings UI |
 | Barriers Addressed | Reference only in guides (no separate module) |
 | Framework Crosswalk | Reference only in guides |
@@ -119,14 +119,18 @@ Source files: `TILKIT_Weather_Indicator_Log_Master_Template_v4_OND2026.xlsx` and
 | Gate: contested excluded; tercile 1/2/3 | Brief §4.3 | `ValidationStatus::excludedFromTally()`; `TercileForecast::isForecast()` | `[x]` |
 | Gate: climate weight review pending (CP STRONG) | Brief §6.5 | `ClimateWeightReviewService` + `EligibilityGate`; data desk sign-off | `[x]` |
 | Gate: one exclusion reason per row | Brief §10.3 | `GateResult` → **CE** on recalc | `[x]` |
-| Gate: duplicate / first-record (**DT**) | v4 Change Log | Derived on recalc; DB unique on insert | `[~]` |
+| Gate: duplicate / first-record (**DT**) | v4 Change Log | `EligibilityGate::isFirstRecord`; **DT** on recalc; DB unique on insert | `[x]` |
 | Gate: site/season scope in tally context | Brief §4.3 | `TilkitEngineService::runTally` scoped | `[x]` |
 | Persist **CE** tally status (derived) | v4 single source of truth | `TilkitRecordEngine` + `storeDerivedValues` | `[x]` |
 | Weighting phase switch (≥3 scored seasons) | Brief §4.3 | `WeightingService` + `IndicatorHistoryService` | `[~]` needs scored-season fixtures |
 | Corroboration cap (base weight max 2) | Brief §4.3 | `WeightingService` | `[x]` |
 | Final weight = base × decision relevance | Brief §4.3 | `WeightingService` / record engine | `[x]` |
-| Optional literature prior (rating phase only) | Brief §4.3 | Season setting flag + code prior | `[~]` |
+| Optional literature prior (rating phase only) | Brief §4.3 | Season setting + code prior or matrix lookup | `[x]` |
 | Simple / weighted / priority-adjusted tallies | Brief §10.2 table | `TallyEngine` | `[x]` |
+| Tally reads **CE** only (v4 single gate) | Brief §4.3 | `tally_reads_ce_only` + derived **CE** cell | `[x]` |
+| Corroboration excludes **DT**=0 duplicates | Brief §4.3 | `IndicatorHistoryService` + `isFirstRecord` | `[x]` |
+| Onset / cessation windows (simple + weighted) | Brief §4.3 | `TallyResult::timingSummary` + tally UI | `[x]` |
+| Distribution outlook on tally tab | Brief §4.3 | Column **T** aggregate in `TallyEngine` | `[x]` |
 | Reconciliation: counted rows = tally total | Brief §10.3 | `TallyResult::reconciliationOk` | `[x]` |
 | Ties reported, not silently resolved | Brief §4.3 | Tally exposes tie flag | `[~]` |
 | Post-season Hit / Miss / False Start | Brief lifecycle | `SeasonOutcome` enum; no scoring loop | `[ ]` |

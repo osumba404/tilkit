@@ -45,6 +45,7 @@ return [
             'corroboration_cap_until' => 2,
             'separate_confirm_approve' => env('TILKIT_SEPARATE_CONFIRM_APPROVE', true),
             'false_start_counts_in_scored_seasons' => true,
+            'tally_reads_ce_only' => env('TILKIT_TALLY_READS_CE_ONLY', true),
         ],
     ],
 

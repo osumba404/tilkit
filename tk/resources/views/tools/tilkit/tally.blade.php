@@ -69,8 +69,64 @@
                     @endforeach
                 </tbody>
             </table>
-            @if ($result->onsetEarliestMean)
-                <p class="text-xs text-tk-muted">Mean onset window: {{ $result->onsetEarliestMean }} – {{ $result->onsetLatestMean ?? '-' }}</p>
+            @php
+                $onset = $result->timingSummary['onset'] ?? [];
+                $cessation = $result->timingSummary['cessation'] ?? [];
+                $distLabel = fn (?int $d) => match ($d) {
+                    3 => 'Good',
+                    2 => 'Fair',
+                    1 => 'Poor',
+                    0 => 'Not sure',
+                    default => '-',
+                };
+            @endphp
+            @if (! empty($onset['earliest_mean_simple']))
+                <div class="text-xs text-tk-muted space-y-1">
+                    <p>
+                        Onset window (simple mean): {{ $onset['earliest_mean_simple'] }} – {{ $onset['latest_mean_simple'] ?? '-' }}
+                        @if (! empty($onset['earliest_mean_weighted']))
+                            · weighted: {{ $onset['earliest_mean_weighted'] }} – {{ $onset['latest_mean_weighted'] ?? '-' }}
+                        @endif
+                    </p>
+                    @if (! empty($onset['single_earliest']))
+                        <p>Earliest / latest single sign: {{ $onset['single_earliest'] }} – {{ $onset['single_latest'] ?? '-' }} ({{ $onset['signs_with_dates'] ?? 0 }} signs with dates)</p>
+                    @endif
+                    @if (! empty($cessation['earliest_mean_simple']))
+                        <p>
+                            Cessation window (simple): {{ $cessation['earliest_mean_simple'] }} – {{ $cessation['latest_mean_simple'] ?? '-' }}
+                            @if (! empty($cessation['earliest_mean_weighted']))
+                                · weighted: {{ $cessation['earliest_mean_weighted'] }} – {{ $cessation['latest_mean_weighted'] ?? '-' }}
+                            @endif
+                        </p>
+                    @endif
+                </div>
+            @endif
+            @if ($result->distributionOutlook)
+                <div class="text-sm border-t border-tk-line pt-3">
+                    <h4 class="font-semibold mb-2">Distribution outlook (column T)</h4>
+                    <table class="w-full text-xs">
+                        <thead class="text-tk-muted uppercase">
+                            <tr>
+                                <th class="text-left p-1">Rating</th>
+                                <th class="text-right p-1">Simple %</th>
+                                <th class="text-right p-1">Weighted %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ([3, 2, 1, 0] as $k)
+                                <tr class="border-t border-tk-line">
+                                    <td class="p-1">{{ $distLabel($k) }}</td>
+                                    <td class="p-1 text-right">{{ $result->distributionOutlook['simple'][$k]['percent'] ?? 0 }}%</td>
+                                    <td class="p-1 text-right">{{ $result->distributionOutlook['weighted'][$k]['percent'] ?? 0 }}%</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <p class="text-xs text-tk-muted mt-1">
+                        Leading: simple {{ $distLabel($result->distributionOutlook['leading_simple'] ?? null) }},
+                        weighted {{ $distLabel($result->distributionOutlook['leading_weighted'] ?? null) }}
+                    </p>
+                </div>
             @endif
             <div class="border-t border-tk-line pt-4 text-sm space-y-1">
                 <h4 class="font-semibold">Data check (matches Tally tab)</h4>

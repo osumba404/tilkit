@@ -41,12 +41,22 @@ class TallyEngine
             $this->recordEngine->recalculate($record, $settings);
             $record->refresh()->load(['workbookValues', 'site', 'season', 'indicator']);
             $map = $this->workbook->rawWorkbookMap($record);
-            $gate = $this->gate->evaluate($record, $site->name, $season->label, $map);
-            if (! $gate->eligible) {
-                $key = $gate->exclusionReason ?? 'other';
-                $exclusionCounts[$key] = ($exclusionCounts[$key] ?? 0) + 1;
+            if (config('tilkit.weather.engine.tally_reads_ce_only', true)) {
+                $ce = $this->tallyStatusLabel($record);
+                if (! EligibilityGate::ceCountsInTally($ce)) {
+                    $key = EligibilityGate::exclusionKeyFromCeLabel($ce !== '' ? $ce : 'other');
+                    $exclusionCounts[$key] = ($exclusionCounts[$key] ?? 0) + 1;
 
-                continue;
+                    continue;
+                }
+            } else {
+                $gate = $this->gate->evaluate($record, $site->name, $season->label, $map);
+                if (! $gate->eligible) {
+                    $key = $gate->exclusionReason ?? 'other';
+                    $exclusionCounts[$key] = ($exclusionCounts[$key] ?? 0) + 1;
+
+                    continue;
+                }
             }
             $counted->push($record);
         }
@@ -63,7 +73,10 @@ class TallyEngine
             ? 'OK'
             : 'MISMATCH';
 
-        [$onsetEarliest, $onsetLatest] = $this->meanOnsetWindow($counted);
+        $timingSummary = $this->timingSummary($counted);
+        $onsetEarliest = $timingSummary['onset']['earliest_mean_simple'] ?? null;
+        $onsetLatest = $timingSummary['onset']['latest_mean_simple'] ?? null;
+        $distributionOutlook = $this->distributionOutlook($counted);
 
         $countedWithoutWeight = $counted->filter(fn (TilkitIndicatorRecord $r) => ($this->cellNumber($r, 'CG') ?? 0) <= 0)->count();
 
@@ -89,6 +102,8 @@ class TallyEngine
             leadingSimpleLabel: $this->tercileLabel($leadingSimple, $simple['counts']),
             leadingWeightedLabel: $this->tercileLabel($leadingWeighted, $weighted['counts']),
             simpleWeightedAgreeLabel: ($leadingSimple !== null && $leadingSimple === $leadingWeighted) ? 'Yes' : 'No',
+            timingSummary: $timingSummary,
+            distributionOutlook: $distributionOutlook,
         );
 
         return $result->withIntegration($this->integration->enrich($result, $counted, $settings));
@@ -189,26 +204,182 @@ class TallyEngine
     }
 
     /** @param  Collection<int, TilkitIndicatorRecord>  $counted */
-    private function meanOnsetWindow(Collection $counted): array
+    private function timingSummary(Collection $counted): array
     {
-        $earliest = [];
-        $latest = [];
+        return [
+            'onset' => $this->windowStats($counted, 'onset_earliest', 'onset_latest'),
+            'cessation' => $this->windowStats($counted, 'cessation_earliest', 'cessation_latest'),
+        ];
+    }
+
+    /**
+     * @param  Collection<int, TilkitIndicatorRecord>  $counted
+     * @return array<string, mixed>
+     */
+    private function windowStats(Collection $counted, string $earliestField, string $latestField): array
+    {
+        $earliestTs = [];
+        $latestTs = [];
+        $weightedEarliest = ['sum' => 0.0, 'weight' => 0.0];
+        $weightedLatest = ['sum' => 0.0, 'weight' => 0.0];
+        $singleEarliest = null;
+        $singleLatest = null;
+        $signsWithDates = 0;
+
         foreach ($counted as $record) {
-            if ($record->onset_earliest) {
-                $earliest[] = $record->onset_earliest->timestamp;
+            $weight = max(0.0, (float) ($this->cellNumber($record, 'CG') ?? 0));
+            $hasDate = false;
+
+            $earliest = $record->{$earliestField};
+            if ($earliest !== null) {
+                $ts = $earliest->timestamp;
+                $earliestTs[] = $ts;
+                $hasDate = true;
+                if ($weight > 0) {
+                    $weightedEarliest['sum'] += $ts * $weight;
+                    $weightedEarliest['weight'] += $weight;
+                }
+                $singleEarliest = $singleEarliest === null ? $ts : min($singleEarliest, $ts);
             }
-            if ($record->onset_latest) {
-                $latest[] = $record->onset_latest->timestamp;
+
+            $latest = $record->{$latestField};
+            if ($latest !== null) {
+                $ts = $latest->timestamp;
+                $latestTs[] = $ts;
+                $hasDate = true;
+                if ($weight > 0) {
+                    $weightedLatest['sum'] += $ts * $weight;
+                    $weightedLatest['weight'] += $weight;
+                }
+                $singleLatest = $singleLatest === null ? $ts : max($singleLatest, $ts);
+            }
+
+            if ($hasDate) {
+                $signsWithDates++;
             }
         }
-        if ($earliest === []) {
-            return [null, null];
+
+        if ($earliestTs === []) {
+            return [
+                'earliest_mean_simple' => null,
+                'earliest_mean_weighted' => null,
+                'latest_mean_simple' => null,
+                'latest_mean_weighted' => null,
+                'single_earliest' => null,
+                'single_latest' => null,
+                'signs_with_dates' => 0,
+            ];
         }
 
         return [
-            date('Y-m-d', (int) round(array_sum($earliest) / count($earliest))),
-            $latest !== [] ? date('Y-m-d', (int) round(array_sum($latest) / count($latest))) : null,
+            'earliest_mean_simple' => $this->formatMeanTimestamp($earliestTs),
+            'earliest_mean_weighted' => $this->formatWeightedMeanTimestamp($weightedEarliest),
+            'latest_mean_simple' => $latestTs !== [] ? $this->formatMeanTimestamp($latestTs) : null,
+            'latest_mean_weighted' => $latestTs !== [] ? $this->formatWeightedMeanTimestamp($weightedLatest) : null,
+            'single_earliest' => $singleEarliest !== null ? date('Y-m-d', $singleEarliest) : null,
+            'single_latest' => $singleLatest !== null ? date('Y-m-d', $singleLatest) : null,
+            'signs_with_dates' => $signsWithDates,
         ];
+    }
+
+    /** @param  array<int, int>  $timestamps */
+    private function formatMeanTimestamp(array $timestamps): string
+    {
+        return date('Y-m-d', (int) round(array_sum($timestamps) / count($timestamps)));
+    }
+
+    /** @param  array{sum: float, weight: float}  $weighted */
+    private function formatWeightedMeanTimestamp(array $weighted): ?string
+    {
+        if ($weighted['weight'] <= 0) {
+            return null;
+        }
+
+        return date('Y-m-d', (int) round($weighted['sum'] / $weighted['weight']));
+    }
+
+    /** @param  Collection<int, TilkitIndicatorRecord>  $counted */
+    private function distributionOutlook(Collection $counted): ?array
+    {
+        if ($counted->isEmpty()) {
+            return null;
+        }
+
+        $simpleCounts = [3 => 0, 2 => 0, 1 => 0, 0 => 0];
+        $weightSums = [3 => 0.0, 2 => 0.0, 1 => 0.0, 0 => 0.0];
+
+        foreach ($counted as $record) {
+            $rating = $this->distributionRating($record);
+            if ($rating === null) {
+                continue;
+            }
+            $simpleCounts[$rating]++;
+            $w = max(0.0, (float) ($this->cellNumber($record, 'CG') ?? 0));
+            $weightSums[$rating] += $w;
+        }
+
+        $simpleTotal = array_sum($simpleCounts);
+        $weightTotal = array_sum($weightSums);
+        if ($simpleTotal === 0 && $weightTotal <= 0) {
+            return null;
+        }
+
+        $simple = $this->distributionPercentages($simpleCounts, $simpleTotal, 'count');
+        $weighted = $this->distributionPercentages($weightSums, $weightTotal, 'weight');
+
+        return [
+            'simple' => $simple,
+            'weighted' => $weighted,
+            'leading_simple' => $this->leadingDistribution($simpleCounts),
+            'leading_weighted' => $this->leadingDistribution($weightSums),
+        ];
+    }
+
+    private function distributionRating(TilkitIndicatorRecord $record): ?int
+    {
+        if ($record->distribution_forecast !== null && is_numeric($record->distribution_forecast)) {
+            $v = (int) $record->distribution_forecast;
+
+            return in_array($v, [0, 1, 2, 3], true) ? $v : null;
+        }
+
+        $cell = $record->workbookValues->firstWhere('column_letter', 'T');
+        if ($cell?->value_number === null) {
+            return null;
+        }
+        $v = (int) $cell->value_number;
+
+        return in_array($v, [0, 1, 2, 3], true) ? $v : null;
+    }
+
+    /** @param  array<int, int|float>  $counts */
+    private function distributionPercentages(array $counts, float|int $total, string $mode): array
+    {
+        $out = [];
+        foreach ([3, 2, 1, 0] as $k) {
+            $v = $counts[$k] ?? 0;
+            $pct = $total > 0 ? round(($v / $total) * 100, 2) : 0.0;
+            $out[$k] = $mode === 'count'
+                ? ['count' => (int) $v, 'percent' => $pct]
+                : ['weight' => (float) $v, 'percent' => $pct];
+        }
+
+        return $out;
+    }
+
+    /** @param  array<int, int|float>  $counts */
+    private function leadingDistribution(array $counts): ?int
+    {
+        if ($counts === []) {
+            return null;
+        }
+        $max = max($counts);
+        if ($max <= 0) {
+            return null;
+        }
+        $leaders = array_keys(array_filter($counts, fn ($v) => $v === $max));
+
+        return count($leaders) === 1 ? (int) $leaders[0] : null;
     }
 
     private function cellNumber(TilkitIndicatorRecord $record, string $letter): ?float
@@ -216,5 +387,13 @@ class TallyEngine
         $cell = $record->workbookValues->firstWhere('column_letter', $letter);
 
         return $cell?->value_number !== null ? (float) $cell->value_number : null;
+    }
+
+    private function tallyStatusLabel(TilkitIndicatorRecord $record): string
+    {
+        $record->loadMissing('workbookValues');
+        $cell = $record->workbookValues->firstWhere('column_letter', 'CE');
+
+        return trim((string) ($cell?->value_text ?? ''));
     }
 }

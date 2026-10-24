@@ -22,6 +22,10 @@ readonly class WeightingResult
 
 class WeightingService
 {
+    public function __construct(
+        private PriorMultiplierMatrix $priorMatrix,
+    ) {}
+
     public function compute(
         TilkitIndicatorRecord $record,
         IndicatorHistory $history,
@@ -98,6 +102,6 @@ class WeightingService
             return (float) $code->prior_multiplier;
         }
 
-        return 1.0;
+        return $this->priorMatrix->forIndicator($record->indicator);
     }
 }
