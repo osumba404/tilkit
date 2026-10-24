@@ -14,10 +14,10 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                ui: ['"DM Sans"', ...defaultTheme.fontFamily.sans],
-                display: ['Merriweather', 'Georgia', 'serif'],
-                body: ['"DM Sans"', ...defaultTheme.fontFamily.sans],
-                sans: ['"DM Sans"', ...defaultTheme.fontFamily.sans],
+                ui: ['Merriweather', 'Georgia', ...defaultTheme.fontFamily.serif],
+                display: ['Merriweather', 'Georgia', ...defaultTheme.fontFamily.serif],
+                body: ['Merriweather', 'Georgia', ...defaultTheme.fontFamily.serif],
+                sans: ['Merriweather', 'Georgia', ...defaultTheme.fontFamily.serif],
             },
             colors: {
                 'tk-bg': 'rgb(var(--tk-bg) / <alpha-value>)',

@@ -78,8 +78,8 @@
         @foreach ($stageGroups as $stage => $columns)
             <details class="tk-details-panel mb-3" @if($loop->first) open @endif>
                 <summary>
-                    <span>{{ $stage }}</span>
-                    <span class="text-xs text-tk-muted font-normal">{{ count($columns) }} fields</span>
+                    <span class="min-w-0 flex-1 pr-4">{{ $stage }}</span>
+                    <span class="tk-details-panel-count">{{ count($columns) }} fields</span>
                 </summary>
                 <div class="p-5 pt-4 grid md:grid-cols-2 gap-4 animate-tk-fade-in">
                     @foreach ($columns as $col)

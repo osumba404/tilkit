@@ -9,7 +9,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('head')
 </head>
-<body class="min-h-screen">
+<body class="min-h-screen font-sans antialiased">
     @include('layouts.navigation')
     @php
         $pageWrap = ($fullWidth ?? false)

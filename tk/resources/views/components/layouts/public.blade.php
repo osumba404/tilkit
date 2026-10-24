@@ -16,7 +16,7 @@
     @stack('head')
 </head>
 <body @class([
-    'min-h-screen bg-tk-bg text-tk-ink antialiased',
+    'min-h-screen bg-tk-bg text-tk-ink font-sans antialiased',
     'flex items-center justify-center px-4 py-10' => $centered,
 ])>
     {{ $branding ?? '' }}

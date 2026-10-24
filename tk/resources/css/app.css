@@ -1,12 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,400;1,700&display=swap');
 
 [x-cloak] {
     display: none !important;
 }
 
 :root {
-    --font-ui: 'DM Sans', system-ui, sans-serif;
-    --font-display: Merriweather, Georgia, serif;
+    --font-primary: Merriweather, Georgia, 'Times New Roman', serif;
+    --font-ui: var(--font-primary);
+    --font-display: var(--font-primary);
     --tk-bg: 243 245 247;
     --tk-surface: 255 255 255;
     --tk-ink: 15 20 25;
@@ -31,9 +32,13 @@
 @tailwind utilities;
 
 @layer base {
+    html {
+        font-family: var(--font-primary);
+    }
+
     body {
-        font-family: var(--font-ui);
-        @apply text-tk-ink antialiased bg-tk-bg;
+        font-family: var(--font-primary);
+        @apply text-tk-ink antialiased bg-tk-bg font-sans;
         background-image:
             radial-gradient(ellipse 120% 80% at 100% -20%, rgb(10 124 148 / 0.08), transparent 55%),
             radial-gradient(ellipse 80% 50% at 0% 100%, rgb(15 20 25 / 0.04), transparent 50%);
@@ -62,6 +67,14 @@
     .tk-font-display {
         font-family: var(--font-display);
         @apply text-tk-ink tracking-tight;
+    }
+
+    input,
+    textarea,
+    select,
+    button,
+    optgroup {
+        font-family: inherit;
     }
 }
 
@@ -119,7 +132,7 @@
     }
 
     .tk-input {
-        @apply w-full rounded-lg border border-tk-line bg-tk-surface text-tk-ink shadow-tk-xs placeholder:text-tk-muted/70 transition-all duration-200 focus:border-tk-accent focus:ring-2 focus:ring-tk-accent/20 focus:shadow-tk-sm;
+        @apply w-full rounded-lg border border-tk-line bg-tk-surface text-tk-ink font-sans shadow-tk-xs placeholder:text-tk-muted/70 transition-all duration-200 focus:border-tk-accent focus:ring-2 focus:ring-tk-accent/20 focus:shadow-tk-sm;
     }
 
     .tk-field:focus-within label {
@@ -199,7 +212,11 @@
     }
 
     .tk-details-panel > summary {
-        @apply cursor-pointer list-none flex flex-wrap justify-between items-center gap-2 p-5 font-semibold text-tk-ink transition-colors duration-200 hover:bg-tk-soft/50;
+        @apply cursor-pointer list-none flex w-full items-center gap-2 p-5 font-semibold text-tk-ink transition-colors duration-200 hover:bg-tk-soft/50;
+    }
+
+    .tk-details-panel-count {
+        @apply ml-auto shrink-0 text-right text-xs font-normal tabular-nums text-tk-muted;
     }
 
     .tk-details-panel > summary::-webkit-details-marker {

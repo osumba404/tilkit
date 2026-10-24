@@ -11,7 +11,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('head')
 </head>
-<body class="min-h-screen bg-tk-bg text-tk-ink antialiased">
+<body class="min-h-screen bg-tk-bg text-tk-ink font-sans antialiased">
     @include('layouts.navigation')
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-10 w-full">
         {{ $slot }}
