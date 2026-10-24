@@ -14,6 +14,7 @@ use App\Services\Tilkit\TilkitSignOffGuard;
 use App\Services\Tilkit\WorkbookRecordService;
 use App\Services\ToolAccessService;
 use App\Support\Tilkit\CommunityDataListRegistry;
+use App\Support\Tilkit\WorkbookCapturePreparer;
 use App\Support\Tilkit\WorkbookColumnRegistry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -85,7 +86,8 @@ class ToolTilkitWeatherController extends Controller
             'entered_by' => $request->user()->id,
         ]);
 
-        $workbook->storeRawValues($record, $validated['workbook'] ?? []);
+        $raw = WorkbookCapturePreparer::normalizeIncoming($validated['workbook'] ?? []);
+        $workbook->storeRawValues($record, $raw);
         $workbook->storeReferenceColumns($record->fresh());
         $this->storePhotos($request, $record);
 
@@ -142,7 +144,7 @@ class ToolTilkitWeatherController extends Controller
             'workbook_photos.*' => ['file', 'image', 'max:8192'],
         ]);
 
-        $raw = $validated['workbook'] ?? [];
+        $raw = WorkbookCapturePreparer::normalizeIncoming($validated['workbook'] ?? []);
         $this->assertPersonaForWorkbookFields($personas, $request->user(), $tool, $raw);
         $raw = app(TilkitSignOffGuard::class)->applySignOff($record, $request->user(), $raw);
         $workbook->storeRawValues($record, $raw);
@@ -195,7 +197,7 @@ class ToolTilkitWeatherController extends Controller
             'workbook' => ['nullable', 'array'],
             'workbook.*' => ['nullable'],
         ]);
-        $raw = $validated['workbook'] ?? [];
+        $raw = WorkbookCapturePreparer::normalizeIncoming($validated['workbook'] ?? []);
         $this->assertPersonaForWorkbookFields($personas, $request->user(), $tool, $raw);
         $raw = app(TilkitSignOffGuard::class)->applySignOff($record, $request->user(), $raw);
         $workbook->storeRawValues($record, $raw);

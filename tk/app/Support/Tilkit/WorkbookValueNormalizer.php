@@ -27,9 +27,13 @@ class WorkbookValueNormalizer
                 ...$empty,
                 'value_number' => self::rating($value),
             ],
-            'number' => [
+            'number', 'integer' => [
                 ...$empty,
                 'value_number' => self::number($value),
+            ],
+            'gps' => [
+                ...$empty,
+                'value_text' => is_scalar($value) ? trim((string) $value) : null,
             ],
             'date' => [
                 ...$empty,

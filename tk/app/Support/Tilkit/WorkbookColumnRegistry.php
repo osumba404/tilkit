@@ -61,27 +61,7 @@ class WorkbookColumnRegistry
 
     public static function inputKind(array $column): string
     {
-        $field = strtolower($column['field']);
-        if (str_contains($field, '(1/0)')) {
-            return 'yes_no';
-        }
-        if (str_contains($field, '(3/2/1/0)') || str_contains($field, '3/2/1')) {
-            return 'rating';
-        }
-        if (str_contains($field, 'date') || str_contains($field, 'onset') || str_contains($field, 'cessation')) {
-            return 'date';
-        }
-        if (str_contains($field, 'photos')) {
-            return 'photos';
-        }
-        if (str_contains($field, 'gps')) {
-            return 'gps';
-        }
-        if (str_contains($field, 'sector impact')) {
-            return 'json';
-        }
-
-        return 'text';
+        return WorkbookInputSpec::kind($column);
     }
 
     public static function assertRawColumn(string $letter): array

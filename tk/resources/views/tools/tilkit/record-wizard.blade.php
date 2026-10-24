@@ -40,33 +40,12 @@
         @csrf
         @method('PATCH')
         @foreach ($columns as $col)
+            @continue(\App\Support\Tilkit\WorkbookInputSpec::skipInForm($col))
             @php
                 $letter = $col['column'];
                 $current = old("workbook.{$letter}", $workbookValues[$letter] ?? '');
             @endphp
-            <div>
-                <label class="text-xs text-tk-muted block mb-1">
-                    <span class="font-mono">{{ $letter }}</span> — {{ $col['field'] ?? '' }}
-                </label>
-                @php $kind = \App\Support\Tilkit\WorkbookColumnRegistry::inputKind($col); @endphp
-                @if ($kind === 'yes_no')
-                    <select name="workbook[{{ $letter }}]" class="tk-input">
-                        <option value="">—</option>
-                        <option value="1" @selected((string) $current === '1')>Yes</option>
-                        <option value="0" @selected((string) $current === '0')>No</option>
-                    </select>
-                @elseif ($kind === 'rating')
-                    <select name="workbook[{{ $letter }}]" class="tk-input">
-                        @foreach ([3 => 'High', 2 => 'Medium', 1 => 'Low', 0 => 'Not sure'] as $v => $label)
-                            <option value="{{ $v }}" @selected((string) $current === (string) $v)>{{ $label }}</option>
-                        @endforeach
-                    </select>
-                @elseif ($kind === 'date')
-                    <input type="date" name="workbook[{{ $letter }}]" value="{{ $current }}" class="tk-input">
-                @else
-                    <input type="text" name="workbook[{{ $letter }}]" value="{{ $current }}" class="tk-input">
-                @endif
-            </div>
+            <x-tilkit.workbook-field :col="$col" :current="$current" />
         @endforeach
         <div class="flex flex-wrap gap-3 pt-4">
             @php $idx = array_search($section, $sections, true); @endphp

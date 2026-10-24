@@ -38,19 +38,32 @@ class TilkitWorkbookCaptureTest extends TestCase
         $payload = [];
         foreach (WorkbookColumnRegistry::rawColumns() as $col) {
             $kind = WorkbookColumnRegistry::inputKind($col);
+            if (in_array($kind, ['photos', 'readonly'], true)) {
+                continue;
+            }
             $payload[$col['column']] = match ($kind) {
                 'yes_no' => '1',
-                'rating' => '2',
+                'rating', 'tercile', 'history_scale', 'lead_time_class', 'rating_321' => '2',
                 'date' => '2026-10-01',
                 'json' => '{"crops":"+"}',
+                'gps' => '-1.2,36.8',
+                'integer' => '3',
+                'number' => '42.5',
+                'consent' => '2; 1; Community credit',
+                'validation' => 'fgd_validated',
+                'outcome' => 'hit',
                 default => 'sample',
             };
         }
 
         $service->storeRawValues($record, $payload);
 
+        $expectedRaw = count(array_filter(
+            WorkbookColumnRegistry::rawColumns(),
+            fn ($c) => ! in_array(WorkbookColumnRegistry::inputKind($c), ['photos', 'readonly'], true)
+        ));
         $this->assertSame(
-            90,
+            $expectedRaw,
             $record->workbookValues()->where('is_derived', false)->count()
         );
 

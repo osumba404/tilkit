@@ -84,55 +84,13 @@
                 <div class="mt-4 grid md:grid-cols-2 gap-4">
                     @foreach ($columns as $col)
                         @php
-                            $letter = $col['column'];
-                            $kind = \App\Support\Tilkit\WorkbookColumnRegistry::inputKind($col);
-                            $current = old("workbook.{$letter}", $workbookValues[$letter] ?? '');
-                            if ($kind === 'photos') {
+                            if (\App\Support\Tilkit\WorkbookInputSpec::skipInForm($col)) {
                                 continue;
                             }
+                            $letter = $col['column'];
+                            $current = old("workbook.{$letter}", $workbookValues[$letter] ?? '');
                         @endphp
-                        <div>
-                            <label class="text-xs text-tk-muted block mb-1">
-                                <span class="font-mono text-tk-accent">{{ $letter }}</span>
-                                {{ $col['field'] }}
-                            </label>
-                            @if ($kind === 'yes_no')
-                                <select name="workbook[{{ $letter }}]" class="tk-input">
-                                    <option value="">—</option>
-                                    <option value="1" @selected((string) $current === '1')>Yes (1)</option>
-                                    <option value="0" @selected((string) $current === '0')>No (0)</option>
-                                </select>
-                            @elseif ($kind === 'rating')
-                                <select name="workbook[{{ $letter }}]" class="tk-input">
-                                    <option value="">—</option>
-                                    @foreach ([3 => '3 High', 2 => '2 Medium', 1 => '1 Low', 0 => '0 Not sure'] as $v => $label)
-                                        <option value="{{ $v }}" @selected((string) $current === (string) $v)>{{ $label }}</option>
-                                    @endforeach
-                                </select>
-                            @elseif ($letter === 'AP')
-                                <select name="workbook[{{ $letter }}]" class="tk-input">
-                                    <option value="">—</option>
-                                    @foreach (\App\Enums\Tilkit\ValidationStatus::cases() as $status)
-                                        <option value="{{ $status->value }}" @selected((string) $current === $status->value || (string) $current === $status->excelLabel())>{{ $status->excelLabel() }}</option>
-                                    @endforeach
-                                </select>
-                            @elseif ($letter === 'U')
-                                <select name="workbook[{{ $letter }}]" class="tk-input">
-                                    <option value="">—</option>
-                                    @foreach (\App\Enums\Tilkit\TercileForecast::cases() as $t)
-                                        @if ($t->isForecast())
-                                            <option value="{{ $t->value }}" @selected((string) $current === (string) $t->value)>{{ $t->label() }}</option>
-                                        @endif
-                                    @endforeach
-                                </select>
-                            @elseif ($kind === 'date')
-                                <input type="date" name="workbook[{{ $letter }}]" value="{{ $current }}" class="tk-input">
-                            @elseif ($kind === 'json')
-                                <textarea name="workbook[{{ $letter }}]" rows="2" class="tk-input font-mono text-xs" placeholder='{"crops":"+"}'>{{ is_array($current) ? json_encode($current) : $current }}</textarea>
-                            @else
-                                <input type="text" name="workbook[{{ $letter }}]" value="{{ is_scalar($current) ? $current : '' }}" class="tk-input">
-                            @endif
-                        </div>
+                        <x-tilkit.workbook-field :col="$col" :current="$current" />
                     @endforeach
                 </div>
             </details>
