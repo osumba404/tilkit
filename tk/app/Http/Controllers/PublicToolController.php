@@ -126,7 +126,7 @@ class PublicToolController extends Controller
 
         return redirect()
             ->route('public.tools.thanks', $tool)
-            ->with('status', 'Thank you — your responses were recorded.');
+            ->with('status', 'Thank you - your responses were recorded.');
     }
 
     public function thanks(DcProject $tool): View

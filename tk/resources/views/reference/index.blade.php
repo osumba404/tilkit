@@ -1,8 +1,8 @@
 @guest
-<x-layouts.site title="Field reference — Tilkit">
+<x-layouts.site title="Field reference - Tilkit">
     <x-page-header
         title="Data collection field reference"
-        subtitle="200+ catalogued collection points — searchable master catalogue."
+        subtitle="200+ catalogued collection points - searchable master catalogue."
         class="mb-6"
     />
     <div class="tk-card overflow-hidden min-h-[60vh]" style="height: min(80vh, 900px);">

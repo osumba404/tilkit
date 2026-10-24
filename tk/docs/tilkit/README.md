@@ -19,7 +19,7 @@ This Laravel app (`tk/`) is being aligned with the **TILKIT Weather Indicator Lo
 | `app/Models/Tilkit/*` | Sites, seasons, indicators, records, sightings, workbook values/media |
 | `config/tilkit_weather_column_register.json` | 124-column v4 register (90 raw + 34 derived) |
 | `app/Services/Tilkit/WorkbookRecordService.php` | Persist raw cells by column letter; sync canonical fields |
-| `app/Services/Tilkit/*` | Rules engine (gate, weights, tally — phased) |
+| `app/Services/Tilkit/*` | Rules engine (gate, weights, tally - phased) |
 | `app/Enums/Tilkit/*` | Tercile, ratings, validation status |
 | `tests/Fixtures/Tilkit/` | Golden cases ported from the v4 demo workbook |
 | `config/tilkit_workbook_sheets.json` | Titles for all 12 master-template sheets |
@@ -39,14 +39,14 @@ Web: `tools/{tool}/tilkit` (records), `.../tilkit/setup`, `.../tilkit/tally`, `.
 
 Track detailed status in **[alignment-audit.md](./alignment-audit.md)** (living checklist tied to [GitHub issue epics](../../../.github/tilkit-project/issues.json)).
 
-1. **Phase 0** — Spec baseline, open questions, golden fixtures  
-2. **Phase 1** — Schema, reference data, workbook capture UI  
-3. **Phase 2** — Forecast engine with Excel parity tests  
-4. **Phase 3–6** — Mobile sync, workshop/validation, integration & v4 modules, migration & pilots  
+1. **Phase 0** - Spec baseline, open questions, golden fixtures  
+2. **Phase 1** - Schema, reference data, workbook capture UI  
+3. **Phase 2** - Forecast engine with Excel parity tests  
+4. **Phase 3–6** - Mobile sync, workshop/validation, integration & v4 modules, migration & pilots  
 
 ### Single-tool deployment (default)
 
-- **`TILKIT_SINGLE_TOOL=true`** (default) — one embedded `dc_projects` row (`TILKIT_TOOL_CODE`, default `tilkit-weather`) is auto-provisioned on sign-in; users cannot create extra tools. Use **Setup → sites & seasons** for each community or study—not a new tool per location. Run `php artisan tilkit:ensure-platform-tool` after deploy if needed.
+- **`TILKIT_SINGLE_TOOL=true`** (default) - one embedded `dc_projects` row (`TILKIT_TOOL_CODE`, default `tilkit-weather`) is auto-provisioned on sign-in; users cannot create extra tools. Use **Setup → sites & seasons** for each community or study-not a new tool per location. Run `php artisan tilkit:ensure-platform-tool` after deploy if needed.
 - **Workbook “data points”** (124 columns, Community Data List) live in **`config/*.json`**, not as seeded form fields or demo indicator rows.
 - **Operational data** (sites, seasons, indicator records) is entered in the app or imported deliberately; **`tilkit:import-demo`** is for PHPUnit and manual parity checks only.
 - Optional reference: **`tilkit:import-legend`** loads the code legend from the master xlsx when you need DB-backed UIDs.

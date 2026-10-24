@@ -22,7 +22,7 @@
             @foreach ($recentTools as $tool)
                 <a href="{{ route('tools.show', $tool) }}" class="tk-card block p-4 mb-2 text-sm">
                     <p class="font-medium">{{ $tool->name }}</p>
-                    <p class="text-tk-muted">Owner: {{ $tool->owner?->name ?? '—' }}</p>
+                    <p class="text-tk-muted">Owner: {{ $tool->owner?->name ?? '-' }}</p>
                 </a>
             @endforeach
         </section>

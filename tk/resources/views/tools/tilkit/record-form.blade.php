@@ -18,7 +18,7 @@
 
     <p class="text-sm text-tk-muted mb-4">
         Capture follows the v4 <a href="{{ route('tools.tilkit.workbook', $tool) }}" class="text-tk-accent underline">Community Data List</a>
-        (sections A–E) and <strong>Sheet 1 — Indicator Log</strong> columns A–DT.
+        (sections A–E) and <strong>Sheet 1 - Indicator Log</strong> columns A–DT.
     </p>
 
     @if ($isEdit)
@@ -62,7 +62,7 @@
                     <label class="text-xs text-tk-muted block mb-1">Indicator (AH)</label>
                     <select name="indicator_id" required class="tk-input">
                         @foreach ($indicators as $indicator)
-                            <option value="{{ $indicator->id }}" @selected(old('indicator_id') == $indicator->id)>{{ $indicator->indicator_uid }} — {{ $indicator->local_name }}</option>
+                            <option value="{{ $indicator->id }}" @selected(old('indicator_id') == $indicator->id)>{{ $indicator->indicator_uid }} - {{ $indicator->local_name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -97,7 +97,7 @@
         @endforeach
 
         <div class="tk-card p-5">
-            <h3 class="tk-section-title text-base mb-2">Photos (column Y — at least three recommended)</h3>
+            <h3 class="tk-section-title text-base mb-2">Photos (column Y - at least three recommended)</h3>
             <input type="file" name="workbook_photos[]" accept="image/*" multiple class="tk-input">
             @if ($isEdit && $record->workbookMedia->isNotEmpty())
                 <p class="text-xs text-tk-muted mt-2">{{ $record->workbookMedia->count() }} photo(s) stored.</p>
@@ -114,7 +114,7 @@
                     @foreach ($derivedColumns as $col)
                         @php
                             $letter = $col['column'];
-                            $shown = $derivedMap[$letter]['value'] ?? '—';
+                            $shown = $derivedMap[$letter]['value'] ?? '-';
                         @endphp
                         <div class="border border-tk-line rounded-lg p-3">
                             <span class="font-mono text-tk-accent text-xs">{{ $letter }}</span>

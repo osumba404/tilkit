@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <x-page-header
-            :title="'TILKIT weather — '.$tool->name"
+            :title="'TILKIT weather - '.$tool->name"
             subtitle="Community indicator monitoring aligned to workbook v4 (protocol {{ $protocol }})">
             <x-slot:actions>
                 @unless (\App\Support\Tilkit\WeatherTool::singleToolMode())
@@ -32,7 +32,7 @@
         <div class="tk-callout mb-8 animate-tk-fade-in-up">
             One shared weather log for the platform. Use
             <a href="{{ route('tools.tilkit.setup', $tool) }}" class="text-tk-accent font-medium underline underline-offset-2">Setup</a>
-            to add sites and seasons per community or study—not a separate tool per location.
+            to add sites and seasons per community or study-not a separate tool per location.
         </div>
     @endif
 

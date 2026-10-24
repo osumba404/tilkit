@@ -24,7 +24,7 @@
             ])
             @include('analytics.partials.kpi-card', [
                 'label' => 'Approval rate',
-                'value' => $overview['approval_rate'] !== null ? $overview['approval_rate'].'%' : '—',
+                'value' => $overview['approval_rate'] !== null ? $overview['approval_rate'].'%' : '-',
                 'footnote' => 'Approved ÷ (approved + rejected) in period',
             ])
         </div>
@@ -42,7 +42,7 @@
                 <h3 class="font-semibold mb-1">Submission trend</h3>
                 <p class="text-xs text-tk-muted mb-4">Click a point to drill (future). Source: dc_submissions</p>
                 <canvas id="accTrendChart" height="200" data-acc-chart="trend"></canvas>
-                <p class="text-xs text-tk-muted mt-2">Updated: {{ $overview['last_updated'] ? \Illuminate\Support\Carbon::parse($overview['last_updated'])->toDateTimeString() : '—' }}</p>
+                <p class="text-xs text-tk-muted mt-2">Updated: {{ $overview['last_updated'] ? \Illuminate\Support\Carbon::parse($overview['last_updated'])->toDateTimeString() : '-' }}</p>
             </div>
             @include('analytics.partials.freshness-panel', ['sources' => $freshness])
         </div>
@@ -90,7 +90,7 @@
                     <thead class="text-left text-tk-muted"><tr><th class="pb-2">ID</th><th class="pb-2">Records</th><th class="pb-2">Hit rate</th><th class="pb-2">Drift</th></tr></thead>
                     <tbody>
                         @foreach ($calibration as $row)
-                            <tr class="border-t border-tk-line"><td class="py-2 font-mono text-xs">{{ $row['indicator_id'] }}</td><td class="py-2">{{ $row['submissions'] }}</td><td class="py-2">{{ $row['hit_rate'] ?? '—' }}</td><td class="py-2">{{ $row['reliability_drift'] ?? '—' }}</td></tr>
+                            <tr class="border-t border-tk-line"><td class="py-2 font-mono text-xs">{{ $row['indicator_id'] }}</td><td class="py-2">{{ $row['submissions'] }}</td><td class="py-2">{{ $row['hit_rate'] ?? '-' }}</td><td class="py-2">{{ $row['reliability_drift'] ?? '-' }}</td></tr>
                         @endforeach
                     </tbody>
                 </table>

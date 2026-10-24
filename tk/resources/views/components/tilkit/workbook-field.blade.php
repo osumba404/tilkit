@@ -16,7 +16,7 @@
     @switch($kind)
         @case('yes_no')
             <select name="workbook[{{ $letter }}]" class="tk-input">
-                <option value="">—</option>
+                <option value="">-</option>
                 <option value="1" @selected((string) $current === '1')>Yes (1)</option>
                 <option value="0" @selected((string) $current === '0')>No (0)</option>
             </select>
@@ -24,8 +24,8 @@
 
         @case('rating')
             <select name="workbook[{{ $letter }}]" class="tk-input">
-                <option value="">—</option>
-                @foreach ([3 => '3 — High / good', 2 => '2 — Medium / fair', 1 => '1 — Low / poor', 0 => '0 — Not sure'] as $v => $label)
+                <option value="">-</option>
+                @foreach ([3 => '3 - High / good', 2 => '2 - Medium / fair', 1 => '1 - Low / poor', 0 => '0 - Not sure'] as $v => $label)
                     <option value="{{ $v }}" @selected((string) $current === (string) $v)>{{ $label }}</option>
                 @endforeach
             </select>
@@ -33,7 +33,7 @@
 
         @case('rating_321')
             <select name="workbook[{{ $letter }}]" class="tk-input">
-                <option value="">—</option>
+                <option value="">-</option>
                 @foreach ([3 => '3', 2 => '2', 1 => '1'] as $v => $label)
                     <option value="{{ $v }}" @selected((string) $current === (string) $v)>{{ $label }}</option>
                 @endforeach
@@ -42,7 +42,7 @@
 
         @case('tercile')
             <select name="workbook[{{ $letter }}]" class="tk-input">
-                <option value="">—</option>
+                <option value="">-</option>
                 @foreach (\App\Enums\Tilkit\TercileForecast::cases() as $t)
                     @if ($t->isForecast())
                         <option value="{{ $t->value }}" @selected((string) $current === (string) $t->value)>{{ $t->label() }}</option>
@@ -53,7 +53,7 @@
 
         @case('validation')
             <select name="workbook[{{ $letter }}]" class="tk-input">
-                <option value="">—</option>
+                <option value="">-</option>
                 @foreach (\App\Enums\Tilkit\ValidationStatus::cases() as $status)
                     <option value="{{ $status->value }}" @selected((string) $current === $status->value || (string) $current === $status->excelLabel())>{{ $status->excelLabel() }}</option>
                 @endforeach
@@ -62,7 +62,7 @@
 
         @case('outcome')
             <select name="workbook[{{ $letter }}]" class="tk-input">
-                <option value="">—</option>
+                <option value="">-</option>
                 @foreach (\App\Enums\Tilkit\SeasonOutcome::cases() as $outcome)
                     <option value="{{ $outcome->value }}" @selected((string) $current === $outcome->value)>{{ ucfirst(str_replace('_', ' ', $outcome->value)) }}</option>
                 @endforeach
@@ -71,8 +71,8 @@
 
         @case('history_scale')
             <select name="workbook[{{ $letter }}]" class="tk-input">
-                <option value="">—</option>
-                @foreach ([3 => '3 — Ancient / well known', 2 => '2 — Known', 1 => '1 — New sign'] as $v => $label)
+                <option value="">-</option>
+                @foreach ([3 => '3 - Ancient / well known', 2 => '2 - Known', 1 => '1 - New sign'] as $v => $label)
                     <option value="{{ $v }}" @selected((string) $current === (string) $v)>{{ $label }}</option>
                 @endforeach
             </select>
@@ -80,8 +80,8 @@
 
         @case('lead_time_class')
             <select name="workbook[{{ $letter }}]" class="tk-input">
-                <option value="">—</option>
-                @foreach ([3 => '3 — Months ahead', 2 => '2 — Weeks ahead', 1 => '1 — Days ahead'] as $v => $label)
+                <option value="">-</option>
+                @foreach ([3 => '3 - Months ahead', 2 => '2 - Weeks ahead', 1 => '1 - Days ahead'] as $v => $label)
                     <option value="{{ $v }}" @selected((string) $current === (string) $v)>{{ $label }}</option>
                 @endforeach
             </select>
@@ -90,13 +90,13 @@
         @case('consent')
             <div class="grid sm:grid-cols-3 gap-2">
                 <select name="workbook[BC_level]" class="tk-input" aria-label="Consent sharing level">
-                    <option value="">Level —</option>
+                    <option value="">Level -</option>
                     @foreach ([1, 2, 3, 4] as $lvl)
                         <option value="{{ $lvl }}" @selected($consent['level'] === (string) $lvl)>Level {{ $lvl }}</option>
                     @endforeach
                 </select>
                 <select name="workbook[BC_share]" class="tk-input" aria-label="Consent to share">
-                    <option value="">Share —</option>
+                    <option value="">Share -</option>
                     <option value="1" @selected($consent['share'] === '1')>Yes (1)</option>
                     <option value="0" @selected($consent['share'] === '0')>No (0)</option>
                 </select>
@@ -132,7 +132,7 @@
             @break
 
         @case('readonly')
-            <p class="text-sm py-2 px-3 bg-tk-soft rounded-md border border-tk-line">{{ is_scalar($current) && $current !== '' ? $current : '— (filled from site, season, or indicator)' }}</p>
+            <p class="text-sm py-2 px-3 bg-tk-soft rounded-md border border-tk-line">{{ is_scalar($current) && $current !== '' ? $current : '- (filled from site, season, or indicator)' }}</p>
             @break
 
         @default

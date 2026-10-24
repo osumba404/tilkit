@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * One fixed TILKIT Weather tool per deployment. Workbook columns and community
- * data list live in config JSON — not seeded as form fields or demo rows.
+ * data list live in config JSON - not seeded as form fields or demo rows.
  */
 class WeatherTool
 {

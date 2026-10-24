@@ -25,11 +25,11 @@
                     <tr class="border-t border-tk-line">
                         <td class="p-3 font-mono text-xs">{{ $row['record']->indicator?->indicator_uid }}</td>
                         <td class="p-3">{{ $row['record']->site?->name }} · {{ $row['record']->season?->label }}</td>
-                        <td class="p-3">{{ $row['ci'] ?? '—' }}</td>
-                        <td class="p-3">{{ $row['ck'] ?? '—' }}</td>
-                        <td class="p-3">{{ $row['cl'] ?? '—' }}</td>
-                        <td class="p-3">{{ $row['cm'] ?? '—' }}</td>
-                        <td class="p-3 text-xs">{{ $row['cn'] ?? '—' }} @if($row['co']) / {{ $row['co'] }} @endif</td>
+                        <td class="p-3">{{ $row['ci'] ?? '-' }}</td>
+                        <td class="p-3">{{ $row['ck'] ?? '-' }}</td>
+                        <td class="p-3">{{ $row['cl'] ?? '-' }}</td>
+                        <td class="p-3">{{ $row['cm'] ?? '-' }}</td>
+                        <td class="p-3 text-xs">{{ $row['cn'] ?? '-' }} @if($row['co']) / {{ $row['co'] }} @endif</td>
                     </tr>
                 @endforeach
             </tbody>

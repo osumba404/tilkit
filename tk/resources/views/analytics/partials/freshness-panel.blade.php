@@ -6,7 +6,7 @@
             <li class="flex justify-between gap-2 border-b border-tk-line pb-2 last:border-0">
                 <span>{{ $src['label'] }}</span>
                 <span class="text-right">
-                    <span class="font-medium capitalize {{ ($src['status'] ?? '') === 'connected' || ($src['status'] ?? '') === 'active' || ($src['status'] ?? '') === 'enabled' ? 'text-emerald-700' : 'text-tk-muted' }}">{{ $src['status'] ?? '—' }}</span>
+                    <span class="font-medium capitalize {{ ($src['status'] ?? '') === 'connected' || ($src['status'] ?? '') === 'active' || ($src['status'] ?? '') === 'enabled' ? 'text-emerald-700' : 'text-tk-muted' }}">{{ $src['status'] ?? '-' }}</span>
                     @if (! empty($src['updated_at']))
                         <span class="block text-xs text-tk-muted">{{ \Illuminate\Support\Carbon::parse($src['updated_at'])->diffForHumans() }}</span>
                     @endif

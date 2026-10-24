@@ -57,6 +57,6 @@ class ToolCapabilities
 
     public function label(): string
     {
-        return $this->role?->label() ?? '—';
+        return $this->role?->label() ?? '-';
     }
 }

@@ -7,7 +7,7 @@
         $viteEntries[] = 'resources/js/public-geo.js';
     }
 @endphp
-<x-layouts.public :title="$tool->name.' — Collect data'" :vite="$viteEntries">
+<x-layouts.public :title="$tool->name.' - Collect data'" :vite="$viteEntries">
     <x-slot:branding>
         @include('public.partials.branding', ['tool' => $tool])
     </x-slot:branding>

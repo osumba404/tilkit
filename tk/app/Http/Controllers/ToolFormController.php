@@ -268,7 +268,7 @@ class ToolFormController extends Controller
 
         $message = $result['forked']
             ? 'XLSForm imported into new draft version '.$result['version']->version_no.'. Review and publish when ready.'
-            : 'XLSForm imported — draft updated with '.count($fields).' field(s).';
+            : 'XLSForm imported - draft updated with '.count($fields).' field(s).';
 
         return back()->with('status', $message);
     }

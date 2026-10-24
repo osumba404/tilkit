@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <x-page-header :title="'Settings — '.$tool->name" subtitle="Consent, branding, and locale for public collection">
+        <x-page-header :title="'Settings - '.$tool->name" subtitle="Consent, branding, and locale for public collection">
             <x-slot:actions>
                 <a href="{{ route('tools.show', $tool) }}" class="tk-btn-secondary">Back to tool</a>
             </x-slot:actions>

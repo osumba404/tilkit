@@ -35,13 +35,13 @@ class TallyIntegrationService
 
         $triggers = [];
         if ($aboveShare >= $shareFloor && $meanConfidence >= $confFloor) {
-            $triggers[] = 'READINESS — excess rain / flood (weighted above-normal share)';
+            $triggers[] = 'READINESS - excess rain / flood (weighted above-normal share)';
         }
         if ($belowShare >= $shareFloor && $meanConfidence >= $confFloor) {
-            $triggers[] = 'ACTIVATE — drought / dry spell (weighted below-normal share)';
+            $triggers[] = 'ACTIVATE - drought / dry spell (weighted below-normal share)';
         }
         if ($vegIndex !== null && $vegIndex <= 33) {
-            $triggers[] = 'READINESS — livestock / pasture (vegetation index ≤ 33)';
+            $triggers[] = 'READINESS - livestock / pasture (vegetation index ≤ 33)';
         }
 
         return [
@@ -101,7 +101,7 @@ class TallyIntegrationService
         return match ($agreement) {
             'Agrees' => 'Publish one joint message where community and KMSA agree.',
             'Differs by one class' => 'Explain both forecasts; discuss in integration session.',
-            'Opposite' => 'Schedule integration session — do not treat as data error.',
+            'Opposite' => 'Schedule integration session - do not treat as data error.',
             default => 'Enter KMSA outlook in season settings (DJ) to compare.',
         };
     }

@@ -1,5 +1,5 @@
 # Creates GitHub milestones, labels, issues, and a Project board for the TILKIT roadmap.
-# Requires: GitHub CLI (gh) authenticated — run: gh auth login
+# Requires: GitHub CLI (gh) authenticated - run: gh auth login
 # Usage (from repo root):
 #   powershell -ExecutionPolicy Bypass -File .github/tilkit-project/create-github-project.ps1
 
@@ -17,7 +17,7 @@ $Gh = Get-Command gh -ErrorAction SilentlyContinue
 if (-not $Gh) {
     $GhPath = "${env:ProgramFiles}\GitHub CLI\gh.exe"
     if (Test-Path $GhPath) { $Gh = $GhPath } else {
-        Write-Error "GitHub CLI (gh) not found. Install: winget install GitHub.cli — then run: gh auth login"
+        Write-Error "GitHub CLI (gh) not found. Install: winget install GitHub.cli - then run: gh auth login"
     }
 }
 

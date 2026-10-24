@@ -32,13 +32,13 @@
     <x-slot name="header">
         <div class="flex flex-wrap justify-between gap-4 w-full">
             <div class="min-w-0 flex-1">
-                <x-page-header :title="'Form builder — '.$form->title" class="!block" />
+                <x-page-header :title="'Form builder - '.$form->title" class="!block" />
                 @if ($form->currentVersion)
                     <p class="text-sm text-tk-muted mt-1">
                         Editing version {{ $form->currentVersion->version_no }}
                         ({{ $form->currentVersion->status }})
                         @if ($form->hasUnpublishedDraft() && ($live = $form->liveVersion()))
-                            — public form still uses published version {{ $live->version_no }} until you publish
+                            - public form still uses published version {{ $live->version_no }} until you publish
                         @endif
                     </p>
                 @endif
@@ -86,7 +86,7 @@
                             :class="{'border-l-4 border-l-tk-accent bg-tk-soft/30': field.field_type === 'group' || field.field_type === 'repeat'}"
                             :data-field-key="field._key">
                             <p x-show="field.field_type === 'group' || field.field_type === 'repeat'" class="text-xs font-semibold text-tk-accent mb-2 uppercase tracking-wide">
-                                Section break — starts a new page on the public form
+                                Section break - starts a new page on the public form
                             </p>
                             <div class="flex items-start gap-3 mb-3">
                                 <button type="button" class="drag-handle mt-1 cursor-grab text-tk-muted hover:text-tk-ink" title="Drag to reorder" aria-label="Drag to reorder">
@@ -205,7 +205,7 @@
                 <p class="text-xs text-tk-muted mb-3">Export the published form for Kobo/ODK, edit in Excel, then import to replace the current draft.</p>
                 @if ($form->liveVersion() || $form->currentVersion?->fields->isNotEmpty())
                     <a href="{{ route('tools.forms.xlsform.export', [$tool, $form]) }}" class="tk-btn-secondary text-xs inline-block mb-3">
-                        Download XLSForm (.xlsx){{ $form->liveVersion() ? '' : ' — draft' }}
+                        Download XLSForm (.xlsx){{ $form->liveVersion() ? '' : ' - draft' }}
                     </a>
                 @else
                     <p class="text-xs text-amber-800 mb-3">Add fields and save a draft before exporting.</p>

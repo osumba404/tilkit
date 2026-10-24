@@ -1,5 +1,5 @@
 {
-  "description": "Weighting Options worked example — 6 signs, OND 2026 (Brief §10.2)",
+  "description": "Weighting Options worked example - 6 signs, OND 2026 (Brief §10.2)",
   "expected": {
     "simple": {"3": 50, "2": 16.67, "1": 33.33},
     "weighted": {"3": 60.87, "2": 17.39, "1": 21.74},

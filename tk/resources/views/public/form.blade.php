@@ -7,7 +7,7 @@
         $viteEntries[] = 'resources/js/public-geo.js';
     }
 @endphp
-<x-layouts.public :title="$form->title.' — Tilkit'" :vite="$viteEntries">
+<x-layouts.public :title="$form->title.' - Tilkit'" :vite="$viteEntries">
     @if ($form->project?->public_collection_enabled)
         <a href="{{ route('public.tools.collect', $form->project) }}" class="tk-link-muted text-tk-accent">← Back to tool</a>
     @endif

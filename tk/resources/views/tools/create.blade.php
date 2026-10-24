@@ -7,7 +7,7 @@
         @csrf
         <div>
             <label class="block text-sm font-medium mb-1">Tool name</label>
-            <input name="name" value="{{ old('name') }}" required class="tk-input" placeholder="Clinical logbook — Year 3">
+            <input name="name" value="{{ old('name') }}" required class="tk-input" placeholder="Clinical logbook - Year 3">
             @error('name')<p class="text-red-600 text-sm mt-1">{{ $message }}</p>@enderror
         </div>
         <div>

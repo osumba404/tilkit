@@ -3,7 +3,7 @@
         3 => 'Above normal',
         2 => 'Normal',
         1 => 'Below normal',
-        default => '—',
+        default => '-',
     };
 @endphp
 <x-app-layout>
@@ -70,7 +70,7 @@
                 </tbody>
             </table>
             @if ($result->onsetEarliestMean)
-                <p class="text-xs text-tk-muted">Mean onset window: {{ $result->onsetEarliestMean }} – {{ $result->onsetLatestMean ?? '—' }}</p>
+                <p class="text-xs text-tk-muted">Mean onset window: {{ $result->onsetEarliestMean }} – {{ $result->onsetLatestMean ?? '-' }}</p>
             @endif
             <div class="border-t border-tk-line pt-4 text-sm space-y-1">
                 <h4 class="font-semibold">Data check (matches Tally tab)</h4>
@@ -92,9 +92,9 @@
             @if (! empty($result->integration))
                 <div class="border-t border-tk-line pt-4 text-sm space-y-2">
                     <h4 class="font-semibold">v4 integration (KMSA / NDMA / triggers)</h4>
-                    <p>Mean confidence (DQ): {{ $result->integration['mean_confidence_dq'] ?? '—' }}</p>
-                    <p>Community vegetation index: {{ $result->integration['vegetation_index'] ?? '—' }}</p>
-                    <p>KMSA agreement (DK): {{ $result->integration['kmsa_agreement'] ?? '—' }}</p>
+                    <p>Mean confidence (DQ): {{ $result->integration['mean_confidence_dq'] ?? '-' }}</p>
+                    <p>Community vegetation index: {{ $result->integration['vegetation_index'] ?? '-' }}</p>
+                    <p>KMSA agreement (DK): {{ $result->integration['kmsa_agreement'] ?? '-' }}</p>
                     <p class="text-xs text-tk-muted">{{ $result->integration['integration_note'] ?? '' }}</p>
                     @if (! empty($result->integration['triggers']))
                         <ul class="list-disc list-inside text-amber-800">

@@ -55,8 +55,8 @@
                         <td class="p-3">{{ $rec->site?->name }}</td>
                         <td class="p-3">{{ $rec->season?->label }}</td>
                         <td class="p-3">{{ $rec->sighted ? 'Yes' : 'No' }}</td>
-                        <td class="p-3">{{ $rec->tercile_forecast?->label() ?? '—' }}</td>
-                        <td class="p-3">{{ $rec->validation_status?->excelLabel() ?? '—' }}</td>
+                        <td class="p-3">{{ $rec->tercile_forecast?->label() ?? '-' }}</td>
+                        <td class="p-3">{{ $rec->validation_status?->excelLabel() ?? '-' }}</td>
                         <td class="p-3 text-right space-x-2">
                             <a href="{{ route('tools.tilkit.records.wizard', [$tool, $rec, 'A']) }}" class="text-tk-accent">Wizard</a>
                             <a href="{{ route('tools.tilkit.records.edit', [$tool, $rec]) }}" class="text-tk-accent">Edit</a>

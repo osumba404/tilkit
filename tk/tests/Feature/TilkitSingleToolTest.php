@@ -76,7 +76,7 @@ class TilkitSingleToolTest extends TestCase
 
         $legacy = DcProject::query()->create([
             'code' => 'ghana_ikit_weather_indicator_log',
-            'name' => 'TILKIT — Indigenous Weather Indicator Log',
+            'name' => 'TILKIT - Indigenous Weather Indicator Log',
             'module' => 'tilkit_weather',
             'purpose' => 'Old manual tool',
             'lawful_basis' => 'consent',

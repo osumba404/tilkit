@@ -24,7 +24,7 @@
                     <div>
                         <dt class="font-medium">{{ $answer->field?->label ?? $answer->field?->name }}</dt>
                         <dd class="text-tk-muted font-mono text-xs break-all">
-                            {{ $answer->value_text ?? $answer->value_number ?? ($answer->value_json ? json_encode($answer->value_json) : '—') }}
+                            {{ $answer->value_text ?? $answer->value_number ?? ($answer->value_json ? json_encode($answer->value_json) : '-') }}
                         </dd>
                     </div>
                 @endforeach

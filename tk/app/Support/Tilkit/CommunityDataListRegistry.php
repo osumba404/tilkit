@@ -75,7 +75,7 @@ class CommunityDataListRegistry
     public static function parseColumns(string $spec): array
     {
         $letters = [];
-        $spec = str_replace(['–', '—'], '-', $spec);
+        $spec = str_replace(['–', '-'], '-', $spec);
         if (preg_match('/^([A-Z]{1,2})\s*-\s*([A-Z]{1,2})$/', trim($spec), $m)) {
             return self::expandRange($m[1], $m[2]);
         }

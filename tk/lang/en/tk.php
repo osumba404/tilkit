@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'consent_title' => ':tool — consent',
+    'consent_title' => ':tool - consent',
     'consent_heading' => 'Before you continue',
     'consent_ack_default' => 'I have read and agree to the terms above.',
     'consent_signature' => 'Signature',

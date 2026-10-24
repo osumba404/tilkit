@@ -31,7 +31,7 @@
 @if ($record->sightings->isNotEmpty())
     <ul class="mt-4 text-xs text-tk-muted space-y-1">
         @foreach ($record->sightings as $s)
-            <li>{{ $s->sighted_at->format('Y-m-d') }} — {{ $s->place_text ?? '—' }} ({{ $s->uuid }})</li>
+            <li>{{ $s->sighted_at->format('Y-m-d') }} - {{ $s->place_text ?? '-' }} ({{ $s->uuid }})</li>
         @endforeach
     </ul>
 @endif

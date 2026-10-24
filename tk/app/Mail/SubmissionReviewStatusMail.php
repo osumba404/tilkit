@@ -23,7 +23,7 @@ class SubmissionReviewStatusMail extends Mailable
         $label = $this->status === 'approved' ? 'approved' : 'needs revision';
 
         return new Envelope(
-            subject: 'Submission '.$label.' — '.$this->submission->project->name,
+            subject: 'Submission '.$label.' - '.$this->submission->project->name,
         );
     }
 

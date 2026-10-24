@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <x-page-header :title="'Review queue — '.$tool->name" subtitle="Submissions awaiting review">
+        <x-page-header :title="'Review queue - '.$tool->name" subtitle="Submissions awaiting review">
             <x-slot:actions>
                 <a href="{{ route('tools.submissions.index', $tool) }}" class="tk-btn-secondary">All submissions</a>
             </x-slot:actions>

@@ -14,7 +14,7 @@
 
         <p class="text-sm text-tk-muted mb-4">
             <a href="{{ route('platform.datasets.show', $dataset) }}" class="text-tk-accent font-medium">Dashboard</a>
-            — add visualizations one panel at a time; filters from chart clicks apply here too.
+            - add visualizations one panel at a time; filters from chart clicks apply here too.
         </p>
 
         <div class="tk-card overflow-x-auto">

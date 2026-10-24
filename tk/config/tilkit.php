@@ -17,7 +17,7 @@ return [
             'default_member_role' => env('TILKIT_DEFAULT_MEMBER_ROLE', 'member'),
             'project' => [
                 'name' => env('TILKIT_TOOL_NAME', 'TILKIT Weather Indicator Log'),
-                'purpose' => 'Traditional indigenous and local knowledge weather indicators — v4 workbook capture and tally.',
+                'purpose' => 'Traditional indigenous and local knowledge weather indicators - v4 workbook capture and tally.',
                 'lawful_basis' => 'consent',
                 'public_collection_enabled' => false,
             ],

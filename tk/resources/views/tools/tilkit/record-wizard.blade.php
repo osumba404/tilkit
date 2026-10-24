@@ -22,7 +22,7 @@
 
     @if ($section === 'B')
         <div class="tk-card p-5 mb-6">
-            <h3 class="font-semibold mb-3">Log a sighting (child event — does not create a new row)</h3>
+            <h3 class="font-semibold mb-3">Log a sighting (child event - does not create a new row)</h3>
             @include('tools.tilkit.partials.sighting-form', ['tool' => $tool, 'record' => $record])
         </div>
     @endif
@@ -31,7 +31,7 @@
         <h3 class="text-xs uppercase text-tk-muted mb-3">Checklist</h3>
         <ol class="list-decimal list-inside text-sm space-y-2 text-tk-muted">
             @foreach ($checklist as $item)
-                <li><strong class="text-tk-ink">{{ $item['what'] ?? '' }}</strong> — cols {{ $item['columns'] ?? '' }}</li>
+                <li><strong class="text-tk-ink">{{ $item['what'] ?? '' }}</strong> - cols {{ $item['columns'] ?? '' }}</li>
             @endforeach
         </ol>
     </div>

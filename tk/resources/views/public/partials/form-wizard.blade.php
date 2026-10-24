@@ -23,7 +23,7 @@
                 @endforeach
             </ul>
             <input type="hidden" name="confirm_duplicate" value="1">
-            <p class="text-xs text-tk-muted mt-2">{{ __('tk.submit_anyway') }} — correct any mistakes or submit again.</p>
+            <p class="text-xs text-tk-muted mt-2">{{ __('tk.submit_anyway') }} - correct any mistakes or submit again.</p>
         </div>
     @endif
 

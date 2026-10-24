@@ -37,7 +37,7 @@ class SendScheduledToolExports extends Command
                     'Attached is the scheduled submission export for '.$export->project->name.'.',
                     function ($message) use ($email, $export, $csv, $filename): void {
                         $message->to($email)
-                            ->subject('Scheduled export — '.$export->project->name)
+                            ->subject('Scheduled export - '.$export->project->name)
                             ->attachData($csv, $filename, ['mime' => 'text/csv']);
                     }
                 );

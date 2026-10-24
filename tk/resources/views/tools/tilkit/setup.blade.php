@@ -52,7 +52,7 @@
                 <select name="indicator_code_id" required class="tk-input">
                     <option value="">Code prefix…</option>
                     @foreach ($codes as $code)
-                        <option value="{{ $code->id }}">{{ $code->code }} — {{ $code->label }}</option>
+                        <option value="{{ $code->id }}">{{ $code->code }} - {{ $code->label }}</option>
                     @endforeach
                 </select>
                 <input name="local_name" placeholder="Local name" class="tk-input">

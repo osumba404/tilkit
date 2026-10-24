@@ -3,7 +3,7 @@
         @include('platform.datasets.partials.header')
     </x-slot>
 
-    <x-analytics.acc-shell context="dataset" :acc-section="$accSection" :dataset="$dataset" :wide="true" title="Executive overview" subtitle="Add visualizations one at a time — each panel runs independently">
+    <x-analytics.acc-shell context="dataset" :acc-section="$accSection" :dataset="$dataset" :wide="true" title="Executive overview" subtitle="Add visualizations one at a time - each panel runs independently">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 w-full">
             @include('analytics.partials.kpi-card', [
                 'label' => 'Rows in view',

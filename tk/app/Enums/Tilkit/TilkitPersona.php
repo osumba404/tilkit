@@ -2,7 +2,7 @@
 
 namespace App\Enums\Tilkit;
 
-/** Developer Brief §7 — field roles for the weather module. */
+/** Developer Brief §7 - field roles for the weather module. */
 enum TilkitPersona: string
 {
     case Observer = 'observer';

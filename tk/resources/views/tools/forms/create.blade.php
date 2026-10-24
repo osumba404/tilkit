@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <x-page-header :title="'New form — '.$tool->name" />
+        <x-page-header :title="'New form - '.$tool->name" />
     </x-slot>
 
     <form method="POST" action="{{ route('tools.forms.store', $tool) }}" class="tk-card max-w-2xl p-6 space-y-4">

@@ -12,7 +12,7 @@ use App\Support\Tilkit\WeatherTool;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-/** Idempotent sighting sync for field apps (Brief §8 — web MVP). */
+/** Idempotent sighting sync for field apps (Brief §8 - web MVP). */
 class TilkitSyncController extends Controller
 {
     public function storeSighting(Request $request, ToolAccessService $access, WorkbookRecordService $workbook): JsonResponse

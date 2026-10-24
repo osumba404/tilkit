@@ -16,7 +16,7 @@
         <div class="tk-card p-4 mb-6 flex flex-wrap items-center justify-between gap-3">
             <div>
                 <p class="font-semibold text-sm">Personal dataset workspace</p>
-                <p class="text-xs text-tk-muted">Available to all signed-in users — upload and analyze outside form submissions.</p>
+                <p class="text-xs text-tk-muted">Available to all signed-in users - upload and analyze outside form submissions.</p>
             </div>
             <a href="{{ route('platform.datasets.index') }}" class="tk-btn-primary text-sm shrink-0">My datasets</a>
         </div>
@@ -25,7 +25,7 @@
             <div class="lg:col-span-2 tk-card p-5">
                 <h3 class="font-semibold mb-4">Platform submission trend ({{ $filters->periodDays }}d)</h3>
                 <canvas id="accTrendChart" height="200"></canvas>
-                <p class="text-xs text-tk-muted mt-2">Updated: {{ $overview['last_updated'] ? \Illuminate\Support\Carbon::parse($overview['last_updated'])->toDateTimeString() : '—' }}</p>
+                <p class="text-xs text-tk-muted mt-2">Updated: {{ $overview['last_updated'] ? \Illuminate\Support\Carbon::parse($overview['last_updated'])->toDateTimeString() : '-' }}</p>
             </div>
             @include('analytics.partials.freshness-panel', ['sources' => $freshness])
         </div>

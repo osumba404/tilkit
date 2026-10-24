@@ -17,7 +17,7 @@
     </div>
 
     <div class="tk-card p-6">
-        <h3 class="tk-section-title mb-4">Community Data List — capture checklist</h3>
+        <h3 class="tk-section-title mb-4">Community Data List - capture checklist</h3>
         <p class="text-sm text-tk-muted mb-6">Mirrors the <strong>Community Data List</strong> sheet: what to capture, when, and which Indicator Log columns it feeds.</p>
         @foreach ($communitySections as $section => $items)
             <details class="mb-4 border border-tk-line rounded-lg p-4" @if(str_starts_with($section, 'A.')) open @endif>

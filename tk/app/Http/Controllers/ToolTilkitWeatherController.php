@@ -93,7 +93,7 @@ class ToolTilkitWeatherController extends Controller
 
         return redirect()
             ->route('tools.tilkit.records.wizard', [$tool, $record, 'A'])
-            ->with('status', 'Indicator record created — continue in the Community Data List wizard.');
+            ->with('status', 'Indicator record created - continue in the Community Data List wizard.');
     }
 
     public function editRecord(Request $request, DcProject $tool, TilkitIndicatorRecord $record, ToolAccessService $access, WorkbookRecordService $workbook): View

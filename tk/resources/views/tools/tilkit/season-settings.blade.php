@@ -36,7 +36,7 @@
             <div>
                 <label class="text-xs text-tk-muted">KMSA county outlook tercile (DJ)</label>
                 <select name="kmsa_outlook_tercile" class="tk-input">
-                    <option value="">—</option>
+                    <option value="">-</option>
                     @foreach ([3 => 'Above normal', 2 => 'Normal', 1 => 'Below normal'] as $v => $l)
                         <option value="{{ $v }}" @selected($settings->kmsa_outlook_tercile == $v)>{{ $l }}</option>
                     @endforeach

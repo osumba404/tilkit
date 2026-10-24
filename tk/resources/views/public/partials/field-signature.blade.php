@@ -29,7 +29,7 @@
     @endif
 
     @if ($allowDraw && $allowUpload)
-        <p class="text-xs text-tk-muted text-center">— or —</p>
+        <p class="text-xs text-tk-muted text-center">- or -</p>
     @endif
 
     @if ($allowUpload)

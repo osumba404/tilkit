@@ -11,7 +11,7 @@ class TilkitConsentGate
     {
         $blocks = [];
         if ($record->do_no_harm) {
-            $blocks[] = 'Do-no-harm flag (BB) — technical review required before dissemination.';
+            $blocks[] = 'Do-no-harm flag (BB) - technical review required before dissemination.';
         }
         $level = $record->consent_level;
         if ($level === null || $level < 2) {

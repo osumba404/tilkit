@@ -8,15 +8,15 @@ Cross-check between **spec documents** (`tilkit_docs/`, Developer Brief in `_ext
 
 ---
 
-## v4 workbook — 12 sheets ↔ platform
+## v4 workbook - 12 sheets ↔ platform
 
 Source files: `TILKIT_Weather_Indicator_Log_Master_Template_v4_OND2026.xlsx` and `TILKIT_Weather_Indicator_Log_v4_DEMO_hypothetical_data.xlsx`. Catalog: `config/tilkit_workbook_sheets.json`.
 
 | Sheet | Platform |
 |-------|----------|
-| How to Use | `tools/{tool}/tilkit/workbook` — workbook guides view |
+| How to Use | `tools/{tool}/tilkit/workbook` - workbook guides view |
 | Community Data List | `config/tilkit_community_data_list.json` + guides + A–E wizard (`record-wizard.blade.php`) |
-| Sheet 1 — Indicator Log | 124-column register, `WorkbookRecordService`, `ToolTilkitWeatherController`, derived via `TilkitRecordEngine` |
+| Sheet 1 - Indicator Log | 124-column register, `WorkbookRecordService`, `ToolTilkitWeatherController`, derived via `TilkitRecordEngine` |
 | Seasonal Tercile Tally | `TallyEngine`, `tools/{tool}/tilkit/tally`, `tilkit:tally`, optional snapshot publish |
 | Seasonal Indicator Calendar | `tools/{tool}/tilkit/calendar` (CI–CP columns) |
 | Indicator Code Legend | `tilkit_indicator_codes`; `php artisan tilkit:import-legend` from master xlsx |
@@ -36,7 +36,7 @@ Source files: `TILKIT_Weather_Indicator_Log_Master_Template_v4_OND2026.xlsx` and
 | Symbol | Meaning |
 |--------|---------|
 | `[x]` | Done and matches spec intent (may still need parity tests) |
-| `[~]` | Partial — implemented but incomplete, drift risk, or untested vs workbook |
+| `[~]` | Partial - implemented but incomplete, drift risk, or untested vs workbook |
 | `[ ]` | Not started or not acceptable for pilot cut-over |
 
 **Epic column:** matches issue title prefix in `issues.json` (run `create-github-project.ps1` or create issues manually).
@@ -49,16 +49,16 @@ Source files: `TILKIT_Weather_Indicator_Log_Master_Template_v4_OND2026.xlsx` and
 
 | Risk | Status | Mitigation | Epic / issue |
 |------|--------|------------|----------------|
-| **Two capture paths** — native TILKIT module vs generic form builder | `[x]` | Legacy `WeatherIndicatorLogToolSeeder` / field catalog removed (2026-10-23); use `tools/{tool}/tilkit` only | — |
-| **Data saved without certified tally** — full workbook capture without Phase 2 engine | `[~]` | Engine + demo parity test green; extend golden suite (6-sign, full exclusion matrix) before pilot sign-off | Phase 2, Phase 5 |
-| **Canonical vs workbook drift** — `tilkit_indicator_records` vs `tilkit_workbook_values` | `[~]` | Single write path via `WorkbookRecordService`; expand sync or drop duplicate columns | Phase 1 |
+| **Two capture paths** - native TILKIT module vs generic form builder | `[x]` | Legacy `WeatherIndicatorLogToolSeeder` / field catalog removed (2026-10-23); use `tools/{tool}/tilkit` only | - |
+| **Data saved without certified tally** - full workbook capture without Phase 2 engine | `[~]` | Engine + demo parity test green; extend golden suite (6-sign, full exclusion matrix) before pilot sign-off | Phase 2, Phase 5 |
+| **Canonical vs workbook drift** - `tilkit_indicator_records` vs `tilkit_workbook_values` | `[~]` | Single write path via `WorkbookRecordService`; expand sync or drop duplicate columns | Phase 1 |
 | **Open product decisions** change engine math | `[ ]` | Resolve `open-questions.md` before tally finalisation | Phase 0 |
 
 ---
 
-## Phase 0 — Foundation & spec baseline
+## Phase 0 - Foundation & spec baseline
 
-**Epic:** `[Epic] Phase 0 — Foundation & spec baseline` · Milestone: *Phase 0 - Foundation*
+**Epic:** `[Epic] Phase 0 - Foundation & spec baseline` · Milestone: *Phase 0 - Foundation*
 
 | Check | Spec | Platform evidence | Status |
 |-------|------|-------------------|--------|
@@ -66,7 +66,7 @@ Source files: `TILKIT_Weather_Indicator_Log_Master_Template_v4_OND2026.xlsx` and
 | Module layout in `tk/` | Brief build plan | `app/Models/Tilkit/*`, `app/Services/Tilkit/*`, `docs/tilkit/` | `[x]` |
 | 124-column register (90 raw + 34 derived) | Raw vs Derived Register | `config/tilkit_weather_column_register.json`; `TilkitWorkbookCaptureTest` | `[x]` |
 | Open questions documented | Brief §11.4 | `docs/tilkit/open-questions.md` | `[~]` doc exists; decisions mostly open |
-| Pilot priority (SCLoWFER vs Green Schools) | Brief §11.4 #9 | — | `[ ]` |
+| Pilot priority (SCLoWFER vs Green Schools) | Brief §11.4 #9 | - | `[ ]` |
 | Signed-off spec version (xlsx + Change Log) | Phase 0 epic | Docs in `tilkit_docs/`; no formal sign-off recorded | `[ ]` |
 | Golden fixtures from demo workbook | Brief §10.2 | `gate_eligible_frog.json`, `demo_workbook_full.json`, `TilkitDemoTallyParityTest` | `[~]` |
 
@@ -79,9 +79,9 @@ Source files: `TILKIT_Weather_Indicator_Log_Master_Template_v4_OND2026.xlsx` and
 
 ---
 
-## Phase 1 — Reference data & schema
+## Phase 1 - Reference data & schema
 
-**Epic:** `[Epic] Phase 1 — Reference data & schema` · Milestone: *Phase 1 - Schema*
+**Epic:** `[Epic] Phase 1 - Reference data & schema` · Milestone: *Phase 1 - Schema*
 
 | Check | Spec | Platform evidence | Status |
 |-------|------|-------------------|--------|
@@ -109,9 +109,9 @@ Source files: `TILKIT_Weather_Indicator_Log_Master_Template_v4_OND2026.xlsx` and
 
 ---
 
-## Phase 2 — Forecast rules engine (Excel parity)
+## Phase 2 - Forecast rules engine (Excel parity)
 
-**Epic:** `[Epic] Phase 2 — Forecast rules engine (Excel parity)` · Milestone: *Phase 2 - Engine*
+**Epic:** `[Epic] Phase 2 - Forecast rules engine (Excel parity)` · Milestone: *Phase 2 - Engine*
 
 | Check | Spec | Platform evidence | Status |
 |-------|------|-------------------|--------|
@@ -144,39 +144,39 @@ Source files: `TILKIT_Weather_Indicator_Log_Master_Template_v4_OND2026.xlsx` and
 | Phase 2: Implement eligibility gate service | CE/DT persistence + full reason set |
 | Phase 2: Implement weighting and phase switch (3 scored seasons) | Weighting rows |
 | Phase 2: Implement tally engine (simple / weighted / priority-adjusted) | Tally + reconciliation rows |
-| Phase 2: Golden tests — Excel parity suite | All fixture rows |
+| Phase 2: Golden tests - Excel parity suite | All fixture rows |
 
 ---
 
-## Phase 3 — Sighting-first mobile + sync
+## Phase 3 - Sighting-first mobile + sync
 
-**Epic:** `[Epic] Phase 3 — Sighting-first mobile + sync` · Milestone: *Phase 3 - Mobile*
+**Epic:** `[Epic] Phase 3 - Sighting-first mobile + sync` · Milestone: *Phase 3 - Mobile*
 
 | Check | Spec | Platform evidence | Status |
 |-------|------|-------------------|--------|
 | 7 sighting columns as async child events (N, O, CI, Y, Z, AA, AB) | Brief §5, §6 | `TilkitSighting` + sighting form partial; `POST /api/tilkit/sightings` | `[~]` |
 | Update record, never insert duplicate row for new sighting | Demo duplicate frog | Unique constraint only | `[~]` |
-| Offline-first mobile (Android) | Brief §8 | — | `[ ]` |
+| Offline-first mobile (Android) | Brief §8 | - | `[ ]` |
 | Sync API (UUID, idempotent, media) | Phase 3 epic | `Api\TilkitSyncController` (sightings); full sync/conflicts | `[~]` |
-| Conflict queue (approvals / consent) | Phase 3 epic | — | `[ ]` |
-| Optional SMS `SIGHT` adapter | Brief narrative | — | `[ ]` |
+| Conflict queue (approvals / consent) | Phase 3 epic | - | `[ ]` |
+| Optional SMS `SIGHT` adapter | Brief narrative | - | `[ ]` |
 
 **Child issues:** Phase 3: TILKIT sync API and media upload · Phase 3: Offline mobile MVP (Android-first)
 
 ---
 
-## Phase 4 — Workshop & validation (web)
+## Phase 4 - Workshop & validation (web)
 
-**Epic:** `[Epic] Phase 4 — Workshop & validation (web)` · Milestone: *Phase 4 - Workshop*
+**Epic:** `[Epic] Phase 4 - Workshop & validation (web)` · Milestone: *Phase 4 - Workshop*
 
 | Check | Spec | Platform evidence | Status |
 |-------|------|-------------------|--------|
 | Community Data List UX (not one Excel grid) | Brief §10, §11.1 | A–E wizard routes + community list registry | `[~]` |
-| Workshop mode (facilitator, resumable) | Phase 4 epic | — | `[ ]` |
+| Workshop mode (facilitator, resumable) | Phase 4 epic | - | `[ ]` |
 | Validation chain: confirm / approve / verify | Brief lifecycle | Workbook AC/AD/AE + `TilkitSignOffGuard` | `[~]` |
 | Separation confirm vs approve (same person?) | `open-questions.md` #5 | `TILKIT_SEPARATE_CONFIRM_APPROVE` + user id columns | `[~]` |
 | Pending-validation queue | Brief §6.5 | `DataDeskService` queues on data desk view | `[~]` |
-| Duplicate review queue | Brief §11.3 | — | `[ ]` |
+| Duplicate review queue | Brief §11.3 | - | `[ ]` |
 | Controlled dropdowns (AP, U, M, V, …) | xlsx validation lists | AP uses Excel labels via `ValidationStatus::excelLabel()` | `[~]` |
 | Demographics BG–BK | Brief equity | Form includes via register | `[~]` |
 | Persona-specific views (observer vs data desk) | Register `provided_by` | `TilkitPersonaService` route guards | `[~]` |
@@ -185,9 +185,9 @@ Source files: `TILKIT_Weather_Indicator_Log_Master_Template_v4_OND2026.xlsx` and
 
 ---
 
-## Phase 5 — Integration, v4 modules, exports
+## Phase 5 - Integration, v4 modules, exports
 
-**Epic:** `[Epic] Phase 5 — Integration, v4 modules, exports` · Milestone: *Phase 5 - Integration*
+**Epic:** `[Epic] Phase 5 - Integration, v4 modules, exports` · Milestone: *Phase 5 - Integration*
 
 | Check | Spec | Platform evidence | Status |
 |-------|------|-------------------|--------|
@@ -198,8 +198,8 @@ Source files: `TILKIT_Weather_Indicator_Log_Master_Template_v4_OND2026.xlsx` and
 | Calendar & climate-change flag (CI–CP) | Brief §6.1 | `V4FieldDeriver::climateChangeFlag`; calendar UI | `[~]` |
 | Vegetation index CQ–CT | Brief §6.2 | `V4FieldDeriver` CS/CT on recalc | `[~]` |
 | Anticipatory action triggers CU–CZ | Brief §6.3 | `TallyIntegrationService` trigger hints | `[~]` |
-| Dissemination effectiveness DA–DI | Brief §6.4 | — | `[ ]` |
-| Residual risk DM–DP | Brief §6.5 | — | `[ ]` |
+| Dissemination effectiveness DA–DI | Brief §6.4 | - | `[ ]` |
+| Residual risk DM–DP | Brief §6.5 | - | `[ ]` |
 | Confidence & hazard priority (DQ–DS) | Weighting Options tab | DQ on record; DR partial | `[~]` |
 | Consensus forecast / integration session (BF, …) | Brief §7 | `tilkit_consensus_forecasts` + tally publish form | `[~]` |
 | Consent BC enforced on every export | Brief §9 | `TilkitConsentGate` on CSV/JSON export | `[~]` |
@@ -210,19 +210,19 @@ Source files: `TILKIT_Weather_Indicator_Log_Master_Template_v4_OND2026.xlsx` and
 
 ---
 
-## Phase 6 — Migration, pilots, M&E
+## Phase 6 - Migration, pilots, M&E
 
-**Epic:** `[Epic] Phase 6 — Migration, pilots, M&E` · Milestone: *Phase 6 - Pilots*
+**Epic:** `[Epic] Phase 6 - Migration, pilots, M&E` · Milestone: *Phase 6 - Pilots*
 
 | Check | Spec | Platform evidence | Status |
 |-------|------|-------------------|--------|
 | v3/v4 Excel importers + legacy transforms | Brief §10.1 | `WorkbookXlsxReader` + `tilkit:import-workbook` | `[~]` |
-| Import audit vs Change Log (47 entries) | Brief §10.1 | — | `[ ]` |
+| Import audit vs Change Log (47 entries) | Brief §10.1 | - | `[ ]` |
 | Regenerate xlsx export in column order A–DT | Brief §10.1 | `WorkbookXlsxExporter`, web `tilkit/export.xlsx` | `[~]` |
 | Engine regression in CI on every change | Phase 6 epic | 18 PHPUnit TILKIT tests (parity, six-sign, climate gate) | `[~]` |
-| SCLoWFER Ghana sites configured | Phase 6 issue | — | `[ ]` |
-| Green Schools Kenya configured | Phase 6 issue | — | `[ ]` |
-| M&E aligned to pilot logframe | Annex 1 proposal | — | `[ ]` |
+| SCLoWFER Ghana sites configured | Phase 6 issue | - | `[ ]` |
+| Green Schools Kenya configured | Phase 6 issue | - | `[ ]` |
+| M&E aligned to pilot logframe | Annex 1 proposal | - | `[ ]` |
 
 **Child issues:** Phase 6: Excel workbook importers · Phase 6: Configure SCLoWFER Ghana · Phase 6: Configure Green Schools Kenya
 
@@ -251,7 +251,7 @@ Before calling a pilot “on TILKIT digital” rather than the xlsx:
 
 1. `[ ]` Phase 0 open questions **#1, #2, #5** decided and encoded in config.
 2. `[x]` Phase 2 golden tests **all green** (frog, demo tally, six-sign, climate review gate).
-3. `[x]` Single capture path — native TILKIT module (`ToolTilkitWeatherController` + workbook values).
+3. `[x]` Single capture path - native TILKIT module (`ToolTilkitWeatherController` + workbook values).
 4. `[~]` Code legend seeded from master template for that pilot (`tilkit:import-legend`).
 5. `[~]` Sites, seasons, and season settings configured and versioned (setup UI exists).
 6. `[ ]` UI states forecasts are **not certified** until (2) passes.

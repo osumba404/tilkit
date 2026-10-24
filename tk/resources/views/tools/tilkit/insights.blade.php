@@ -52,10 +52,10 @@
         <div class="tk-card p-5">
             <h3 class="font-semibold mb-3">Analysis tools</h3>
             <ul class="text-sm space-y-2">
-                <li><a href="{{ route('tools.tilkit.tally', $tool) }}" class="text-tk-accent font-medium">Seasonal tercile tally</a> — simple, weighted, and priority-adjusted forecasts.</li>
-                <li><a href="{{ route('tools.tilkit.data-desk', $tool) }}" class="text-tk-accent font-medium">Data desk</a> — validation queues and climate weight reviews.</li>
-                <li><a href="{{ route('tools.tilkit.settings', $tool) }}" class="text-tk-accent font-medium">Season settings</a> — KMSA, NDMA, and weighting options per site × season.</li>
-                <li><a href="{{ route('tools.tilkit.calendar', $tool) }}" class="text-tk-accent font-medium">Indicator calendar</a> — CI–CP timing and climate flags.</li>
+                <li><a href="{{ route('tools.tilkit.tally', $tool) }}" class="text-tk-accent font-medium">Seasonal tercile tally</a> - simple, weighted, and priority-adjusted forecasts.</li>
+                <li><a href="{{ route('tools.tilkit.data-desk', $tool) }}" class="text-tk-accent font-medium">Data desk</a> - validation queues and climate weight reviews.</li>
+                <li><a href="{{ route('tools.tilkit.settings', $tool) }}" class="text-tk-accent font-medium">Season settings</a> - KMSA, NDMA, and weighting options per site × season.</li>
+                <li><a href="{{ route('tools.tilkit.calendar', $tool) }}" class="text-tk-accent font-medium">Indicator calendar</a> - CI–CP timing and climate flags.</li>
             </ul>
             @if ($capabilities->canExportData())
                 <p class="text-xs text-tk-muted mt-4">Exports: CSV, JSON, and xlsx from the weather log home.</p>

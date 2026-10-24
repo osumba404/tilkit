@@ -177,14 +177,14 @@ class TallyEngine
     private function tercileLabel(?int $tercile, array $counts): string
     {
         if ($tercile === null) {
-            return $this->isTie($counts) ? 'Tie' : '—';
+            return $this->isTie($counts) ? 'Tie' : '-';
         }
 
         return match ($tercile) {
             3 => 'Above normal (Average)',
             2 => 'Normal (Average)',
             1 => 'Below normal (Average)',
-            default => '—',
+            default => '-',
         };
     }
 

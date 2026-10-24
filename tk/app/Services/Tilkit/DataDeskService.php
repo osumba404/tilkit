@@ -35,7 +35,7 @@ class DataDeskService
 
         return [
             'record' => $record,
-            'tally_status' => $ce?->value_text ?? '—',
+            'tally_status' => $ce?->value_text ?? '-',
             'needs_confirm' => ! $record->confirmed,
             'needs_approve' => ! $record->approved,
             'needs_verify' => ! $record->verified,

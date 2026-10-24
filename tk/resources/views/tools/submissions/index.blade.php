@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <x-page-header :title="(($role ?? null)?->canViewAllSubmissions() ? 'Submissions' : 'My submissions').' — '.$tool->name" />
+        <x-page-header :title="(($role ?? null)?->canViewAllSubmissions() ? 'Submissions' : 'My submissions').' - '.$tool->name" />
     </x-slot>
 
     <form method="GET" class="tk-card p-4 mb-4 flex flex-wrap gap-3 items-end">
@@ -46,7 +46,7 @@
                         <td class="p-3">{{ $sub->status }}</td>
                         <td class="p-3">{{ $sub->channel }}</td>
                         @if (($role ?? null)?->canViewAllSubmissions())
-                            <td class="p-3">{{ $sub->collector?->name ?? '—' }}</td>
+                            <td class="p-3">{{ $sub->collector?->name ?? '-' }}</td>
                         @endif
                     </tr>
                 @endforeach
