@@ -18,9 +18,15 @@ document.querySelectorAll('[data-tk-gps-map]').forEach((root) => {
     new TilkitGpsMap(root);
 });
 
-document.querySelectorAll('[data-tk-gps-view]').forEach((canvas) => {
-    new TilkitGpsView(canvas);
-});
+function initTilkitGpsViews(root = document) {
+    root.querySelectorAll('[data-tk-gps-view]:not([data-tk-gps-inited])').forEach((canvas) => {
+        canvas.setAttribute('data-tk-gps-inited', '1');
+        new TilkitGpsView(canvas);
+    });
+}
+
+initTilkitGpsViews();
+window.tkInitTilkitGpsViews = initTilkitGpsViews;
 
 class TilkitGpsMap {
     constructor(root) {

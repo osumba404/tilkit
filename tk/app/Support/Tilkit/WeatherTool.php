@@ -25,9 +25,9 @@ class WeatherTool
         return (string) config('tilkit.weather.single_tool.code', 'tilkit-weather');
     }
 
-    public static function isWeatherModule(DcProject $tool): bool
+    public static function isWeatherModule(?DcProject $tool): bool
     {
-        return $tool->module === 'tilkit_weather';
+        return $tool !== null && $tool->module === 'tilkit_weather';
     }
 
     public static function resolve(): ?DcProject

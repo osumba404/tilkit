@@ -7,21 +7,21 @@
         </x-page-header>
     </x-slot>
 
-    @include('tools.tilkit.partials.subnav')
+    @include('tools.tilkit.partials.subnav', ['tilkitNav' => 'records'])
 
-    <form method="GET" class="tk-card p-4 mb-6 flex flex-wrap gap-3 items-end text-sm">
-        <div>
-            <label class="text-xs text-tk-muted">Site</label>
-            <select name="site_id" class="rounded-md border border-tk-line px-2 py-1.5">
+    <form id="tilkit-records-filter" method="GET" action="{{ route('tools.tilkit.records.index', $tool) }}" class="tk-card p-4 mb-6 flex flex-wrap gap-3 items-end text-sm" data-records-url="{{ route('tools.tilkit.records.index', $tool) }}">
+        <div class="min-w-[10rem]">
+            <label class="text-xs text-tk-muted block mb-1" for="records-filter-site">Site</label>
+            <select id="records-filter-site" name="site_id" class="tk-input py-2 text-sm">
                 <option value="">All sites</option>
                 @foreach ($sites as $site)
                     <option value="{{ $site->id }}" @selected(request('site_id') == $site->id)>{{ $site->name }}</option>
                 @endforeach
             </select>
         </div>
-        <div>
-            <label class="text-xs text-tk-muted">Season</label>
-            <select name="season_id" class="rounded-md border border-tk-line px-2 py-1.5">
+        <div class="min-w-[10rem]">
+            <label class="text-xs text-tk-muted block mb-1" for="records-filter-season">Season</label>
+            <select id="records-filter-season" name="season_id" class="tk-input py-2 text-sm">
                 <option value="">All seasons</option>
                 @foreach ($seasons as $season)
                     <option value="{{ $season->id }}" @selected(request('season_id') == $season->id)>{{ $season->monthRangeLabel() }}</option>
@@ -29,50 +29,137 @@
             </select>
         </div>
         <div class="flex-1 min-w-[12rem]">
-            <label class="text-xs text-tk-muted">Indicator ID</label>
-            <input type="search" name="q" value="{{ request('q') }}" placeholder="e.g. 01-ANI-FRO" class="w-full rounded-md border border-tk-line px-2 py-1.5">
+            <label class="text-xs text-tk-muted block mb-1" for="records-filter-q">Indicator ID</label>
+            <input id="records-filter-q" type="search" name="q" value="{{ request('q') }}" placeholder="e.g. 01-ANI-FRO" class="tk-input py-2 text-sm" autocomplete="off">
         </div>
-        <button type="submit" class="tk-btn-secondary">Filter</button>
     </form>
 
-    <div class="tk-card p-5 mb-6">
-        <h3 class="tk-section-title text-base mb-3">Records on map</h3>
-        <x-tilkit.gps-map-view :points="$mapPoints" height="h-72" />
+    <div id="tilkit-records-results" class="transition-opacity duration-150">
+        @include('tools.tilkit.partials.records-results')
     </div>
 
-    <div class="tk-card overflow-hidden animate-tk-scale-in">
-        <table class="w-full text-sm tk-table-hover">
-            <thead class="bg-tk-soft text-left text-xs uppercase tracking-tk-label text-tk-muted">
-                <tr>
-                    <th class="p-3">Indicator</th>
-                    <th class="p-3">Site</th>
-                    <th class="p-3">Season</th>
-                    <th class="p-3">Sighted</th>
-                    <th class="p-3">Tercile</th>
-                    <th class="p-3">Validation</th>
-                    <th class="p-3"></th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($records as $rec)
-                    <tr class="border-t border-tk-line">
-                        <td class="p-3 font-mono">{{ $rec->indicator?->indicator_uid }}</td>
-                        <td class="p-3">{{ $rec->site?->name }}</td>
-                        <td class="p-3">{{ $rec->season?->monthRangeLabel() }}@if($rec->collection_year) · {{ $rec->collection_year }}@endif</td>
-                        <td class="p-3">{{ $rec->sighted ? 'Yes' : 'No' }}</td>
-                        <td class="p-3">{{ $rec->tercile_forecast?->label() ?? '-' }}</td>
-                        <td class="p-3">{{ $rec->validation_status?->excelLabel() ?? '-' }}</td>
-                        <td class="p-3 text-right space-x-2">
-                            <a href="{{ route('tools.tilkit.records.wizard', [$tool, $rec, 'A']) }}" class="text-tk-accent">Wizard</a>
-                            <a href="{{ route('tools.tilkit.records.edit', [$tool, $rec]) }}" class="text-tk-accent">Edit</a>
-                        </td>
-                    </tr>
-                @empty
-                    <tr><td colspan="7" class="p-6 text-tk-muted">No records yet. <a href="{{ route('tools.tilkit.records.create', $tool) }}" class="text-tk-accent underline">Capture the first row</a>.</td></tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+    @push('scripts')
+        <script>
+            (function () {
+                const form = document.getElementById('tilkit-records-filter');
+                const results = document.getElementById('tilkit-records-results');
+                if (!form || !results) {
+                    return;
+                }
 
-    <div class="mt-4">{{ $records->links() }}</div>
+                const baseUrl = form.dataset.recordsUrl || form.action;
+                let debounceTimer = null;
+                let fetchController = null;
+                let requestId = 0;
+
+                function paramsFromForm() {
+                    const data = new FormData(form);
+                    const params = new URLSearchParams();
+                    data.forEach(function (value, key) {
+                        if (String(value).trim() !== '') {
+                            params.set(key, value);
+                        }
+                    });
+                    return params;
+                }
+
+                function syncUrl(params) {
+                    const qs = params.toString();
+                    const next = qs ? baseUrl + '?' + qs : baseUrl;
+                    window.history.replaceState(null, '', next);
+                }
+
+                function afterResultsSwap() {
+                    if (typeof window.tkInitTilkitGpsViews === 'function') {
+                        window.tkInitTilkitGpsViews(results);
+                    }
+                }
+
+                function loadResults(params) {
+                    const qs = params.toString();
+                    const url = qs ? baseUrl + '?' + qs : baseUrl;
+                    syncUrl(params);
+
+                    if (fetchController) {
+                        fetchController.abort();
+                    }
+                    fetchController = new AbortController();
+                    const currentId = ++requestId;
+
+                    results.classList.add('opacity-60', 'pointer-events-none');
+                    results.setAttribute('aria-busy', 'true');
+
+                    fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            Accept: 'text/html',
+                            'X-Tilkit-Records-Partial': '1',
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                        credentials: 'same-origin',
+                        signal: fetchController.signal,
+                    })
+                        .then(function (res) {
+                            if (!res.ok) {
+                                throw new Error('Records filter failed');
+                            }
+                            return res.text();
+                        })
+                        .then(function (html) {
+                            if (currentId !== requestId) {
+                                return;
+                            }
+                            results.innerHTML = html;
+                            afterResultsSwap();
+                        })
+                        .catch(function (err) {
+                            if (err.name === 'AbortError') {
+                                return;
+                            }
+                        })
+                        .finally(function () {
+                            if (currentId !== requestId) {
+                                return;
+                            }
+                            results.classList.remove('opacity-60', 'pointer-events-none');
+                            results.removeAttribute('aria-busy');
+                        });
+                }
+
+                function scheduleLoad() {
+                    window.clearTimeout(debounceTimer);
+                    debounceTimer = window.setTimeout(function () {
+                        loadResults(paramsFromForm());
+                    }, 320);
+                }
+
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    scheduleLoad();
+                });
+
+                form.querySelector('[name="q"]')?.addEventListener('input', scheduleLoad);
+                form.querySelectorAll('select').forEach(function (select) {
+                    select.addEventListener('change', function () {
+                        window.clearTimeout(debounceTimer);
+                        loadResults(paramsFromForm());
+                    });
+                });
+
+                results.addEventListener('click', function (e) {
+                    const pagination = e.target.closest('[data-tilkit-records-pagination]');
+                    if (!pagination) {
+                        return;
+                    }
+                    const link = e.target.closest('a');
+                    if (!link || !pagination.contains(link)) {
+                        return;
+                    }
+                    e.preventDefault();
+                    const url = new URL(link.href, window.location.origin);
+                    loadResults(url.searchParams);
+                });
+            })();
+        </script>
+    @endpush
 </x-app-layout>

@@ -40,7 +40,7 @@ class ToolTilkitAdminController extends Controller
         private TilkitProgramContext $programs,
     ) {}
 
-    public function recordsIndex(Request $request, DcProject $tool, ToolAccessService $access): View
+    public function recordsIndex(Request $request, DcProject $tool, ToolAccessService $access): View|\Illuminate\Http\Response
     {
         $access->assertCanView($request->user(), $tool);
         $program = $this->programs->active($tool);
@@ -66,14 +66,20 @@ class ToolTilkitAdminController extends Controller
         $siteId = $request->filled('site_id') ? $request->integer('site_id') : null;
         $seasonId = $request->filled('season_id') ? $request->integer('season_id') : null;
 
-        return view('tools.tilkit.records-index', [
+        $payload = [
             'tool' => $tool,
             'records' => $records,
             'sites' => $this->programs->sitesQuery($tool)->get(),
             'seasons' => $this->programs->seasonsQuery($tool)->get(),
             'mapPoints' => app(TilkitInsightsService::class)->mapPointsForTool($tool, $siteId, $seasonId),
             'tilkitNav' => 'records',
-        ]);
+        ];
+
+        if ($request->header('X-Tilkit-Records-Partial')) {
+            return response()->view('tools.tilkit.partials.records-results', $payload);
+        }
+
+        return view('tools.tilkit.records-index', $payload);
     }
 
     public function insights(Request $request, DcProject $tool, ToolAccessService $access, TilkitInsightsService $insights): View

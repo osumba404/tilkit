@@ -8,6 +8,11 @@
     'wide' => false,
 ])
 
+@php
+    use App\Support\Tilkit\WeatherTool;
+    $accWeatherTool = $tool ?? (WeatherTool::singleToolMode() ? WeatherTool::resolve() : null);
+@endphp
+
 <div @class(['flex flex-col lg:flex-row gap-6 min-h-[60vh] w-full', 'dataset-acc-wide' => $wide])>
     <aside @class(['acc-sidebar shrink-0 rounded-tk p-5 text-sm text-slate-200', 'w-full lg:w-52 xl:w-56' => $wide, 'w-full lg:w-56' => ! $wide])>
         <p class="text-[0.65rem] uppercase tracking-tk-label text-slate-400 mb-1 font-medium">Analytics Command Center</p>
@@ -31,8 +36,8 @@
             @elseif ($context === 'datasets')
                 <a href="{{ route('platform.datasets.index') }}" class="acc-nav-link @if($accSection === 'datasets') acc-nav-active @endif">My datasets</a>
                 <a href="{{ route('dashboard') }}" class="acc-nav-link">Dashboard</a>
-                @if (\App\Support\Tilkit\WeatherTool::isWeatherModule($tool))
-                    <a href="{{ route('tools.tilkit.overview', $tool) }}" class="acc-nav-link">Weather log</a>
+                @if (WeatherTool::isWeatherModule($accWeatherTool))
+                    <a href="{{ route('tools.tilkit.overview', $accWeatherTool) }}" class="acc-nav-link">Weather log</a>
                 @else
                     <a href="{{ route('tools.index') }}" class="acc-nav-link">Tools</a>
                 @endif
@@ -50,10 +55,12 @@
                 <a href="{{ route('tools.analytics.review', $tool) }}" class="acc-nav-link @if($accSection === 'review') acc-nav-active @endif">Review & quality</a>
                 <a href="{{ route('tools.analytics.reports', $tool) }}" class="acc-nav-link @if($accSection === 'reports') acc-nav-active @endif">Reports</a>
                 <a href="{{ route('platform.datasets.index') }}" class="acc-nav-link @if($accSection === 'datasets') acc-nav-active @endif">My datasets</a>
-                @if (\App\Support\Tilkit\WeatherTool::isWeatherModule($tool))
-                    <a href="{{ route('tools.tilkit.insights', $tool) }}" class="acc-nav-link mt-4 border-t border-slate-600 pt-3">← Analysis hub</a>
-                @else
+                @if (WeatherTool::isWeatherModule($accWeatherTool))
+                    <a href="{{ route('tools.tilkit.insights', $accWeatherTool) }}" class="acc-nav-link mt-4 border-t border-slate-600 pt-3">← Analysis hub</a>
+                @elseif ($tool)
                     <a href="{{ route('tools.show', $tool) }}" class="acc-nav-link mt-4 border-t border-slate-600 pt-3">← Tool home</a>
+                @else
+                    <a href="{{ route('dashboard') }}" class="acc-nav-link mt-4 border-t border-slate-600 pt-3">← Dashboard</a>
                 @endif
             @endif
         </nav>
