@@ -98,20 +98,18 @@ class TilkitInsightsService
      */
     private function countGrouped(DcProject $tool, string $column, callable $label): array
     {
-        $records = TilkitIndicatorRecord::query()
+        $rows = TilkitIndicatorRecord::query()
             ->whereHas('indicator', fn ($q) => $q->where('project_id', $tool->id))
-            ->get([$column]);
+            ->selectRaw($column.' as bucket, COUNT(*) as aggregate')
+            ->groupBy($column)
+            ->get();
 
-        $counts = [];
-        foreach ($records as $record) {
-            $key = $label($record->{$column});
-            $counts[$key] = ($counts[$key] ?? 0) + 1;
-        }
-
-        arsort($counts);
-
-        return collect($counts)
-            ->map(fn (int $count, string $key) => ['label' => $key, 'count' => $count])
+        return $rows
+            ->map(fn ($row) => [
+                'label' => $label($row->bucket),
+                'count' => (int) $row->aggregate,
+            ])
+            ->sortByDesc('count')
             ->values()
             ->all();
     }

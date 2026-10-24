@@ -11,19 +11,37 @@ use Illuminate\Support\Collection;
 
 class TilkitProgramContext
 {
+    /** @var array<int, Collection<int, TilkitProgram>> */
+    private array $programsCache = [];
+
+    /** @var array<int, TilkitProgram> */
+    private array $activeCache = [];
+
     public function programsFor(DcProject $tool): Collection
     {
-        return TilkitProgram::query()
+        $key = (int) $tool->id;
+        if (isset($this->programsCache[$key])) {
+            return $this->programsCache[$key];
+        }
+
+        $this->programsCache[$key] = TilkitProgram::query()
             ->where('project_id', $tool->id)
             ->orderBy('name')
             ->get();
+
+        return $this->programsCache[$key];
     }
 
     public function active(DcProject $tool): TilkitProgram
     {
+        $key = (int) $tool->id;
+        if (isset($this->activeCache[$key])) {
+            return $this->activeCache[$key];
+        }
+
         $programs = $this->programsFor($tool);
         if ($programs->isEmpty()) {
-            return $this->ensureDefault($tool);
+            return $this->activeCache[$key] = $this->ensureDefault($tool);
         }
 
         $sessionKey = $this->sessionKey($tool);
@@ -31,11 +49,12 @@ class TilkitProgramContext
         if ($selectedId !== null) {
             $match = $programs->firstWhere('id', (int) $selectedId);
             if ($match !== null) {
-                return $match;
+                return $this->activeCache[$key] = $match;
             }
         }
 
-        return $programs->first();
+        return $this->activeCache[$key] = $programs->first()
+            ?? $this->ensureDefault($tool);
     }
 
     public function setActive(DcProject $tool, int $programId): void
@@ -45,6 +64,7 @@ class TilkitProgramContext
             422,
         );
         session([$this->sessionKey($tool) => $programId]);
+        unset($this->activeCache[(int) $tool->id]);
     }
 
     public function ensureDefault(DcProject $tool): TilkitProgram

@@ -43,11 +43,14 @@
             (function () {
                 const form = document.getElementById('tilkit-records-filter');
                 const results = document.getElementById('tilkit-records-results');
+                const tableHost = document.getElementById('tilkit-records-table');
                 if (!form || !results) {
                     return;
                 }
 
                 const baseUrl = form.dataset.recordsUrl || form.action;
+                const partialTable = 'table';
+                const partialResults = 'results';
                 let debounceTimer = null;
                 let fetchController = null;
                 let requestId = 0;
@@ -75,10 +78,13 @@
                     }
                 }
 
-                function loadResults(params) {
+                function loadResults(params, partialMode) {
                     const qs = params.toString();
                     const url = qs ? baseUrl + '?' + qs : baseUrl;
                     syncUrl(params);
+
+                    const partial = partialMode === partialResults ? partialResults : partialTable;
+                    const busyEl = partial === partialTable && tableHost ? tableHost : results;
 
                     if (fetchController) {
                         fetchController.abort();
@@ -86,14 +92,14 @@
                     fetchController = new AbortController();
                     const currentId = ++requestId;
 
-                    results.classList.add('opacity-60', 'pointer-events-none');
-                    results.setAttribute('aria-busy', 'true');
+                    busyEl.classList.add('opacity-60', 'pointer-events-none');
+                    busyEl.setAttribute('aria-busy', 'true');
 
                     fetch(url, {
                         method: 'GET',
                         headers: {
                             Accept: 'text/html',
-                            'X-Tilkit-Records-Partial': '1',
+                            'X-Tilkit-Records-Partial': partial,
                             'X-Requested-With': 'XMLHttpRequest',
                         },
                         credentials: 'same-origin',
@@ -109,8 +115,12 @@
                             if (currentId !== requestId) {
                                 return;
                             }
-                            results.innerHTML = html;
-                            afterResultsSwap();
+                            if (partial === partialResults) {
+                                results.innerHTML = html;
+                                afterResultsSwap();
+                            } else if (tableHost) {
+                                tableHost.innerHTML = html;
+                            }
                         })
                         .catch(function (err) {
                             if (err.name === 'AbortError') {
@@ -121,15 +131,15 @@
                             if (currentId !== requestId) {
                                 return;
                             }
-                            results.classList.remove('opacity-60', 'pointer-events-none');
-                            results.removeAttribute('aria-busy');
+                            busyEl.classList.remove('opacity-60', 'pointer-events-none');
+                            busyEl.removeAttribute('aria-busy');
                         });
                 }
 
-                function scheduleLoad() {
+                function scheduleLoad(partialMode) {
                     window.clearTimeout(debounceTimer);
                     debounceTimer = window.setTimeout(function () {
-                        loadResults(paramsFromForm());
+                        loadResults(paramsFromForm(), partialMode || partialTable);
                     }, 320);
                 }
 
@@ -138,11 +148,13 @@
                     scheduleLoad();
                 });
 
-                form.querySelector('[name="q"]')?.addEventListener('input', scheduleLoad);
+                form.querySelector('[name="q"]')?.addEventListener('input', function () {
+                    scheduleLoad(partialTable);
+                });
                 form.querySelectorAll('select').forEach(function (select) {
                     select.addEventListener('change', function () {
                         window.clearTimeout(debounceTimer);
-                        loadResults(paramsFromForm());
+                        loadResults(paramsFromForm(), partialResults);
                     });
                 });
 
@@ -157,7 +169,7 @@
                     }
                     e.preventDefault();
                     const url = new URL(link.href, window.location.origin);
-                    loadResults(url.searchParams);
+                    loadResults(url.searchParams, partialTable);
                 });
             })();
         </script>

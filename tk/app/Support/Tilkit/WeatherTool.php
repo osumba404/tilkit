@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\DB;
  */
 class WeatherTool
 {
+    private const RESOLVE_KEY = 'tilkit.weather.resolved_tool';
+
     public static function singleToolMode(): bool
     {
         return (bool) config('tilkit.weather.single_tool.enabled', true);
@@ -32,7 +34,21 @@ class WeatherTool
 
     public static function resolve(): ?DcProject
     {
-        return DcProject::query()->where('code', static::configuredCode())->first();
+        if (app()->bound(self::RESOLVE_KEY)) {
+            return app(self::RESOLVE_KEY);
+        }
+
+        $tool = DcProject::query()
+            ->where('code', static::configuredCode())
+            ->first();
+        app()->instance(self::RESOLVE_KEY, $tool);
+
+        return $tool;
+    }
+
+    public static function rememberResolved(DcProject $tool): void
+    {
+        app()->instance(self::RESOLVE_KEY, $tool);
     }
 
     /** Create the one platform tool if missing (owner = first super admin or acting user). */
@@ -115,6 +131,8 @@ class WeatherTool
                 ['project_id' => $project->id, 'user_id' => $owner->id],
                 ['role' => ToolMemberRole::Admin]
             );
+
+            static::rememberResolved($project);
 
             return $project;
         });

@@ -66,6 +66,7 @@
     </x-slot>
 
     <div
+        data-tk-form-builder
         x-data="formBuilder(@js($initialFields), @js($typeCatalog))"
         @click.outside="typeMenuOpen = null"
         class="grid lg:grid-cols-3 gap-6"

@@ -40,7 +40,7 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-        View::composer(['layouts.navigation', 'layouts.app'], function ($view): void {
+        View::composer('layouts.navigation', function ($view): void {
             if (! WeatherTool::singleToolMode()) {
                 $view->with('tilkitWeatherTool', null);
 
@@ -48,9 +48,10 @@ class AppServiceProvider extends ServiceProvider
             }
 
             $user = auth()->user();
-            $tool = $user !== null
-                ? WeatherTool::ensurePlatformTool($user)
-                : WeatherTool::resolve();
+            $tool = WeatherTool::resolve();
+            if ($tool === null && $user !== null) {
+                $tool = WeatherTool::ensurePlatformTool($user);
+            }
             $view->with('tilkitWeatherTool', $tool);
         });
 

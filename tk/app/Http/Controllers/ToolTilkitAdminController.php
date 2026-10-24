@@ -63,6 +63,7 @@ class ToolTilkitAdminController extends Controller
 
         $records = $query->latest('updated_at')->paginate(30)->withQueryString();
 
+        $partial = $request->header('X-Tilkit-Records-Partial');
         $siteId = $request->filled('site_id') ? $request->integer('site_id') : null;
         $seasonId = $request->filled('season_id') ? $request->integer('season_id') : null;
 
@@ -71,13 +72,20 @@ class ToolTilkitAdminController extends Controller
             'records' => $records,
             'sites' => $this->programs->sitesQuery($tool)->get(),
             'seasons' => $this->programs->seasonsQuery($tool)->get(),
-            'mapPoints' => app(TilkitInsightsService::class)->mapPointsForTool($tool, $siteId, $seasonId),
             'tilkitNav' => 'records',
         ];
 
-        if ($request->header('X-Tilkit-Records-Partial')) {
+        if ($partial === 'table') {
+            return response()->view('tools.tilkit.partials.records-table', $payload);
+        }
+
+        if ($partial === 'results') {
+            $payload['mapPoints'] = app(TilkitInsightsService::class)->mapPointsForTool($tool, $siteId, $seasonId);
+
             return response()->view('tools.tilkit.partials.records-results', $payload);
         }
+
+        $payload['mapPoints'] = app(TilkitInsightsService::class)->mapPointsForTool($tool, $siteId, $seasonId);
 
         return view('tools.tilkit.records-index', $payload);
     }

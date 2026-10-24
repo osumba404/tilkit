@@ -44,14 +44,15 @@ Route::get('/f/{form:code}/thanks', [PublicFormController::class, 'thanks'])->na
 
 Route::get('/reference', FieldReferenceController::class)->name('reference');
 
-Route::middleware(['auth', 'verified', 'tilkit.platform'])->group(function () {
-    Route::post('/api/tilkit/sightings', [TilkitSyncController::class, 'storeSighting'])->name('api.tilkit.sightings.store');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::middleware('tilkit.platform')->group(function () {
+        Route::post('/api/tilkit/sightings', [TilkitSyncController::class, 'storeSighting'])->name('api.tilkit.sightings.store');
 
-    Route::get('/dashboard', DashboardController::class)->name('dashboard');
+        Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
-    Route::resource('tools', ToolController::class)->only(['index', 'create', 'store', 'show']);
+        Route::resource('tools', ToolController::class)->only(['index', 'create', 'store', 'show']);
 
-    Route::prefix('tools/{tool}')->name('tools.')->group(function () {
+        Route::prefix('tools/{tool}')->name('tools.')->group(function () {
         Route::post('invitations', [ToolInvitationController::class, 'store'])->name('invitations.store');
         Route::get('tilkit', [ToolTilkitWeatherController::class, 'overview'])->name('tilkit.overview');
         Route::get('tilkit/records', [ToolTilkitAdminController::class, 'recordsIndex'])->name('tilkit.records.index');
@@ -105,6 +106,7 @@ Route::middleware(['auth', 'verified', 'tilkit.platform'])->group(function () {
         Route::post('forms/{form}/import-csv', [ToolFormController::class, 'importCsv'])->name('forms.import-csv');
         Route::get('forms/{form}/xlsform/export', [ToolFormController::class, 'exportXlsForm'])->name('forms.xlsform.export');
         Route::post('forms/{form}/xlsform/import', [ToolFormController::class, 'importXlsForm'])->name('forms.xlsform.import');
+        });
     });
 
     Route::prefix('platform')->name('platform.')->group(function () {
