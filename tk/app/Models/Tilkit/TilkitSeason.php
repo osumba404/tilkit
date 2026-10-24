@@ -13,6 +13,8 @@ class TilkitSeason extends Model
         'project_id',
         'program_id',
         'label',
+        'start_month',
+        'end_month',
         'starts_on',
         'ends_on',
         'protocol_version',
@@ -21,9 +23,23 @@ class TilkitSeason extends Model
     protected function casts(): array
     {
         return [
+            'start_month' => 'integer',
+            'end_month' => 'integer',
             'starts_on' => 'date',
             'ends_on' => 'date',
         ];
+    }
+
+    public function monthRangeLabel(): string
+    {
+        if ($this->start_month && $this->end_month) {
+            return \App\Support\Tilkit\SeasonMonthRange::labelFromMonths(
+                (int) $this->start_month,
+                (int) $this->end_month,
+            );
+        }
+
+        return (string) $this->label;
     }
 
     public function project(): BelongsTo

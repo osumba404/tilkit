@@ -31,7 +31,7 @@
             <label class="text-xs text-tk-muted block mb-1">Season</label>
             <select name="season_id" class="tk-input" required>
                 @foreach ($seasons as $season)
-                    <option value="{{ $season->id }}" @selected($seasonId == $season->id)>{{ $season->label }}</option>
+                    <option value="{{ $season->id }}" @selected($seasonId == $season->id)>{{ $season->monthRangeLabel() }}</option>
                 @endforeach
             </select>
         </div>

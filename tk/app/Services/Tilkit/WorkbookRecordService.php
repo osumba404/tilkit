@@ -167,8 +167,22 @@ class WorkbookRecordService
             'AJ' => $record->site?->ward,
             'AK' => $record->site?->county,
             'AL' => $record->site?->country,
-            'AM' => $record->season?->label,
+            'AM' => $this->seasonYearReference($record),
+            'AN' => $record->collection_date?->format('Y-m-d'),
         ], fn ($v) => $v !== null && $v !== ''));
+    }
+
+    private function seasonYearReference(TilkitIndicatorRecord $record): ?string
+    {
+        $season = $record->season?->monthRangeLabel() ?? $record->season?->label;
+        if ($season === null || $season === '') {
+            return null;
+        }
+        if ($record->collection_year) {
+            return trim($season.' '.$record->collection_year);
+        }
+
+        return $season;
     }
 
     public function seedWorkbookFromCanonical(TilkitIndicatorRecord $record): void

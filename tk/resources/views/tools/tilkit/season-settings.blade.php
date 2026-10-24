@@ -19,7 +19,7 @@
         </select>
         <select name="season_id" class="tk-input" onchange="this.form.submit()">
             @foreach ($seasons as $season)
-                <option value="{{ $season->id }}" @selected($seasonId == $season->id)>{{ $season->label }}</option>
+                <option value="{{ $season->id }}" @selected($seasonId == $season->id)>{{ $season->monthRangeLabel() }}</option>
             @endforeach
         </select>
     </form>

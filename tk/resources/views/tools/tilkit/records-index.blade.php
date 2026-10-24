@@ -24,7 +24,7 @@
             <select name="season_id" class="rounded-md border border-tk-line px-2 py-1.5">
                 <option value="">All seasons</option>
                 @foreach ($seasons as $season)
-                    <option value="{{ $season->id }}" @selected(request('season_id') == $season->id)>{{ $season->label }}</option>
+                    <option value="{{ $season->id }}" @selected(request('season_id') == $season->id)>{{ $season->monthRangeLabel() }}</option>
                 @endforeach
             </select>
         </div>
@@ -58,7 +58,7 @@
                     <tr class="border-t border-tk-line">
                         <td class="p-3 font-mono">{{ $rec->indicator?->indicator_uid }}</td>
                         <td class="p-3">{{ $rec->site?->name }}</td>
-                        <td class="p-3">{{ $rec->season?->label }}</td>
+                        <td class="p-3">{{ $rec->season?->monthRangeLabel() }}@if($rec->collection_year) · {{ $rec->collection_year }}@endif</td>
                         <td class="p-3">{{ $rec->sighted ? 'Yes' : 'No' }}</td>
                         <td class="p-3">{{ $rec->tercile_forecast?->label() ?? '-' }}</td>
                         <td class="p-3">{{ $rec->validation_status?->excelLabel() ?? '-' }}</td>

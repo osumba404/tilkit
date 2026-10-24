@@ -26,6 +26,7 @@ use App\Services\Tilkit\WorkbookRecordService;
 use App\Services\ToolAccessService;
 use App\Support\Tilkit\CommunityDataListRegistry;
 use App\Support\Tilkit\IndicatorCodeLegendGrouper;
+use App\Support\Tilkit\SeasonMonthRange;
 use App\Support\Tilkit\WorkbookColumnRegistry;
 use App\Support\Tilkit\WorkbookSheetCatalog;
 use Illuminate\Http\RedirectResponse;
@@ -155,6 +156,7 @@ class ToolTilkitAdminController extends Controller
             'legendCodeCount' => TilkitIndicatorCode::query()->whereNull('deprecated_at')->count(),
             'geographyContinentsUrl' => route('tools.tilkit.geography.continents', $tool),
             'geographyCountriesUrl' => route('tools.tilkit.geography.countries', $tool),
+            'seasonMonths' => SeasonMonthRange::monthOptions(),
             'tilkitNav' => 'setup',
         ]);
     }
@@ -220,12 +222,16 @@ class ToolTilkitAdminController extends Controller
         $access->assertCanView($request->user(), $tool);
         $program = $this->programs->active($tool);
         $data = $request->validate([
-            'label' => ['required', 'string', 'max:120'],
-            'starts_on' => ['nullable', 'date'],
-            'ends_on' => ['nullable', 'date', 'after_or_equal:starts_on'],
+            'start_month' => ['required', 'integer', 'min:1', 'max:12'],
+            'end_month' => ['required', 'integer', 'min:1', 'max:12'],
         ]);
+        $label = SeasonMonthRange::labelFromMonths((int) $data['start_month'], (int) $data['end_month']);
         TilkitSeason::query()->create([
-            ...$data,
+            'label' => $label,
+            'start_month' => (int) $data['start_month'],
+            'end_month' => (int) $data['end_month'],
+            'starts_on' => null,
+            'ends_on' => null,
             'project_id' => $tool->id,
             'program_id' => $program->id,
             'protocol_version' => config('tilkit.weather.protocol_version'),

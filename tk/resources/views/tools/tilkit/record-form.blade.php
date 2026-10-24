@@ -16,6 +16,8 @@
         <div class="tk-card p-4 mb-4 text-sm text-tk-ink">{{ session('status') }}</div>
     @endif
 
+    @include('tools.tilkit.partials.subnav', ['tilkitNav' => $tilkitNav ?? 'capture'])
+
     <p class="text-sm text-tk-muted mb-4">
         Capture follows the v4 <a href="{{ route('tools.tilkit.workbook', $tool) }}" class="text-tk-accent underline">Community Data List</a>
         (sections A–E) and <strong>Sheet 1 - Indicator Log</strong> columns A–DT.
@@ -31,6 +33,20 @@
         </div>
     @endif
 
+    @if (! $isEdit)
+        <div class="tk-card p-5 space-y-4 mb-6">
+            <h3 class="tk-section-title text-base">Program / initiative</h3>
+            <p class="text-xs text-tk-muted">Choose where you are entering data (for example East Africa 2016–2021 or Ghana pilot 2019–2026). Sites and seasons below belong to this program.</p>
+            <form method="GET" action="{{ route('tools.tilkit.records.create', $tool) }}" class="max-w-xl">
+                <select name="program_id" class="tk-input" aria-label="Program or initiative" onchange="this.form.submit()">
+                    @foreach ($tilkitPrograms ?? [] as $program)
+                        <option value="{{ $program->id }}" @selected(($activeProgram->id ?? null) === $program->id)>{{ $program->name }}</option>
+                    @endforeach
+                </select>
+            </form>
+        </div>
+    @endif
+
     <form method="POST"
         action="{{ $isEdit ? route('tools.tilkit.records.update', [$tool, $record]) : route('tools.tilkit.records.store', $tool) }}"
         enctype="multipart/form-data"
@@ -41,21 +57,25 @@
         @endif
 
         @if (! $isEdit)
-            <div class="tk-card p-5 grid md:grid-cols-3 gap-4">
+            <div class="tk-card p-5 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div>
                     <label class="text-xs text-tk-muted block mb-1">Site (AI)</label>
                     <select name="site_id" required class="tk-input">
-                        @foreach ($sites as $site)
+                        @forelse ($sites as $site)
                             <option value="{{ $site->id }}" @selected(old('site_id') == $site->id)>{{ $site->name }}</option>
-                        @endforeach
+                        @empty
+                            <option value="" disabled>No sites — add under Setup for this program</option>
+                        @endforelse
                     </select>
                 </div>
                 <div>
-                    <label class="text-xs text-tk-muted block mb-1">Season (AM)</label>
+                    <label class="text-xs text-tk-muted block mb-1">Monitoring season — months (AM)</label>
                     <select name="season_id" required class="tk-input">
-                        @foreach ($seasons as $season)
-                            <option value="{{ $season->id }}" @selected(old('season_id') == $season->id)>{{ $season->label }}</option>
-                        @endforeach
+                        @forelse ($seasons as $season)
+                            <option value="{{ $season->id }}" @selected(old('season_id') == $season->id)>{{ $season->monthRangeLabel() }}</option>
+                        @empty
+                            <option value="" disabled>No seasons — add month ranges under Setup</option>
+                        @endforelse
                     </select>
                 </div>
                 <div>
@@ -66,11 +86,22 @@
                         @endforeach
                     </select>
                 </div>
+                <div>
+                    <label class="text-xs text-tk-muted block mb-1">Date data collected (AN)</label>
+                    <input type="date" name="collection_date" value="{{ old('collection_date', now()->toDateString()) }}" required class="tk-input">
+                </div>
+                <div>
+                    <label class="text-xs text-tk-muted block mb-1">Collection year (with season → AM)</label>
+                    <input type="number" name="collection_year" value="{{ old('collection_year', now()->year) }}" required min="1990" max="2100" class="tk-input" placeholder="e.g. 2024">
+                </div>
             </div>
         @else
             <div class="tk-card p-4 text-sm flex flex-wrap gap-4">
                 <span><strong>Site:</strong> {{ $record->site?->name }}</span>
-                <span><strong>Season:</strong> {{ $record->season?->label }}</span>
+                <span><strong>Season:</strong> {{ $record->season?->monthRangeLabel() }}@if($record->collection_year) · {{ $record->collection_year }}@endif</span>
+                @if ($record->collection_date)
+                    <span><strong>Collected:</strong> {{ $record->collection_date->format('Y-m-d') }}</span>
+                @endif
                 <span><strong>ID:</strong> {{ $record->indicator?->indicator_uid }}</span>
             </div>
         @endif

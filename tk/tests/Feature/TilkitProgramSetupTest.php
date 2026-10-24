@@ -56,12 +56,13 @@ class TilkitProgramSetupTest extends TestCase
 
         $this->actingAs($user)
             ->post(route('tools.tilkit.setup.season', $tool), [
-                'label' => 'MAM 2024',
+                'start_month' => 3,
+                'end_month' => 5,
             ])
             ->assertRedirect();
 
         $this->assertTrue(
-            TilkitSeason::query()->where('program_id', $program->id)->where('label', 'MAM 2024')->exists(),
+            TilkitSeason::query()->where('program_id', $program->id)->where('label', 'Mar–May')->exists(),
         );
 
         $continents = app(GeographyCatalogService::class)->continents();

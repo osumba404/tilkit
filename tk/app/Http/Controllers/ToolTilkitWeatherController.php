@@ -59,6 +59,10 @@ class ToolTilkitWeatherController extends Controller
     {
         $access->assertCanView($request->user(), $tool);
 
+        if ($request->filled('program_id')) {
+            $this->programs->setActive($tool, $request->integer('program_id'));
+        }
+
         return view('tools.tilkit.record-form', [
             'tool' => $tool,
             'record' => null,
@@ -69,6 +73,7 @@ class ToolTilkitWeatherController extends Controller
             'workbookValues' => [],
             'derivedMap' => [],
             'derivedColumns' => WorkbookColumnRegistry::derivedColumns(),
+            'tilkitNav' => 'capture',
         ]);
     }
 
@@ -76,10 +81,16 @@ class ToolTilkitWeatherController extends Controller
     {
         $access->assertCanView($request->user(), $tool);
 
+        if ($request->filled('program_id')) {
+            $this->programs->setActive($tool, $request->integer('program_id'));
+        }
+
         $validated = $request->validate([
             'indicator_id' => ['required', 'exists:tilkit_indicators,id'],
             'site_id' => ['required', 'exists:tilkit_sites,id'],
             'season_id' => ['required', 'exists:tilkit_seasons,id'],
+            'collection_date' => ['required', 'date'],
+            'collection_year' => ['required', 'integer', 'min:1990', 'max:2100'],
             'workbook' => ['nullable', 'array'],
             'workbook.*' => ['nullable'],
             'workbook_photos' => ['nullable', 'array'],
@@ -92,6 +103,8 @@ class ToolTilkitWeatherController extends Controller
             'indicator_id' => $validated['indicator_id'],
             'site_id' => $validated['site_id'],
             'season_id' => $validated['season_id'],
+            'collection_date' => $validated['collection_date'],
+            'collection_year' => (int) $validated['collection_year'],
             'entered_by' => $request->user()->id,
         ]);
 

@@ -44,16 +44,30 @@
             <h3 class="tk-section-title text-base">Seasons · {{ $activeProgram->name }}</h3>
             <form method="POST" action="{{ route('tools.tilkit.setup.season', $tool) }}" class="space-y-2">
                 @csrf
-                <input name="label" required placeholder="Season label (e.g. OND 2026, MAM 2019)" class="tk-input" maxlength="120">
+                <p class="text-xs text-tk-muted">Month range only (no day or year). Year is recorded when you capture data.</p>
                 <div class="grid grid-cols-2 gap-2">
-                    <input type="date" name="starts_on" class="tk-input" aria-label="Season starts">
-                    <input type="date" name="ends_on" class="tk-input" aria-label="Season ends">
+                    <div>
+                        <label class="text-xs text-tk-muted block mb-1" for="season-start-month">From month</label>
+                        <select id="season-start-month" name="start_month" required class="tk-input">
+                            @foreach ($seasonMonths as $num => $name)
+                                <option value="{{ $num }}">{{ $name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs text-tk-muted block mb-1" for="season-end-month">To month</label>
+                        <select id="season-end-month" name="end_month" required class="tk-input">
+                            @foreach ($seasonMonths as $num => $name)
+                                <option value="{{ $num }}">{{ $name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
                 <button class="tk-btn-primary w-full">Add season</button>
             </form>
             <ul class="text-sm space-y-1">
                 @forelse ($seasons as $season)
-                    <li>{{ $season->label }}</li>
+                    <li>{{ $season->monthRangeLabel() }}</li>
                 @empty
                     <li class="text-tk-muted">No seasons yet for this program.</li>
                 @endforelse
