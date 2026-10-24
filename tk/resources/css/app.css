@@ -7,6 +7,23 @@
 :root {
     --font-ui: 'DM Sans', system-ui, sans-serif;
     --font-display: Merriweather, Georgia, serif;
+    --tk-bg: 243 245 247;
+    --tk-surface: 255 255 255;
+    --tk-ink: 15 20 25;
+    --tk-muted: 91 101 115;
+    --tk-line: 220 226 234;
+    --tk-soft: 238 241 245;
+    --tk-accent-soft: 230 244 247;
+}
+
+.dark {
+    --tk-bg: 15 20 25;
+    --tk-surface: 26 32 40;
+    --tk-ink: 232 236 241;
+    --tk-muted: 154 163 176;
+    --tk-line: 42 52 65;
+    --tk-soft: 34 43 56;
+    --tk-accent-soft: 10 61 74;
 }
 
 @tailwind base;
@@ -16,12 +33,17 @@
 @layer base {
     body {
         font-family: var(--font-ui);
-        @apply text-tk-ink antialiased;
-        background-color: #f3f5f7;
+        @apply text-tk-ink antialiased bg-tk-bg;
         background-image:
             radial-gradient(ellipse 120% 80% at 100% -20%, rgb(10 124 148 / 0.08), transparent 55%),
             radial-gradient(ellipse 80% 50% at 0% 100%, rgb(15 20 25 / 0.04), transparent 50%);
         background-attachment: fixed;
+    }
+
+    .dark body {
+        background-image:
+            radial-gradient(ellipse 120% 80% at 100% -20%, rgb(10 124 148 / 0.15), transparent 55%),
+            radial-gradient(ellipse 80% 50% at 0% 100%, rgb(0 0 0 / 0.25), transparent 50%);
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -148,6 +170,10 @@
         @apply text-tk-ink bg-white/70;
     }
 
+    .dark .tk-tilkit-subnav-link:hover {
+        @apply bg-white/10;
+    }
+
     .tk-tilkit-subnav-link.is-active {
         @apply text-white bg-tk-accent shadow-tk-sm;
     }
@@ -205,6 +231,10 @@
         @apply border-tk-line text-tk-muted hover:border-tk-accent/40 hover:text-tk-ink hover:bg-white;
     }
 
+    .dark .tk-wizard-tab-inactive:hover {
+        @apply hover:bg-tk-soft;
+    }
+
     .tk-table-hover tbody tr {
         @apply transition-colors duration-150;
     }
@@ -215,6 +245,14 @@
 
     .tk-callout {
         @apply rounded-tk border border-tk-accent/20 bg-gradient-to-br from-tk-accent-soft/80 to-white/80 p-4 text-sm text-tk-muted leading-relaxed;
+    }
+
+    .dark .tk-callout {
+        @apply to-tk-surface/80;
+    }
+
+    .tk-theme-toggle {
+        @apply inline-flex h-9 w-9 items-center justify-center rounded-lg border border-transparent text-tk-muted transition duration-150 hover:border-tk-line hover:bg-tk-soft/80 hover:text-tk-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-tk-accent/35 focus-visible:ring-offset-2 focus-visible:ring-offset-tk-bg;
     }
 
     .tk-dropdown-panel {

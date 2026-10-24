@@ -27,12 +27,13 @@
             </div>
             <div class="flex items-center gap-2">
                 @auth
-                <x-dropdown align="right" width="48" contentClasses="tk-dropdown-panel">
-                    <x-slot name="trigger">
-                        <button type="button" class="tk-btn-ghost text-sm px-3 py-2 rounded-lg border border-transparent hover:border-tk-line">
-                            {{ Auth::user()->name }}
-                        </button>
-                    </x-slot>
+                <div class="flex items-center gap-1">
+                    <x-dropdown align="right" width="48" contentClasses="tk-dropdown-panel">
+                        <x-slot name="trigger">
+                            <button type="button" class="tk-btn-ghost text-sm px-3 py-2 rounded-lg border border-transparent hover:border-tk-line">
+                                {{ Auth::user()->name }}
+                            </button>
+                        </x-slot>
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile.edit')">Profile</x-dropdown-link>
                         <form method="POST" action="{{ route('logout') }}">
@@ -42,8 +43,11 @@
                             </x-dropdown-link>
                         </form>
                     </x-slot>
-                </x-dropdown>
+                    </x-dropdown>
+                    <x-theme-toggle />
+                </div>
                 @else
+                <x-theme-toggle />
                 <a href="{{ route('login') }}" class="tk-btn-ghost text-sm px-3">Log in</a>
                 <a href="{{ route('register') }}" class="tk-btn-primary text-sm py-2">Register</a>
                 @endauth

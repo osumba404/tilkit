@@ -3,6 +3,8 @@ import forms from '@tailwindcss/forms';
 
 /** @type {import('tailwindcss').Config} */
 export default {
+    darkMode: 'class',
+
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
@@ -18,14 +20,14 @@ export default {
                 sans: ['"DM Sans"', ...defaultTheme.fontFamily.sans],
             },
             colors: {
-                'tk-bg': '#f3f5f7',
-                'tk-surface': '#ffffff',
-                'tk-ink': '#0f1419',
-                'tk-muted': '#5b6573',
-                'tk-line': '#dce2ea',
-                'tk-soft': '#eef1f5',
+                'tk-bg': 'rgb(var(--tk-bg) / <alpha-value>)',
+                'tk-surface': 'rgb(var(--tk-surface) / <alpha-value>)',
+                'tk-ink': 'rgb(var(--tk-ink) / <alpha-value>)',
+                'tk-muted': 'rgb(var(--tk-muted) / <alpha-value>)',
+                'tk-line': 'rgb(var(--tk-line) / <alpha-value>)',
+                'tk-soft': 'rgb(var(--tk-soft) / <alpha-value>)',
                 'tk-accent': '#0a7c94',
-                'tk-accent-soft': '#e6f4f7',
+                'tk-accent-soft': 'rgb(var(--tk-accent-soft) / <alpha-value>)',
                 'tk-sidebar': '#151c26',
                 'tk-slate': '#2a3441',
             },
