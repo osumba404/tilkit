@@ -2,7 +2,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-[4.25rem]">
             <div class="flex items-center gap-8">
-                <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group">
+                <a href="{{ auth()->check() ? route('dashboard') : route('home') }}" class="flex items-center gap-3 group" aria-label="Tilkit home">
                     <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-tk-accent text-white text-sm font-bold shadow-tk-sm transition-transform duration-300 group-hover:scale-105 group-hover:shadow-tk-md" aria-hidden="true">T</span>
                     <span class="flex flex-col leading-tight">
                         <span class="tk-nav-brand">Tilkit</span>

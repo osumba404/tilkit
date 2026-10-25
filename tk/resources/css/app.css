@@ -34,6 +34,12 @@
 @layer base {
     html {
         font-family: var(--font-primary);
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    html::-webkit-scrollbar {
+        display: none;
     }
 
     body {
