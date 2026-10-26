@@ -23,6 +23,8 @@
         "html2canvas": "^1.4.1",
         "jspdf": "^4.2.1",
         "leaflet": "^1.9.4",
+        "plotly.js-dist-min": "^4.1.2",
+        "simple-statistics": "^7.12.1",
         "sortablejs": "^1.15.7"
     }
 }

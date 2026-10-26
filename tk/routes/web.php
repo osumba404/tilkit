@@ -22,6 +22,7 @@ use App\Http\Controllers\ToolSubmissionController;
 use App\Http\Controllers\Api\TilkitSyncController;
 use App\Http\Controllers\TilkitGeographyController;
 use App\Http\Controllers\ToolTilkitAdminController;
+use App\Http\Controllers\ToolTilkitDeepAnalysisController;
 use App\Http\Controllers\ToolTilkitWeatherController;
 use Illuminate\Support\Facades\Route;
 
@@ -59,6 +60,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('tilkit', [ToolTilkitWeatherController::class, 'overview'])->name('tilkit.overview');
         Route::get('tilkit/records', [ToolTilkitAdminController::class, 'recordsIndex'])->name('tilkit.records.index');
         Route::get('tilkit/insights', [ToolTilkitAdminController::class, 'insights'])->name('tilkit.insights');
+        Route::get('tilkit/deep-analysis', [ToolTilkitDeepAnalysisController::class, 'show'])->name('tilkit.deep-analysis');
+        Route::get('tilkit/deep-analysis/schema', [ToolTilkitDeepAnalysisController::class, 'schema'])->name('tilkit.deep-analysis.schema');
+        Route::get('tilkit/deep-analysis/dataset', [ToolTilkitDeepAnalysisController::class, 'dataset'])->name('tilkit.deep-analysis.dataset');
         Route::get('tilkit/team', [ToolTilkitAdminController::class, 'team'])->name('tilkit.team');
         Route::get('tilkit/records/create', [ToolTilkitWeatherController::class, 'createRecord'])->name('tilkit.records.create');
         Route::post('tilkit/records', [ToolTilkitWeatherController::class, 'storeRecord'])->name('tilkit.records.store');

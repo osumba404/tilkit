@@ -14,6 +14,7 @@ export default defineConfig({
                 'resources/js/tilkit-gps.js',
                 'resources/js/acc-dashboard.js',
                 'resources/js/dataset-dashboard.js',
+                'resources/js/tilkit-deep-analysis.js',
             ],
             refresh: true,
         }),

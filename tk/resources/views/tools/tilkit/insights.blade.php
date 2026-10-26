@@ -132,6 +132,7 @@
                 <li><a href="{{ route('tools.tilkit.data-desk', $tool) }}" class="text-tk-accent font-medium">Data desk</a> - validation queues and climate weight reviews.</li>
                 <li><a href="{{ route('tools.tilkit.settings', $tool) }}" class="text-tk-accent font-medium">Season settings</a> - KMSA, NDMA, and weighting options per site × season.</li>
                 <li><a href="{{ route('tools.tilkit.calendar', $tool) }}" class="text-tk-accent font-medium">Indicator calendar</a> - CI–CP timing and climate flags.</li>
+                <li><a href="{{ route('tools.tilkit.deep-analysis', $tool) }}" class="text-tk-accent font-medium">Deep Analysis</a> - notebook EDA, charts, statistics, and time series on any columns.</li>
             </ul>
             @if ($capabilities->canExportData())
                 <p class="text-xs text-tk-muted mt-4">Exports: CSV, JSON, and xlsx from the weather log home.</p>

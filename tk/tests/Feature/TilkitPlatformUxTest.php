@@ -55,5 +55,15 @@ class TilkitPlatformUxTest extends TestCase
             ->get(route('tools.tilkit.insights', $tool))
             ->assertOk()
             ->assertSee('Analysis');
+
+        $this->actingAs($admin)
+            ->get(route('tools.tilkit.deep-analysis', $tool))
+            ->assertOk()
+            ->assertSee('Deep Analysis');
+
+        $this->actingAs($admin)
+            ->get(route('tools.tilkit.deep-analysis.schema', $tool))
+            ->assertOk()
+            ->assertJsonStructure(['columns', 'filters']);
     }
 }

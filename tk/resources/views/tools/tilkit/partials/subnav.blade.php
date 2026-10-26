@@ -2,7 +2,8 @@
     $active = $tilkitNav ?? 'overview';
     $canManageTeam = isset($capabilities) && $capabilities->canManageTool();
 @endphp
-<nav class="tk-tilkit-subnav animate-tk-fade-in" aria-label="Weather log sections">
+<div class="flex flex-col gap-3 sm:flex-row sm:items-stretch sm:justify-between mb-8">
+<nav class="tk-tilkit-subnav animate-tk-fade-in flex-1 mb-0 min-w-0" aria-label="Weather log sections">
     @foreach ([
         ['id' => 'overview', 'label' => 'Home', 'route' => 'tools.tilkit.overview'],
         ['id' => 'capture', 'label' => 'Capture', 'route' => 'tools.tilkit.records.create'],
@@ -24,4 +25,9 @@
         </a>
     @endif
 </nav>
+    <a href="{{ route('tools.tilkit.deep-analysis', $tool) }}"
+       class="tk-btn-primary shrink-0 self-end sm:self-center text-sm whitespace-nowrap shadow-tk-sm">
+        Deep Analysis
+    </a>
+</div>
 @include('tools.tilkit.partials.program-switcher')

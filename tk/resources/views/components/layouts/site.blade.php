@@ -40,9 +40,3 @@
     </a>
     @include('layouts.navigation')
     <main id="main-content" class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-10">
-        {{ $slot }}
-    </main>
-    @include('partials.site-footer')
-    @stack('scripts')
-</body>
-</html>

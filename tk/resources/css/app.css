@@ -227,6 +227,22 @@
         @apply text-white bg-tk-accent shadow-tk-sm;
     }
 
+    .tk-da-workspace {
+        @apply grid lg:grid-cols-[minmax(240px,280px)_1fr] gap-6 items-start;
+    }
+
+    .tk-da-sidebar {
+        @apply sticky top-4 max-h-[calc(100vh-8rem)] overflow-y-auto;
+    }
+
+    .tk-da-cell-badge {
+        @apply inline-flex h-8 w-8 items-center justify-center rounded-lg bg-tk-accent/10 text-tk-accent text-sm font-semibold;
+    }
+
+    .tk-da-column-list {
+        @apply list-none m-0 p-0;
+    }
+
     .tk-action-grid {
         @apply grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-8;
     }
