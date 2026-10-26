@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FieldReferenceController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\UserGuideController;
 use App\Http\Controllers\PlatformAdminController;
 use App\Http\Controllers\PlatformAnalyticsController;
 use App\Http\Controllers\PlatformDatasetController;
@@ -43,6 +44,7 @@ Route::post('/f/{form:code}', [PublicFormController::class, 'submit'])->name('pu
 Route::get('/f/{form:code}/thanks', [PublicFormController::class, 'thanks'])->name('public.forms.thanks');
 
 Route::get('/reference', FieldReferenceController::class)->name('reference');
+Route::get('/user-guide', UserGuideController::class)->name('user-guide');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('tilkit.platform')->group(function () {

@@ -19,6 +19,7 @@
                 <ul class="mt-3 space-y-2 text-sm">
                     <li><a href="{{ route('home') }}" class="text-tk-muted hover:text-tk-accent transition-colors">Home</a></li>
                     <li><a href="{{ route('home') }}#about-tilkit" class="text-tk-muted hover:text-tk-accent transition-colors">About TILKIT</a></li>
+                    <li><a href="{{ route('user-guide') }}" class="text-tk-muted hover:text-tk-accent transition-colors">User guide</a></li>
                     <li><a href="{{ route('reference') }}" class="text-tk-muted hover:text-tk-accent transition-colors">Field reference</a></li>
                 </ul>
             </nav>

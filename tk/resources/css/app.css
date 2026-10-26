@@ -328,6 +328,177 @@
         @apply to-tk-surface/80;
     }
 
+    .tk-guide-page {
+        @apply text-tk-ink antialiased;
+    }
+
+    .tk-guide-page .tk-guide-heading,
+    .tk-guide-page .tk-guide-display {
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        @apply tracking-[-0.02em];
+    }
+
+    .tk-guide-shell {
+        @apply relative max-w-[68rem] mx-auto;
+    }
+
+    .tk-guide-hero {
+        @apply text-center py-14 sm:py-20 lg:py-24 px-4 sm:px-6;
+    }
+
+    .tk-guide-display {
+        @apply text-4xl sm:text-5xl lg:text-[3.25rem] font-semibold leading-[1.08] text-tk-ink max-w-3xl mx-auto;
+    }
+
+    .tk-guide-hero-lead {
+        @apply mt-5 text-lg sm:text-xl text-tk-muted leading-relaxed max-w-2xl mx-auto font-normal;
+    }
+
+    .tk-guide-hero-meta {
+        @apply mt-6 text-sm text-tk-muted flex flex-wrap items-center justify-center gap-x-3 gap-y-1;
+    }
+
+    .tk-guide-hero-cta {
+        @apply mt-10 flex flex-wrap items-center justify-center gap-3;
+    }
+
+    .tk-guide-btn {
+        @apply inline-flex items-center justify-center rounded-full px-6 py-2.5 text-sm font-medium transition-all duration-200 active:scale-[0.98];
+    }
+
+    .tk-guide-btn-primary {
+        @apply tk-guide-btn bg-tk-accent text-white shadow-tk-sm hover:brightness-110;
+    }
+
+    .tk-guide-btn-secondary {
+        @apply tk-guide-btn bg-tk-soft text-tk-ink ring-1 ring-tk-line/90 hover:bg-tk-surface;
+    }
+
+    .tk-guide-bento {
+        @apply grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-16 sm:mb-20;
+    }
+
+    .tk-guide-bento-cell {
+        @apply rounded-3xl bg-tk-soft/80 p-7 sm:p-8 min-h-[9.5rem] flex flex-col justify-end transition-transform duration-300 hover:scale-[1.01];
+    }
+
+    .dark .tk-guide-bento-cell {
+        @apply bg-tk-soft/50;
+    }
+
+    .tk-guide-bento-cell-featured {
+        @apply sm:col-span-2 min-h-[10.5rem];
+        background: linear-gradient(145deg, rgb(var(--tk-accent-soft) / 0.95), rgb(var(--tk-surface)));
+    }
+
+    .tk-guide-bento-label {
+        @apply text-xs font-medium uppercase tracking-[0.14em] text-tk-muted mb-2;
+    }
+
+    .tk-guide-bento-title {
+        @apply text-xl sm:text-2xl font-semibold text-tk-ink tracking-[-0.02em];
+    }
+
+    .tk-guide-bento-desc {
+        @apply text-sm text-tk-muted mt-2 leading-relaxed max-w-md;
+    }
+
+    .tk-guide-layout {
+        @apply grid grid-cols-1 lg:grid-cols-[minmax(0,16.5rem)_minmax(0,1fr)] gap-8 xl:gap-12 lg:items-start;
+    }
+
+    .tk-guide-sidebar {
+        @apply lg:sticky lg:top-[5.25rem];
+    }
+
+    .tk-guide-sidebar-panel {
+        @apply rounded-2xl border border-tk-line/60 bg-tk-surface/75 backdrop-blur-md p-3 max-h-[calc(100vh-6.25rem)] overflow-y-auto overscroll-contain shadow-[0_1px_0_rgba(255,255,255,0.04)_inset];
+    }
+
+    .tk-guide-nav-link {
+        @apply block rounded-xl py-2 px-3 text-[0.8125rem] leading-snug text-tk-muted transition-colors duration-200 hover:text-tk-ink;
+    }
+
+    .tk-guide-nav-link.is-active {
+        @apply text-tk-ink font-medium bg-tk-soft/90;
+    }
+
+    .tk-guide-band {
+        @apply scroll-mt-28 py-12 sm:py-16 first:pt-0 border-t border-tk-line/50 first:border-t-0;
+    }
+
+    .tk-guide-band-muted {
+        @apply -mx-4 sm:-mx-6 px-4 sm:px-6 rounded-3xl bg-tk-soft/45 border-t-0 my-2;
+    }
+
+    .dark .tk-guide-band-muted {
+        @apply bg-tk-soft/25;
+    }
+
+    .tk-guide-eyebrow {
+        @apply text-xs font-semibold uppercase tracking-[0.16em] text-tk-accent mb-3;
+    }
+
+    .tk-guide-heading {
+        @apply text-2xl sm:text-3xl font-semibold text-tk-ink leading-tight max-w-2xl;
+    }
+
+    .tk-guide-lead {
+        @apply mt-3 text-base sm:text-lg text-tk-muted leading-relaxed max-w-2xl font-normal;
+    }
+
+    .tk-guide-body {
+        @apply mt-6 max-w-2xl space-y-4 text-[0.9375rem] sm:text-base text-tk-muted leading-[1.65];
+    }
+
+    .tk-guide-body strong {
+        @apply font-medium text-tk-ink;
+    }
+
+    .tk-guide-list {
+        @apply space-y-3 pl-0 list-none;
+    }
+
+    .tk-guide-list li {
+        @apply relative pl-5 before:absolute before:left-0 before:top-[0.65em] before:h-1 before:w-1 before:rounded-full before:bg-tk-accent;
+    }
+
+    .tk-guide-feature-grid {
+        @apply grid sm:grid-cols-2 gap-3 not-italic max-w-3xl;
+    }
+
+    .tk-guide-feature {
+        @apply rounded-2xl bg-tk-surface ring-1 ring-tk-line/70 p-5;
+    }
+
+    .tk-guide-feature-title {
+        @apply text-sm font-semibold text-tk-ink;
+    }
+
+    .tk-guide-feature-desc {
+        @apply text-xs text-tk-muted mt-1.5 leading-relaxed;
+    }
+
+    .tk-guide-more {
+        @apply inline-flex items-center gap-1 text-sm font-medium text-tk-accent transition-opacity hover:opacity-80 mt-2;
+    }
+
+    .tk-guide-more-chevron {
+        @apply text-base leading-none translate-y-px;
+    }
+
+    .tk-guide-code {
+        @apply rounded-lg bg-tk-soft px-2 py-0.5 font-mono text-[0.75rem] text-tk-ink ring-1 ring-tk-line/60;
+    }
+
+    .tk-guide-footer {
+        @apply mt-16 pt-10 border-t border-tk-line/60 text-center text-sm text-tk-muted max-w-xl mx-auto leading-relaxed;
+    }
+
+    .tk-guide-mobile-toc {
+        @apply lg:hidden rounded-2xl ring-1 ring-tk-line/70 bg-tk-surface/80 backdrop-blur-sm p-5 mb-10;
+    }
+
     .tk-theme-toggle {
         @apply inline-flex h-9 w-9 items-center justify-center rounded-lg border border-transparent text-tk-muted transition duration-150 hover:border-tk-line hover:bg-tk-soft/80 hover:text-tk-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-tk-accent/35 focus-visible:ring-offset-2 focus-visible:ring-offset-tk-bg;
     }

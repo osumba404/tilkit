@@ -9,8 +9,8 @@
                         <span class="tk-nav-tagline">Data collection</span>
                     </span>
                 </a>
-                @auth
                 <div class="hidden sm:flex gap-1">
+                @auth
                     @if ($tilkitWeatherTool ?? null)
                         <x-nav-link :href="route('tools.tilkit.overview', $tilkitWeatherTool)" :active="request()->routeIs('tools.tilkit.*') || request()->routeIs('dashboard')">Weather log</x-nav-link>
                     @else
@@ -22,8 +22,11 @@
                     @if (Auth::user()->isSuperAdmin())
                         <x-nav-link :href="route('platform.index')" :active="request()->routeIs('platform.*')">Platform</x-nav-link>
                     @endif
-                </div>
+                @else
+                    <x-nav-link :href="route('reference')" :active="request()->routeIs('reference')">Field reference</x-nav-link>
                 @endauth
+                    <x-nav-link :href="route('user-guide')" :active="request()->routeIs('user-guide')">User guide</x-nav-link>
+                </div>
             </div>
             <div class="flex items-center gap-2">
                 @auth
