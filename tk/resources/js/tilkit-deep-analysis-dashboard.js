@@ -729,11 +729,36 @@ function renderCategoryCard(card, rows) {
         if (el) el.innerHTML = emptyState('No data for this field.');
         return;
     }
+    const colLab = deps.fieldLabel?.(col) || col;
+    const title = card.config.title || card.title;
     const data =
         card.config.viz === 'bar'
-            ? [{ type: 'bar', x: labels, y: values, marker: { color: deps.PALETTE[0] } }]
-            : [{ type: 'pie', labels, values, hole: 0.45, marker: { colors: deps.PALETTE } }];
-    deps.mountPlotEl(el, data, deps.plotLayout(card.config.title || card.title, { height: 280 }), col);
+            ? [
+                  {
+                      type: 'bar',
+                      x: labels,
+                      y: values,
+                      name: `Count · ${colLab}`,
+                      marker: { color: deps.PALETTE[0] },
+                      hovertemplate: '%{x}<br>Count: %{y}<extra></extra>',
+                  },
+              ]
+            : [
+                  {
+                      type: 'pie',
+                      labels,
+                      values,
+                      hole: 0.45,
+                      name: colLab,
+                      marker: { colors: deps.PALETTE },
+                      hovertemplate: '%{label}<br>Count: %{value}<extra></extra>',
+                  },
+              ];
+    const layout =
+        card.config.viz === 'bar'
+            ? deps.chartLayout(title, { height: 280, xTitle: colLab, yTitle: 'Count', showLegend: true })
+            : deps.chartLayout(title, { height: 280, showLegend: true });
+    deps.mountPlotEl(el, data, layout, col);
 }
 
 function renderMapCard(card, rows) {
@@ -757,8 +782,26 @@ function renderMapCard(card, rows) {
     }
     deps.mountPlotEl(
         el,
-        [{ type: 'scattergeo', lat: lats, lon: lons, text: texts, mode: 'markers', marker: { size: 10, color: deps.PALETTE[0], opacity: 0.9 } }],
-        deps.plotLayout(title || card.title, { height: 320, geo: { projection: { type: 'natural earth' }, showland: true, landcolor: '#f1f5f9' } }),
+        [
+            {
+                type: 'scattergeo',
+                lat: lats,
+                lon: lons,
+                text: texts,
+                mode: 'markers',
+                name: 'Indicators',
+                marker: {
+                    size: 10,
+                    color: deps.PALETTE[0],
+                    opacity: 0.9,
+                },
+            },
+        ],
+        deps.chartLayout(title || card.title, {
+            height: 320,
+            showLegend: true,
+            geo: { projection: { type: 'natural earth' }, showland: true, landcolor: '#f1f5f9' },
+        }),
         color,
     );
 }
@@ -794,10 +837,35 @@ function renderTimelineCard(card, rows) {
     if (!el) {
         return;
     }
+    const dateLab = deps.fieldLabel?.(dateCol) || dateCol;
+    const valueLab = valueCol ? deps.fieldLabel?.(valueCol) || valueCol : '';
+    const yTitle =
+        agg === 'count' || !valueCol
+            ? 'Row count'
+            : agg === 'sum'
+              ? `Sum · ${valueLab}`
+              : agg === 'mean'
+                ? `Mean · ${valueLab}`
+                : valueLab || 'Value';
     deps.mountPlotEl(
         el,
-        [{ type: 'scatter', mode: 'lines+markers', fill: 'tozeroy', x: dates, y, line: { color: deps.PALETTE[0], width: 2 } }],
-        deps.plotLayout(title || card.title, { height: 300 }),
+        [
+            {
+                type: 'scatter',
+                mode: 'lines+markers',
+                fill: 'tozeroy',
+                x: dates,
+                y,
+                name: yTitle,
+                line: { color: deps.PALETTE[0], width: 2 },
+            },
+        ],
+        deps.chartLayout(title || card.title, {
+            height: 300,
+            xTitle: dateLab,
+            yTitle,
+            showLegend: true,
+        }),
         dateCol,
     );
 }
@@ -809,10 +877,28 @@ function renderHeatmapCard(card, rows) {
     const colLabels = [...new Set(rows.map((r) => String(r[cf] ?? '(blank)')))].sort();
     const z = rowLabels.map((row) => colLabels.map((col) => rows.filter((r) => String(r[rf]) === row && String(r[cf]) === col).length));
     const el = document.getElementById(`plot-${card.id}`);
+    const rowLab = deps.fieldLabel?.(rf) || rf;
+    const colLab = deps.fieldLabel?.(cf) || cf;
     deps.mountPlotEl(
         el,
-        [{ type: 'heatmap', x: colLabels, y: rowLabels, z, colorscale: PLAIN_HEATMAP_SCALE, showscale: true }],
-        deps.plotLayout(card.config.title || card.title, { height: 280 }),
+        [
+            {
+                type: 'heatmap',
+                x: colLabels,
+                y: rowLabels,
+                z,
+                colorscale: PLAIN_HEATMAP_SCALE,
+                showscale: true,
+                colorbar: { title: { text: 'Row count' } },
+                hovertemplate: '%{y} × %{x}<br>Count: %{z}<extra></extra>',
+            },
+        ],
+        deps.chartLayout(card.config.title || card.title, {
+            height: 280,
+            xTitle: colLab,
+            yTitle: rowLab,
+            colorbarTitle: 'Row count',
+        }),
         cf,
     );
 }
@@ -827,8 +913,22 @@ function renderFunnelCard(card, rows) {
     const el = document.getElementById(`plot-${card.id}`);
     deps.mountPlotEl(
         el,
-        [{ type: 'bar', x: steps.map((s) => s[0]), y: steps.map((s) => s[1]), marker: { color: deps.PALETTE[0] } }],
-        deps.plotLayout(card.config.title || card.title, { height: 280 }),
+        [
+            {
+                type: 'bar',
+                x: steps.map((s) => s[0]),
+                y: steps.map((s) => s[1]),
+                name: 'Validation funnel',
+                marker: { color: deps.PALETTE[0] },
+                hovertemplate: '%{x}<br>Records: %{y}<extra></extra>',
+            },
+        ],
+        deps.chartLayout(card.config.title || card.title, {
+            height: 280,
+            xTitle: 'Stage',
+            yTitle: 'Records',
+            showLegend: true,
+        }),
         null,
     );
 }

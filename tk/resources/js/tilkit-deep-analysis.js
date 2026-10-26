@@ -82,21 +82,37 @@ function activeRows() {
 }
 
 function plotLayout(title, extra = {}) {
-    const { xaxis: xExtra, yaxis: yExtra, ...restExtra } = extra;
+    const { xaxis: xExtra, yaxis: yExtra, legend: legendExtra, margin: marginExtra, ...restExtra } = extra;
+    const showLegend = restExtra.showlegend === true;
+    const defaultMargin = { t: 48, r: 20, b: showLegend ? 88 : 56, l: 60 };
     return {
         title: { text: title, font: { size: 15, color: '#0f172a' }, x: 0, xanchor: 'left' },
-        margin: { t: 48, r: 20, b: 52, l: 56 },
+        margin: { ...defaultMargin, ...marginExtra },
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: '#fafafa',
         font: { family: 'system-ui, sans-serif', size: 11, color: '#334155' },
         colorway: PALETTE,
         hovermode: 'closest',
         hoverlabel: { bgcolor: '#ffffff', bordercolor: '#94a3b8', font: { size: 12, color: '#0f172a' } },
+        ...(showLegend
+            ? {
+                  legend: {
+                      orientation: 'h',
+                      yanchor: 'top',
+                      y: -0.22,
+                      x: 0,
+                      xanchor: 'left',
+                      font: { size: 10 },
+                      ...legendExtra,
+                  },
+              }
+            : {}),
         xaxis: {
             gridcolor: '#e2e8f0',
             linecolor: '#cbd5e1',
             tickfont: { size: 11, color: '#64748b' },
             zeroline: false,
+            automargin: true,
             ...xExtra,
         },
         yaxis: {
@@ -104,10 +120,66 @@ function plotLayout(title, extra = {}) {
             linecolor: '#cbd5e1',
             tickfont: { size: 11, color: '#64748b' },
             zeroline: false,
+            automargin: true,
             ...yExtra,
         },
         ...restExtra,
     };
+}
+
+/** Human-readable axis / legend label for a workbook or meta column id. */
+function fieldLabel(columnId) {
+    if (columnId === null || columnId === undefined || columnId === '') {
+        return '';
+    }
+    const m = columnMeta(String(columnId));
+    if (!m) {
+        return String(columnId).replace(/^_/, '');
+    }
+    const lab = m.label || m.id;
+    if (lab.includes(' · ')) {
+        const parts = lab.split(' · ');
+        return parts.length > 1 ? parts.slice(1).join(' · ') : parts[0];
+    }
+
+    return lab;
+}
+
+function axisTitle(text) {
+    const t = String(text || '').trim();
+    if (!t) {
+        return {};
+    }
+
+    return { title: { text: t, standoff: 10, font: { size: 12, color: '#475569' } } };
+}
+
+/**
+ * Standard chart layout with labeled axes and optional legend.
+ * @param {string} title
+ * @param {{ height?: number, xTitle?: string, yTitle?: string, showLegend?: boolean, colorbarTitle?: string }} opts
+ */
+function chartLayout(title, opts = {}) {
+    const { height = 440, xTitle = '', yTitle = '', showLegend = false, colorbarTitle = '', ...rest } = opts;
+    const layout = plotLayout(title, {
+        height,
+        showlegend: showLegend,
+        margin: {
+            r: colorbarTitle ? 72 : 24,
+            b: showLegend ? 96 : xTitle ? 72 : 56,
+            l: yTitle ? 68 : 56,
+        },
+        xaxis: axisTitle(xTitle),
+        yaxis: axisTitle(yTitle),
+        ...rest,
+    });
+    if (colorbarTitle) {
+        layout.coloraxis = {
+            colorbar: { title: { text: colorbarTitle, side: 'right' }, thickness: 12, len: 0.9 },
+        };
+    }
+
+    return layout;
 }
 
 function setDashboardLoading(on) {
@@ -977,8 +1049,9 @@ function runGroupBy(p) {
 function runChart(p) {
     const dataRows = activeRows();
     const xVals = dataRows.map((r) => r[p.x]);
-    const yVals = dataRows.map((r) => r[p.y]);
-    const title = p.title || `${p.chartType}: ${p.y} by ${p.x}`;
+    const xLab = fieldLabel(p.x);
+    const yLab = fieldLabel(p.y);
+    const title = p.title || `${p.chartType}: ${yLab || p.y} by ${xLab || p.x}`;
 
     let plot = null;
     const toolbar = plotToolbar();
@@ -990,19 +1063,35 @@ function runChart(p) {
             counts[k] = (counts[k] || 0) + 1;
         });
         plot = {
-            data: [{ type: 'pie', labels: Object.keys(counts), values: Object.values(counts) }],
-            layout: { title, height: 420 },
+            data: [
+                {
+                    type: 'pie',
+                    labels: Object.keys(counts),
+                    values: Object.values(counts),
+                    name: xLab || p.x,
+                    hovertemplate: '%{label}<br>Count: %{value}<extra></extra>',
+                },
+            ],
+            layout: chartLayout(title, { height: 420, showLegend: true }),
         };
     } else if (p.chartType === 'histogram') {
         const nums = numericValues(p.y, dataRows);
         plot = {
-            data: [{ type: 'histogram', x: nums, name: p.y }],
-            layout: { title, height: 420, xaxis: { title: p.y } },
+            data: [{ type: 'histogram', x: nums, name: yLab || p.y, hovertemplate: 'Value: %{x}<br>Count: %{y}<extra></extra>' }],
+            layout: chartLayout(title, { height: 420, xTitle: yLab || p.y, yTitle: 'Frequency' }),
         };
     } else if (p.chartType === 'box') {
         plot = {
-            data: [{ type: 'box', y: numericValues(p.y, dataRows), name: p.y, boxpoints: 'all' }],
-            layout: { title, height: 420 },
+            data: [
+                {
+                    type: 'box',
+                    y: numericValues(p.y, dataRows),
+                    name: yLab || p.y,
+                    boxpoints: 'all',
+                    hovertemplate: '%{y}<extra>' + (yLab || p.y) + '</extra>',
+                },
+            ],
+            layout: chartLayout(title, { height: 420, yTitle: yLab || p.y, showLegend: true }),
         };
     } else if (p.chartType === 'heatmap') {
         const xs = [...new Set(xVals.map(String))];
@@ -1015,8 +1104,13 @@ function runChart(p) {
             if (xi >= 0 && yi >= 0 && !Number.isNaN(v)) z[yi][xi] += v;
         });
         plot = {
-            data: [{ type: 'heatmap', x: xs, y: ys, z }],
-            layout: { title, height: 440 },
+            data: [{ type: 'heatmap', x: xs, y: ys, z, colorbar: { title: { text: `Sum of ${yLab || p.y}` } } }],
+            layout: chartLayout(title, {
+                height: 440,
+                xTitle: xLab || p.x,
+                yTitle: fieldLabel(p.color) || 'Category',
+                colorbarTitle: `Sum (${yLab || p.y})`,
+            }),
         };
     } else if (p.chartType === 'scatter') {
         const xs = [];
@@ -1040,8 +1134,22 @@ function runChart(p) {
             throw new Error('No numeric Y values for scatter. Pick a numeric value column.');
         }
         plot = {
-            data: [{ type: 'scatter', mode: 'markers', x: xs, y: ys, marker: { color: PALETTE[0] } }],
-            layout: plotLayout(title, { height: 440, xaxis: { title: p.x }, yaxis: { title: p.y } }),
+            data: [
+                {
+                    type: 'scatter',
+                    mode: 'markers',
+                    x: xs,
+                    y: ys,
+                    name: `${yLab || p.y} vs ${xLab || p.x}`,
+                    marker: { color: PALETTE[0] },
+                },
+            ],
+            layout: chartLayout(title, {
+                height: 440,
+                xTitle: xLab || p.x,
+                yTitle: yLab || p.y,
+                showLegend: true,
+            }),
         };
     } else {
         const buckets = {};
@@ -1056,6 +1164,10 @@ function runChart(p) {
             const vals = buckets[k].filter((v) => !Number.isNaN(v));
             return vals.length ? ss.mean(vals) : 0;
         });
+        const yAxisLabel =
+            p.cumulative && (p.chartType === 'line' || p.chartType === 'area')
+                ? `Cumulative mean · ${yLab || p.y}`
+                : `Mean · ${yLab || p.y}`;
         if (p.cumulative && (p.chartType === 'line' || p.chartType === 'area')) {
             let c = 0;
             series = series.map((v) => {
@@ -1065,6 +1177,7 @@ function runChart(p) {
         }
         const traceType = p.chartType === 'scatter' ? 'scatter' : p.chartType === 'line' || p.chartType === 'area' ? 'scatter' : 'bar';
         const mode = p.chartType === 'scatter' || p.chartType === 'line' ? 'lines+markers' : undefined;
+        const seriesName = p.cumulative && (p.chartType === 'line' || p.chartType === 'area') ? `Cumulative ${yLab || p.y}` : `Mean ${yLab || p.y}`;
         plot = {
             data: [
                 {
@@ -1072,10 +1185,18 @@ function runChart(p) {
                     mode,
                     x: labels,
                     y: series,
+                    name: seriesName,
                     fill: p.chartType === 'area' ? 'tozeroy' : undefined,
+                    marker: { color: PALETTE[0] },
+                    line: traceType === 'scatter' ? { color: PALETTE[0], width: 2 } : undefined,
                 },
             ],
-            layout: { title, height: 440, xaxis: { title: p.x }, yaxis: { title: p.y } },
+            layout: chartLayout(title, {
+                height: 440,
+                xTitle: xLab || p.x,
+                yTitle: yAxisLabel,
+                showLegend: true,
+            }),
         };
     }
 
@@ -1099,9 +1220,26 @@ function runCorrelation(p) {
             );
         }),
     );
+    const colLabels = cols.map((c) => fieldLabel(c));
     const plot = {
-        data: [{ type: 'heatmap', z: matrix, x: cols, y: cols, colorscale: 'RdBu', zmid: 0 }],
-        layout: { title: 'Pearson correlation', height: 480 },
+        data: [
+            {
+                type: 'heatmap',
+                z: matrix,
+                x: colLabels,
+                y: colLabels,
+                colorscale: 'RdBu',
+                zmid: 0,
+                colorbar: { title: { text: 'Pearson r' } },
+                hovertemplate: '%{y} vs %{x}<br>r = %{z:.3f}<extra></extra>',
+            },
+        ],
+        layout: chartLayout('Pearson correlation', {
+            height: 480,
+            xTitle: 'Column',
+            yTitle: 'Column',
+            colorbarTitle: 'Pearson r',
+        }),
     };
     return { html: `${plotToolbar()}<div class="tk-da-plot w-full min-h-[480px]"></div>`, plot };
 }
@@ -1232,14 +1370,38 @@ function runTimeseries(p) {
             forecastY.push(ss.linearRegressionLine(reg)(dates.length - 1 + i));
         }
     }
+    const valueLab = fieldLabel(p.valueCol);
+    const dateLab = fieldLabel(p.dateCol);
+    const aggLabel = p.agg === 'mean' ? 'Mean' : p.agg === 'sum' ? 'Sum' : p.agg === 'count' ? 'Count' : String(p.agg || 'Value');
     const plot = {
         data: [
-            { type: 'scatter', mode: 'lines+markers', x: dates, y, name: p.valueCol },
+            {
+                type: 'scatter',
+                mode: 'lines+markers',
+                x: dates,
+                y,
+                name: `${aggLabel} · ${valueLab || p.valueCol}`,
+                line: { color: PALETTE[0], width: 2 },
+            },
             ...(forecastY.length
-                ? [{ type: 'scatter', mode: 'lines', x: forecastX.map((i) => `+${i - dates.length + 1}`), y: forecastY, name: 'Linear trend forecast', line: { dash: 'dot' } }]
+                ? [
+                      {
+                          type: 'scatter',
+                          mode: 'lines',
+                          x: forecastX.map((i) => `+${i - dates.length + 1}`),
+                          y: forecastY,
+                          name: 'Linear trend forecast',
+                          line: { dash: 'dot', color: PALETTE[2] },
+                      },
+                  ]
                 : []),
         ],
-        layout: { title: `Time series: ${p.valueCol}`, height: 440, xaxis: { title: p.dateCol } },
+        layout: chartLayout(p.title || `Time series: ${valueLab || p.valueCol}`, {
+            height: 440,
+            xTitle: dateLab || p.dateCol,
+            yTitle: `${aggLabel} · ${valueLab || p.valueCol}`,
+            showLegend: true,
+        }),
     };
     return { html: `${plotToolbar()}<div class="tk-da-plot w-full min-h-[440px]"></div>`, plot };
 }
@@ -1267,6 +1429,7 @@ function runMap(p) {
         }
     });
     if (lats.length === 0) throw new Error('No geo points. Ensure latitude/longitude or GPS-derived columns have data.');
+    const colorLab = fieldLabel(p.color);
     const plot = {
         data: [
             {
@@ -1275,10 +1438,21 @@ function runMap(p) {
                 lon: lons,
                 text: texts,
                 mode: 'markers',
-                marker: { size: sizes, color: colors, colorscale: 'Viridis', showscale: true },
+                name: 'Indicators',
+                marker: {
+                    size: sizes,
+                    color: colors,
+                    colorscale: 'Viridis',
+                    showscale: Boolean(colorLab),
+                    colorbar: colorLab ? { title: { text: colorLab } } : undefined,
+                },
             },
         ],
-        layout: { title: 'Record locations', height: 480, geo: { projection: { type: 'natural earth' } } },
+        layout: chartLayout(p.title || 'Record locations', {
+            height: 480,
+            showLegend: true,
+            geo: { projection: { type: 'natural earth' }, showland: true, landcolor: '#f1f5f9' },
+        }),
     };
     return { html: `${plotToolbar()}<div class="tk-da-plot w-full min-h-[480px]"></div>`, plot };
 }
@@ -1321,6 +1495,8 @@ async function bootstrap() {
             numericValues,
             runChart,
             plotLayout,
+            chartLayout,
+            fieldLabel,
             mountPlotEl,
             tableHtml,
             escapeHtml,
