@@ -1,5 +1,24 @@
 import Plotly from 'plotly.js-dist-min';
+import Sortable from 'sortablejs';
 import * as ss from 'simple-statistics';
+import {
+    enrichColumnRoles,
+    buildSelectOptions,
+    pickerRoleFor,
+    roleHint,
+    galleryAvailability,
+    FIELD_ROLE,
+} from './tilkit-deep-analysis-fields.js';
+import {
+    initDashboard,
+    loadDashboardCards,
+    openGallery,
+    renderDashboardCanvas,
+    refreshDashboardCardBodies,
+    resetDashboardLayout,
+    saveDashboardCards,
+    applyDashboardTemplate,
+} from './tilkit-deep-analysis-dashboard.js';
 
 const cfg = window.__tilkitDeepAnalysis || {};
 const STORAGE_KEY = `tilkit-da-notebook-${cfg.toolSlug || 'default'}`;
@@ -28,12 +47,243 @@ const CHART_TYPES = [
     { id: 'heatmap', label: '2D heatmap' },
 ];
 
+const PALETTE = ['#0d9488', '#0284c7', '#d97706', '#7c3aed', '#db2777', '#65a30d', '#475569'];
+const TAB_KEY = `tilkit-da-tab-${cfg.toolSlug || 'default'}`;
+
 const state = {
     columns: [],
     rows: [],
     filters: { sites: [], seasons: [], programs: [] },
     cells: [],
+    crossFilter: null,
+    rowSearch: '',
+    activeTab: 'dashboard',
+    dashboardCards: [],
+    dashboardEditMode: true,
+    configDrawerCardId: null,
 };
+
+let dashboardSortable = null;
+const EDIT_MODE_KEY = () => `tilkit-da-edit-${cfg.toolSlug || 'default'}`;
+let slicerDebounce = null;
+
+function activeRows() {
+    let rows = state.rows;
+    if (state.crossFilter?.column) {
+        const { column, value } = state.crossFilter;
+        rows = rows.filter((r) => String(r[column] ?? '(blank)') === String(value));
+    }
+    const q = (state.rowSearch || '').trim().toLowerCase();
+    if (q) {
+        rows = rows.filter((r) => JSON.stringify(r).toLowerCase().includes(q));
+    }
+
+    return rows;
+}
+
+function plotLayout(title, extra = {}) {
+    const { xaxis: xExtra, yaxis: yExtra, ...restExtra } = extra;
+    return {
+        title: { text: title, font: { size: 15, color: '#0f172a' }, x: 0, xanchor: 'left' },
+        margin: { t: 48, r: 20, b: 52, l: 56 },
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: '#fafafa',
+        font: { family: 'system-ui, sans-serif', size: 11, color: '#334155' },
+        colorway: PALETTE,
+        hovermode: 'closest',
+        hoverlabel: { bgcolor: '#ffffff', bordercolor: '#94a3b8', font: { size: 12, color: '#0f172a' } },
+        xaxis: {
+            gridcolor: '#e2e8f0',
+            linecolor: '#cbd5e1',
+            tickfont: { size: 11, color: '#64748b' },
+            zeroline: false,
+            ...xExtra,
+        },
+        yaxis: {
+            gridcolor: '#e2e8f0',
+            linecolor: '#cbd5e1',
+            tickfont: { size: 11, color: '#64748b' },
+            zeroline: false,
+            ...yExtra,
+        },
+        ...restExtra,
+    };
+}
+
+function setDashboardLoading(on) {
+    document.getElementById('tk-da-canvas-loading')?.classList.toggle('hidden', !on);
+}
+
+function loadDashboardEditMode() {
+    const v = sessionStorage.getItem(EDIT_MODE_KEY());
+    state.dashboardEditMode = v !== '0';
+}
+
+function syncEditModeUi() {
+    const toggle = document.getElementById('tk-da-edit-mode');
+    if (toggle) {
+        toggle.setAttribute('aria-pressed', state.dashboardEditMode ? 'true' : 'false');
+        toggle.textContent = state.dashboardEditMode ? 'Done editing' : 'Edit layout';
+    }
+    document.getElementById('tk-da-dashboard-canvas')?.classList.toggle('is-view-mode', !state.dashboardEditMode);
+}
+
+function scheduleSlicerRefresh() {
+    clearTimeout(slicerDebounce);
+    slicerDebounce = setTimeout(() => {
+        refreshDataset().catch(() => {});
+    }, 450);
+}
+
+function countByColumn(rows, col) {
+    const counts = {};
+    rows.forEach((r) => {
+        const k = String(r[col] ?? '(blank)');
+        counts[k] = (counts[k] || 0) + 1;
+    });
+
+    return counts;
+}
+
+function purgePlot(id) {
+    const el = document.getElementById(id);
+    if (el) {
+        Plotly.purge(el);
+    }
+}
+
+function mountPlotEl(el, data, layout, crossFilterColumn = null) {
+    if (!el) {
+        return;
+    }
+    try {
+        Plotly.purge(el);
+    } catch {
+        /* first plot on this node */
+    }
+    const plotPromise = Plotly.newPlot(el, data, layout, { responsive: true, displayModeBar: false });
+    if (plotPromise?.then) {
+        plotPromise.then(() => Plotly.Plots.resize(el)).catch((err) => console.error('Plotly render failed', err));
+    }
+    if (crossFilterColumn) {
+        el.on('plotly_click', (ev) => {
+            const pt = ev.points?.[0];
+            if (!pt) {
+                return;
+            }
+            const value = pt.x ?? pt.label ?? pt.y ?? pt.text;
+            if (value === undefined || value === null) {
+                return;
+            }
+            const vStr = String(value);
+            if (state.crossFilter?.column === crossFilterColumn && String(state.crossFilter.value) === vStr) {
+                state.crossFilter = null;
+            } else {
+                state.crossFilter = { column: crossFilterColumn, value: vStr };
+            }
+            updateCrossFilterUi();
+            refreshActiveView();
+        });
+    }
+}
+
+function mountPlot(id, data, layout, crossFilterColumn = null) {
+    mountPlotEl(document.getElementById(id), data, layout, crossFilterColumn);
+}
+
+function destroyDashboardSortable() {
+    if (dashboardSortable) {
+        dashboardSortable.destroy();
+        dashboardSortable = null;
+    }
+}
+
+function initDashboardSortable(root) {
+    destroyDashboardSortable();
+    dashboardSortable = Sortable.create(root, {
+        animation: 280,
+        easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+        handle: '.tk-da-card-grip',
+        ghostClass: 'is-dragging',
+        dragClass: 'is-dragging',
+        onEnd() {
+            const order = [...root.querySelectorAll('.tk-da-premium-card')].map((el) => el.dataset.cardId);
+            state.dashboardCards = order
+                .map((id) => state.dashboardCards.find((c) => c.id === id))
+                .filter(Boolean);
+            saveDashboardCards();
+        },
+    });
+}
+
+function updateCrossFilterUi() {
+    const chip = document.getElementById('tk-da-crossfilter-chip');
+    const clearBtn = document.getElementById('tk-da-clear-crossfilter');
+    if (!chip || !clearBtn) {
+        return;
+    }
+    if (!state.crossFilter) {
+        chip.classList.add('hidden');
+        clearBtn.classList.add('hidden');
+        chip.textContent = '';
+
+        return;
+    }
+    const col = columnMeta(state.crossFilter.column)?.label || state.crossFilter.column;
+    chip.textContent = `${col} = ${state.crossFilter.value}`;
+    chip.classList.remove('hidden');
+    clearBtn.classList.remove('hidden');
+}
+
+function setActiveTab(tab) {
+    state.activeTab = tab;
+    sessionStorage.setItem(TAB_KEY, tab);
+    document.querySelectorAll('.tk-da-tab').forEach((btn) => {
+        btn.classList.toggle('is-active', btn.dataset.daTab === tab);
+    });
+    document.querySelectorAll('.tk-da-panel').forEach((panel) => {
+        panel.classList.toggle('hidden', panel.id !== `tk-da-panel-${tab}`);
+    });
+    document.querySelectorAll('[data-da-tab-action="explore"]').forEach((el) => {
+        el.classList.toggle('hidden', tab !== 'explore');
+    });
+    document.querySelectorAll('[data-da-tab-action="dashboard"]').forEach((el) => {
+        el.classList.toggle('hidden', tab !== 'dashboard');
+    });
+    refreshActiveView();
+}
+
+function refreshActiveView() {
+    if (state.activeTab === 'dashboard') {
+        refreshDashboardCardBodies();
+    } else if (state.activeTab === 'data') {
+        renderDataTable();
+    } else if (state.activeTab === 'explore') {
+        state.cells.forEach((c) => {
+            if (c.ran) {
+                const wrap = document.querySelector(`[data-cell-id="${c.id}"]`);
+                if (wrap) {
+                    runCell(c, wrap);
+                }
+            }
+        });
+    }
+}
+
+function renderDataTable() {
+    const el = document.getElementById('tk-da-data-table');
+    if (!el) {
+        return;
+    }
+    const rows = activeRows().slice(0, 200);
+    const cols = ['_indicator_uid', '_site', '_season', 'U', 'N', 'AC', 'AD', 'AP', 'CE', '_collection_date'];
+    const head = cols.map((c) => columnMeta(c)?.label || c);
+    const body = rows.map((r) => cols.map((c) => r[c] ?? ''));
+    el.innerHTML =
+        rows.length === 0
+            ? '<p class="text-tk-muted">No rows match filters.</p>'
+            : tableHtml(head, body) + (activeRows().length > 200 ? `<p class="text-xs text-tk-muted mt-2">Showing 200 of ${activeRows().length} rows.</p>` : '');
+}
 
 function csrf() {
     return cfg.csrf || document.querySelector('meta[name="csrf-token"]')?.content || '';
@@ -58,8 +308,10 @@ function isNumericColumn(id) {
     return false;
 }
 
-function numericValues(id) {
-    return state.rows
+function numericValues(id, rows = null) {
+    const data = rows ?? activeRows();
+
+    return data
         .map((r) => r[id])
         .filter((v) => v !== null && v !== '')
         .map((v) => (typeof v === 'number' ? v : Number(v)))
@@ -140,15 +392,116 @@ async function fetchRows() {
     const params = new URLSearchParams();
     const programId = programEl?.value;
     if (programId) params.set('program_id', programId);
-    [...(sitesEl?.selectedOptions || [])].forEach((o) => params.append('site_ids[]', o.value));
-    [...(seasonsEl?.selectedOptions || [])].forEach((o) => params.append('season_ids[]', o.value));
+    const siteId = sitesEl?.value;
+    if (siteId) params.append('site_ids[]', siteId);
+    const seasonId = seasonsEl?.value;
+    if (seasonId) params.append('season_ids[]', seasonId);
 
     const url = `${cfg.datasetUrl}?${params.toString()}`;
     const res = await fetch(url, { headers: jsonHeaders(), credentials: 'same-origin' });
     if (!res.ok) throw new Error('Could not load dataset');
     const data = await res.json();
     state.rows = data.rows || [];
+    state.columns = enrichColumnRoles(state.columns, state.rows, isNumericColumn);
     return data.row_count ?? state.rows.length;
+}
+
+function slicerProgramId() {
+    const v = document.getElementById('tk-da-filter-program')?.value;
+    return v ? Number(v) : null;
+}
+
+function slicerSiteId() {
+    const v = document.getElementById('tk-da-filter-sites')?.value;
+    return v ? Number(v) : null;
+}
+
+/** Sites limited to the chosen program; all sites when program is “All”. */
+function availableSlicerSites() {
+    const all = state.filters.sites || [];
+    const programId = slicerProgramId();
+    if (!programId) {
+        return all;
+    }
+
+    return all.filter((s) => Number(s.program_id) === programId);
+}
+
+/** Seasons that exist in data for the current program (and site, if chosen). */
+function availableSlicerSeasons() {
+    const all = state.filters.seasons || [];
+    const scopes = state.filters.scopes || [];
+    const programId = slicerProgramId();
+    const siteId = slicerSiteId();
+
+    if (!programId && !siteId) {
+        return all;
+    }
+
+    let pool = scopes;
+    if (programId) {
+        pool = pool.filter((s) => s.program_id === programId);
+    }
+    if (siteId) {
+        pool = pool.filter((s) => s.site_id === siteId);
+    }
+
+    const seasonIds = new Set(pool.map((s) => s.season_id));
+
+    return all.filter((s) => seasonIds.has(Number(s.id)));
+}
+
+function fillSlicerSelect(selectEl, items, labelKey, allLabel, previousValue) {
+    if (!selectEl) {
+        return;
+    }
+    const prev = previousValue ?? selectEl.value;
+    selectEl.innerHTML = '';
+    const allOpt = document.createElement('option');
+    allOpt.value = '';
+    allOpt.textContent = allLabel;
+    selectEl.appendChild(allOpt);
+    items.forEach((item) => {
+        const o = document.createElement('option');
+        o.value = item.id;
+        o.textContent = item[labelKey];
+        selectEl.appendChild(o);
+    });
+    const stillValid = prev && items.some((item) => String(item.id) === String(prev));
+    selectEl.value = stillValid ? prev : '';
+}
+
+/** Cascade site/season options when program or site changes. */
+function syncDependentSlicers(from) {
+    const sites = document.getElementById('tk-da-filter-sites');
+    const seasons = document.getElementById('tk-da-filter-seasons');
+    if (!sites || !seasons) {
+        return;
+    }
+
+    if (from === 'program') {
+        fillSlicerSelect(sites, availableSlicerSites(), 'name', 'All sites', sites.value);
+        fillSlicerSelect(seasons, availableSlicerSeasons(), 'label', 'All seasons', seasons.value);
+    } else if (from === 'site') {
+        fillSlicerSelect(seasons, availableSlicerSeasons(), 'label', 'All seasons', seasons.value);
+    }
+}
+
+function renderSearchSuggestions() {
+    const searchList = document.getElementById('tk-da-search-suggestions');
+    if (!searchList) {
+        return;
+    }
+    searchList.innerHTML = '';
+    const hints = new Set();
+    availableSlicerSites().forEach((s) => hints.add(s.name));
+    availableSlicerSeasons().forEach((s) => hints.add(s.label));
+    (state.filters.programs || []).forEach((p) => hints.add(p.name));
+    hints.forEach((label) => {
+        const opt = document.createElement('option');
+        opt.value = label;
+        searchList.appendChild(opt);
+    });
 }
 
 function renderFilters() {
@@ -157,6 +510,8 @@ function renderFilters() {
     const seasons = document.getElementById('tk-da-filter-seasons');
     if (!prog || !sites || !seasons) return;
 
+    const programValue = prog.value;
+
     prog.innerHTML = '<option value="">All programs</option>';
     (state.filters.programs || []).forEach((p) => {
         const o = document.createElement('option');
@@ -164,48 +519,104 @@ function renderFilters() {
         o.textContent = p.name;
         prog.appendChild(o);
     });
+    prog.value = programValue && [...prog.options].some((o) => o.value === programValue) ? programValue : '';
 
-    sites.innerHTML = '';
-    (state.filters.sites || []).forEach((s) => {
-        const o = document.createElement('option');
-        o.value = s.id;
-        o.textContent = s.name;
-        sites.appendChild(o);
-    });
-
-    seasons.innerHTML = '';
-    (state.filters.seasons || []).forEach((s) => {
-        const o = document.createElement('option');
-        o.value = s.id;
-        o.textContent = s.label;
-        seasons.appendChild(o);
-    });
+    syncDependentSlicers('program');
+    renderSearchSuggestions();
 }
 
-function renderColumnList(filter = '') {
+function renderColumnList(filter = '', roleFilter = '') {
     const ul = document.getElementById('tk-da-column-list');
     if (!ul) return;
     const q = filter.toLowerCase();
     ul.innerHTML = '';
     state.columns
-        .filter((c) => !q || c.label.toLowerCase().includes(q) || c.id.toLowerCase().includes(q))
+        .filter((c) => {
+            if (q && !c.label.toLowerCase().includes(q) && !c.id.toLowerCase().includes(q)) {
+                return false;
+            }
+            if (!roleFilter) {
+                return true;
+            }
+            if (roleFilter === 'measure') {
+                return isNumericColumn(c.id);
+            }
+            if (roleFilter === 'table_only') {
+                return c.roles?.includes('table_only');
+            }
+            return c.roles?.includes(roleFilter);
+        })
         .forEach((c) => {
             const li = document.createElement('li');
-            li.className = 'py-1 border-b border-tk-line/40';
-            li.innerHTML = `<span class="font-mono text-tk-accent">${escapeHtml(c.id)}</span> <span class="text-tk-muted">${escapeHtml(c.kind)}</span>`;
+            li.className = 'py-1.5 border-b border-tk-line/40';
+            const badges = (c.roles || [])
+                .filter((r) => !['table'].includes(r))
+                .slice(0, 3)
+                .map((r) => `<span class="tk-da-role-tag">${escapeHtml(r.replace('_', ' '))}</span>`)
+                .join('');
+            li.innerHTML = `<div class="font-mono text-tk-accent text-[11px]">${escapeHtml(c.id)}</div>
+                <div class="text-tk-muted text-[10px] mt-0.5">${escapeHtml(c.kind)}${c.uniqueCount != null ? ` · ${c.uniqueCount} values` : ''}</div>
+                <div class="flex flex-wrap gap-1 mt-1">${badges}</div>`;
             ul.appendChild(li);
         });
+}
+
+function columnOptionsForPicker(role, selected, allowEmpty = false) {
+    if (!role) {
+        return { html: '', count: 0, hint: '' };
+    }
+    const list = buildSelectOptions(state.columns, role, selected, allowEmpty, isNumericColumn);
+    const count = filterColumnsCount(role);
+    return { html: list, count, hint: roleHint(role, count) };
+}
+
+function filterColumnsCount(role) {
+    if (role === 'measure_or_dimension') {
+        return state.columns.filter(
+            (c) => !c.roles?.includes('table_only') && (isNumericColumn(c.id) || c.roles?.includes('dimension')),
+        ).length;
+    }
+    if (role === 'table') {
+        return state.columns.filter((c) => !c.roles?.includes('table_only')).length;
+    }
+    if (role === FIELD_ROLE.MEASURE || role === 'numeric') {
+        return state.columns.filter((c) => isNumericColumn(c.id)).length;
+    }
+    return state.columns.filter((c) => c.roles?.includes(role) && !c.roles?.includes('table_only')).length;
 }
 
 function escapeHtml(s) {
     return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-function columnOptions(selected = '', kinds = null) {
-    return state.columns
-        .filter((c) => !kinds || kinds.includes(c.kind) || (kinds.includes('numeric') && isNumericColumn(c.id)))
-        .map((c) => `<option value="${escapeHtml(c.id)}" ${c.id === selected ? 'selected' : ''}>${escapeHtml(c.label)}</option>`)
-        .join('');
+function columnOptions(selected = '', kinds = null, allowEmpty = false) {
+    let role = null;
+    if (kinds?.includes('numeric')) {
+        role = FIELD_ROLE.MEASURE;
+    } else if (kinds?.includes('date')) {
+        role = FIELD_ROLE.DATE;
+    }
+    if (role) {
+        return buildSelectOptions(state.columns, role, selected, allowEmpty, isNumericColumn);
+    }
+
+    const empty = allowEmpty ? `<option value="" ${selected === '' ? 'selected' : ''}>—</option>` : '';
+
+    return (
+        empty +
+        state.columns
+            .filter((c) => {
+                if (c.roles?.includes('table_only')) {
+                    return false;
+                }
+                if (!kinds) {
+                    return true;
+                }
+                return kinds.includes(c.kind) || (kinds.includes('numeric') && isNumericColumn(c.id));
+            })
+            .map((c) => `<option value="${escapeHtml(c.id)}" ${c.id === selected ? 'selected' : ''}>${escapeHtml(c.label)}</option>`)
+            .join('')
+    );
 }
 
 function renderCells() {
@@ -223,6 +634,7 @@ function renderCells() {
         const wrap = document.createElement('article');
         wrap.className = 'tk-da-cell tk-card p-4';
         wrap.dataset.cellId = cell.id;
+        wrap.setAttribute('data-cell-id', cell.id);
 
         wrap.innerHTML = `
             <header class="flex flex-wrap items-center gap-2 mb-3">
@@ -392,8 +804,8 @@ function runCell(cell, wrap) {
     const out = wrap.querySelector('.tk-da-output');
     if (!out) return;
 
-    if (state.rows.length === 0) {
-        out.innerHTML = '<p class="text-amber-700">No rows loaded. Apply filters and refresh the dataset.</p>';
+    if (activeRows().length === 0) {
+        out.innerHTML = '<p class="text-amber-700">No rows in view. Adjust slicers, search, or clear chart selection.</p>';
         return;
     }
 
@@ -468,19 +880,20 @@ function executeCell(cell) {
 }
 
 function runDescribe(p) {
+    const dataRows = activeRows();
     const cols = Array.isArray(p.columns) ? p.columns : String(p.columns || '').split(',').map((s) => s.trim()).filter(Boolean);
-    const rows = [];
+    const out = [];
     cols.forEach((id) => {
         if (!isNumericColumn(id)) {
-            rows.push([id, '—', 'not numeric', '', '', '', '', '']);
+            out.push([id, '—', 'not numeric', '', '', '', '', '']);
             return;
         }
-        const vals = numericValues(id);
+        const vals = numericValues(id, dataRows);
         if (vals.length === 0) {
-            rows.push([id, 0, '', '', '', '', '', '']);
+            out.push([id, 0, '', '', '', '', '', '']);
             return;
         }
-        rows.push([
+        out.push([
             id,
             vals.length,
             ss.mean(vals).toFixed(4),
@@ -492,22 +905,23 @@ function runDescribe(p) {
         ]);
     });
     return {
-        html: tableHtml(['Column', 'n', 'mean', 'median', 'std', 'min', 'max', 'Q1 / Q3'], rows),
+        html: tableHtml(['Column', 'n', 'mean', 'median', 'std', 'min', 'max', 'Q1 / Q3'], out),
     };
 }
 
 function runProfile(p) {
+    const dataRows = activeRows();
     const max = p.maxColumns ?? 24;
     const cols = state.columns.slice(0, max);
     const rows = [];
     cols.forEach((c) => {
-        const vals = state.rows.map((r) => r[c.id]);
+        const vals = dataRows.map((r) => r[c.id]);
         const nonNull = vals.filter((v) => v !== null && v !== '');
-        const missing = state.rows.length - nonNull.length;
+        const missing = dataRows.length - nonNull.length;
         const unique = new Set(nonNull.map(String)).size;
         let extra = '';
         if (isNumericColumn(c.id)) {
-            const nums = numericValues(c.id);
+            const nums = numericValues(c.id, dataRows);
             if (nums.length) {
                 extra = `mean ${ss.mean(nums).toFixed(2)}, σ ${ss.standardDeviation(nums).toFixed(2)}`;
             }
@@ -523,7 +937,7 @@ function runProfile(p) {
         rows.push([c.id, c.kind, nonNull.length, missing, unique, extra]);
     });
     return {
-        html: `<p class="text-xs text-tk-muted mb-2">Automated profile on ${state.rows.length} rows (ydata-style summary, in-browser).</p>${tableHtml(['Column', 'kind', 'present', 'missing', 'unique', 'stats / top values'], rows)}`,
+        html: `<p class="text-xs text-tk-muted mb-2">Automated profile on ${dataRows.length} rows (ydata-style summary, in-browser).</p>${tableHtml(['Column', 'kind', 'present', 'missing', 'unique', 'stats / top values'], rows)}`,
     };
 }
 
@@ -540,8 +954,9 @@ function aggregate(values, agg) {
 }
 
 function runGroupBy(p) {
+    const dataRows = activeRows();
     const groups = {};
-    state.rows.forEach((r) => {
+    dataRows.forEach((r) => {
         const key = String(r[p.group] ?? '(blank)');
         if (!groups[key]) groups[key] = [];
         if (p.agg === 'count') {
@@ -560,8 +975,9 @@ function runGroupBy(p) {
 }
 
 function runChart(p) {
-    const xVals = state.rows.map((r) => r[p.x]);
-    const yVals = state.rows.map((r) => r[p.y]);
+    const dataRows = activeRows();
+    const xVals = dataRows.map((r) => r[p.x]);
+    const yVals = dataRows.map((r) => r[p.y]);
     const title = p.title || `${p.chartType}: ${p.y} by ${p.x}`;
 
     let plot = null;
@@ -578,21 +994,21 @@ function runChart(p) {
             layout: { title, height: 420 },
         };
     } else if (p.chartType === 'histogram') {
-        const nums = numericValues(p.y);
+        const nums = numericValues(p.y, dataRows);
         plot = {
             data: [{ type: 'histogram', x: nums, name: p.y }],
             layout: { title, height: 420, xaxis: { title: p.y } },
         };
     } else if (p.chartType === 'box') {
         plot = {
-            data: [{ type: 'box', y: numericValues(p.y), name: p.y, boxpoints: 'all' }],
+            data: [{ type: 'box', y: numericValues(p.y, dataRows), name: p.y, boxpoints: 'all' }],
             layout: { title, height: 420 },
         };
     } else if (p.chartType === 'heatmap') {
         const xs = [...new Set(xVals.map(String))];
-        const ys = [...new Set(state.rows.map((r) => String(r[p.color || p.x])))];
+        const ys = [...new Set(dataRows.map((r) => String(r[p.color || p.x])))];
         const z = ys.map(() => xs.map(() => 0));
-        state.rows.forEach((r) => {
+        dataRows.forEach((r) => {
             const xi = xs.indexOf(String(r[p.x]));
             const yi = ys.indexOf(String(r[p.color || p.y]));
             const v = Number(r[p.y]);
@@ -602,9 +1018,34 @@ function runChart(p) {
             data: [{ type: 'heatmap', x: xs, y: ys, z }],
             layout: { title, height: 440 },
         };
+    } else if (p.chartType === 'scatter') {
+        const xs = [];
+        const ys = [];
+        dataRows.forEach((r) => {
+            const xv = r[p.x];
+            const yv = Number(r[p.y]);
+            if (Number.isNaN(yv)) {
+                return;
+            }
+            const xNum = typeof xv === 'number' ? xv : Number(xv);
+            if (!Number.isNaN(xNum) && String(xv).trim() !== '') {
+                xs.push(xNum);
+                ys.push(yv);
+            } else {
+                xs.push(String(xv ?? '(blank)'));
+                ys.push(yv);
+            }
+        });
+        if (xs.length === 0) {
+            throw new Error('No numeric Y values for scatter. Pick a numeric value column.');
+        }
+        plot = {
+            data: [{ type: 'scatter', mode: 'markers', x: xs, y: ys, marker: { color: PALETTE[0] } }],
+            layout: plotLayout(title, { height: 440, xaxis: { title: p.x }, yaxis: { title: p.y } }),
+        };
     } else {
         const buckets = {};
-        state.rows.forEach((r) => {
+        dataRows.forEach((r) => {
             const k = String(r[p.x] ?? '(blank)');
             if (!buckets[k]) buckets[k] = [];
             const v = r[p.y];
@@ -642,11 +1083,12 @@ function runChart(p) {
 }
 
 function runCorrelation(p) {
+    const dataRows = activeRows();
     const cols = (Array.isArray(p.columns) ? p.columns : []).filter((id) => isNumericColumn(id));
     if (cols.length < 2) throw new Error('Pick at least two numeric columns.');
     const matrix = cols.map((rowCol) =>
         cols.map((colCol) => {
-            const pairs = state.rows
+            const pairs = dataRows
                 .map((r) => [r[rowCol], r[colCol]])
                 .filter(([a, b]) => a !== null && b !== null && a !== '' && b !== '' && !Number.isNaN(Number(a)) && !Number.isNaN(Number(b)))
                 .map(([a, b]) => [Number(a), Number(b)]);
@@ -665,9 +1107,10 @@ function runCorrelation(p) {
 }
 
 function runTtest(p) {
+    const dataRows = activeRows();
     const a = [];
     const b = [];
-    state.rows.forEach((r) => {
+    dataRows.forEach((r) => {
         const g = String(r[p.split]);
         const v = Number(r[p.numeric]);
         if (Number.isNaN(v)) return;
@@ -716,8 +1159,9 @@ function oneWayAnovaF(samples) {
 }
 
 function runAnova(p) {
+    const dataRows = activeRows();
     const groups = {};
-    state.rows.forEach((r) => {
+    dataRows.forEach((r) => {
         const k = String(r[p.factor] ?? '(blank)');
         const v = Number(r[p.numeric]);
         if (Number.isNaN(v)) return;
@@ -734,8 +1178,9 @@ function runAnova(p) {
 }
 
 function runChi2(p) {
+    const dataRows = activeRows();
     const table = {};
-    state.rows.forEach((r) => {
+    dataRows.forEach((r) => {
         const a = String(r[p.colA] ?? '(blank)');
         const b = String(r[p.colB] ?? '(blank)');
         table[a] = table[a] || {};
@@ -744,7 +1189,7 @@ function runChi2(p) {
     const rowsA = Object.keys(table);
     const colsB = [...new Set(rowsA.flatMap((a) => Object.keys(table[a])))];
     let chi2 = 0;
-    const total = state.rows.length;
+    const total = dataRows.length;
     const colTotals = {};
     colsB.forEach((b) => {
         colTotals[b] = rowsA.reduce((s, a) => s + (table[a][b] || 0), 0);
@@ -764,8 +1209,9 @@ function runChi2(p) {
 }
 
 function runTimeseries(p) {
+    const dataRows = activeRows();
     const buckets = {};
-    state.rows.forEach((r) => {
+    dataRows.forEach((r) => {
         const d = r[p.dateCol];
         const v = r[p.valueCol];
         if (!d || v === null || v === '') return;
@@ -799,12 +1245,13 @@ function runTimeseries(p) {
 }
 
 function runMap(p) {
+    const dataRows = activeRows();
     const lats = [];
     const lons = [];
     const texts = [];
     const colors = [];
     const sizes = [];
-    state.rows.forEach((r) => {
+    dataRows.forEach((r) => {
         const lat = Number(r[p.lat]);
         const lon = Number(r[p.lon]);
         if (Number.isNaN(lat) || Number.isNaN(lon)) return;
@@ -836,33 +1283,113 @@ function runMap(p) {
     return { html: `${plotToolbar()}<div class="tk-da-plot w-full min-h-[480px]"></div>`, plot };
 }
 
+async function refreshDataset() {
+    setDashboardLoading(true);
+    const status = document.getElementById('tk-da-status');
+    let count = 0;
+    try {
+        count = await fetchRows();
+    } finally {
+        setDashboardLoading(false);
+    }
+    const inView = activeRows().length;
+    if (status) {
+        status.textContent = `${count} rows loaded · ${inView} in view · ${state.columns.length} fields`;
+    }
+    refreshActiveView();
+}
+
 async function bootstrap() {
     const status = document.getElementById('tk-da-status');
     try {
+        initDashboard({
+            cfg,
+            state,
+            Plotly,
+            ss,
+            PALETTE,
+            CHART_TYPES,
+            activeRows,
+            columnMeta,
+            columnOptions,
+            columnOptionsForPicker,
+            pickerRoleFor,
+            galleryAvailability,
+            isNumericColumn,
+            filterColumnsCount,
+            countByColumn,
+            numericValues,
+            runChart,
+            plotLayout,
+            mountPlotEl,
+            tableHtml,
+            escapeHtml,
+            destroySortable: destroyDashboardSortable,
+            initSortable: initDashboardSortable,
+        });
+        loadDashboardEditMode();
+        syncEditModeUi();
+        loadDashboardCards();
         await fetchSchema();
         renderFilters();
         renderColumnList();
-        const count = await fetchRows();
-        if (status) status.textContent = `${count} rows · ${state.columns.length} columns`;
+        await refreshDataset();
         loadNotebook();
         state.cells.forEach((c) => {
             if (!c.params || Object.keys(c.params).length === 0) c.params = defaultParams(c.type);
         });
         renderCells();
+        const savedTab = sessionStorage.getItem(TAB_KEY) || 'dashboard';
+        setActiveTab(savedTab);
     } catch (e) {
         if (status) status.textContent = e.message || 'Failed to load';
     }
 }
 
-document.getElementById('tk-da-apply-filters')?.addEventListener('click', async () => {
-    const status = document.getElementById('tk-da-status');
-    try {
-        const count = await fetchRows();
-        if (status) status.textContent = `${count} rows · ${state.columns.length} columns`;
-    } catch (e) {
-        if (status) status.textContent = e.message || 'Refresh failed';
-    }
+document.getElementById('tk-da-apply-filters')?.addEventListener('click', () => scheduleSlicerRefresh());
+
+document.getElementById('tk-da-filter-program')?.addEventListener('change', () => {
+    syncDependentSlicers('program');
+    renderSearchSuggestions();
+    scheduleSlicerRefresh();
 });
+
+document.getElementById('tk-da-filter-sites')?.addEventListener('change', () => {
+    syncDependentSlicers('site');
+    renderSearchSuggestions();
+    scheduleSlicerRefresh();
+});
+
+document.getElementById('tk-da-filter-seasons')?.addEventListener('change', () => scheduleSlicerRefresh());
+
+document.getElementById('tk-da-edit-mode')?.addEventListener('click', () => {
+    state.dashboardEditMode = !state.dashboardEditMode;
+    sessionStorage.setItem(EDIT_MODE_KEY(), state.dashboardEditMode ? '1' : '0');
+    syncEditModeUi();
+    renderDashboardCanvas();
+});
+
+document.getElementById('tk-da-template-exec')?.addEventListener('click', () => applyDashboardTemplate('executive'));
+document.getElementById('tk-da-template-field')?.addEventListener('click', () => applyDashboardTemplate('field'));
+
+document.querySelectorAll('.tk-da-tab').forEach((btn) => {
+    btn.addEventListener('click', () => setActiveTab(btn.dataset.daTab || 'dashboard'));
+});
+
+document.getElementById('tk-da-row-search')?.addEventListener('input', (e) => {
+    state.rowSearch = e.target.value;
+    refreshActiveView();
+});
+
+document.getElementById('tk-da-clear-crossfilter')?.addEventListener('click', () => {
+    state.crossFilter = null;
+    updateCrossFilterUi();
+    refreshActiveView();
+});
+
+document.getElementById('tk-da-add-card')?.addEventListener('click', () => openGallery());
+document.getElementById('tk-da-toolbar-add')?.addEventListener('click', () => openGallery());
+document.getElementById('tk-da-reset-dashboard')?.addEventListener('click', () => resetDashboardLayout());
 
 document.getElementById('tk-da-reload-data')?.addEventListener('click', () => bootstrap());
 
@@ -886,7 +1413,13 @@ document.getElementById('tk-da-reset-notebook')?.addEventListener('click', () =>
 });
 
 document.getElementById('tk-da-column-search')?.addEventListener('input', (e) => {
-    renderColumnList(e.target.value);
+    const role = document.getElementById('tk-da-column-role-filter')?.value || '';
+    renderColumnList(e.target.value, role);
+});
+
+document.getElementById('tk-da-column-role-filter')?.addEventListener('change', (e) => {
+    const q = document.getElementById('tk-da-column-search')?.value || '';
+    renderColumnList(q, e.target.value);
 });
 
 if (document.getElementById('tk-deep-analysis-root')) {

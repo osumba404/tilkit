@@ -227,8 +227,116 @@
         @apply text-white bg-tk-accent shadow-tk-sm;
     }
 
+    .tk-da-shell {
+        @apply space-y-6;
+    }
+
+    .tk-da-command {
+        @apply p-4 lg:p-5;
+    }
+
+    .tk-da-tabs {
+        @apply inline-flex gap-1 p-1 rounded-lg bg-tk-soft/90 border border-tk-line/60;
+    }
+
+    .tk-da-tab {
+        @apply px-4 py-2 rounded-md text-sm font-medium text-tk-muted transition-colors;
+    }
+
+    .tk-da-tab:hover {
+        @apply text-tk-ink bg-white/80;
+    }
+
+    .tk-da-tab.is-active {
+        @apply bg-white text-tk-ink shadow-tk-xs;
+    }
+
+    .dark .tk-da-tab.is-active {
+        @apply bg-tk-surface text-tk-ink;
+    }
+
+    .tk-da-slicer-label {
+        @apply block text-[11px] font-semibold uppercase tracking-wide text-tk-muted mb-1;
+    }
+
+    .tk-da-chip {
+        @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-tk-accent/15 text-tk-accent border border-tk-accent/30;
+    }
+
+    .tk-da-kpi-grid {
+        @apply grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 mb-6;
+    }
+
+    .tk-da-kpi {
+        @apply tk-card p-4 border-l-4 border-tk-accent;
+    }
+
+    .tk-da-kpi-label {
+        @apply text-[11px] font-semibold uppercase tracking-wide text-tk-muted;
+    }
+
+    .tk-da-kpi-value {
+        @apply text-2xl font-bold text-tk-ink mt-1 tabular-nums;
+    }
+
+    .tk-da-kpi-sub {
+        @apply text-xs text-tk-muted mt-1;
+    }
+
+    .tk-da-widget-grid {
+        @apply grid grid-cols-1 lg:grid-cols-12 gap-4;
+    }
+
+    .tk-da-widget {
+        @apply tk-card p-0 overflow-hidden lg:col-span-4 flex flex-col;
+    }
+
+    .tk-da-widget--wide {
+        @apply lg:col-span-8;
+    }
+
+    .tk-da-widget--half {
+        @apply lg:col-span-6;
+    }
+
+    .tk-da-widget--full {
+        @apply lg:col-span-12;
+    }
+
+    .tk-da-widget-head {
+        @apply flex items-center justify-between gap-2 px-4 py-3 border-b border-tk-line/70 bg-tk-soft/40;
+    }
+
+    .tk-da-widget-head h3 {
+        @apply text-sm font-semibold text-tk-ink m-0;
+    }
+
+    .tk-da-widget-dl {
+        @apply text-[11px] font-medium text-tk-accent hover:underline px-2 py-1 rounded;
+    }
+
+    .tk-da-plot-host {
+        @apply w-full min-h-[280px] p-2;
+    }
+
+    .tk-da-plot-host--sm {
+        @apply min-h-[240px];
+    }
+
+    .tk-da-leaderboard {
+        @apply p-4 space-y-2 text-sm;
+    }
+
+    .tk-da-leaderboard-row {
+        @apply flex items-center gap-3;
+    }
+
+    .tk-da-leaderboard-bar {
+        @apply h-2 rounded-full bg-tk-accent/80 flex-1 max-w-[40%];
+    }
+
     .tk-da-workspace {
-        @apply grid lg:grid-cols-[minmax(240px,280px)_1fr] gap-6 items-start;
+        @apply grid lg:grid-cols-[minmax(220px,260px)_1fr] gap-6 items-start;
     }
 
     .tk-da-sidebar {

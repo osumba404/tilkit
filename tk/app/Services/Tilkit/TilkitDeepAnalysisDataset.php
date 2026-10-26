@@ -18,36 +18,65 @@ class TilkitDeepAnalysisDataset
     public function schema(DcProject $tool): array
     {
         $columns = [
-            ['id' => '_record_id', 'label' => 'Record ID', 'field' => 'record_id', 'kind' => 'integer', 'group' => 'Meta'],
-            ['id' => '_indicator_uid', 'label' => 'Indicator UID', 'field' => 'indicator_uid', 'kind' => 'text', 'group' => 'Meta'],
-            ['id' => '_site', 'label' => 'Site', 'field' => 'site_name', 'kind' => 'categorical', 'group' => 'Meta'],
-            ['id' => '_season', 'label' => 'Season', 'field' => 'season_label', 'kind' => 'categorical', 'group' => 'Meta'],
-            ['id' => '_program', 'label' => 'Program', 'field' => 'program_name', 'kind' => 'categorical', 'group' => 'Meta'],
-            ['id' => '_collection_date', 'label' => 'Collection date', 'field' => 'collection_date', 'kind' => 'date', 'group' => 'Meta'],
-            ['id' => '_latitude', 'label' => 'Latitude', 'field' => 'latitude', 'kind' => 'number', 'group' => 'Geo'],
-            ['id' => '_longitude', 'label' => 'Longitude', 'field' => 'longitude', 'kind' => 'number', 'group' => 'Geo'],
+            $this->columnDescriptor('_record_id', 'Record ID', 'record_id', 'integer', 'Meta'),
+            $this->columnDescriptor('_indicator_uid', 'Indicator UID', 'indicator_uid', 'text', 'Meta'),
+            $this->columnDescriptor('_site', 'Site', 'site_name', 'categorical', 'Meta'),
+            $this->columnDescriptor('_season', 'Season', 'season_label', 'categorical', 'Meta'),
+            $this->columnDescriptor('_program', 'Program', 'program_name', 'categorical', 'Meta'),
+            $this->columnDescriptor('_collection_date', 'Collection date', 'collection_date', 'date', 'Meta'),
+            $this->columnDescriptor('_latitude', 'Latitude', 'latitude', 'number', 'Geo'),
+            $this->columnDescriptor('_longitude', 'Longitude', 'longitude', 'number', 'Geo'),
         ];
 
         foreach (WorkbookColumnRegistry::all() as $col) {
             $kind = $this->columnKind($col);
-            $columns[] = [
-                'id' => $col['column'],
-                'label' => $col['column'].' · '.$col['field'],
-                'field' => $col['field'],
-                'kind' => $kind,
-                'group' => $col['group'] ?? 'Workbook',
-                'derived' => (bool) $col['derived'],
-            ];
+            $columns[] = $this->columnDescriptor(
+                $col['column'],
+                $col['column'].' · '.$col['field'],
+                $col['field'],
+                $kind,
+                $col['group'] ?? 'Workbook',
+                (bool) $col['derived'],
+                $col,
+            );
         }
 
         $records = $this->baseQuery($tool)->with(['site.program', 'season'])->get();
 
+        $sites = $records->pluck('site')->filter()->unique('id')->map(fn ($s) => [
+            'id' => $s->id,
+            'name' => $s->name,
+            'program_id' => $s->program_id,
+        ])->sortBy('name')->values()->all();
+
+        $seasons = $records->pluck('season')->filter()->unique('id')->map(fn ($s) => [
+            'id' => $s->id,
+            'label' => $s->label,
+        ])->sortBy('label')->values()->all();
+
+        $programs = $records->pluck('site.program')->filter()->unique('id')->map(fn ($p) => [
+            'id' => $p->id,
+            'name' => $p->name,
+        ])->sortBy('name')->values()->all();
+
+        $scopes = $records
+            ->filter(fn ($r) => $r->site_id && $r->season_id && $r->site?->program_id)
+            ->map(fn ($r) => [
+                'program_id' => (int) $r->site->program_id,
+                'site_id' => (int) $r->site_id,
+                'season_id' => (int) $r->season_id,
+            ])
+            ->unique(fn (array $s) => $s['program_id'].'|'.$s['site_id'].'|'.$s['season_id'])
+            ->values()
+            ->all();
+
         return [
             'columns' => $columns,
             'filters' => [
-                'sites' => $records->pluck('site')->filter()->unique('id')->map(fn ($s) => ['id' => $s->id, 'name' => $s->name])->values()->all(),
-                'seasons' => $records->pluck('season')->filter()->unique('id')->map(fn ($s) => ['id' => $s->id, 'label' => $s->label])->values()->all(),
-                'programs' => $records->pluck('site.program')->filter()->unique('id')->map(fn ($p) => ['id' => $p->id, 'name' => $p->name])->values()->all(),
+                'sites' => $sites,
+                'seasons' => $seasons,
+                'programs' => $programs,
+                'scopes' => $scopes,
             ],
         ];
     }
@@ -106,6 +135,61 @@ class TilkitDeepAnalysisDataset
         }
 
         return ['rows' => $out, 'row_count' => count($out)];
+    }
+
+    /** @return array<string, mixed> */
+    private function columnDescriptor(
+        string $id,
+        string $label,
+        string $field,
+        string $kind,
+        string $group,
+        bool $derived = false,
+        ?array $workbookCol = null,
+    ): array {
+        return [
+            'id' => $id,
+            'label' => $label,
+            'field' => $field,
+            'kind' => $kind,
+            'group' => $group,
+            'derived' => $derived,
+            'roles' => $this->columnRoles($id, $kind, $workbookCol),
+        ];
+    }
+
+    /** @return list<string> */
+    private function columnRoles(string $id, string $kind, ?array $workbookCol = null): array
+    {
+        if ($id === '_latitude') {
+            return ['geo_lat', 'measure', 'table'];
+        }
+        if ($id === '_longitude') {
+            return ['geo_lon', 'measure', 'table'];
+        }
+
+        $input = $workbookCol !== null ? WorkbookInputSpec::kind($workbookCol) : null;
+
+        if ($input === 'photos') {
+            return ['table_only'];
+        }
+        if ($input === 'gps') {
+            return ['table_only'];
+        }
+        if ($kind === 'date') {
+            return ['date', 'dimension', 'table'];
+        }
+        if ($kind === 'number' || $kind === 'integer') {
+            return ['measure', 'table'];
+        }
+        if ($kind === 'categorical') {
+            return ['dimension', 'table'];
+        }
+        if ($input === 'textarea') {
+            return ['table', 'dimension'];
+        }
+
+        return ['dimension', 'table'];
     }
 
     /** @param  array<string, mixed>  $col */
