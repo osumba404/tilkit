@@ -319,6 +319,10 @@
         @apply w-full min-h-[280px] p-2;
     }
 
+    .tk-da-plot {
+        @apply w-full min-h-[420px];
+    }
+
     .tk-da-plot-host--sm {
         @apply min-h-[240px];
     }

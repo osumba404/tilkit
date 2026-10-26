@@ -53,7 +53,7 @@
                     <button type="button" id="tk-da-apply-filters" class="tk-btn-secondary text-sm">Refresh now</button>
                     <button type="button" id="tk-da-clear-crossfilter" class="tk-btn-secondary text-sm hidden">Clear selection</button>
                     <span id="tk-da-crossfilter-chip" class="tk-da-chip hidden"></span>
-                    <span class="text-xs text-tk-muted hidden lg:inline">Slicers auto-apply · Click charts to filter · Configure each visual for fields and width</span>
+                    <span class="text-xs text-tk-muted hidden lg:inline">Slicers auto-apply · Click charts to filter · Esc closes panels · Ctrl+Z / Ctrl+Y undo/redo dashboard</span>
                 </div>
             </div>
         </div>
@@ -62,9 +62,9 @@
             <div class="tk-da-toolbar-dash">
                 <button type="button" id="tk-da-edit-mode" class="tk-btn-secondary text-sm" aria-pressed="true">Done editing</button>
                 <span class="tk-da-toolbar-divider"></span>
-                <button type="button" id="tk-da-toolbar-add" class="tk-btn-primary text-sm">+ Add visual</button>
-                <button type="button" id="tk-da-template-exec" class="tk-btn-secondary text-sm">Executive template</button>
-                <button type="button" id="tk-da-template-field" class="tk-btn-secondary text-sm">Field template</button>
+                <button type="button" class="tk-btn-secondary text-sm" data-da-template="executive">Executive template</button>
+                <button type="button" class="tk-btn-secondary text-sm" data-da-template="field">Field template</button>
+                <button type="button" class="tk-btn-secondary text-sm" data-da-template="validation">Validation template</button>
                 <button type="button" id="tk-da-reset-dashboard" class="tk-btn-secondary text-sm">Clear all</button>
             </div>
             <div class="tk-da-canvas-wrap">
@@ -73,6 +73,9 @@
                 </div>
                 <div id="tk-da-dashboard-canvas" class="tk-da-canvas"></div>
             </div>
+            <button type="button" id="tk-da-toolbar-add" class="tk-da-fab-add tk-btn-primary text-sm shadow-tk-lg">
+                + Add visual
+            </button>
         </section>
 
         <section id="tk-da-panel-explore" class="tk-da-panel hidden">

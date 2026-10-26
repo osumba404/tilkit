@@ -6,6 +6,71 @@ let deps = {};
 
 const DASHBOARD_STORAGE_KEY = () => `tilkit-da-dashboard-${deps.cfg?.toolSlug || 'default'}`;
 
+const dashHistory = { past: [], future: [], max: 50, restoring: false };
+
+function cloneCardsForHistory() {
+    return JSON.parse(
+        JSON.stringify(
+            deps.state.dashboardCards.map(({ id, type, title, span, config }) => ({ id, type, title, span, config })),
+        ),
+    );
+}
+
+export function seedDashboardHistory() {
+    dashHistory.past = [cloneCardsForHistory()];
+    dashHistory.future = [];
+}
+
+export function pushDashboardHistory() {
+    if (dashHistory.restoring || !deps.state) {
+        return;
+    }
+    const snap = cloneCardsForHistory();
+    const last = dashHistory.past[dashHistory.past.length - 1];
+    if (last && JSON.stringify(last) === JSON.stringify(snap)) {
+        return;
+    }
+    dashHistory.past.push(snap);
+    if (dashHistory.past.length > dashHistory.max) {
+        dashHistory.past.shift();
+    }
+    dashHistory.future = [];
+}
+
+function restoreDashboardSnapshot(snap) {
+    dashHistory.restoring = true;
+    deps.state.dashboardCards = snap.map((c) => normalizeDashboardCard(c));
+    saveDashboardCards();
+    closeConfigDrawer();
+    closeGallery();
+    renderDashboardCanvas();
+    dashHistory.restoring = false;
+}
+
+export function undoDashboard() {
+    if (dashHistory.past.length < 2) {
+        return false;
+    }
+    const current = dashHistory.past.pop();
+    dashHistory.future.push(current);
+    const prev = dashHistory.past[dashHistory.past.length - 1];
+    restoreDashboardSnapshot(JSON.parse(JSON.stringify(prev)));
+
+    return true;
+}
+
+export function redoDashboard() {
+    if (dashHistory.future.length === 0) {
+        return false;
+    }
+    const current = cloneCardsForHistory();
+    dashHistory.past.push(current);
+    const next = dashHistory.future.pop();
+    restoreDashboardSnapshot(JSON.parse(JSON.stringify(next)));
+
+    return true;
+}
+
 export const WIDGET_CATALOG = {
     kpi: {
         label: 'KPI metric',
@@ -111,7 +176,21 @@ const TEMPLATES = {
         { type: 'category_breakdown', title: 'Validation', span: 6, config: { column: 'AP', viz: 'bar', title: 'Validation (AP)' } },
         { type: 'field_snapshot', title: 'Field coverage', span: 12, config: { columns: '_site,_season,N,AC,AD,AP,CE', title: 'Coverage' } },
     ],
+    validation: [
+        { type: 'kpi', title: 'Total rows', span: 3, config: { metric: 'rows', label: 'Workbook rows', showSub: true } },
+        { type: 'kpi', title: 'Sighted', span: 3, config: { metric: 'sighted', label: 'Sighted (N)', showSub: true } },
+        { type: 'kpi', title: 'Confirmed', span: 3, config: { metric: 'confirmed', label: 'Confirmed (AC)', showSub: true } },
+        { type: 'kpi', title: 'Approved', span: 3, config: { metric: 'approved', label: 'Approved (AD)', showSub: true } },
+        { type: 'funnel', title: 'Validation funnel', span: 6, config: { title: 'Capture funnel' } },
+        { type: 'category_breakdown', title: 'Validation status', span: 6, config: { column: 'AP', viz: 'donut', title: 'Status (AP)' } },
+        { type: 'heatmap', title: 'Volume by season & site', span: 8, config: { rowField: '_season', colField: '_site' } },
+        { type: 'chart', title: 'Sighted by site', span: 4, config: { chartType: 'bar', x: '_site', y: 'N', title: 'Mean sighted (N)', cumulative: false } },
+        { type: 'field_snapshot', title: 'Sign-off fields', span: 12, config: { columns: '_indicator_uid,_site,_season,N,AC,AD,AP', title: 'Validation chain' } },
+    ],
 };
+
+/** Preset keys → toolbar labels (keep in sync with deep-analysis.blade.php). */
+export const DASHBOARD_TEMPLATE_KEYS = ['executive', 'field', 'validation'];
 
 export function initDashboard(shared) {
     deps = shared;
@@ -171,6 +250,7 @@ export function applyDashboardTemplate(key) {
     if (deps.state.dashboardCards.length && !confirm('Replace your current dashboard with this template?')) {
         return;
     }
+    pushDashboardHistory();
     deps.state.dashboardCards = t.map((c) => newCard({ ...c, config: { ...c.config } }));
     saveDashboardCards();
     renderDashboardCanvas();
@@ -183,6 +263,7 @@ export function suggestStarterLayout() {
 export function addDashboardCard(type) {
     const meta = WIDGET_CATALOG[type];
     if (!meta) return;
+    pushDashboardHistory();
     const card = newCard({
         type,
         title: meta.label,
@@ -285,11 +366,15 @@ export function renderDashboardCanvas() {
             <p class="text-sm text-tk-muted max-w-lg mb-6 mt-6">Build a dashboard like Power BI or Looker: only the cards you need, wired to your workbook columns.</p>
             <div class="flex flex-wrap gap-3 justify-center">
                 <button type="button" id="tk-da-empty-add" class="tk-btn-primary text-sm">Open visual gallery</button>
-                <button type="button" id="tk-da-empty-suggest" class="tk-btn-secondary text-sm">Load executive template</button>
+                <button type="button" class="tk-btn-secondary text-sm" data-da-template="executive">Executive template</button>
+                <button type="button" class="tk-btn-secondary text-sm" data-da-template="field">Field template</button>
+                <button type="button" class="tk-btn-secondary text-sm" data-da-template="validation">Validation template</button>
             </div>
         </div>`;
         document.getElementById('tk-da-empty-add')?.addEventListener('click', openGallery);
-        document.getElementById('tk-da-empty-suggest')?.addEventListener('click', suggestStarterLayout);
+        root.querySelectorAll('[data-da-template]').forEach((btn) => {
+            btn.addEventListener('click', () => applyDashboardTemplate(btn.getAttribute('data-da-template')));
+        });
         return;
     }
 
@@ -359,11 +444,13 @@ function bindCardEvents(root) {
 
         el.querySelector('[data-card-edit]')?.addEventListener('click', () => openConfigDrawer(id));
         el.querySelector('[data-card-remove]')?.addEventListener('click', () => {
+            pushDashboardHistory();
             deps.state.dashboardCards = deps.state.dashboardCards.filter((c) => c.id !== id);
             saveDashboardCards();
             renderDashboardCanvas();
         });
         el.querySelector('[data-card-duplicate]')?.addEventListener('click', () => {
+            pushDashboardHistory();
             const copy = newCard({
                 type: card.type,
                 title: `${card.title} (copy)`,
@@ -375,18 +462,28 @@ function bindCardEvents(root) {
             renderDashboardCanvas();
         });
         el.querySelector('[data-card-dl]')?.addEventListener('click', () => {
+            pop?.classList.add('hidden');
             const plot = el.querySelector('[data-plot-root]');
             if (plot && deps.Plotly) {
                 deps.Plotly.downloadImage(plot, { format: 'png', width: 1400, height: 800, filename: `tilkit-${card.type}` });
             }
         });
-        el.querySelector('[data-card-fullscreen]')?.addEventListener('click', () => openFullscreen(card));
+        el.querySelector('[data-card-fullscreen]')?.addEventListener('click', () => {
+            pop?.classList.add('hidden');
+            openFullscreen(card);
+        });
         const menuBtn = el.querySelector('[data-card-menu]');
         const pop = el.querySelector('.tk-da-card-menu-pop');
         menuBtn?.addEventListener('click', (e) => {
             e.stopPropagation();
+            const willOpen = pop?.classList.contains('hidden');
             document.querySelectorAll('.tk-da-card-menu-pop').forEach((p) => p.classList.add('hidden'));
-            pop?.classList.toggle('hidden');
+            if (willOpen) {
+                pop?.classList.remove('hidden');
+            }
+        });
+        pop?.querySelectorAll('button').forEach((btn) => {
+            btn.addEventListener('click', (e) => e.stopPropagation());
         });
     });
     if (!window.__tkDaMenuBound) {
@@ -422,7 +519,7 @@ function openFullscreen(card) {
     renderCardContent({ ...card, id: `${card.id}-fs` });
 }
 
-function closeFullscreen() {
+export function closeFullscreen() {
     document.getElementById('tk-da-fullscreen')?.remove();
     document.body.classList.remove('overflow-hidden');
 }
@@ -435,6 +532,7 @@ export function closeConfigDrawer() {
 export function openConfigDrawer(cardId) {
     const card = deps.state.dashboardCards.find((c) => c.id === cardId);
     if (!card) return;
+    pushDashboardHistory();
     closeConfigDrawer();
     deps.state.configDrawerCardId = cardId;
     const drawer = document.createElement('aside');
@@ -709,14 +807,16 @@ function renderChartCard(card, rows) {
         return;
     }
 
-    const result = deps.runChart({ ...cfg, title: cfg.title || card.title });
+    const result = deps.runChart({ ...cfg, title: cfg.title || card.title, compact: true });
     const el = document.getElementById(`plot-${card.id}`);
     if (!el || !result?.plot) {
         if (el) el.innerHTML = emptyState('Could not build chart — check fields and chart type.');
         return;
     }
     const cross = ct === 'histogram' || ct === 'box' ? cfg.y : cfg.x;
-    deps.mountPlotEl(el, result.plot.data, { ...result.plot.layout, height: card.span >= 8 ? 340 : 280 }, cross);
+    const h = card.span >= 8 ? 340 : 280;
+    const layout = deps.compactCardPlotLayout?.(result.plot.layout, h) || result.plot.layout;
+    deps.mountPlotEl(el, result.plot.data, layout, cross);
 }
 
 function renderCategoryCard(card, rows) {
@@ -738,7 +838,7 @@ function renderCategoryCard(card, rows) {
                       type: 'bar',
                       x: labels,
                       y: values,
-                      name: `Count · ${colLab}`,
+                      showlegend: false,
                       marker: { color: deps.PALETTE[0] },
                       hovertemplate: '%{x}<br>Count: %{y}<extra></extra>',
                   },
@@ -754,10 +854,14 @@ function renderCategoryCard(card, rows) {
                       hovertemplate: '%{label}<br>Count: %{value}<extra></extra>',
                   },
               ];
+    const shortCol = deps.fieldLabelShort?.(col) || col;
     const layout =
         card.config.viz === 'bar'
-            ? deps.chartLayout(title, { height: 280, xTitle: colLab, yTitle: 'Count', showLegend: true })
-            : deps.chartLayout(title, { height: 280, showLegend: true });
+            ? deps.compactCardPlotLayout(
+                  deps.chartLayout('', { height: 280, xTitle: shortCol, yTitle: 'Count', showLegend: false }),
+                  280,
+              )
+            : deps.compactCardPlotLayout(deps.chartLayout('', { height: 280, showLegend: true }), 280, { keepLegend: true });
     deps.mountPlotEl(el, data, layout, col);
 }
 
@@ -797,11 +901,14 @@ function renderMapCard(card, rows) {
                 },
             },
         ],
-        deps.chartLayout(title || card.title, {
-            height: 320,
-            showLegend: true,
-            geo: { projection: { type: 'natural earth' }, showland: true, landcolor: '#f1f5f9' },
-        }),
+        deps.compactCardPlotLayout(
+            deps.chartLayout('', {
+                height: 320,
+                showLegend: false,
+                geo: { projection: { type: 'natural earth' }, showland: true, landcolor: '#f1f5f9' },
+            }),
+            320,
+        ),
         color,
     );
 }
@@ -837,16 +944,15 @@ function renderTimelineCard(card, rows) {
     if (!el) {
         return;
     }
-    const dateLab = deps.fieldLabel?.(dateCol) || dateCol;
-    const valueLab = valueCol ? deps.fieldLabel?.(valueCol) || valueCol : '';
+    const dateLab = deps.fieldLabelShort?.(dateCol) || dateCol;
     const yTitle =
         agg === 'count' || !valueCol
             ? 'Row count'
             : agg === 'sum'
-              ? `Sum · ${valueLab}`
+              ? deps.axisMeasureLabel?.(valueCol, 'Sum') || 'Sum'
               : agg === 'mean'
-                ? `Mean · ${valueLab}`
-                : valueLab || 'Value';
+                ? deps.axisMeasureLabel?.(valueCol, 'Mean') || 'Mean'
+                : 'Value';
     deps.mountPlotEl(
         el,
         [
@@ -856,16 +962,14 @@ function renderTimelineCard(card, rows) {
                 fill: 'tozeroy',
                 x: dates,
                 y,
-                name: yTitle,
+                showlegend: false,
                 line: { color: deps.PALETTE[0], width: 2 },
             },
         ],
-        deps.chartLayout(title || card.title, {
-            height: 300,
-            xTitle: dateLab,
-            yTitle,
-            showLegend: true,
-        }),
+        deps.compactCardPlotLayout(
+            deps.chartLayout('', { height: 300, xTitle: dateLab, yTitle, showLegend: false }),
+            300,
+        ),
         dateCol,
     );
 }
@@ -877,8 +981,8 @@ function renderHeatmapCard(card, rows) {
     const colLabels = [...new Set(rows.map((r) => String(r[cf] ?? '(blank)')))].sort();
     const z = rowLabels.map((row) => colLabels.map((col) => rows.filter((r) => String(r[rf]) === row && String(r[cf]) === col).length));
     const el = document.getElementById(`plot-${card.id}`);
-    const rowLab = deps.fieldLabel?.(rf) || rf;
-    const colLab = deps.fieldLabel?.(cf) || cf;
+    const rowLab = deps.fieldLabelShort?.(rf) || rf;
+    const colLab = deps.fieldLabelShort?.(cf) || cf;
     deps.mountPlotEl(
         el,
         [
@@ -889,16 +993,19 @@ function renderHeatmapCard(card, rows) {
                 z,
                 colorscale: PLAIN_HEATMAP_SCALE,
                 showscale: true,
-                colorbar: { title: { text: 'Row count' } },
+                colorbar: { title: { text: 'Count' } },
                 hovertemplate: '%{y} × %{x}<br>Count: %{z}<extra></extra>',
             },
         ],
-        deps.chartLayout(card.config.title || card.title, {
-            height: 280,
-            xTitle: colLab,
-            yTitle: rowLab,
-            colorbarTitle: 'Row count',
-        }),
+        deps.compactCardPlotLayout(
+            deps.chartLayout('', {
+                height: 280,
+                xTitle: colLab,
+                yTitle: rowLab,
+                colorbarTitle: 'Count',
+            }),
+            280,
+        ),
         cf,
     );
 }
@@ -918,17 +1025,15 @@ function renderFunnelCard(card, rows) {
                 type: 'bar',
                 x: steps.map((s) => s[0]),
                 y: steps.map((s) => s[1]),
-                name: 'Validation funnel',
+                showlegend: false,
                 marker: { color: deps.PALETTE[0] },
                 hovertemplate: '%{x}<br>Records: %{y}<extra></extra>',
             },
         ],
-        deps.chartLayout(card.config.title || card.title, {
-            height: 280,
-            xTitle: 'Stage',
-            yTitle: 'Records',
-            showLegend: true,
-        }),
+        deps.compactCardPlotLayout(
+            deps.chartLayout('', { height: 280, xTitle: 'Stage', yTitle: 'Records', showLegend: false }),
+            280,
+        ),
         null,
     );
 }
@@ -1072,6 +1177,7 @@ function readConfigForm(panel, card) {
 
 export function resetDashboardLayout() {
     if (confirm('Remove all cards from this dashboard?')) {
+        pushDashboardHistory();
         deps.state.dashboardCards = [];
         saveDashboardCards();
         closeConfigDrawer();

@@ -18,6 +18,13 @@ import {
     resetDashboardLayout,
     saveDashboardCards,
     applyDashboardTemplate,
+    closeGallery,
+    closeConfigDrawer,
+    closeFullscreen,
+    seedDashboardHistory,
+    pushDashboardHistory,
+    undoDashboard,
+    redoDashboard,
 } from './tilkit-deep-analysis-dashboard.js';
 
 const cfg = window.__tilkitDeepAnalysis || {};
@@ -107,6 +114,7 @@ function plotLayout(title, extra = {}) {
                   },
               }
             : {}),
+        ...restExtra,
         xaxis: {
             gridcolor: '#e2e8f0',
             linecolor: '#cbd5e1',
@@ -123,7 +131,6 @@ function plotLayout(title, extra = {}) {
             automargin: true,
             ...yExtra,
         },
-        ...restExtra,
     };
 }
 
@@ -145,13 +152,62 @@ function fieldLabel(columnId) {
     return lab;
 }
 
+/** Short axis label — prefer column letter for workbook fields. */
+function fieldLabelShort(columnId, maxLen = 28) {
+    const m = columnMeta(String(columnId));
+    const id = m?.id || String(columnId);
+    if (/^[A-Z]{1,2}$/.test(id)) {
+        return id;
+    }
+    if (id.startsWith('_')) {
+        return fieldLabel(columnId).replace(/^./, (c) => c.toUpperCase()) || id.replace(/^_/, '');
+    }
+    const full = fieldLabel(columnId);
+    return full.length > maxLen ? `${full.slice(0, maxLen - 1)}…` : full;
+}
+
+function axisMeasureLabel(columnId, aggWord = 'Mean') {
+    const short = fieldLabelShort(columnId);
+    return `${aggWord} (${short})`;
+}
+
+/** Dashboard cards already have a header title — drop in-plot title and excess legend noise. */
+function compactCardPlotLayout(layout, height = 280, { keepLegend = false } = {}) {
+    return mergePlotLayout(layout, {
+        height,
+        title: undefined,
+        showlegend: keepLegend ? Boolean(layout.showlegend) : false,
+        margin: { t: 12, r: 16, b: keepLegend ? 88 : 64, l: 56 },
+    });
+}
+
 function axisTitle(text) {
     const t = String(text || '').trim();
     if (!t) {
         return {};
     }
 
-    return { title: { text: t, standoff: 10, font: { size: 12, color: '#475569' } } };
+    return {
+        title: {
+            text: t,
+            standoff: 12,
+            font: { size: 12, color: '#334155', family: 'system-ui, sans-serif' },
+        },
+    };
+}
+
+/** Deep-merge Plotly layout so axis titles survive height/responsive updates. */
+function mergePlotLayout(base, patch = {}) {
+    const { xaxis: px, yaxis: py, margin: pm, legend: pl, ...restPatch } = patch;
+
+    return {
+        ...base,
+        ...restPatch,
+        margin: { ...(base?.margin || {}), ...(pm || {}) },
+        legend: pl ? { ...(base?.legend || {}), ...pl } : base?.legend,
+        xaxis: { ...(base?.xaxis || {}), ...(px || {}) },
+        yaxis: { ...(base?.yaxis || {}), ...(py || {}) },
+    };
 }
 
 /**
@@ -165,9 +221,10 @@ function chartLayout(title, opts = {}) {
         height,
         showlegend: showLegend,
         margin: {
-            r: colorbarTitle ? 72 : 24,
-            b: showLegend ? 96 : xTitle ? 72 : 56,
-            l: yTitle ? 68 : 56,
+            r: colorbarTitle ? 72 : 28,
+            b: showLegend ? 88 : xTitle ? 72 : 56,
+            l: yTitle ? 60 : 52,
+            t: 48,
         },
         xaxis: axisTitle(xTitle),
         yaxis: axisTitle(yTitle),
@@ -233,9 +290,18 @@ function mountPlotEl(el, data, layout, crossFilterColumn = null) {
     } catch {
         /* first plot on this node */
     }
-    const plotPromise = Plotly.newPlot(el, data, layout, { responsive: true, displayModeBar: false });
+    const finalLayout = mergePlotLayout(layout);
+    const plotPromise = Plotly.newPlot(el, data, finalLayout, { responsive: true, displayModeBar: false });
     if (plotPromise?.then) {
-        plotPromise.then(() => Plotly.Plots.resize(el)).catch((err) => console.error('Plotly render failed', err));
+        plotPromise
+            .then(() => {
+                Plotly.Plots.resize(el);
+                return Plotly.relayout(el, {
+                    'xaxis.automargin': true,
+                    'yaxis.automargin': true,
+                });
+            })
+            .catch((err) => console.error('Plotly render failed', err));
     }
     if (crossFilterColumn) {
         el.on('plotly_click', (ev) => {
@@ -279,6 +345,7 @@ function initDashboardSortable(root) {
         ghostClass: 'is-dragging',
         dragClass: 'is-dragging',
         onEnd() {
+            pushDashboardHistory();
             const order = [...root.querySelectorAll('.tk-da-premium-card')].map((el) => el.dataset.cardId);
             state.dashboardCards = order
                 .map((id) => state.dashboardCards.find((c) => c.id === id))
@@ -889,7 +956,10 @@ function runCell(cell, wrap) {
         if (result.plot) {
             const plotEl = out.querySelector('.tk-da-plot');
             if (plotEl) {
-                Plotly.newPlot(plotEl, result.plot.data, result.plot.layout, { responsive: true, displayModeBar: true });
+                Plotly.newPlot(plotEl, result.plot.data, mergePlotLayout(result.plot.layout), {
+                    responsive: true,
+                    displayModeBar: true,
+                });
             }
         }
         attachPlotlyDownload(wrap);
@@ -1049,9 +1119,13 @@ function runGroupBy(p) {
 function runChart(p) {
     const dataRows = activeRows();
     const xVals = dataRows.map((r) => r[p.x]);
+    const compact = p.compact === true;
     const xLab = fieldLabel(p.x);
     const yLab = fieldLabel(p.y);
+    const xAxis = compact ? fieldLabelShort(p.x) : xLab || p.x;
     const title = p.title || `${p.chartType}: ${yLab || p.y} by ${xLab || p.x}`;
+    const plotTitle = compact ? '' : title;
+    const plotHeight = compact ? 280 : 440;
 
     let plot = null;
     const toolbar = plotToolbar();
@@ -1068,30 +1142,42 @@ function runChart(p) {
                     type: 'pie',
                     labels: Object.keys(counts),
                     values: Object.values(counts),
-                    name: xLab || p.x,
+                    showlegend: !compact,
                     hovertemplate: '%{label}<br>Count: %{value}<extra></extra>',
                 },
             ],
-            layout: chartLayout(title, { height: 420, showLegend: true }),
+            layout: chartLayout(plotTitle, {
+                height: plotHeight,
+                showLegend: !compact,
+            }),
         };
     } else if (p.chartType === 'histogram') {
         const nums = numericValues(p.y, dataRows);
+        const yAxis = compact ? fieldLabelShort(p.y) : yLab || p.y;
         plot = {
-            data: [{ type: 'histogram', x: nums, name: yLab || p.y, hovertemplate: 'Value: %{x}<br>Count: %{y}<extra></extra>' }],
-            layout: chartLayout(title, { height: 420, xTitle: yLab || p.y, yTitle: 'Frequency' }),
+            data: [
+                {
+                    type: 'histogram',
+                    x: nums,
+                    showlegend: !compact,
+                    hovertemplate: 'Value: %{x}<br>Count: %{y}<extra></extra>',
+                },
+            ],
+            layout: chartLayout(plotTitle, { height: plotHeight, xTitle: yAxis, yTitle: 'Frequency', showLegend: !compact }),
         };
     } else if (p.chartType === 'box') {
+        const yAxis = compact ? fieldLabelShort(p.y) : yLab || p.y;
         plot = {
             data: [
                 {
                     type: 'box',
                     y: numericValues(p.y, dataRows),
-                    name: yLab || p.y,
+                    showlegend: !compact,
                     boxpoints: 'all',
-                    hovertemplate: '%{y}<extra>' + (yLab || p.y) + '</extra>',
+                    hovertemplate: '%{y}<extra>' + yAxis + '</extra>',
                 },
             ],
-            layout: chartLayout(title, { height: 420, yTitle: yLab || p.y, showLegend: true }),
+            layout: chartLayout(plotTitle, { height: plotHeight, yTitle: yAxis, showLegend: !compact }),
         };
     } else if (p.chartType === 'heatmap') {
         const xs = [...new Set(xVals.map(String))];
@@ -1140,15 +1226,15 @@ function runChart(p) {
                     mode: 'markers',
                     x: xs,
                     y: ys,
-                    name: `${yLab || p.y} vs ${xLab || p.x}`,
+                    showlegend: !compact,
                     marker: { color: PALETTE[0] },
                 },
             ],
-            layout: chartLayout(title, {
-                height: 440,
-                xTitle: xLab || p.x,
-                yTitle: yLab || p.y,
-                showLegend: true,
+            layout: chartLayout(plotTitle, {
+                height: plotHeight,
+                xTitle: xAxis,
+                yTitle: compact ? fieldLabelShort(p.y) : yLab || p.y,
+                showLegend: !compact,
             }),
         };
     } else {
@@ -1164,11 +1250,13 @@ function runChart(p) {
             const vals = buckets[k].filter((v) => !Number.isNaN(v));
             return vals.length ? ss.mean(vals) : 0;
         });
-        const yAxisLabel =
-            p.cumulative && (p.chartType === 'line' || p.chartType === 'area')
-                ? `Cumulative mean · ${yLab || p.y}`
-                : `Mean · ${yLab || p.y}`;
-        if (p.cumulative && (p.chartType === 'line' || p.chartType === 'area')) {
+        const cumulative = p.cumulative && (p.chartType === 'line' || p.chartType === 'area');
+        const yAxisLabel = compact
+            ? axisMeasureLabel(p.y, cumulative ? 'Cumulative' : 'Mean')
+            : cumulative
+              ? `Cumulative mean · ${yLab || p.y}`
+              : `Mean · ${yLab || p.y}`;
+        if (cumulative) {
             let c = 0;
             series = series.map((v) => {
                 c += v;
@@ -1177,7 +1265,7 @@ function runChart(p) {
         }
         const traceType = p.chartType === 'scatter' ? 'scatter' : p.chartType === 'line' || p.chartType === 'area' ? 'scatter' : 'bar';
         const mode = p.chartType === 'scatter' || p.chartType === 'line' ? 'lines+markers' : undefined;
-        const seriesName = p.cumulative && (p.chartType === 'line' || p.chartType === 'area') ? `Cumulative ${yLab || p.y}` : `Mean ${yLab || p.y}`;
+        const seriesName = cumulative ? `Cumulative ${yLab || p.y}` : `Mean ${yLab || p.y}`;
         plot = {
             data: [
                 {
@@ -1185,17 +1273,18 @@ function runChart(p) {
                     mode,
                     x: labels,
                     y: series,
-                    name: seriesName,
+                    name: compact ? '' : seriesName,
+                    showlegend: !compact,
                     fill: p.chartType === 'area' ? 'tozeroy' : undefined,
                     marker: { color: PALETTE[0] },
                     line: traceType === 'scatter' ? { color: PALETTE[0], width: 2 } : undefined,
                 },
             ],
-            layout: chartLayout(title, {
-                height: 440,
-                xTitle: xLab || p.x,
+            layout: chartLayout(plotTitle, {
+                height: plotHeight,
+                xTitle: xAxis,
                 yTitle: yAxisLabel,
-                showLegend: true,
+                showLegend: !compact,
             }),
         };
     }
@@ -1497,6 +1586,10 @@ async function bootstrap() {
             plotLayout,
             chartLayout,
             fieldLabel,
+            mergePlotLayout,
+            compactCardPlotLayout,
+            fieldLabelShort,
+            axisMeasureLabel,
             mountPlotEl,
             tableHtml,
             escapeHtml,
@@ -1506,6 +1599,7 @@ async function bootstrap() {
         loadDashboardEditMode();
         syncEditModeUi();
         loadDashboardCards();
+        seedDashboardHistory();
         await fetchSchema();
         renderFilters();
         renderColumnList();
@@ -1545,8 +1639,13 @@ document.getElementById('tk-da-edit-mode')?.addEventListener('click', () => {
     renderDashboardCanvas();
 });
 
-document.getElementById('tk-da-template-exec')?.addEventListener('click', () => applyDashboardTemplate('executive'));
-document.getElementById('tk-da-template-field')?.addEventListener('click', () => applyDashboardTemplate('field'));
+document.getElementById('tk-deep-analysis-root')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-da-template]');
+    if (!btn) {
+        return;
+    }
+    applyDashboardTemplate(btn.getAttribute('data-da-template'));
+});
 
 document.querySelectorAll('.tk-da-tab').forEach((btn) => {
     btn.addEventListener('click', () => setActiveTab(btn.dataset.daTab || 'dashboard'));
@@ -1597,6 +1696,66 @@ document.getElementById('tk-da-column-role-filter')?.addEventListener('change', 
     const q = document.getElementById('tk-da-column-search')?.value || '';
     renderColumnList(q, e.target.value);
 });
+
+function isDeepAnalysisTypingTarget(el) {
+    if (!el) {
+        return false;
+    }
+    const tag = el.tagName;
+    return el.isContentEditable || tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
+}
+
+function handleDeepAnalysisKeyboard(e) {
+    if (!document.getElementById('tk-deep-analysis-root')) {
+        return;
+    }
+
+    if (e.key === 'Escape') {
+        const active = document.activeElement;
+        if (isDeepAnalysisTypingTarget(active)) {
+            active.blur();
+            e.preventDefault();
+            return;
+        }
+        if (document.getElementById('tk-da-fullscreen')) {
+            closeFullscreen();
+            e.preventDefault();
+            return;
+        }
+        if (document.getElementById('tk-da-gallery')) {
+            closeGallery();
+            e.preventDefault();
+            return;
+        }
+        if (document.getElementById('tk-da-config-drawer')) {
+            closeConfigDrawer();
+            e.preventDefault();
+            return;
+        }
+        if (state.crossFilter) {
+            state.crossFilter = null;
+            updateCrossFilterUi();
+            refreshActiveView();
+            e.preventDefault();
+        }
+        return;
+    }
+
+    if (!(e.ctrlKey || e.metaKey) || isDeepAnalysisTypingTarget(e.target)) {
+        return;
+    }
+
+    const key = e.key.toLowerCase();
+    if (key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        undoDashboard();
+    } else if (key === 'y' || (key === 'z' && e.shiftKey)) {
+        e.preventDefault();
+        redoDashboard();
+    }
+}
+
+document.addEventListener('keydown', handleDeepAnalysisKeyboard);
 
 if (document.getElementById('tk-deep-analysis-root')) {
     bootstrap();
