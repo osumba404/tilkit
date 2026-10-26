@@ -78,7 +78,7 @@ class WorkbookRecordService
                     continue;
                 }
                 $kind = WorkbookColumnRegistry::inputKind($meta);
-                if (is_numeric($value) && ! in_array($kind, ['yes_no', 'date', 'json'], true)) {
+                if (is_numeric($value) && ! in_array($kind, ['yes_no', 'date', 'json', 'list_text'], true)) {
                     $kind = WorkbookColumnRegistry::inputKind($meta) === 'rating' ? 'rating' : 'number';
                 }
                 $normalized = WorkbookValueNormalizer::normalize($value, $kind);

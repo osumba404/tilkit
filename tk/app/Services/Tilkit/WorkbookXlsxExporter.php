@@ -29,7 +29,11 @@ class WorkbookXlsxExporter
                     $cell = $record->workbookValues->firstWhere('column_letter', $letter);
                     $line[] = $cell?->value_number ?? $cell?->value_text ?? '';
                 } else {
-                    $line[] = $map[$letter] ?? '';
+                    $val = $map[$letter] ?? '';
+                    if (is_array($val)) {
+                        $val = implode('; ', $val);
+                    }
+                    $line[] = $val;
                 }
             }
             $rows[] = $line;

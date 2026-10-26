@@ -8,8 +8,11 @@
 @endphp
 
 @php
+    $listItems = $kind === 'list_text'
+        ? \App\Support\Tilkit\WorkbookCapturePreparer::splitListText($current)
+        : [];
     $fieldSpan = match ($kind) {
-        'gps', 'consent', 'textarea', 'json' => ' md:col-span-2',
+        'gps', 'consent', 'textarea', 'json', 'list_text' => ' md:col-span-2',
         default => '',
     };
 @endphp
@@ -146,6 +149,41 @@
 
         @case('json')
             <textarea name="workbook[{{ $letter }}]" rows="3" class="tk-input font-mono text-xs" placeholder='{"crops":"+"}'>{{ is_array($current) ? json_encode($current) : (is_scalar($current) ? $current : '') }}</textarea>
+            @break
+
+        @case('list_text')
+            <div
+                class="space-y-2"
+                x-data="{
+                    items: @js($listItems),
+                    add() { this.items.push(''); },
+                    remove(index) { if (this.items.length > 1) { this.items.splice(index, 1); } },
+                }"
+            >
+                <template x-for="(item, index) in items" :key="index">
+                    <div class="flex gap-2 items-start">
+                        <textarea
+                            x-model="items[index]"
+                            :name="'workbook[{{ $letter }}][]'"
+                            rows="2"
+                            class="tk-input flex-1 min-w-0"
+                            :placeholder="{{ Js::from($letter === 'X' ? 'e.g. Crops 3+' : 'One sector or impact (code or description)') }}"
+                        ></textarea>
+                        <button
+                            type="button"
+                            class="tk-btn-secondary text-xs px-2 py-2 shrink-0"
+                            @click="remove(index)"
+                            :disabled="items.length <= 1"
+                            :aria-label="{{ Js::from(__('Remove item')) }}"
+                        >
+                            {{ __('Remove') }}
+                        </button>
+                    </div>
+                </template>
+                <button type="button" class="tk-btn-secondary text-xs" @click="add()">
+                    {{ __('Add item') }}
+                </button>
+            </div>
             @break
 
         @case('textarea')

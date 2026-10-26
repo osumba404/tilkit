@@ -141,6 +141,10 @@
         @apply w-full rounded-lg border border-tk-line bg-tk-surface text-tk-ink font-sans shadow-tk-xs placeholder:text-tk-muted/70 transition-all duration-200 focus:border-tk-accent focus:ring-2 focus:ring-tk-accent/20 focus:shadow-tk-sm;
     }
 
+    .tk-password-toggle {
+        @apply absolute inset-y-0 end-0 flex items-center px-3 text-tk-muted transition-colors hover:text-tk-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-tk-accent/30 focus-visible:ring-inset rounded-e-lg;
+    }
+
     .tk-field:focus-within label {
         @apply text-tk-accent;
     }

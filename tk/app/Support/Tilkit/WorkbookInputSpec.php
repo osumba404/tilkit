@@ -17,7 +17,7 @@ class WorkbookInputSpec
         'F' => 'textarea',
         'G' => 'text',
         'H' => 'text',
-        'I' => 'json',
+        'I' => 'list_text',
         'J' => 'history_scale',
         'K' => 'lead_time_class',
         'L' => 'rating',
@@ -32,7 +32,7 @@ class WorkbookInputSpec
         'U' => 'tercile',
         'V' => 'rating',
         'W' => 'textarea',
-        'X' => 'json',
+        'X' => 'list_text',
         'Y' => 'photos',
         'Z' => 'gps',
         'AA' => 'text',
@@ -145,7 +145,7 @@ class WorkbookInputSpec
             return 'photos';
         }
         if (str_contains($field, 'sector impact')) {
-            return 'json';
+            return 'list_text';
         }
         if (str_contains($field, 'free text') || str_contains($field, 'description') || str_contains($field, 'notes')) {
             return 'textarea';

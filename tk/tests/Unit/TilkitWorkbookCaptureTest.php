@@ -46,6 +46,7 @@ class TilkitWorkbookCaptureTest extends TestCase
                 'rating', 'tercile', 'history_scale', 'lead_time_class', 'rating_321' => '2',
                 'date' => '2026-10-01',
                 'json' => '{"crops":"+"}',
+                'list_text' => ['Crops', 'Water'],
                 'gps' => '-1.2,36.8',
                 'integer' => '3',
                 'number' => '42.5',

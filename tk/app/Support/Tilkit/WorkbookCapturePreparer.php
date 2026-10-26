@@ -29,6 +29,44 @@ class WorkbookCapturePreparer
         return $workbook;
     }
 
+    /**
+     * @return list<string>
+     */
+    public static function splitListText(mixed $value): array
+    {
+        if ($value === null || $value === '') {
+            return [''];
+        }
+
+        if (is_array($value)) {
+            $items = array_values(array_filter(
+                array_map(fn ($v) => trim((string) $v), $value),
+                fn ($v) => $v !== '',
+            ));
+
+            return $items === [] ? [''] : $items;
+        }
+
+        if (is_string($value)) {
+            $trimmed = trim($value);
+            if ($trimmed === '') {
+                return [''];
+            }
+
+            $decoded = json_decode($trimmed, true);
+            if (is_array($decoded)) {
+                return self::splitListText($decoded);
+            }
+
+            $parts = preg_split('/\r\n|\n|\r|;/', $trimmed) ?: [];
+            $items = array_values(array_filter(array_map('trim', $parts), fn ($v) => $v !== ''));
+
+            return $items === [] ? [''] : $items;
+        }
+
+        return [''];
+    }
+
     /** @return array{lat: string, lng: string} */
     public static function splitGps(mixed $value): array
     {
