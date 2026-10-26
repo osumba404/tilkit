@@ -222,7 +222,7 @@ class KenyaGhanaPilotDataset
             'AA' => 'Acacia marker and seasonal pool edge ('.$siteName.')',
             'AB' => $observerGroup,
             'AR' => 'Ward-wide; riverine strips, grazing corridors, and hamlets near '.$siteName,
-            'BB' => 1,
+            'BB' => 0,
             'BC' => sprintf('3; 1; %s ITK forecast circle', $siteName),
         ];
     }

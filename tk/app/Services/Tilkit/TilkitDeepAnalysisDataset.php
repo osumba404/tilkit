@@ -41,7 +41,7 @@ class TilkitDeepAnalysisDataset
             );
         }
 
-        $records = $this->baseQuery($tool)->with(['site.program', 'season'])->get();
+        $records = $this->analysisRecords($tool);
 
         $sites = $records->pluck('site')->filter()->unique('id')->map(fn ($s) => [
             'id' => $s->id,
@@ -104,7 +104,7 @@ class TilkitDeepAnalysisDataset
         $out = [];
 
         foreach ($query->orderBy('id')->get() as $record) {
-            if (! $this->consent->canExport($record)) {
+            if (! $this->consent->canAnalyze($record)) {
                 continue;
             }
 
@@ -260,5 +260,16 @@ class TilkitDeepAnalysisDataset
     {
         return TilkitIndicatorRecord::query()
             ->whereHas('indicator', fn ($q) => $q->where('project_id', $tool->id));
+    }
+
+    /** @return \Illuminate\Support\Collection<int, TilkitIndicatorRecord> */
+    private function analysisRecords(DcProject $tool): \Illuminate\Support\Collection
+    {
+        return $this->baseQuery($tool)
+            ->with(['site.program', 'season'])
+            ->orderBy('id')
+            ->get()
+            ->filter(fn (TilkitIndicatorRecord $record) => $this->consent->canAnalyze($record))
+            ->values();
     }
 }

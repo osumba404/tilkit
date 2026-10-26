@@ -25,4 +25,27 @@ class TilkitConsentGate
     {
         return $this->exportBlocks($record) === [];
     }
+
+    /**
+     * In-tool Deep Analysis / insights (not external dissemination).
+     * Requires consent BC ≥ 2; do-no-harm (BB) does not block internal analysis.
+     */
+    public function canAnalyze(TilkitIndicatorRecord $record): bool
+    {
+        $level = $this->effectiveConsentLevel($record);
+        if ($level === null || $level < 2) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function effectiveConsentLevel(TilkitIndicatorRecord $record): ?int
+    {
+        if ($record->consent_level !== null) {
+            return (int) $record->consent_level;
+        }
+
+        return null;
+    }
 }
