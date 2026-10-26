@@ -73,7 +73,9 @@
                 }
 
                 function afterResultsSwap() {
-                    if (typeof window.tkInitTilkitGpsViews === 'function') {
+                    if (typeof window.tkBootTilkitGps === 'function') {
+                        window.tkBootTilkitGps(results);
+                    } else if (typeof window.tkInitTilkitGpsViews === 'function') {
                         window.tkInitTilkitGpsViews(results);
                     }
                 }

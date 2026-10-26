@@ -23,9 +23,13 @@ class WorkbookValueNormalizer
                 ...$empty,
                 'value_number' => self::yesNo($value),
             ],
-            'rating', 'tercile' => [
+            'rating', 'tercile', 'rating_321', 'history_scale', 'lead_time_class' => [
                 ...$empty,
                 'value_number' => self::rating($value),
+            ],
+            'outcome', 'consent' => [
+                ...$empty,
+                'value_text' => is_scalar($value) ? trim((string) $value) : null,
             ],
             'number', 'integer' => [
                 ...$empty,
@@ -55,7 +59,13 @@ class WorkbookValueNormalizer
     {
         return match ($inputKind) {
             'yes_no' => $number === null ? null : (int) $number,
-            'rating', 'tercile' => $number === null ? null : (int) $number,
+            'rating', 'tercile', 'rating_321' => $number === null ? null : (int) $number,
+            'history_scale', 'lead_time_class' => $number !== null
+                ? (int) $number
+                : (is_numeric($text) ? (int) $text : null),
+            'integer' => $number === null ? null : (int) $number,
+            'number' => $number === null ? null : (float) $number,
+            'outcome', 'consent' => $text,
             'date' => $date,
             'json' => $json,
             'list_text' => self::displayListText($json, $text),

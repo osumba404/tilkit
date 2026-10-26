@@ -30,8 +30,11 @@ This Laravel app (`tk/`) is being aligned with the **TILKIT Weather Indicator Lo
 ```bash
 php artisan tilkit:import-legend   # master template xlsx → indicator codes
 php artisan tilkit:import-demo {tool_id}
+php artisan tilkit:seed-kenya-ghana --force   # owner demo: Kenya MAM+OND, Ghana north/south seasons
 php artisan tilkit:tally {site_id} {season_id} [--publish]
 ```
+
+**Kenya/Ghana pilot seed** (`KenyaGhanaPilotSeeder`): wipes weather-tool rows (keeps users), then loads **32 records** — Kenya **MAM 2026** + **OND 2026** (10 signs × 2 seasons), Ghana **northern single rainy season**, **southern AMJ major** + **SON minor** (Cape Coast signs in both). Sets season date ranges, per-season integration settings, photos/sightings, derived engine columns, and published tally snapshots for each site·season pair.
 
 Web: `tools/{tool}/tilkit` (records), `.../tilkit/setup`, `.../tilkit/tally`, `.../tilkit/workbook`, `.../tilkit/calendar`.
 

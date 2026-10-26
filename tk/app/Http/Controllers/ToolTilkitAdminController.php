@@ -526,14 +526,29 @@ class ToolTilkitAdminController extends Controller
             ]);
         }
 
+        $siteId = (int) $request->query('site_id', $sites->first()?->id);
+        $seasonId = (int) $request->query('season_id', $seasons->first()?->id);
+
+        $result = null;
+        $snapshots = collect();
+        if ($siteId > 0 && $seasonId > 0) {
+            $result = $engine->runTally($siteId, $seasonId, false, $request->user()->id);
+            $snapshots = TilkitTallySnapshot::query()
+                ->where('site_id', $siteId)
+                ->where('season_id', $seasonId)
+                ->latest('id')
+                ->limit(5)
+                ->get();
+        }
+
         return view('tools.tilkit.tally', [
             'tool' => $tool,
             'sites' => $sites,
             'seasons' => $seasons,
-            'siteId' => (int) $request->query('site_id', $sites->first()?->id),
-            'seasonId' => (int) $request->query('season_id', $seasons->first()?->id),
-            'result' => null,
-            'snapshots' => collect(),
+            'siteId' => $siteId,
+            'seasonId' => $seasonId,
+            'result' => $result,
+            'snapshots' => $snapshots,
         ]);
     }
 

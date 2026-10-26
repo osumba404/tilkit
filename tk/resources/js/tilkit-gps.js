@@ -1,5 +1,4 @@
 import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -14,19 +13,116 @@ L.Icon.Default.mergeOptions({
 const DEFAULT_CENTER = [-1.2921, 36.8219];
 const DEFAULT_ZOOM = 11;
 
-document.querySelectorAll('[data-tk-gps-map]').forEach((root) => {
-    new TilkitGpsMap(root);
-});
+export function bootTilkitGps(root = document) {
+    initGpsFullscreenControls();
+    initTilkitGpsMaps(root);
+    initTilkitGpsViews(root);
+    scheduleMapResize();
+}
 
-function initTilkitGpsViews(root = document) {
+function initGpsFullscreenControls() {
+    if (document.body.dataset.tkGpsFullscreenControls === '1') {
+        return;
+    }
+    document.body.dataset.tkGpsFullscreenControls = '1';
+
+    document.addEventListener('click', (event) => {
+        const btn = event.target.closest('[data-tk-gps-fullscreen]');
+        if (!btn) {
+            return;
+        }
+        event.preventDefault();
+        const host = btn.closest('[data-tk-gps-fullscreen-host]');
+        if (!host) {
+            return;
+        }
+        toggleGpsFullscreen(host);
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+        document.querySelectorAll('[data-tk-gps-fullscreen-host]').forEach((host) => {
+            syncGpsFullscreenUi(host);
+        });
+        if (document.fullscreenElement) {
+            invalidateMapsIn(document.fullscreenElement);
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape') {
+            return;
+        }
+        document.querySelectorAll('[data-tk-gps-fullscreen-host].tk-gps-fullscreen-fallback').forEach((host) => {
+            host.classList.remove('tk-gps-fullscreen-fallback');
+            syncGpsFullscreenUi(host);
+            invalidateMapsIn(host);
+        });
+    });
+}
+
+function toggleGpsFullscreen(host) {
+    if (document.fullscreenElement === host) {
+        document.exitFullscreen?.();
+        return;
+    }
+    if (host.classList.contains('tk-gps-fullscreen-fallback')) {
+        host.classList.remove('tk-gps-fullscreen-fallback');
+        syncGpsFullscreenUi(host);
+        invalidateMapsIn(host);
+        return;
+    }
+    const request = host.requestFullscreen?.() ?? host.webkitRequestFullscreen?.();
+    if (request && typeof request.then === 'function') {
+        request.catch(() => {
+            host.classList.add('tk-gps-fullscreen-fallback');
+            syncGpsFullscreenUi(host);
+            invalidateMapsIn(host);
+        });
+    } else {
+        host.classList.add('tk-gps-fullscreen-fallback');
+        syncGpsFullscreenUi(host);
+        invalidateMapsIn(host);
+    }
+}
+
+function syncGpsFullscreenUi(host) {
+    const active = document.fullscreenElement === host || host.classList.contains('tk-gps-fullscreen-fallback');
+    host.querySelectorAll('[data-tk-gps-fullscreen]').forEach((btn) => {
+        const enter = btn.dataset.labelEnter || 'Full screen';
+        const exit = btn.dataset.labelExit || 'Exit full screen';
+        btn.textContent = active ? exit : enter;
+        btn.setAttribute('aria-label', active ? exit : enter);
+        btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+}
+
+function invalidateMapsIn(host) {
+    host.querySelectorAll('[data-tk-gps-canvas], [data-tk-gps-view]').forEach((el) => {
+        el.tkLeafletMap?.invalidateSize(true);
+    });
+    scheduleMapResize();
+}
+
+export function initTilkitGpsMaps(root = document) {
+    root.querySelectorAll('[data-tk-gps-map]:not([data-tk-gps-map-inited])').forEach((el) => {
+        el.setAttribute('data-tk-gps-map-inited', '1');
+        new TilkitGpsMap(el);
+    });
+}
+
+export function initTilkitGpsViews(root = document) {
     root.querySelectorAll('[data-tk-gps-view]:not([data-tk-gps-inited])').forEach((canvas) => {
         canvas.setAttribute('data-tk-gps-inited', '1');
         new TilkitGpsView(canvas);
     });
 }
 
-initTilkitGpsViews();
-window.tkInitTilkitGpsViews = initTilkitGpsViews;
+function scheduleMapResize() {
+    const bump = () => window.dispatchEvent(new Event('resize'));
+    requestAnimationFrame(bump);
+    setTimeout(bump, 300);
+    window.addEventListener('load', bump, { once: true });
+}
 
 class TilkitGpsMap {
     constructor(root) {
@@ -71,20 +167,39 @@ class TilkitGpsMap {
         this.latInput.addEventListener('change', () => this.syncFromInputs());
         this.lngInput.addEventListener('change', () => this.syncFromInputs());
 
-        setTimeout(() => this.map.invalidateSize(), 250);
-        window.addEventListener('load', () => this.map.invalidateSize(), { once: true });
+        this.canvas.tkLeafletMap = this.map;
+        this.observeSize();
+        this.map.invalidateSize(true);
+    }
+
+    observeSize() {
+        if (typeof ResizeObserver === 'undefined') {
+            return;
+        }
+        const ro = new ResizeObserver(() => {
+            this.map?.invalidateSize(true);
+        });
+        ro.observe(this.canvas);
     }
 
     inputFor(name) {
-        if (!this.form || !name) {
+        if (!name) {
+            return null;
+        }
+        const escaped = name.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+        const inRoot = this.root.querySelector(`input[name="${escaped}"]`);
+        if (inRoot instanceof HTMLInputElement) {
+            return inRoot;
+        }
+        if (!this.form) {
             return null;
         }
         const named = this.form.elements.namedItem(name);
-        if (named && named.tagName === 'INPUT') {
+        if (named instanceof HTMLInputElement) {
             return named;
         }
 
-        return this.form.querySelector(`input[name="${name.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"]`);
+        return this.form.querySelector(`input[name="${escaped}"]`);
     }
 
     parseCoord(value) {
@@ -153,7 +268,7 @@ class TilkitGpsMap {
         }
         this.latInput.value = '';
         this.lngInput.value = '';
-        this.setStatus('Tap the map to place the sighting pin.');
+        this.setStatus('Tap the map to place the location pin.');
     }
 
     formatPair(lat, lng) {
@@ -217,8 +332,14 @@ class TilkitGpsView {
             this.map.fitBounds(bounds, { padding: [28, 28], maxZoom: 14 });
         }
 
-        setTimeout(() => this.map.invalidateSize(), 250);
-        window.addEventListener('load', () => this.map.invalidateSize(), { once: true });
+        canvas.tkLeafletMap = this.map;
+
+        if (typeof ResizeObserver !== 'undefined') {
+            const ro = new ResizeObserver(() => this.map?.invalidateSize(true));
+            ro.observe(canvas);
+        }
+
+        this.map.invalidateSize(true);
     }
 
     colorForKind(kind) {
@@ -244,3 +365,6 @@ class TilkitGpsView {
         return this.escapeHtml(value).replace(/'/g, '&#39;');
     }
 }
+
+window.tkInitTilkitGpsViews = initTilkitGpsViews;
+window.tkBootTilkitGps = bootTilkitGps;

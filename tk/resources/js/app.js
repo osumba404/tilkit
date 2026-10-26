@@ -13,6 +13,10 @@ async function bootApp() {
         const wizard = await import('./tilkit-program-wizard');
         wizard.registerTilkitProgramWizard();
     }
+    if (document.querySelector('[data-tk-gps-map], [data-tk-gps-view]')) {
+        const gps = await import('./tilkit-gps');
+        gps.bootTilkitGps();
+    }
 
     Alpine.start();
 }

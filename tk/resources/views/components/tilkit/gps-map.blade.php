@@ -9,12 +9,6 @@
     'lngLabel' => 'Longitude',
 ])
 
-@once
-    @push('head')
-        @vite(['resources/js/tilkit-gps.js'])
-    @endpush
-@endonce
-
 <div
     {{ $attributes->merge(['class' => 'tk-gps-map']) }}
     data-tk-gps-map
@@ -23,8 +17,11 @@
     @if ($centerLat !== null && $centerLat !== '') data-center-lat="{{ $centerLat }}" @endif
     @if ($centerLng !== null && $centerLng !== '') data-center-lng="{{ $centerLng }}" @endif
 >
-    <div class="rounded-tk border border-tk-line overflow-hidden bg-tk-soft shadow-tk-xs">
-        <div class="tk-gps-map-canvas h-56 w-full" data-tk-gps-canvas role="application" aria-label="Map to set GPS coordinates"></div>
+    <div class="tk-gps-fullscreen-host relative" data-tk-gps-fullscreen-host>
+        <x-tilkit.gps-fullscreen-button />
+        <div class="rounded-tk border border-tk-line overflow-hidden bg-tk-soft shadow-tk-xs tk-gps-fullscreen-map-shell">
+            <div class="tk-gps-map-canvas h-56 w-full" data-tk-gps-canvas role="application" aria-label="Map to set GPS coordinates"></div>
+        </div>
     </div>
     <div class="flex flex-wrap gap-2 mt-3">
         <button type="button" class="tk-btn-secondary text-xs py-2" data-tk-gps-locate>Use my location</button>

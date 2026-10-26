@@ -34,4 +34,13 @@ class TilkitWorkbookListTextTest extends TestCase
         $display = WorkbookValueNormalizer::display(null, $normalized['value_text'], null, $normalized['value_json'], 'list_text');
         $this->assertSame(['Crops 3+', 'Water 2−'], $display);
     }
+
+    public function test_display_returns_stored_numbers_for_integer_and_number_kinds(): void
+    {
+        $bg = WorkbookValueNormalizer::normalize(4, 'integer');
+        $this->assertSame(4, WorkbookValueNormalizer::display($bg['value_number'], null, null, null, 'integer'));
+
+        $cr = WorkbookValueNormalizer::normalize(52.5, 'number');
+        $this->assertSame(52.5, WorkbookValueNormalizer::display($cr['value_number'], null, null, null, 'number'));
+    }
 }

@@ -29,7 +29,11 @@
         </p>
         <div class="tk-card p-5 space-y-4 mb-6">
             <h3 class="tk-section-title text-base">Field sighting</h3>
-            @include('tools.tilkit.partials.sighting-form', ['tool' => $tool, 'record' => $record])
+            @include('tools.tilkit.partials.sighting-form', [
+                'tool' => $tool,
+                'record' => $record,
+                'workbookValues' => $workbookValues,
+            ])
         </div>
     @endif
 

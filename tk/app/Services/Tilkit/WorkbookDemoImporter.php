@@ -7,8 +7,11 @@ use App\Models\DcProject;
 use App\Models\Tilkit\TilkitIndicator;
 use App\Models\Tilkit\TilkitIndicatorCode;
 use App\Models\Tilkit\TilkitIndicatorRecord;
+use App\Models\Tilkit\TilkitProgram;
 use App\Models\Tilkit\TilkitSeason;
 use App\Models\Tilkit\TilkitSite;
+use App\Models\User;
+use App\Support\Tilkit\PilotSeasonCalendar;
 use App\Support\Tilkit\WorkbookColumnRegistry;
 use Illuminate\Support\Facades\DB;
 
@@ -19,15 +22,15 @@ class WorkbookDemoImporter
     ) {}
 
     /** @param  list<array<string, mixed>>  $rows */
-    public function importRows(DcProject $tool, array $rows): array
+    public function importRows(DcProject $tool, array $rows, ?TilkitProgram $program = null, ?User $enteredBy = null): array
     {
-        return DB::transaction(function () use ($tool, $rows): array {
+        return DB::transaction(function () use ($tool, $rows, $program, $enteredBy): array {
             $sites = [];
             $seasons = [];
             $indicators = [];
             $count = 0;
 
-            $program = app(TilkitProgramContext::class)->ensureDefault($tool);
+            $program ??= app(TilkitProgramContext::class)->ensureDefault($tool);
 
             foreach ($rows as $row) {
                 unset($row['_excel_row']);
@@ -35,22 +38,25 @@ class WorkbookDemoImporter
                 $seasonLabel = (string) ($row['AM'] ?? 'Unknown season');
                 $uid = (string) ($row['AH'] ?? '');
 
+                $countryName = (string) ($row['AL'] ?? 'Kenya');
+                [$countryCode, $continent] = $this->countryMeta($countryName);
+
                 $site = $sites[$siteName] ??= TilkitSite::query()->firstOrCreate(
                     ['program_id' => $program->id, 'name' => $siteName],
                     [
                         'project_id' => $tool->id,
-                        'country' => 'KE',
-                        'country_name' => 'Kenya',
-                        'continent' => 'Africa',
+                        'ward' => ($row['AJ'] ?? null) ? (string) $row['AJ'] : null,
+                        'county' => ($row['AK'] ?? null) ? (string) $row['AK'] : null,
+                        'country' => $countryCode,
+                        'country_name' => $countryName,
+                        'continent' => $continent,
+                        'primary_language' => isset($row['AO']) ? (string) $row['AO'] : null,
+                        'latitude' => $this->latitudeFromRow($row),
+                        'longitude' => $this->longitudeFromRow($row),
                     ],
                 );
-                $season = $seasons[$seasonLabel] ??= TilkitSeason::query()->firstOrCreate(
-                    ['program_id' => $program->id, 'label' => $seasonLabel],
-                    [
-                        'project_id' => $tool->id,
-                        'protocol_version' => config('tilkit.weather.protocol_version'),
-                    ],
-                );
+                $seasonKey = $program->id.'|'.$seasonLabel;
+                $season = $seasons[$seasonKey] ??= $this->resolveSeason($tool, $program, $seasonLabel);
 
                 $indicator = $indicators[$uid] ??= $this->resolveIndicator($tool, $uid, $row);
 
@@ -78,6 +84,21 @@ class WorkbookDemoImporter
                 }
 
                 $this->workbook->storeRawValues($record, $raw);
+
+                $recordMeta = [
+                    'collection_year' => $this->collectionYearFromSeasonLabel($seasonLabel),
+                ];
+                if (isset($raw['AN']) && $raw['AN'] !== '') {
+                    $recordMeta['collection_date'] = $raw['AN'];
+                }
+                $record->forceFill($recordMeta)->save();
+
+                $this->workbook->storeReferenceColumns($record->fresh());
+
+                if ($enteredBy !== null) {
+                    $record->forceFill(['entered_by' => $enteredBy->id])->save();
+                }
+
                 $count++;
             }
 
@@ -124,6 +145,91 @@ class WorkbookDemoImporter
             'project_id' => $tool->id,
             'local_name' => (string) ($row['C'] ?? $row['D'] ?? $uid),
         ]);
+    }
+
+    private function resolveSeason(DcProject $tool, TilkitProgram $program, string $seasonLabel): TilkitSeason
+    {
+        $season = TilkitSeason::query()
+            ->where('program_id', $program->id)
+            ->where('label', $seasonLabel)
+            ->first();
+
+        if ($season === null) {
+            $season = TilkitSeason::query()
+                ->where('project_id', $tool->id)
+                ->where('label', $seasonLabel)
+                ->first();
+        }
+
+        $dates = PilotSeasonCalendar::datesForWorkbookSeasonLabel($seasonLabel) ?? [
+            'starts_on' => str_contains(strtoupper($seasonLabel), 'OND') ? '2026-10-01' : '2026-03-01',
+            'ends_on' => str_contains(strtoupper($seasonLabel), 'OND') ? '2027-02-28' : '2026-05-31',
+            'start_month' => str_contains(strtoupper($seasonLabel), 'OND') ? 10 : 3,
+            'end_month' => str_contains(strtoupper($seasonLabel), 'OND') ? 12 : 5,
+        ];
+
+        if ($season === null) {
+            return TilkitSeason::query()->create([
+                'project_id' => $tool->id,
+                'program_id' => $program->id,
+                'label' => $seasonLabel,
+                'protocol_version' => config('tilkit.weather.protocol_version'),
+                ...$dates,
+            ]);
+        }
+
+        $season->forceFill([
+            'program_id' => $program->id,
+            'protocol_version' => $season->protocol_version ?: config('tilkit.weather.protocol_version'),
+            ...$dates,
+        ])->save();
+
+        return $season;
+    }
+
+    /** @return array{0: string, 1: string} ISO2 and continent */
+    private function countryMeta(string $countryName): array
+    {
+        $normalized = strtolower(trim($countryName));
+
+        return match (true) {
+            str_contains($normalized, 'ghana') => ['GH', 'Africa'],
+            str_contains($normalized, 'kenya') => ['KE', 'Africa'],
+            default => ['KE', 'Africa'],
+        };
+    }
+
+    /** @param  array<string, mixed>  $row */
+    private function latitudeFromRow(array $row): ?float
+    {
+        $gps = isset($row['Z']) ? (string) $row['Z'] : '';
+        if ($gps === '' || ! str_contains($gps, ',')) {
+            return null;
+        }
+        $parts = array_map('trim', explode(',', $gps, 2));
+
+        return is_numeric($parts[0] ?? null) ? (float) $parts[0] : null;
+    }
+
+    /** @param  array<string, mixed>  $row */
+    private function longitudeFromRow(array $row): ?float
+    {
+        $gps = isset($row['Z']) ? (string) $row['Z'] : '';
+        if ($gps === '' || ! str_contains($gps, ',')) {
+            return null;
+        }
+        $parts = array_map('trim', explode(',', $gps, 2));
+
+        return is_numeric($parts[1] ?? null) ? (float) $parts[1] : null;
+    }
+
+    private function collectionYearFromSeasonLabel(string $seasonLabel): int
+    {
+        if (preg_match('/\b(20\d{2})\b/', $seasonLabel, $matches)) {
+            return (int) $matches[1];
+        }
+
+        return 2026;
     }
 
     private function mapValidationLabel(mixed $value): string

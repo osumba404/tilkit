@@ -190,11 +190,7 @@ class ToolTilkitWeatherController extends Controller
         abort_unless(preg_match('/^[A-E]$/', $section), 404);
 
         $record->load(['indicator', 'site', 'season', 'sightings', 'workbookMedia']);
-        $letters = CommunityDataListRegistry::columnLettersForSectionKey($section);
-        $columns = array_values(array_filter(
-            WorkbookColumnRegistry::rawColumns(),
-            fn (array $col) => in_array($col['column'], $letters, true)
-        ));
+        $columns = $this->wizardColumnsForSection($section);
         $checklist = CommunityDataListRegistry::itemsForSectionKey($section);
         $workbookValues = $workbook->rawWorkbookMap($record);
 
@@ -275,6 +271,42 @@ class ToolTilkitWeatherController extends Controller
         if (array_key_exists('AE', $workbook) && ! $persona->canVerify()) {
             abort(403, 'Your role cannot set Verified (AE).');
         }
+    }
+
+    /** @return list<array<string, mixed>> */
+    private function wizardColumnsForSection(string $section): array
+    {
+        $letters = CommunityDataListRegistry::columnLettersForSectionKey($section);
+        if ($section === 'B') {
+            $letters = $this->insertColumnLettersAfter($letters, 'O', ['CI', 'CK', 'CL']);
+        }
+
+        $order = [];
+        foreach (WorkbookColumnRegistry::rawColumns() as $i => $col) {
+            $order[$col['column']] = $i;
+        }
+
+        $columns = array_values(array_filter(
+            WorkbookColumnRegistry::rawColumns(),
+            fn (array $col) => in_array($col['column'], $letters, true)
+        ));
+
+        usort($columns, fn (array $a, array $b) => ($order[$a['column']] ?? 999) <=> ($order[$b['column']] ?? 999));
+
+        return $columns;
+    }
+
+    /** @param  list<string>  $letters  @param  list<string>  $insert  @return list<string> */
+    private function insertColumnLettersAfter(array $letters, string $after, array $insert): array
+    {
+        $pos = array_search($after, $letters, true);
+        if ($pos === false) {
+            return array_values(array_unique([...$letters, ...$insert]));
+        }
+
+        array_splice($letters, $pos + 1, 0, $insert);
+
+        return array_values(array_unique($letters));
     }
 
     private function storePhotos(Request $request, TilkitIndicatorRecord $record): void

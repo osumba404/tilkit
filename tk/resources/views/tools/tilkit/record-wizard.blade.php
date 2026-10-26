@@ -28,7 +28,11 @@
         </div>
         <div class="tk-card p-5 mb-6">
             <h3 class="font-semibold mb-3">Log a sighting (child event - does not create a new row)</h3>
-            @include('tools.tilkit.partials.sighting-form', ['tool' => $tool, 'record' => $record])
+            @include('tools.tilkit.partials.sighting-form', [
+                'tool' => $tool,
+                'record' => $record,
+                'workbookValues' => $workbookValues,
+            ])
         </div>
     @endif
 

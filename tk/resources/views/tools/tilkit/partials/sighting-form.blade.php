@@ -1,8 +1,12 @@
+@php
+    $workbookValues = $workbookValues ?? [];
+    $defaultSightedAt = old('sighted_at', isset($workbookValues['CI']) && $workbookValues['CI'] !== '' ? $workbookValues['CI'] : '');
+@endphp
 <form method="POST" action="{{ route('tools.tilkit.records.sightings.store', [$tool, $record]) }}" class="grid md:grid-cols-2 gap-4 tk-stagger">
     @csrf
     <div>
         <label class="text-xs text-tk-muted block mb-1">Date sighted (CI)</label>
-        <input type="date" name="sighted_at" required class="tk-input">
+        <input type="date" name="sighted_at" value="{{ $defaultSightedAt }}" required class="tk-input">
     </div>
     <div>
         <label class="text-xs text-tk-muted block mb-1">Observed by (AB)</label>
