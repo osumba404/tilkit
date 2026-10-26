@@ -88,19 +88,168 @@ function activeRows() {
     return rows;
 }
 
+function isDarkPlotTheme() {
+    return document.documentElement.classList.contains('dark');
+}
+
+/** Plotly text/grid colors for light vs dark app theme. */
+function plotTheme() {
+    if (isDarkPlotTheme()) {
+        return {
+            text: '#ffffff',
+            tick: '#e2e8f0',
+            title: '#ffffff',
+            plotBg: 'rgba(15, 23, 42, 0.35)',
+            grid: '#475569',
+            axisLine: '#64748b',
+            hoverBg: '#0f172a',
+            hoverBorder: '#64748b',
+            hoverText: '#f8fafc',
+            geo: {
+                bgcolor: 'rgba(0,0,0,0)',
+                landcolor: '#334155',
+                countrycolor: '#64748b',
+                coastlinecolor: '#94a3b8',
+                lakecolor: '#1e293b',
+            },
+        };
+    }
+
+    return {
+        text: '#334155',
+        tick: '#64748b',
+        title: '#0f172a',
+        plotBg: '#fafafa',
+        grid: '#e2e8f0',
+        axisLine: '#cbd5e1',
+        hoverBg: '#ffffff',
+        hoverBorder: '#94a3b8',
+        hoverText: '#0f172a',
+        geo: {
+            bgcolor: 'rgba(0,0,0,0)',
+            landcolor: '#f1f5f9',
+            countrycolor: '#cbd5e1',
+            coastlinecolor: '#94a3b8',
+            lakecolor: '#e2e8f0',
+        },
+    };
+}
+
+function axisThemePatch(axisExtra = {}) {
+    const t = plotTheme();
+    const merged = {
+        ...axisExtra,
+        gridcolor: t.grid,
+        linecolor: t.axisLine,
+        zeroline: axisExtra.zeroline ?? false,
+        automargin: axisExtra.automargin ?? true,
+        tickfont: { size: 11, color: t.tick, ...(axisExtra.tickfont || {}) },
+    };
+    if (axisExtra.title?.text) {
+        merged.title = {
+            ...axisExtra.title,
+            font: {
+                size: 12,
+                family: 'system-ui, sans-serif',
+                color: t.text,
+                ...(axisExtra.title.font || {}),
+            },
+        };
+    }
+
+    return merged;
+}
+
+/** Apply current light/dark colors to an existing Plotly layout object. */
+function withPlotTheme(layout) {
+    const t = plotTheme();
+    const titleText = layout?.title?.text;
+    const patch = {
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: t.plotBg,
+        font: { family: 'system-ui, sans-serif', size: 11, color: t.text, ...(layout?.font || {}) },
+        hoverlabel: {
+            bgcolor: t.hoverBg,
+            bordercolor: t.hoverBorder,
+            font: { size: 12, color: t.hoverText },
+        },
+        xaxis: axisThemePatch(layout?.xaxis || {}),
+        yaxis: axisThemePatch(layout?.yaxis || {}),
+    };
+    if (titleText) {
+        patch.title = {
+            ...layout.title,
+            font: { size: 15, color: t.title, ...(layout.title?.font || {}) },
+        };
+    }
+    if (layout?.showlegend || layout?.legend) {
+        patch.legend = {
+            ...(layout.legend || {}),
+            font: { size: 10, color: t.text, ...(layout.legend?.font || {}) },
+        };
+    }
+    if (layout?.geo) {
+        patch.geo = { ...t.geo, ...layout.geo };
+    }
+    if (layout?.coloraxis?.colorbar) {
+        const cb = layout.coloraxis.colorbar;
+        patch.coloraxis = {
+            ...layout.coloraxis,
+            colorbar: {
+                ...cb,
+                tickfont: { color: t.tick, ...(cb.tickfont || {}) },
+                title: cb.title
+                    ? {
+                          ...cb.title,
+                          font: { color: t.text, ...(cb.title.font || {}) },
+                      }
+                    : cb.title,
+            },
+        };
+    }
+
+    return mergePlotLayout(layout, patch);
+}
+
+function themePlotTraces(data) {
+    const t = plotTheme();
+    return (Array.isArray(data) ? data : []).map((trace) => {
+        const next = { ...trace };
+        if (trace.colorbar) {
+            const title = trace.colorbar.title;
+            next.colorbar = {
+                ...trace.colorbar,
+                tickfont: { color: t.tick, ...(trace.colorbar.tickfont || {}) },
+                title: title
+                    ? {
+                          ...title,
+                          font: { color: t.text, ...(title.font || {}) },
+                      }
+                    : title,
+            };
+        }
+        if (trace.type === 'pie') {
+            next.textfont = { color: t.text, ...(trace.textfont || {}) };
+        }
+
+        return next;
+    });
+}
+
 function plotLayout(title, extra = {}) {
-    const { xaxis: xExtra, yaxis: yExtra, legend: legendExtra, margin: marginExtra, ...restExtra } = extra;
+    const { xaxis: xExtra, yaxis: yExtra, legend: legendExtra, margin: marginExtra, geo: geoExtra, ...restExtra } = extra;
+    const t = plotTheme();
     const showLegend = restExtra.showlegend === true;
     const defaultMargin = { t: 48, r: 20, b: showLegend ? 88 : 56, l: 60 };
     return {
-        title: { text: title, font: { size: 15, color: '#0f172a' }, x: 0, xanchor: 'left' },
+        title: title ? { text: title, font: { size: 15, color: t.title }, x: 0, xanchor: 'left' } : undefined,
         margin: { ...defaultMargin, ...marginExtra },
         paper_bgcolor: 'rgba(0,0,0,0)',
-        plot_bgcolor: '#fafafa',
-        font: { family: 'system-ui, sans-serif', size: 11, color: '#334155' },
+        plot_bgcolor: t.plotBg,
+        font: { family: 'system-ui, sans-serif', size: 11, color: t.text },
         colorway: PALETTE,
         hovermode: 'closest',
-        hoverlabel: { bgcolor: '#ffffff', bordercolor: '#94a3b8', font: { size: 12, color: '#0f172a' } },
+        hoverlabel: { bgcolor: t.hoverBg, bordercolor: t.hoverBorder, font: { size: 12, color: t.hoverText } },
         ...(showLegend
             ? {
                   legend: {
@@ -109,28 +258,15 @@ function plotLayout(title, extra = {}) {
                       y: -0.22,
                       x: 0,
                       xanchor: 'left',
-                      font: { size: 10 },
+                      font: { size: 10, color: t.text },
                       ...legendExtra,
                   },
               }
             : {}),
+        ...(geoExtra ? { geo: { ...t.geo, ...geoExtra } } : {}),
         ...restExtra,
-        xaxis: {
-            gridcolor: '#e2e8f0',
-            linecolor: '#cbd5e1',
-            tickfont: { size: 11, color: '#64748b' },
-            zeroline: false,
-            automargin: true,
-            ...xExtra,
-        },
-        yaxis: {
-            gridcolor: '#e2e8f0',
-            linecolor: '#cbd5e1',
-            tickfont: { size: 11, color: '#64748b' },
-            zeroline: false,
-            automargin: true,
-            ...yExtra,
-        },
+        xaxis: axisThemePatch(xExtra),
+        yaxis: axisThemePatch(yExtra),
     };
 }
 
@@ -186,12 +322,13 @@ function axisTitle(text) {
     if (!t) {
         return {};
     }
+    const theme = plotTheme();
 
     return {
         title: {
             text: t,
             standoff: 12,
-            font: { size: 12, color: '#334155', family: 'system-ui, sans-serif' },
+            font: { size: 12, color: theme.text, family: 'system-ui, sans-serif' },
         },
     };
 }
@@ -216,7 +353,7 @@ function mergePlotLayout(base, patch = {}) {
  * @param {{ height?: number, xTitle?: string, yTitle?: string, showLegend?: boolean, colorbarTitle?: string }} opts
  */
 function chartLayout(title, opts = {}) {
-    const { height = 440, xTitle = '', yTitle = '', showLegend = false, colorbarTitle = '', ...rest } = opts;
+    const { height = 440, xTitle = '', yTitle = '', showLegend = false, colorbarTitle = '', geo, ...rest } = opts;
     const layout = plotLayout(title, {
         height,
         showlegend: showLegend,
@@ -228,11 +365,18 @@ function chartLayout(title, opts = {}) {
         },
         xaxis: axisTitle(xTitle),
         yaxis: axisTitle(yTitle),
+        geo,
         ...rest,
     });
     if (colorbarTitle) {
+        const theme = plotTheme();
         layout.coloraxis = {
-            colorbar: { title: { text: colorbarTitle, side: 'right' }, thickness: 12, len: 0.9 },
+            colorbar: {
+                title: { text: colorbarTitle, side: 'right', font: { color: theme.text } },
+                tickfont: { color: theme.tick },
+                thickness: 12,
+                len: 0.9,
+            },
         };
     }
 
@@ -290,8 +434,8 @@ function mountPlotEl(el, data, layout, crossFilterColumn = null) {
     } catch {
         /* first plot on this node */
     }
-    const finalLayout = mergePlotLayout(layout);
-    const plotPromise = Plotly.newPlot(el, data, finalLayout, { responsive: true, displayModeBar: false });
+    const finalLayout = withPlotTheme(mergePlotLayout(layout));
+    const plotPromise = Plotly.newPlot(el, themePlotTraces(data), finalLayout, { responsive: true, displayModeBar: false });
     if (plotPromise?.then) {
         plotPromise
             .then(() => {
@@ -390,6 +534,32 @@ function setActiveTab(tab) {
         el.classList.toggle('hidden', tab !== 'dashboard');
     });
     refreshActiveView();
+}
+
+function refreshPlotsForThemeChange() {
+    refreshDashboardCardBodies();
+    state.cells.forEach((c) => {
+        if (!c.ran) {
+            return;
+        }
+        const wrap = document.querySelector(`[data-cell-id="${c.id}"]`);
+        if (wrap) {
+            runCell(c, wrap);
+        }
+    });
+}
+
+function initPlotThemeObserver() {
+    let dark = isDarkPlotTheme();
+    const observer = new MutationObserver(() => {
+        const now = isDarkPlotTheme();
+        if (now === dark) {
+            return;
+        }
+        dark = now;
+        refreshPlotsForThemeChange();
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 }
 
 function refreshActiveView() {
@@ -956,10 +1126,15 @@ function runCell(cell, wrap) {
         if (result.plot) {
             const plotEl = out.querySelector('.tk-da-plot');
             if (plotEl) {
-                Plotly.newPlot(plotEl, result.plot.data, mergePlotLayout(result.plot.layout), {
-                    responsive: true,
-                    displayModeBar: true,
-                });
+                Plotly.newPlot(
+                    plotEl,
+                    themePlotTraces(result.plot.data),
+                    withPlotTheme(mergePlotLayout(result.plot.layout)),
+                    {
+                        responsive: true,
+                        displayModeBar: true,
+                    },
+                );
             }
         }
         attachPlotlyDownload(wrap);
@@ -1590,6 +1765,7 @@ async function bootstrap() {
             compactCardPlotLayout,
             fieldLabelShort,
             axisMeasureLabel,
+            plotTheme,
             mountPlotEl,
             tableHtml,
             escapeHtml,
@@ -1611,6 +1787,7 @@ async function bootstrap() {
         renderCells();
         const savedTab = sessionStorage.getItem(TAB_KEY) || 'dashboard';
         setActiveTab(savedTab);
+        initPlotThemeObserver();
     } catch (e) {
         if (status) status.textContent = e.message || 'Failed to load';
     }

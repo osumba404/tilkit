@@ -905,7 +905,7 @@ function renderMapCard(card, rows) {
             deps.chartLayout('', {
                 height: 320,
                 showLegend: false,
-                geo: { projection: { type: 'natural earth' }, showland: true, landcolor: '#f1f5f9' },
+                geo: { projection: { type: 'natural earth' }, showland: true },
             }),
             320,
         ),
@@ -993,7 +993,10 @@ function renderHeatmapCard(card, rows) {
                 z,
                 colorscale: PLAIN_HEATMAP_SCALE,
                 showscale: true,
-                colorbar: { title: { text: 'Count' } },
+                colorbar: {
+                    title: { text: 'Count', font: { color: deps.plotTheme?.().text || '#334155' } },
+                    tickfont: { color: deps.plotTheme?.().tick || '#64748b' },
+                },
                 hovertemplate: '%{y} × %{x}<br>Count: %{z}<extra></extra>',
             },
         ],
