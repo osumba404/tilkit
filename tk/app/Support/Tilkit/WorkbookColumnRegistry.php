@@ -64,6 +64,16 @@ class WorkbookColumnRegistry
         return WorkbookInputSpec::kind($column);
     }
 
+    public static function formCaption(array $column): string
+    {
+        return WorkbookFormLabel::caption($column);
+    }
+
+    public static function formHint(array $column): ?string
+    {
+        return WorkbookFormLabel::hint($column);
+    }
+
     public static function assertRawColumn(string $letter): array
     {
         $meta = self::forColumn($letter);

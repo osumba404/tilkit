@@ -17,10 +17,12 @@
     };
 @endphp
 <div {{ $attributes->merge(['class' => 'tk-field'.$fieldSpan]) }}>
-    <label class="text-xs text-tk-muted block mb-1">
-        <span class="font-mono text-tk-accent">{{ $letter }}</span>
-        {{ $col['field'] }}
+    <label class="text-sm text-tk-ink block mb-1 font-medium leading-snug">
+        {{ \App\Support\Tilkit\WorkbookFormLabel::caption($col) }}
     </label>
+    @if ($hint = \App\Support\Tilkit\WorkbookFormLabel::hint($col))
+        <p class="text-xs text-tk-muted mb-2 leading-relaxed">{{ $hint }}</p>
+    @endif
 
     @switch($kind)
         @case('yes_no')
@@ -99,7 +101,7 @@
         @case('consent')
             <div class="grid sm:grid-cols-3 gap-3">
                 <div>
-                    <span class="text-[0.65rem] uppercase tracking-tk-label text-tk-muted block mb-1">Sharing level</span>
+                    <span class="text-xs text-tk-muted block mb-1 font-medium">Consent sharing level (workbook column BC)</span>
                     <select name="workbook[BC_level]" class="tk-input" aria-label="Consent sharing level">
                     <option value="">Choose level</option>
                     @foreach ([1, 2, 3, 4] as $lvl)
@@ -108,7 +110,7 @@
                 </select>
                 </div>
                 <div>
-                    <span class="text-[0.65rem] uppercase tracking-tk-label text-tk-muted block mb-1">May share?</span>
+                    <span class="text-xs text-tk-muted block mb-1 font-medium">Permission to share this record?</span>
                     <select name="workbook[BC_share]" class="tk-input" aria-label="Consent to share">
                     <option value="">Choose</option>
                     <option value="1" @selected($consent['share'] === '1')>Yes (1)</option>
@@ -116,7 +118,7 @@
                 </select>
                 </div>
                 <div>
-                    <span class="text-[0.65rem] uppercase tracking-tk-label text-tk-muted block mb-1">Credit / attribution</span>
+                    <span class="text-xs text-tk-muted block mb-1 font-medium">Credit or attribution (community or person)</span>
                     <input type="text" name="workbook[BC_credit]" value="{{ $consent['credit'] }}" class="tk-input" placeholder="Community or individual">
                 </div>
             </div>
@@ -142,8 +144,8 @@
                 :lng="$gps['lng']"
                 :center-lat="$centerLat"
                 :center-lng="$centerLng"
-                lat-label="GPS latitude (Z)"
-                lng-label="GPS longitude (Z)"
+                lat-label="Latitude (north–south)"
+                lng-label="Longitude (east–west)"
             />
             @break
 

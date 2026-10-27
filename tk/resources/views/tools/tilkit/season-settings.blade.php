@@ -34,7 +34,8 @@
                 Apply global literature prior (rating-based indicators only)
             </label>
             <div>
-                <label class="text-xs text-tk-muted">KMSA county outlook tercile (DJ)</label>
+                <label class="text-sm text-tk-ink font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('DJ') }}</label>
+                <p class="text-xs text-tk-muted mb-2">Official county rainfall outlook used to compare with community tercile votes.</p>
                 <select name="kmsa_outlook_tercile" class="tk-input">
                     <option value="">-</option>
                     @foreach ([3 => 'Above normal', 2 => 'Normal', 1 => 'Below normal'] as $v => $l)
@@ -43,11 +44,12 @@
                 </select>
             </div>
             <div>
-                <label class="text-xs text-tk-muted">NDMA drought phase (DL)</label>
+                <label class="text-sm text-tk-ink font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('DL') }}</label>
                 <input type="text" name="ndma_drought_phase" value="{{ $settings->ndma_drought_phase }}" class="tk-input" placeholder="Normal, Alert, …">
             </div>
             <div>
-                <label class="text-xs text-tk-muted">NDMA VCI3M ward value (CR ingest)</label>
+                <label class="text-sm text-tk-ink font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('CR') }}</label>
+                <p class="text-xs text-tk-muted mb-2">Ward vegetation index from the National Drought Management Authority (NDMA) feed, when available.</p>
                 <input type="number" step="0.01" name="ndma_vci3m" value="{{ $settings->ndma_vci3m }}" class="tk-input" min="0" max="100">
             </div>
             <button class="tk-btn-primary">Save &amp; recalculate records</button>

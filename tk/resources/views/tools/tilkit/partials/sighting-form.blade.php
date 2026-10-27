@@ -5,19 +5,20 @@
 <form method="POST" action="{{ route('tools.tilkit.records.sightings.store', [$tool, $record]) }}" class="grid md:grid-cols-2 gap-4 tk-stagger">
     @csrf
     <div>
-        <label class="text-xs text-tk-muted block mb-1">Date sighted (CI)</label>
+        <label class="text-sm text-tk-ink block mb-1 font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('CI') }}</label>
         <input type="date" name="sighted_at" value="{{ $defaultSightedAt }}" required class="tk-input">
     </div>
     <div>
-        <label class="text-xs text-tk-muted block mb-1">Observed by (AB)</label>
+        <label class="text-sm text-tk-ink block mb-1 font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('AB') }}</label>
         <input type="text" name="observed_by" class="tk-input" placeholder="Observer name or group">
     </div>
     <div class="md:col-span-2">
-        <label class="text-xs text-tk-muted block mb-1">Where and when sighted (O)</label>
+        <label class="text-sm text-tk-ink block mb-1 font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('O') }}</label>
         <textarea name="place_text" rows="2" class="tk-input" placeholder="Place description and context"></textarea>
     </div>
     <div class="md:col-span-2">
-        <p class="text-xs text-tk-muted mb-2"><span class="font-mono text-tk-accent">Z</span> GPS location - tap the map or use your location</p>
+        <p class="text-sm text-tk-ink font-medium mb-1">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('Z') }}</p>
+        <p class="text-xs text-tk-muted mb-2">Tap the map or use your device location to set the pin.</p>
         <x-tilkit.gps-map
             lat-name="latitude"
             lng-name="longitude"
@@ -28,7 +29,7 @@
         />
     </div>
     <div class="md:col-span-2">
-        <label class="text-xs text-tk-muted block mb-1">Landmark (AA)</label>
+        <label class="text-sm text-tk-ink block mb-1 font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('AA') }}</label>
         <input type="text" name="landmark" class="tk-input" placeholder="Landmark near the pin (tree, school, river bend…)">
     </div>
     <div class="md:col-span-2">

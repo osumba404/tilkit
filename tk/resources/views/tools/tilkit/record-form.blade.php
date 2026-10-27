@@ -63,7 +63,7 @@
         @if (! $isEdit)
             <div class="tk-card p-5 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div>
-                    <label class="text-xs text-tk-muted block mb-1">Site (AI)</label>
+                    <label class="text-sm text-tk-ink block mb-1 font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('AI') }}</label>
                     <select name="site_id" required class="tk-input">
                         @forelse ($sites as $site)
                             <option value="{{ $site->id }}" @selected(old('site_id') == $site->id)>{{ $site->name }}</option>
@@ -73,7 +73,8 @@
                     </select>
                 </div>
                 <div>
-                    <label class="text-xs text-tk-muted block mb-1">Monitoring season — months (AM)</label>
+                    <label class="text-sm text-tk-ink block mb-1 font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('AM') }}</label>
+                    <p class="text-xs text-tk-muted mb-2">Choose the month range when this sign is monitored (for example long rains or short rains).</p>
                     <select name="season_id" required class="tk-input">
                         @forelse ($seasons as $season)
                             <option value="{{ $season->id }}" @selected(old('season_id') == $season->id)>{{ $season->monthRangeLabel() }}</option>
@@ -83,7 +84,8 @@
                     </select>
                 </div>
                 <div>
-                    <label class="text-xs text-tk-muted block mb-1">Indicator (AH)</label>
+                    <label class="text-sm text-tk-ink block mb-1 font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('AH') }}</label>
+                    <p class="text-xs text-tk-muted mb-2">Each option is a community-trusted sign already registered for this program.</p>
                     <select name="indicator_id" required class="tk-input">
                         @foreach ($indicators as $indicator)
                             <option value="{{ $indicator->id }}" @selected(old('indicator_id') == $indicator->id)>{{ $indicator->indicator_uid }} - {{ $indicator->local_name }}</option>
@@ -91,11 +93,12 @@
                     </select>
                 </div>
                 <div>
-                    <label class="text-xs text-tk-muted block mb-1">Date data collected (AN)</label>
+                    <label class="text-sm text-tk-ink block mb-1 font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('AN') }}</label>
                     <input type="date" name="collection_date" value="{{ old('collection_date', now()->toDateString()) }}" required class="tk-input">
                 </div>
                 <div>
-                    <label class="text-xs text-tk-muted block mb-1">Collection year (with season → AM)</label>
+                    <label class="text-sm text-tk-ink block mb-1 font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('AO') }}</label>
+                    <p class="text-xs text-tk-muted mb-2">Calendar year for this row, together with the season months above.</p>
                     <input type="number" name="collection_year" value="{{ old('collection_year', now()->year) }}" required min="1990" max="2100" class="tk-input" placeholder="e.g. 2024">
                 </div>
             </div>
@@ -137,7 +140,8 @@
         @endforeach
 
         <div class="tk-card p-5">
-            <h3 class="tk-section-title text-base mb-2">Photos (column Y - at least three recommended)</h3>
+            <h3 class="tk-section-title text-base mb-2">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('Y') }}</h3>
+            <p class="text-xs text-tk-muted mb-3">Upload at least three clear photos when possible.</p>
             <input type="file" name="workbook_photos[]" accept="image/*" multiple class="tk-input">
             @if ($isEdit && $record->workbookMedia->isNotEmpty())
                 <p class="text-xs text-tk-muted mt-2">{{ $record->workbookMedia->count() }} photo(s) stored.</p>
