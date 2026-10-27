@@ -50,14 +50,18 @@ class TilkitSyncController extends Controller
         );
 
         $record->update(['sighted' => true]);
-        $workbook->storeRawValues($record, [
+        $gps = (isset($data['latitude'], $data['longitude']) && $data['latitude'] !== null && $data['longitude'] !== null)
+            ? trim((string) $data['latitude']).','.trim((string) $data['longitude'])
+            : null;
+
+        $workbook->storeRawValues($record, array_filter([
             'N' => 1,
-            'CI' => $data['sighted_at'],
             'O' => $data['place_text'] ?? null,
-            'Z' => $data['place_text'] ?? null,
-            'AA' => isset($data['latitude'], $data['longitude']) ? "{$data['latitude']},{$data['longitude']}" : null,
-            'AB' => $data['landmark'] ?? null,
-        ]);
+            'CI' => $data['sighted_at'],
+            'Z' => $gps,
+            'AA' => $data['landmark'] ?? null,
+            'AB' => $data['observed_by'] ?? null,
+        ], fn ($v) => $v !== null && $v !== ''));
 
         return response()->json(['status' => 'ok', 'sighting_uuid' => $sighting->uuid]);
     }

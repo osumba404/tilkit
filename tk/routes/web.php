@@ -19,6 +19,7 @@ use App\Http\Controllers\ToolController;
 use App\Http\Controllers\ToolFormController;
 use App\Http\Controllers\ToolInvitationController;
 use App\Http\Controllers\ToolSubmissionController;
+use App\Http\Controllers\Api\TilkitMobileController;
 use App\Http\Controllers\Api\TilkitSyncController;
 use App\Http\Controllers\TilkitGeographyController;
 use App\Http\Controllers\ToolTilkitAdminController;
@@ -47,8 +48,14 @@ Route::get('/f/{form:code}/thanks', [PublicFormController::class, 'thanks'])->na
 Route::get('/reference', FieldReferenceController::class)->name('reference');
 Route::get('/user-guide', UserGuideController::class)->name('user-guide');
 
+Route::post('/api/tilkit/mobile/login', [TilkitMobileController::class, 'login'])
+    ->middleware('guest')
+    ->name('api.tilkit.mobile.login');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('tilkit.platform')->group(function () {
+        Route::get('/api/tilkit/mobile/bootstrap', [TilkitMobileController::class, 'bootstrap'])->name('api.tilkit.mobile.bootstrap');
+        Route::post('/api/tilkit/mobile/logout', [TilkitMobileController::class, 'logout'])->name('api.tilkit.mobile.logout');
         Route::post('/api/tilkit/sightings', [TilkitSyncController::class, 'storeSighting'])->name('api.tilkit.sightings.store');
 
         Route::get('/dashboard', DashboardController::class)->name('dashboard');

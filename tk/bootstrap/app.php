@@ -19,6 +19,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'super_admin' => \App\Http\Middleware\EnsureSuperAdmin::class,
             'tilkit.platform' => \App\Http\Middleware\EnsureTilkitPlatformTool::class,
         ]);
+        $middleware->validateCsrfTokens(except: [
+            'api/tilkit/mobile/login',
+            'api/tilkit/sightings',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (ValidationException $exception, Request $request) {
