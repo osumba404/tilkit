@@ -50,7 +50,7 @@ class TilkitPriorAndGateTest extends TestCase
     public function test_ce_eligibility_prefix_matches_workbook(): void
     {
         $this->assertTrue(EligibilityGate::ceCountsInTally('Counted in tally'));
-        $this->assertTrue(EligibilityGate::ceCountsInTally('Counted (simple tally only — no weight)'));
+        $this->assertTrue(EligibilityGate::ceCountsInTally('Counted (simple tally only - no weight)'));
         $this->assertFalse(EligibilityGate::ceCountsInTally('Excluded: not sighted'));
     }
 

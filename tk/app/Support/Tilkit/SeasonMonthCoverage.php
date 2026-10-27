@@ -70,7 +70,7 @@ class SeasonMonthCoverage
     }
 
     /**
-     * Start month for the next season after existing ones (null = first season — user picks start).
+     * Start month for the next season after existing ones (null = first season - user picks start).
      */
     public static function nextSeasonStartMonth(iterable $seasons): ?int
     {

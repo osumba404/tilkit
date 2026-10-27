@@ -10,7 +10,7 @@
                     </span>
                 </a>
                 <p class="mt-4 text-sm text-tk-muted leading-relaxed max-w-md">
-                    Institutional field data, TILKIT weather indicator logs, and governed exports—aligned with community forecasting and Kenya DPA practice.
+                    Institutional field data, TILKIT weather indicator logs, and governed exports-aligned with community forecasting and Kenya DPA practice.
                 </p>
             </div>
 
@@ -43,7 +43,7 @@
 
         <div class="mt-10 pt-6 border-t border-tk-line/60 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs text-tk-muted">
             <p>&copy; {{ now()->year }} {{ config('app.name', 'Tilkit') }}. All rights reserved.</p>
-            <p>TILKIT — Traditional Indigenous and Local Knowledge Tool</p>
+            <p>TILKIT - Traditional Indigenous and Local Knowledge Tool</p>
         </div>
     </div>
 </footer>

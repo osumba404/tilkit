@@ -288,7 +288,7 @@ function fieldLabel(columnId) {
     return lab;
 }
 
-/** Short axis label — prefer column letter for workbook fields. */
+/** Short axis label - prefer column letter for workbook fields. */
 function fieldLabelShort(columnId, maxLen = 28) {
     const m = columnMeta(String(columnId));
     const id = m?.id || String(columnId);
@@ -307,7 +307,7 @@ function axisMeasureLabel(columnId, aggWord = 'Mean') {
     return `${aggWord} (${short})`;
 }
 
-/** Dashboard cards already have a header title — drop in-plot title and excess legend noise. */
+/** Dashboard cards already have a header title - drop in-plot title and excess legend noise. */
 function compactCardPlotLayout(layout, height = 280, { keepLegend = false } = {}) {
     return mergePlotLayout(layout, {
         height,
@@ -909,7 +909,7 @@ function columnOptions(selected = '', kinds = null, allowEmpty = false) {
         return buildSelectOptions(state.columns, role, selected, allowEmpty, isNumericColumn);
     }
 
-    const empty = allowEmpty ? `<option value="" ${selected === '' ? 'selected' : ''}>—</option>` : '';
+    const empty = allowEmpty ? `<option value="" ${selected === '' ? 'selected' : ''}>-</option>` : '';
 
     return (
         empty +
@@ -1030,7 +1030,7 @@ function renderCellParams(wrap, cell) {
                     ${field('Chart type', `<select class="tk-input w-full text-sm tk-da-param" data-key="chartType">${CHART_TYPES.map((t) => `<option value="${t.id}" ${p.chartType === t.id ? 'selected' : ''}>${t.label}</option>`).join('')}</select>`)}
                     ${field('X / category', `<select class="tk-input w-full text-sm tk-da-param" data-key="x">${columnOptions(p.x)}</select>`)}
                     ${field('Y / value', `<select class="tk-input w-full text-sm tk-da-param" data-key="y">${columnOptions(p.y, ['numeric'])}</select>`)}
-                    ${field('Color (optional)', `<select class="tk-input w-full text-sm tk-da-param" data-key="color"><option value="">—</option>${columnOptions(p.color)}</select>`)}
+                    ${field('Color (optional)', `<select class="tk-input w-full text-sm tk-da-param" data-key="color"><option value="">-</option>${columnOptions(p.color)}</select>`)}
                     ${field('Title', `<input class="tk-input w-full text-sm tk-da-param" data-key="title" value="${escapeHtml(p.title || '')}" />`)}
                     ${field('Cumulative (line/area)', `<input type="checkbox" class="tk-da-param" data-key="cumulative" ${p.cumulative ? 'checked' : ''} />`)}
                 </div>`;
@@ -1078,7 +1078,7 @@ function renderCellParams(wrap, cell) {
                     ${field('Latitude', `<select class="tk-input w-full text-sm tk-da-param" data-key="lat">${columnOptions(p.lat, ['numeric'])}</select>`)}
                     ${field('Longitude', `<select class="tk-input w-full text-sm tk-da-param" data-key="lon">${columnOptions(p.lon, ['numeric'])}</select>`)}
                     ${field('Color by', `<select class="tk-input w-full text-sm tk-da-param" data-key="color">${columnOptions(p.color)}</select>`)}
-                    ${field('Size by (optional)', `<select class="tk-input w-full text-sm tk-da-param" data-key="size"><option value="">—</option>${columnOptions(p.size, ['numeric'])}</select>`)}
+                    ${field('Size by (optional)', `<select class="tk-input w-full text-sm tk-da-param" data-key="size"><option value="">-</option>${columnOptions(p.size, ['numeric'])}</select>`)}
                 </div>`;
             break;
         default:
@@ -1202,7 +1202,7 @@ function runDescribe(p) {
     const out = [];
     cols.forEach((id) => {
         if (!isNumericColumn(id)) {
-            out.push([id, '—', 'not numeric', '', '', '', '', '']);
+            out.push([id, '-', 'not numeric', '', '', '', '', '']);
             return;
         }
         const vals = numericValues(id, dataRows);
@@ -1287,7 +1287,7 @@ function runGroupBy(p) {
         .map(([k, vals]) => [k, vals.length, aggregate(vals, p.agg === 'count' ? 'count' : p.agg)])
         .sort((a, b) => String(a[0]).localeCompare(String(b[0])));
     return {
-        html: tableHtml(['Group', 'n', p.agg], rows.map((r) => [r[0], r[1], r[2] != null ? Number(r[2]).toFixed(4) : '—'])),
+        html: tableHtml(['Group', 'n', p.agg], rows.map((r) => [r[0], r[1], r[2] != null ? Number(r[2]).toFixed(4) : '-'])),
     };
 }
 
@@ -1573,7 +1573,7 @@ function runAnova(p) {
     const samples = Object.values(groups).filter((g) => g.length >= 2);
     if (samples.length < 2) throw new Error('Need at least two factor levels with numeric data.');
     const f = oneWayAnovaF(samples);
-    const rows = Object.entries(groups).map(([k, vals]) => [k, vals.length, vals.length ? ss.mean(vals).toFixed(4) : '—']);
+    const rows = Object.entries(groups).map(([k, vals]) => [k, vals.length, vals.length ? ss.mean(vals).toFixed(4) : '-']);
     return {
         html: `<p class="mb-2"><strong>F statistic</strong>: ${f.toFixed(4)}</p>${tableHtml(['Level', 'n', 'mean'], rows)}`,
     };

@@ -288,7 +288,7 @@ export function openGallery() {
             <div class="px-5 py-4 border-b border-tk-line/60 flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
                 <div>
                     <h2 id="tk-da-gallery-title" class="text-lg font-semibold text-tk-ink">Visual gallery</h2>
-                    <p class="text-xs text-tk-muted mt-1">Choose a visual type — you will set fields next.</p>
+                    <p class="text-xs text-tk-muted mt-1">Choose a visual type - you will set fields next.</p>
                 </div>
                 <input type="search" id="tk-da-gallery-search" class="tk-input text-sm w-full sm:w-56" placeholder="Search visuals…" />
                 <button type="button" class="tk-da-icon-btn shrink-0" data-close-gallery aria-label="Close">✕</button>
@@ -361,7 +361,7 @@ export function renderDashboardCanvas() {
             <ol class="tk-da-steps">
                 <li><span>1</span> Apply slicers (program, site, season)</li>
                 <li><span>2</span> Add visuals from the gallery</li>
-                <li><span>3</span> Configure each card — fields, width, title</li>
+                <li><span>3</span> Configure each card - fields, width, title</li>
             </ol>
             <p class="text-sm text-tk-muted max-w-lg mb-6 mt-6">Build a dashboard like Power BI or Looker: only the cards you need, wired to your workbook columns.</p>
             <div class="flex flex-wrap gap-3 justify-center">
@@ -694,19 +694,19 @@ function kpiValue(rows, cfg) {
             return { v: n.toLocaleString(), sub: 'Rows in current view' };
         case 'sighted': {
             const s = rows.filter((r) => r.N === 1 || r.N === '1').length;
-            return { v: s.toLocaleString(), sub: n ? `${Math.round((s / n) * 100)}% sighted` : '—' };
+            return { v: s.toLocaleString(), sub: n ? `${Math.round((s / n) * 100)}% sighted` : '-' };
         }
         case 'confirmed': {
             const s = rows.filter((r) => r.AC === 1 || r.AC === '1').length;
-            return { v: s.toLocaleString(), sub: n ? `${Math.round((s / n) * 100)}% confirmed` : '—' };
+            return { v: s.toLocaleString(), sub: n ? `${Math.round((s / n) * 100)}% confirmed` : '-' };
         }
         case 'approved': {
             const s = rows.filter((r) => r.AD === 1 || r.AD === '1').length;
-            return { v: s.toLocaleString(), sub: n ? `${Math.round((s / n) * 100)}% approved` : '—' };
+            return { v: s.toLocaleString(), sub: n ? `${Math.round((s / n) * 100)}% approved` : '-' };
         }
         case 'avg_u': {
             const nums = deps.numericValues('U', rows);
-            return { v: nums.length ? deps.ss.mean(nums).toFixed(2) : '—', sub: 'Mean tercile (U)' };
+            return { v: nums.length ? deps.ss.mean(nums).toFixed(2) : '-', sub: 'Mean tercile (U)' };
         }
         case 'distinct_sites':
             return { v: String(new Set(rows.map((r) => r._site).filter(Boolean)).size), sub: 'Unique sites' };
@@ -715,7 +715,7 @@ function kpiValue(rows, cfg) {
         case 'column_agg': {
             const col = cfg.customColumn || 'U';
             const nums = deps.numericValues(col, rows);
-            if (!nums.length) return { v: '—', sub: 'No numeric data' };
+            if (!nums.length) return { v: '-', sub: 'No numeric data' };
             const agg = cfg.agg || 'mean';
             const val =
                 agg === 'mean'
@@ -730,7 +730,7 @@ function kpiValue(rows, cfg) {
             return { v: val, sub: `${agg} · ${col}` };
         }
         default:
-            return { v: '—', sub: '' };
+            return { v: '-', sub: '' };
     }
 }
 
@@ -810,7 +810,7 @@ function renderChartCard(card, rows) {
     const result = deps.runChart({ ...cfg, title: cfg.title || card.title, compact: true });
     const el = document.getElementById(`plot-${card.id}`);
     if (!el || !result?.plot) {
-        if (el) el.innerHTML = emptyState('Could not build chart — check fields and chart type.');
+        if (el) el.innerHTML = emptyState('Could not build chart - check fields and chart type.');
         return;
     }
     const cross = ct === 'histogram' || ct === 'box' ? cfg.y : cfg.x;
@@ -881,7 +881,7 @@ function renderMapCard(card, rows) {
     const el = document.getElementById(`plot-${card.id}`);
     if (!el) return;
     if (!lats.length) {
-        el.innerHTML = emptyState('No coordinates — check lat/lon fields or capture GPS (Z).');
+        el.innerHTML = emptyState('No coordinates - check lat/lon fields or capture GPS (Z).');
         return;
     }
     deps.mountPlotEl(

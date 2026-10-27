@@ -100,7 +100,7 @@
                     @forelse ($seasons as $season)
                         <li>{{ $season->monthRangeLabel() }}</li>
                     @empty
-                        <li class="text-tk-muted">No seasons — use Create program or add via a new program wizard.</li>
+                        <li class="text-tk-muted">No seasons - use Create program or add via a new program wizard.</li>
                     @endforelse
                 </ul>
             </div>
@@ -112,7 +112,7 @@
                         <li>
                             <strong>{{ $site->name }}</strong>
                             <span class="text-tk-muted block text-xs">
-                                {{ $site->continent ?? '—' }} · {{ $site->country_name ?? $site->country }}
+                                {{ $site->continent ?? '-' }} · {{ $site->country_name ?? $site->country }}
                                 @if ($site->county) · {{ $site->county }} @endif
                                 @if ($site->ward) · {{ $site->ward }} @endif
                             </span>
@@ -131,7 +131,7 @@
             <span class="text-xs text-tk-muted">{{ $legendCodeCount }} standard codes</span>
         </div>
         <p class="text-sm text-tk-muted max-w-3xl">
-            Reference only — you do not register indicators here. During capture (FGD / records), each sign gets a
+            Reference only - you do not register indicators here. During capture (FGD / records), each sign gets a
             <strong>Unique Indicator ID</strong> from this legend. Codes are grouped by v4 category and type
             (01-PLT, 01-ANI, 02-ATM, …).
         </p>
@@ -163,7 +163,7 @@
                                             <li class="font-mono text-xs leading-relaxed">
                                                 <span class="text-tk-ink">{{ $codeRow['code'] }}</span>
                                                 @if ($codeRow['label'])
-                                                    <span class="text-tk-muted font-sans"> — {{ $codeRow['label'] }}</span>
+                                                    <span class="text-tk-muted font-sans"> - {{ $codeRow['label'] }}</span>
                                                 @endif
                                             </li>
                                         @endforeach

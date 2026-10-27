@@ -1,5 +1,5 @@
 /**
- * Field roles — which columns fit tables vs charts vs pie vs map, etc.
+ * Field roles - which columns fit tables vs charts vs pie vs map, etc.
  */
 
 export const FIELD_ROLE = {
@@ -14,14 +14,14 @@ export const FIELD_ROLE = {
 };
 
 export const ROLE_HINTS = {
-    measure: 'Numbers — Y-axis, sums, averages, KPIs',
-    dimension: 'Categories — bars, groups, matrix rows/columns',
-    dimension_pie: 'Categories with ≤15 distinct values — best for pie/donut',
-    date: 'Dates — timelines and trends',
+    measure: 'Numbers - Y-axis, sums, averages, KPIs',
+    dimension: 'Categories - bars, groups, matrix rows/columns',
+    dimension_pie: 'Categories with ≤15 distinct values - best for pie/donut',
+    date: 'Dates - timelines and trends',
     geo_lat: 'Latitude (or parsed from GPS)',
     geo_lon: 'Longitude (or parsed from GPS)',
-    table: 'Any field — tables and snapshots',
-    measure_or_dimension: 'Numbers or categories — scatter X',
+    table: 'Any field - tables and snapshots',
+    measure_or_dimension: 'Numbers or categories - scatter X',
 };
 
 const PIE_MAX_CATEGORIES = 15;
@@ -186,7 +186,7 @@ export function roleHint(role, matchCount) {
  * Build <option> list; optional optgroups for measure_or_dimension.
  */
 export function buildSelectOptions(columns, role, selected, allowEmpty, isNumericColumn) {
-    const empty = allowEmpty ? `<option value="" ${selected === '' ? 'selected' : ''}>—</option>` : '';
+    const empty = allowEmpty ? `<option value="" ${selected === '' ? 'selected' : ''}>-</option>` : '';
     const list = filterColumnsForRole(columns, role, isNumericColumn);
 
     if (role === 'measure_or_dimension') {

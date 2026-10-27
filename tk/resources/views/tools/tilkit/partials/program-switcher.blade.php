@@ -2,7 +2,7 @@
     <div class="tk-card p-4 mb-4 flex flex-wrap gap-3 items-center justify-between text-sm">
         <div>
             <span class="text-tk-muted">Active program:</span>
-            <strong>{{ $activeProgram->name ?? '—' }}</strong>
+            <strong>{{ $activeProgram->name ?? '-' }}</strong>
         </div>
         <form method="POST" action="{{ route('tools.tilkit.program.switch', $tool) }}" class="flex flex-wrap gap-2 items-center">
             @csrf

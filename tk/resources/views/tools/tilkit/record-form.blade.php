@@ -68,7 +68,7 @@
                         @forelse ($sites as $site)
                             <option value="{{ $site->id }}" @selected(old('site_id') == $site->id)>{{ $site->name }}</option>
                         @empty
-                            <option value="" disabled>No sites — add under Setup for this program</option>
+                            <option value="" disabled>No sites - add under Setup for this program</option>
                         @endforelse
                     </select>
                 </div>
@@ -79,7 +79,7 @@
                         @forelse ($seasons as $season)
                             <option value="{{ $season->id }}" @selected(old('season_id') == $season->id)>{{ $season->monthRangeLabel() }}</option>
                         @empty
-                            <option value="" disabled>No seasons — add month ranges under Setup</option>
+                            <option value="" disabled>No seasons - add month ranges under Setup</option>
                         @endforelse
                     </select>
                 </div>

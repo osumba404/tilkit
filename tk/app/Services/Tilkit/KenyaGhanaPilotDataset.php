@@ -404,7 +404,7 @@ class KenyaGhanaPilotDataset
             'DM' => $seq % 4 === 0 ? 1 : 0,
             'DN' => 'Residual dry-spell risk if onset arrives late in lowland plots.',
             'DO' => 1,
-            'DP' => '"'.$summary.'" — align planting, water, and grazing with '.$season['label'].'.',
+            'DP' => '"'.$summary.'" - align planting, water, and grazing with '.$season['label'].'.',
         ];
     }
 

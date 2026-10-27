@@ -15,7 +15,7 @@ class HomeController extends Controller
             : null;
 
         $about = HomeTilkitAbout::content();
-        $title = 'Tilkit — institutional data collection and field analytics';
+        $title = 'Tilkit - institutional data collection and field analytics';
         $metaDescription = HomeTilkitAbout::metaDescriptionShort();
         $ogDescription = HomeTilkitAbout::metaDescriptionSocial();
         $metaKeywords = implode(', ', HomeTilkitAbout::keywords());

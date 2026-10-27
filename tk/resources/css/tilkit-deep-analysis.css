@@ -1,4 +1,4 @@
-/* Deep Analysis — BI-style dashboard (plain colors) */
+/* Deep Analysis - BI-style dashboard (plain colors) */
 .tk-da-canvas-wrap {
     @apply relative rounded-xl border border-tk-line bg-tk-soft/40 p-4;
 }
@@ -138,7 +138,7 @@
     @apply text-[10px];
 }
 
-/* Plotly SVG labels/legends — match app dark theme when layout patch misses a node */
+/* Plotly SVG labels/legends - match app dark theme when layout patch misses a node */
 .dark .tk-da-plot-host .legendtext,
 .dark .tk-da-plot .legendtext,
 .dark .tk-da-plot-host .g-xtitle,

@@ -46,13 +46,13 @@ class KenyaGhanaPilotSeeder extends Seeder
         $kenyaProgram = TilkitProgram::query()->create([
             'project_id' => $tool->id,
             'name' => 'Kenya NEO',
-            'description' => 'Kenya Nature Early Outlook pilot — long rains (MAM) and short rains (OND) community indicator monitoring.',
+            'description' => 'Kenya Nature Early Outlook pilot - long rains (MAM) and short rains (OND) community indicator monitoring.',
         ]);
 
         $ghanaProgram = TilkitProgram::query()->create([
             'project_id' => $tool->id,
             'name' => 'Ghana community forecast',
-            'description' => 'Ghana pilot — southern bi-modal rains (major AMJ + minor SON) and northern single rainy season.',
+            'description' => 'Ghana pilot - southern bi-modal rains (major AMJ + minor SON) and northern single rainy season.',
         ]);
 
         $dataset = app(KenyaGhanaPilotDataset::class);

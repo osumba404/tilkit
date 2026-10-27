@@ -123,7 +123,7 @@
                             <div>
                                 <label class="text-xs text-tk-muted block mb-1">Season name</label>
                                 <input type="text" x-model="seasonName" class="tk-input" maxlength="80" placeholder="e.g. MAM 2025, Long rains, OND">
-                                <p class="text-xs text-tk-muted mt-1">Suggested from months: <span x-text="suggestedSeasonName || '—'"></span></p>
+                                <p class="text-xs text-tk-muted mt-1">Suggested from months: <span x-text="suggestedSeasonName || '-'"></span></p>
                             </div>
                             <button type="button" class="tk-btn-secondary w-full" :disabled="busy" @click="addSeason()">
                                 Add this season

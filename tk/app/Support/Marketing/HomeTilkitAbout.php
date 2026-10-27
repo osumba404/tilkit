@@ -18,16 +18,16 @@ class HomeTilkitAbout
     public static function content(): array
     {
         return [
-            'intro' => 'TILKIT is a participatory method and workbook that turns the weather signs communities already observe—tree flowering, wind shifts, animal behaviour, and more—into a shared seasonal forecast expressed in the same above-normal, normal, and below-normal (tercile) language national meteorological services use. That lets local knowledge be validated, weighted, tallied, and discussed alongside official outlooks rather than kept separate from science.',
+            'intro' => 'TILKIT is a participatory method and workbook that turns the weather signs communities already observe-tree flowering, wind shifts, animal behaviour, and more-into a shared seasonal forecast expressed in the same above-normal, normal, and below-normal (tercile) language national meteorological services use. That lets local knowledge be validated, weighted, tallied, and discussed alongside official outlooks rather than kept separate from science.',
             'platform_note' => 'Tilkit is the web platform that hosts the v4 Weather Indicator Log and broader institutional data collection for forms, governance, and analysis.',
             'origins' => [
                 'TILKIT grew out of climate-smart agriculture training-of-trainers work in East Africa from March 2016 through December 2021, linked to CGIAR AICCRA and CRAFT with partners including SNV. Participatory studies with more than 1,100 farmers, extension agents, and community leaders in Kenya, Tanzania, and Uganda documented locality-specific indicators and consensus-based forecasting. The methodology was published in 2023 in the FARA Research Report (Osumba et al., Vol. 7(25):296–320).',
-                'What began as group-work tables in workshops evolved into the multi-sheet Excel master template. Version 3 introduced the full weighting protocol; version 4 (reviewed 19 October 2026) extends the same record across the early-warning chain—124 columns from observation through tally, integration fields, and exports. This site implements that v4 contract in software, with rules-engine parity tested against the demo workbook.',
+                'What began as group-work tables in workshops evolved into the multi-sheet Excel master template. Version 3 introduced the full weighting protocol; version 4 (reviewed 19 October 2026) extends the same record across the early-warning chain-124 columns from observation through tally, integration fields, and exports. This site implements that v4 contract in software, with rules-engine parity tested against the demo workbook.',
             ],
             'implementations' => [
                 [
                     'title' => 'East Africa (2017–2021)',
-                    'text' => 'Field testing and workshops across Kenya, Tanzania, and Uganda—including Kenyan counties such as Homa Bay, Kisumu, Narok, Machakos, and Embu. A documented July 2021 session in Narok County captured 24 community-trusted signs with meanings, lead times, and tercile votes.',
+                    'text' => 'Field testing and workshops across Kenya, Tanzania, and Uganda-including Kenyan counties such as Homa Bay, Kisumu, Narok, Machakos, and Embu. A documented July 2021 session in Narok County captured 24 community-trusted signs with meanings, lead times, and tercile votes.',
                     'datetime' => '2017-01/2021-12',
                 ],
                 [
@@ -49,7 +49,7 @@ class HomeTilkitAbout
                 ],
                 [
                     'label' => 'July 2021',
-                    'text' => 'Narok County workshop—24 signs recorded, weighted, and tallied into a community forecast.',
+                    'text' => 'Narok County workshop-24 signs recorded, weighted, and tallied into a community forecast.',
                     'datetime' => '2021-07',
                 ],
                 [
@@ -69,7 +69,7 @@ class HomeTilkitAbout
                 ],
                 [
                     'label' => '2026',
-                    'text' => 'Tilkit web platform—capture, validation, tally, setup, and exports aligned to the v4 workbook.',
+                    'text' => 'Tilkit web platform-capture, validation, tally, setup, and exports aligned to the v4 workbook.',
                     'datetime' => '2026',
                 ],
             ],

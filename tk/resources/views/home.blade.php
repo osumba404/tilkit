@@ -14,9 +14,9 @@
             </h1>
             <p class="mt-6 text-lg text-tk-muted max-w-2xl">
                 @if ($weatherTool)
-                    TILKIT Weather Indicator Log (v4 workbook): capture community signs, run eligibility and weighting, and publish seasonal tercile tallies—field definitions ship with the app, not in the database.
+                    TILKIT Weather Indicator Log (v4 workbook): capture community signs, run eligibility and weighting, and publish seasonal tercile tallies-field definitions ship with the app, not in the database.
                 @else
-                    Tilkit maps the full catalogue of data collection points—from XLSForm question types to sensors and channels—into a single platform. Create a tool, become its admin, and publish forms aligned with Kenya DPA governance.
+                    Tilkit maps the full catalogue of data collection points-from XLSForm question types to sensors and channels-into a single platform. Create a tool, become its admin, and publish forms aligned with Kenya DPA governance.
                 @endif
             </p>
             <nav class="mt-10 flex flex-wrap gap-3" aria-label="Get started">
@@ -39,13 +39,13 @@
             <dl class="grid sm:grid-cols-3 gap-5">
                 <div class="tk-card p-6">
                     <dt class="font-display font-semibold text-tk-ink">200+ collection points</dt>
-                    <dd class="mt-2 text-sm text-tk-muted">Sixteen families from the field reference guide—text, geo, media, clinical, aggregate, and more.</dd>
+                    <dd class="mt-2 text-sm text-tk-muted">Sixteen families from the field reference guide-text, geo, media, clinical, aggregate, and more.</dd>
                 </div>
                 <div class="tk-card p-6">
                     <dt class="font-display font-semibold text-tk-ink">{{ $weatherTool ? 'Sites & seasons' : 'Tool-scoped admin' }}</dt>
                     <dd class="mt-2 text-sm text-tk-muted">
                         @if ($weatherTool)
-                            One shared weather log for the platform. Add sites and seasons per community or study—no new tool per location.
+                            One shared weather log for the platform. Add sites and seasons per community or study-no new tool per location.
                         @else
                             Every account can spin up a tool; the creator becomes administrator for forms, members, and exports.
                         @endif

@@ -46,7 +46,7 @@ return [
                 'TILKIT_GEOGRAPHY_COUNTRIES_URL',
                 'https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/json/countries.json',
             ),
-            // Optional: REST Countries v5 (requires free API key) — used only if key is set and primary fetch fails.
+            // Optional: REST Countries v5 (requires free API key) - used only if key is set and primary fetch fails.
             'restcountries_v5_url' => env(
                 'TILKIT_GEOGRAPHY_RESTCOUNTRIES_V5_URL',
                 'https://restcountries.com/v5/countries',
