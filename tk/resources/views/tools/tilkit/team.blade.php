@@ -5,10 +5,6 @@
         <a href="{{ route('tools.settings.edit', $tool) }}" class="tk-btn-secondary text-sm">Consent &amp; branding</a>
     </div>
 
-    @if (session('status'))
-        <div class="tk-card p-4 mb-4 text-sm">{{ session('status') }}</div>
-    @endif
-
     <div class="tk-card p-6 mb-8">
         <h3 class="font-semibold text-tk-ink mb-2">Governance</h3>
         <p class="text-sm text-tk-muted">{{ $tool->purpose }}</p>

@@ -9,11 +9,11 @@
 <x-app-layout>
     @include('tools.tilkit.partials.subnav', ['tilkitNav' => 'tally'])
 
-    <form method="POST" action="{{ route('tools.tilkit.tally', $tool) }}" class="tk-card p-5 flex flex-wrap gap-4 items-end mb-6">
+    <form method="POST" action="{{ route('tools.tilkit.tally', $tool) }}" class="tk-card p-5 flex flex-wrap gap-4 items-end mb-6" data-tk-site-season-form>
         @csrf
         <div>
             <label class="text-xs text-tk-muted block mb-1">Site</label>
-            <select name="site_id" class="tk-input" required>
+            <select name="site_id" class="tk-input" required data-tk-site-select>
                 @foreach ($sites as $site)
                     <option value="{{ $site->id }}" @selected($siteId == $site->id)>{{ $site->name }}</option>
                 @endforeach
@@ -21,9 +21,9 @@
         </div>
         <div>
             <label class="text-xs text-tk-muted block mb-1">Season</label>
-            <select name="season_id" class="tk-input" required>
+            <select name="season_id" class="tk-input" required data-tk-season-select>
                 @foreach ($seasons as $season)
-                    <option value="{{ $season->id }}" @selected($seasonId == $season->id)>{{ $season->monthRangeLabel() }}</option>
+                    <option value="{{ $season->id }}" data-site-id="{{ $season->site_id ?? '' }}" @selected($seasonId == $season->id)>{{ $season->monthRangeLabel() }}</option>
                 @endforeach
             </select>
         </div>

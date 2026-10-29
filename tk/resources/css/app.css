@@ -166,6 +166,18 @@
         @apply rounded-tk border border-tk-accent/25 bg-tk-accent-soft px-4 py-3 text-sm text-tk-ink shadow-tk-xs animate-tk-fade-in-down;
     }
 
+    .tk-flash-toast {
+        @apply fixed top-4 right-4 z-[200] flex max-w-sm items-start gap-3 rounded-tk border border-tk-accent/30 bg-tk-surface px-4 py-3 text-sm text-tk-ink shadow-tk-lg ring-1 ring-black/[0.05] animate-tk-fade-in-down;
+    }
+
+    .tk-flash-toast-message {
+        @apply flex-1 leading-snug pr-1;
+    }
+
+    .tk-flash-toast-dismiss {
+        @apply shrink-0 -mt-0.5 -mr-1 rounded-md px-1.5 py-0.5 text-lg leading-none text-tk-muted hover:text-tk-ink hover:bg-tk-soft/80 transition-colors;
+    }
+
     .tk-error-banner {
         @apply rounded-tk border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-tk-ink shadow-tk-xs animate-tk-fade-in-down;
     }
@@ -237,6 +249,23 @@
 
     .tk-tilkit-subnav-link--deep.is-active {
         @apply ring-2 ring-white/30 ring-inset;
+    }
+
+    .tk-program-active-label {
+        @apply inline-flex items-baseline gap-0.5 text-sm text-tk-muted;
+    }
+
+    .tk-program-active-badge {
+        display: inline-block;
+        width: 0.72em;
+        height: 0.72em;
+        flex-shrink: 0;
+        vertical-align: 0.06em;
+        color: #16a34a;
+    }
+
+    .dark .tk-program-active-badge {
+        color: #22c55e;
     }
 
     .tk-tilkit-sidebar-link {
@@ -736,6 +765,61 @@
     .tk-gps-fullscreen-host.tk-gps-fullscreen-fallback .tk-gps-map-canvas {
         @apply flex-1 w-full;
         min-height: calc(100vh - 5rem);
+    }
+
+    .tk-wizard-study-map-host:fullscreen,
+    .tk-wizard-study-map-host.tk-gps-fullscreen-fallback {
+        @apply bg-tk-bg flex flex-col gap-0 overflow-hidden;
+        width: 100%;
+        height: 100%;
+    }
+
+    .tk-wizard-study-map-host:fullscreen .tk-gps-fullscreen-map-shell,
+    .tk-wizard-study-map-host.tk-gps-fullscreen-fallback .tk-gps-fullscreen-map-shell {
+        @apply flex-1 flex flex-col min-h-0;
+    }
+
+    .tk-wizard-study-map-host:fullscreen .tk-wizard-map-canvas,
+    .tk-wizard-study-map-host.tk-gps-fullscreen-fallback .tk-wizard-map-canvas {
+        @apply flex-1 w-full h-auto;
+        min-height: calc(100vh - 12rem);
+    }
+
+    .tk-wizard-map-toolbar {
+        @apply shrink-0 relative z-[1001];
+    }
+
+    .tk-wizard-map-actions {
+        @apply shrink-0 relative z-[1001];
+    }
+
+    .tk-wizard-site-tooltip.leaflet-tooltip {
+        @apply rounded-lg border border-tk-line/80 bg-tk-surface px-2.5 py-2 text-xs text-tk-ink shadow-tk-md;
+    }
+
+    .tk-wizard-site-tooltip .tk-wizard-site-tooltip-title {
+        @apply font-semibold text-tk-ink mb-0.5;
+    }
+
+    .tk-wizard-site-tooltip .tk-wizard-site-tooltip-muted {
+        @apply text-tk-muted leading-snug;
+    }
+
+    .tk-wizard-site-popup .leaflet-popup-content-wrapper {
+        @apply rounded-lg border border-tk-line/80 bg-tk-surface shadow-tk-md;
+    }
+
+    .tk-wizard-site-popup .leaflet-popup-content {
+        @apply m-3 text-sm text-tk-ink;
+        min-width: 12rem;
+    }
+
+    .tk-wizard-site-popup .leaflet-popup-tip {
+        @apply bg-tk-surface;
+    }
+
+    .tk-wizard-site-popup-body .tk-wizard-site-popup-actions {
+        @apply flex flex-col gap-2 pt-2 mt-2 border-t border-tk-line/70;
     }
 
     .tk-dropdown-panel {

@@ -75,6 +75,7 @@ class TilkitMobileController extends Controller
         $sites = $programs->sitesQuery($tool)->orderBy('name')->get(['id', 'name', 'latitude', 'longitude']);
         $seasons = $programs->seasonsQuery($tool)->get()->map(fn ($s) => [
             'id' => $s->id,
+            'site_id' => $s->site_id,
             'label' => $s->monthRangeLabel(),
         ]);
 

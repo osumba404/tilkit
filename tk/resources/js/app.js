@@ -17,6 +17,10 @@ async function bootApp() {
         const gps = await import('./tilkit-gps');
         gps.bootTilkitGps();
     }
+    if (document.querySelector('[data-tk-site-season-form]')) {
+        const siteSeasons = await import('./tilkit-site-seasons');
+        siteSeasons.bootTilkitSiteSeasonSelects();
+    }
 
     Alpine.start();
 }

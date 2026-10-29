@@ -58,6 +58,7 @@ class TilkitProgramSetupTest extends TestCase
         $this->actingAs($user)
             ->post(route('tools.tilkit.setup.season', $tool), [
                 'program_id' => $program->id,
+                'site_id' => $site->id,
                 'label' => 'Full year cycle',
                 'start_month' => 1,
                 'end_month' => 12,
@@ -168,10 +169,19 @@ class TilkitProgramSetupTest extends TestCase
             'project_id' => $tool->id,
             'name' => 'Ordered seasons',
         ]);
+        $site = TilkitSite::query()->create([
+            'project_id' => $tool->id,
+            'program_id' => $program->id,
+            'name' => 'Test site',
+            'continent' => 'Africa',
+            'country' => 'KE',
+            'country_name' => 'Kenya',
+        ]);
 
         $this->actingAs($user)
             ->postJson(route('tools.tilkit.setup.season', $tool), [
                 'program_id' => $program->id,
+                'site_id' => $site->id,
                 'label' => 'Early year',
                 'start_month' => 1,
                 'end_month' => 2,
@@ -181,6 +191,7 @@ class TilkitProgramSetupTest extends TestCase
         $this->actingAs($user)
             ->postJson(route('tools.tilkit.setup.season', $tool), [
                 'program_id' => $program->id,
+                'site_id' => $site->id,
                 'label' => 'Wrong start',
                 'start_month' => 5,
                 'end_month' => 6,

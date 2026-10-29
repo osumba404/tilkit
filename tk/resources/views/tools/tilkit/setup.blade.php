@@ -1,15 +1,12 @@
 <x-app-layout>
-    @if (session('status'))
-        <div class="tk-card p-4 mb-4 text-sm">{{ session('status') }}</div>
-    @endif
-
     @include('tools.tilkit.partials.subnav')
 
     @include('tools.tilkit.partials.program-setup-wizard')
 
     <p class="text-sm text-tk-muted mb-6 max-w-3xl">
-        Each <strong>program</strong> is an initiative with its own seasons (full calendar, month ranges in order) and monitoring sites.
-        Use <strong>Create program</strong> or <strong>Edit</strong> to open the same three-step setup wizard.
+        Each <strong>program</strong> is an initiative. For each program you add <strong>sites</strong> (study areas), define
+        <strong>seasons per site</strong> (month ranges can differ by location), then outline each site on the map.
+        Use <strong>Create program</strong> or <strong>Edit</strong> to open the four-step setup wizard.
     </p>
 
     <div class="grid lg:grid-cols-2 gap-6 mb-6">
@@ -29,35 +26,49 @@
                             'id' => $program->id,
                             'name' => $program->name,
                             'description' => $program->description ?? '',
-                            'seasons' => $programSeasons->map(fn ($s) => [
-                                'id' => $s->id,
-                                'label' => $s->label,
-                                'start_month' => (int) $s->start_month,
-                                'end_month' => (int) $s->end_month,
-                            ])->values()->all(),
-                            'sites' => $programSites->map(fn ($site) => [
-                                'id' => $site->id,
-                                'name' => $site->name,
-                            ])->values()->all(),
+                            'sites' => $programSites->map(function ($site) use ($programSeasons) {
+                                $siteSeasons = $programSeasons->where('site_id', $site->id);
+
+                                return [
+                                    'id' => $site->id,
+                                    'name' => $site->name,
+                                    'continent' => $site->continent,
+                                    'country' => $site->country,
+                                    'country_name' => $site->country_name,
+                                    'county' => $site->county,
+                                    'ward' => $site->ward,
+                                    'latitude' => $site->latitude,
+                                    'longitude' => $site->longitude,
+                                    'study_area_geojson' => $site->study_area_geojson,
+                                    'has_study_area' => $site->hasStudyAreaMapped(),
+                                    'seasons' => $siteSeasons->map(fn ($s) => [
+                                        'id' => $s->id,
+                                        'label' => $s->label,
+                                        'start_month' => (int) $s->start_month,
+                                        'end_month' => (int) $s->end_month,
+                                    ])->values()->all(),
+                                ];
+                            })->values()->all(),
                         ];
                     @endphp
                     <li class="flex flex-wrap gap-2 items-start justify-between border-b border-tk-line/60 pb-2 last:border-0">
                         <div class="min-w-0">
                             @if ($program->id === $activeProgram->id)
                                 <strong>{{ $program->name }}</strong>
-                                <span class="text-tk-muted">· active</span>
+                                <span class="tk-program-active-label">
+                                    <span aria-hidden="true">·</span>
+                                    <span>active</span>
+                                    <svg class="tk-program-active-badge" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Active program">
+                                        <path fill="currentColor" d="M11 0C4.925 0 0 4.925 0 11s4.925 11 11 11 11-4.925 11-11S17.075 0 11 0Z"/>
+                                        <path fill="#fff" d="M9.47 14.53 6.58 11.64l1.06-1.06 1.83 1.83 4.24-4.24 1.06 1.06-5.3 5.3Z"/>
+                                    </svg>
+                                </span>
                             @else
                                 <span>{{ $program->name }}</span>
                             @endif
                             <span class="text-tk-muted block text-xs">
-                                {{ $programSeasons->count() }} season{{ $programSeasons->count() === 1 ? '' : 's' }}
-                                · {{ $programSites->count() }} site{{ $programSites->count() === 1 ? '' : 's' }}
+                                {{ $programSites->count() }} site{{ $programSites->count() === 1 ? '' : 's' }}
                             </span>
-                            @if ($programSeasons->isNotEmpty())
-                                <span class="text-tk-muted block text-xs">
-                                    {{ $programSeasons->map(fn ($s) => $s->monthRangeLabel())->join(', ') }}
-                                </span>
-                            @endif
                         </div>
                         <div class="flex flex-wrap gap-2">
                             <button
@@ -87,27 +98,29 @@
             <h3 class="tk-section-title text-base">Active program · {{ $activeProgram->name }}</h3>
 
             <div>
-                <h4 class="text-xs font-semibold uppercase tracking-wide text-tk-muted mb-2">Seasons</h4>
-                <ul class="text-sm space-y-1">
-                    @forelse ($seasons as $season)
-                        <li>{{ $season->monthRangeLabel() }}</li>
-                    @empty
-                        <li class="text-tk-muted">No seasons - use Create program or add via a new program wizard.</li>
-                    @endforelse
-                </ul>
-            </div>
-
-            <div>
-                <h4 class="text-xs font-semibold uppercase tracking-wide text-tk-muted mb-2">Sites</h4>
-                <ul class="text-sm space-y-2">
+                <h4 class="text-xs font-semibold uppercase tracking-wide text-tk-muted mb-2">Sites & seasons</h4>
+                <ul class="text-sm space-y-3">
                     @forelse ($sites as $site)
+                        @php
+                            $siteSeasons = $seasons->where('site_id', $site->id);
+                        @endphp
                         <li>
                             <strong>{{ $site->name }}</strong>
                             <span class="text-tk-muted block text-xs">
                                 {{ $site->continent ?? '-' }} · {{ $site->country_name ?? $site->country }}
                                 @if ($site->county) · {{ $site->county }} @endif
                                 @if ($site->ward) · {{ $site->ward }} @endif
+                                @if ($site->hasStudyAreaMapped())
+                                    · map set
+                                @endif
                             </span>
+                            <ul class="text-xs text-tk-muted mt-1 space-y-0.5">
+                                @forelse ($siteSeasons as $season)
+                                    <li>{{ $season->monthRangeLabel() }}</li>
+                                @empty
+                                    <li>No seasons for this site yet.</li>
+                                @endforelse
+                            </ul>
                         </li>
                     @empty
                         <li class="text-tk-muted">No sites for this program yet.</li>

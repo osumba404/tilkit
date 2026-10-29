@@ -173,6 +173,7 @@ class ToolTilkitAdminController extends Controller
         $seasonsByProgram = TilkitSeason::query()
             ->where('project_id', $tool->id)
             ->whereIn('program_id', $programs->pluck('id'))
+            ->orderBy('site_id')
             ->orderBy('start_month')
             ->get()
             ->groupBy('program_id');
@@ -195,6 +196,7 @@ class ToolTilkitAdminController extends Controller
             'setupProgramUpdateUrl' => route('tools.tilkit.setup.program.update', [$tool, 0]),
             'setupSeasonUrl' => route('tools.tilkit.setup.season', $tool),
             'setupSiteUrl' => route('tools.tilkit.setup.site', $tool),
+            'setupSiteUpdateUrl' => route('tools.tilkit.setup.site.update', [$tool, 0]),
             'tilkitNav' => 'setup',
         ]);
     }
@@ -309,26 +311,71 @@ class ToolTilkitAdminController extends Controller
         return back()->with('status', 'Site added to '.$program->name.'.');
     }
 
+    public function updateSiteStudyArea(Request $request, DcProject $tool, TilkitSite $site, ToolAccessService $access): RedirectResponse|JsonResponse
+    {
+        $access->assertCanView($request->user(), $tool);
+        abort_unless((int) $site->project_id === (int) $tool->id, 404);
+
+        $data = $request->validate([
+            'latitude' => ['nullable', 'numeric', 'between:-90,90'],
+            'longitude' => ['nullable', 'numeric', 'between:-180,180'],
+            'study_area_geojson' => ['nullable', 'array'],
+            'clear_study_area' => ['sometimes', 'boolean'],
+        ]);
+
+        if ($request->boolean('clear_study_area')) {
+            $site->update([
+                'latitude' => null,
+                'longitude' => null,
+                'study_area_geojson' => null,
+            ]);
+        } else {
+            $studyArea = null;
+            if (! empty($data['study_area_geojson'])) {
+                $studyArea = \App\Support\GeoFieldValidator::parseAndValidate('geoshape', $data['study_area_geojson'], 'study_area_geojson');
+            }
+
+            $site->update([
+                'latitude' => array_key_exists('latitude', $data) ? $data['latitude'] : $site->latitude,
+                'longitude' => array_key_exists('longitude', $data) ? $data['longitude'] : $site->longitude,
+                'study_area_geojson' => $studyArea,
+            ]);
+        }
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'site_id' => $site->id,
+                'message' => 'Study area saved.',
+            ]);
+        }
+
+        return back()->with('status', 'Study area updated for '.$site->name.'.');
+    }
+
     public function storeSeason(Request $request, DcProject $tool, ToolAccessService $access): RedirectResponse|JsonResponse
     {
         $access->assertCanView($request->user(), $tool);
         $programId = (int) $request->input('program_id');
+        $siteId = (int) $request->input('site_id');
         $data = $request->validate(
             [
                 'program_id' => $this->programIdRule($tool),
-                'label' => $this->seasonLabelRules($tool, $programId),
+                'site_id' => $this->siteIdForProgramRule($tool, $programId),
+                'label' => $this->seasonLabelRules($tool, $siteId),
                 'start_month' => ['required', 'integer', 'min:1', 'max:12'],
                 'end_month' => ['required', 'integer', 'min:1', 'max:12'],
             ],
             $this->seasonValidationMessages(),
         );
         $programId = (int) $data['program_id'];
+        $siteId = (int) $data['site_id'];
         $startMonth = (int) $data['start_month'];
         $endMonth = (int) $data['end_month'];
 
         $existing = TilkitSeason::query()
             ->where('project_id', $tool->id)
             ->where('program_id', $programId)
+            ->where('site_id', $siteId)
             ->orderBy('start_month')
             ->get();
         $coverage = SeasonMonthCoverage::coverageMap($existing);
@@ -350,6 +397,7 @@ class ToolTilkitAdminController extends Controller
             'ends_on' => null,
             'project_id' => $tool->id,
             'program_id' => $programId,
+            'site_id' => $siteId,
             'protocol_version' => config('tilkit.weather.protocol_version'),
         ]);
 
@@ -425,14 +473,25 @@ class ToolTilkitAdminController extends Controller
     }
 
     /** @return array<int, mixed> */
-    private function seasonLabelRules(DcProject $tool, int $programId): array
+    private function siteIdForProgramRule(DcProject $tool, int $programId): array
+    {
+        return [
+            'required',
+            'integer',
+            Rule::exists('tilkit_sites', 'id')
+                ->where(fn ($query) => $query->where('project_id', $tool->id)->where('program_id', $programId)),
+        ];
+    }
+
+    /** @return array<int, mixed> */
+    private function seasonLabelRules(DcProject $tool, int $siteId): array
     {
         return [
             'required',
             'string',
             'max:80',
             Rule::unique('tilkit_seasons', 'label')
-                ->where(fn ($query) => $query->where('project_id', $tool->id)->where('program_id', $programId)),
+                ->where(fn ($query) => $query->where('project_id', $tool->id)->where('site_id', $siteId)),
         ];
     }
 
@@ -441,7 +500,8 @@ class ToolTilkitAdminController extends Controller
     {
         return [
             'label.required' => 'Give this season a name (for example MAM 2025 or Long rains).',
-            'label.unique' => 'This program already has a season with that name. Choose a different name.',
+            'label.unique' => 'This site already has a season with that name. Choose a different name.',
+            'site_id.required' => 'Choose which monitoring site these seasons belong to.',
         ];
     }
 

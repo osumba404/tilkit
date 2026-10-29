@@ -2,10 +2,6 @@
     $isEdit = $record !== null;
 @endphp
 <x-app-layout>
-    @if (session('status'))
-        <div class="tk-card p-4 mb-4 text-sm text-tk-ink">{{ session('status') }}</div>
-    @endif
-
     @include('tools.tilkit.partials.subnav', ['tilkitNav' => $tilkitNav ?? 'capture'])
 
     <p class="text-sm text-tk-muted mb-4">
@@ -51,10 +47,10 @@
         @endif
 
         @if (! $isEdit)
-            <div class="tk-card p-5 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="tk-card p-5 grid md:grid-cols-2 lg:grid-cols-3 gap-4" data-tk-site-season-form>
                 <div>
                     <label class="text-sm text-tk-ink block mb-1 font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('AI') }}</label>
-                    <select name="site_id" required class="tk-input">
+                    <select name="site_id" required class="tk-input" data-tk-site-select>
                         @forelse ($sites as $site)
                             <option value="{{ $site->id }}" @selected(old('site_id') == $site->id)>{{ $site->name }}</option>
                         @empty
@@ -64,12 +60,12 @@
                 </div>
                 <div>
                     <label class="text-sm text-tk-ink block mb-1 font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('AM') }}</label>
-                    <p class="text-xs text-tk-muted mb-2">Choose the month range when this sign is monitored (for example long rains or short rains).</p>
-                    <select name="season_id" required class="tk-input">
+                    <p class="text-xs text-tk-muted mb-2">Seasons belong to the selected site (configure under Setup).</p>
+                    <select name="season_id" required class="tk-input" data-tk-season-select>
                         @forelse ($seasons as $season)
-                            <option value="{{ $season->id }}" @selected(old('season_id') == $season->id)>{{ $season->monthRangeLabel() }}</option>
+                            <option value="{{ $season->id }}" data-site-id="{{ $season->site_id ?? '' }}" @selected(old('season_id') == $season->id)>{{ $season->monthRangeLabel() }}</option>
                         @empty
-                            <option value="" disabled>No seasons - add month ranges under Setup</option>
+                            <option value="" disabled>No seasons - add under Setup for each site</option>
                         @endforelse
                     </select>
                 </div>

@@ -55,8 +55,8 @@ class WorkbookDemoImporter
                         'longitude' => $this->longitudeFromRow($row),
                     ],
                 );
-                $seasonKey = $program->id.'|'.$seasonLabel;
-                $season = $seasons[$seasonKey] ??= $this->resolveSeason($tool, $program, $seasonLabel);
+                $seasonKey = $program->id.'|'.$site->id.'|'.$seasonLabel;
+                $season = $seasons[$seasonKey] ??= $this->resolveSeason($tool, $program, $site, $seasonLabel);
 
                 $indicator = $indicators[$uid] ??= $this->resolveIndicator($tool, $uid, $row);
 
@@ -147,16 +147,18 @@ class WorkbookDemoImporter
         ]);
     }
 
-    private function resolveSeason(DcProject $tool, TilkitProgram $program, string $seasonLabel): TilkitSeason
+    private function resolveSeason(DcProject $tool, TilkitProgram $program, TilkitSite $site, string $seasonLabel): TilkitSeason
     {
         $season = TilkitSeason::query()
             ->where('program_id', $program->id)
+            ->where('site_id', $site->id)
             ->where('label', $seasonLabel)
             ->first();
 
         if ($season === null) {
             $season = TilkitSeason::query()
                 ->where('project_id', $tool->id)
+                ->where('site_id', $site->id)
                 ->where('label', $seasonLabel)
                 ->first();
         }
@@ -172,6 +174,7 @@ class WorkbookDemoImporter
             return TilkitSeason::query()->create([
                 'project_id' => $tool->id,
                 'program_id' => $program->id,
+                'site_id' => $site->id,
                 'label' => $seasonLabel,
                 'protocol_version' => config('tilkit.weather.protocol_version'),
                 ...$dates,
@@ -180,6 +183,7 @@ class WorkbookDemoImporter
 
         $season->forceFill([
             'program_id' => $program->id,
+            'site_id' => $site->id,
             'protocol_version' => $season->protocol_version ?: config('tilkit.weather.protocol_version'),
             ...$dates,
         ])->save();

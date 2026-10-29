@@ -1,8 +1,4 @@
 <x-app-layout>
-    @if (session('status'))
-        <div class="tk-card p-4 mb-4 text-sm">{{ session('status') }}</div>
-    @endif
-
     <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
         <p class="text-sm text-tk-muted">{{ $record->indicator?->indicator_uid }} · {{ $record->site?->name }}</p>
         <a href="{{ route('tools.tilkit.records.edit', [$tool, $record]) }}" class="tk-btn-secondary text-sm">Full grid</a>

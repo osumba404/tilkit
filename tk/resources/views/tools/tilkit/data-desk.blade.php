@@ -7,10 +7,6 @@
         <x-tilkit.gps-map-view :points="$mapPoints" height="h-64" />
     </div>
 
-    @if (session('status'))
-        <div class="tk-card p-4 mb-4 text-sm">{{ session('status') }}</div>
-    @endif
-
     @if ($weightReviews->isNotEmpty())
         <div class="tk-card p-5 mb-6 border-amber-200">
             <h3 class="font-semibold mb-3">Climate weight reviews (CP STRONG)</h3>

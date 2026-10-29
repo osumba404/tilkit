@@ -82,6 +82,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('tilkit/geography/continents', [TilkitGeographyController::class, 'continents'])->name('tilkit.geography.continents');
         Route::get('tilkit/geography/countries', [TilkitGeographyController::class, 'countries'])->name('tilkit.geography.countries');
         Route::post('tilkit/setup/sites', [ToolTilkitAdminController::class, 'storeSite'])->name('tilkit.setup.site');
+        Route::patch('tilkit/setup/sites/{site}', [ToolTilkitAdminController::class, 'updateSiteStudyArea'])->name('tilkit.setup.site.update');
         Route::post('tilkit/setup/seasons', [ToolTilkitAdminController::class, 'storeSeason'])->name('tilkit.setup.season');
         Route::get('tilkit/settings', [ToolTilkitAdminController::class, 'seasonSettings'])->name('tilkit.settings');
         Route::post('tilkit/settings', [ToolTilkitAdminController::class, 'updateSeasonSettings'])->name('tilkit.settings.update');

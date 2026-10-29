@@ -40,13 +40,7 @@
             </div>
         </header>
     @endif
-    @if (session('status'))
-        <div class="{{ $pageWrap }} pt-5">
-            <div class="tk-status-banner" role="status">
-                {{ session('status') }}
-            </div>
-        </div>
-    @endif
+    <x-flash-status-toast />
     <x-flash-errors :wrapper-class="$pageWrap.' pt-5'" />
     <main class="{{ $pageWrap }} {{ $isTilkitPage ? 'py-6 lg:py-8' : 'py-8 lg:py-10' }} w-full tk-page-content {{ $isTilkitPage ? 'tk-page-tilkit' : '' }}">
         {{ $slot ?? '' }}

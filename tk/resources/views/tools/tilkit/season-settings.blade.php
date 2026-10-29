@@ -1,8 +1,4 @@
 <x-app-layout>
-    @if (session('status'))
-        <div class="tk-card p-4 mb-4 text-sm">{{ session('status') }}</div>
-    @endif
-
     <form method="GET" class="tk-card p-4 flex gap-4 mb-6">
         <select name="site_id" class="tk-input" onchange="this.form.submit()">
             @foreach ($sites as $site)

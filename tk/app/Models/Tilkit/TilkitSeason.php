@@ -12,6 +12,7 @@ class TilkitSeason extends Model
     protected $fillable = [
         'project_id',
         'program_id',
+        'site_id',
         'label',
         'start_month',
         'end_month',
@@ -67,6 +68,11 @@ class TilkitSeason extends Model
     public function program(): BelongsTo
     {
         return $this->belongsTo(TilkitProgram::class, 'program_id');
+    }
+
+    public function site(): BelongsTo
+    {
+        return $this->belongsTo(TilkitSite::class, 'site_id');
     }
 
     public function records(): HasMany

@@ -248,6 +248,13 @@ class ToolTilkitWeatherController extends Controller
             422,
             'Site and season must belong to the same program.',
         );
+        if ($season->site_id !== null) {
+            abort_unless(
+                (int) $season->site_id === (int) $site->id,
+                422,
+                'Season must belong to the selected site.',
+            );
+        }
     }
 
     private function assertRecordBelongsToTool(DcProject $tool, TilkitIndicatorRecord $record): void
