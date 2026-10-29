@@ -30,6 +30,21 @@ class TilkitWorkbookCaptureTest extends TestCase
         $this->assertCount(34, $derived);
     }
 
+    public function test_raw_columns_group_by_leading_letter_in_workbook_order(): void
+    {
+        $bands = WorkbookColumnRegistry::rawColumnsByLeadingLetter();
+        $keys = array_keys($bands);
+
+        $this->assertSame('A', $keys[0]);
+        $this->assertContains('A', array_column($bands['A'], 'column'));
+        $this->assertContains('AA', array_column($bands['A'], 'column'));
+
+        $bIndex = array_search('B', $keys, true);
+        $this->assertNotFalse($bIndex);
+        $this->assertContains('B', array_column($bands['B'], 'column'));
+        $this->assertGreaterThan(0, $bIndex);
+    }
+
     public function test_store_all_raw_columns_and_reject_derived(): void
     {
         $record = $this->makeRecord();

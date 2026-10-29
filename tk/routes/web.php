@@ -1,12 +1,10 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\FieldReferenceController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserGuideController;
 use App\Http\Controllers\PlatformAdminController;
 use App\Http\Controllers\PlatformAnalyticsController;
-use App\Http\Controllers\PlatformDatasetController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicFormController;
 use App\Http\Controllers\PublicSubmissionDraftController;
@@ -45,7 +43,6 @@ Route::get('/f/{form:code}', [PublicFormController::class, 'show'])->name('publi
 Route::post('/f/{form:code}', [PublicFormController::class, 'submit'])->name('public.forms.submit');
 Route::get('/f/{form:code}/thanks', [PublicFormController::class, 'thanks'])->name('public.forms.thanks');
 
-Route::get('/reference', FieldReferenceController::class)->name('reference');
 Route::get('/user-guide', UserGuideController::class)->name('user-guide');
 
 Route::post('/api/tilkit/mobile/login', [TilkitMobileController::class, 'login'])
@@ -121,20 +118,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('forms/{form}/xlsform/export', [ToolFormController::class, 'exportXlsForm'])->name('forms.xlsform.export');
         Route::post('forms/{form}/xlsform/import', [ToolFormController::class, 'importXlsForm'])->name('forms.xlsform.import');
         });
-    });
-
-    Route::prefix('platform')->name('platform.')->group(function () {
-        Route::get('/datasets', [PlatformDatasetController::class, 'index'])->name('datasets.index');
-        Route::post('/datasets', [PlatformDatasetController::class, 'store'])->name('datasets.store');
-        Route::get('/datasets/{dataset}', [PlatformDatasetController::class, 'show'])->name('datasets.show');
-        Route::post('/datasets/{dataset}/panels', [PlatformDatasetController::class, 'storePanel'])->name('datasets.panels.store');
-        Route::patch('/datasets/{dataset}/panels/{panel}', [PlatformDatasetController::class, 'updatePanel'])->name('datasets.panels.update');
-        Route::delete('/datasets/{dataset}/panels/{panel}', [PlatformDatasetController::class, 'destroyPanel'])->name('datasets.panels.destroy');
-        Route::post('/datasets/{dataset}/panels/clear', [PlatformDatasetController::class, 'clearPanels'])->name('datasets.panels.clear');
-        Route::get('/datasets/{dataset}/explorer', [PlatformDatasetController::class, 'explorer'])->name('datasets.explorer');
-        Route::get('/datasets/{dataset}/analyze', [PlatformDatasetController::class, 'analyze'])->name('datasets.analyze');
-        Route::post('/datasets/{dataset}/analyze', [PlatformDatasetController::class, 'runAnalyze'])->name('datasets.analyze.run');
-        Route::get('/datasets/{dataset}/runs/{run}/chart.png', [PlatformDatasetController::class, 'chart'])->name('datasets.chart');
     });
 
     Route::middleware('super_admin')->prefix('platform')->name('platform.')->group(function () {

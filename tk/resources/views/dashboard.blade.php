@@ -2,7 +2,6 @@
     <x-slot name="header">
         <x-page-header title="Dashboard" subtitle="Your tools and latest collected data">
             <x-slot:actions>
-                <a href="{{ route('platform.datasets.index') }}" class="tk-btn-secondary">Upload & analyze data</a>
                 @if ($tilkitWeatherTool ?? null)
                     <a href="{{ route('tools.tilkit.overview', $tilkitWeatherTool) }}" class="tk-btn-primary">Weather log</a>
                 @else

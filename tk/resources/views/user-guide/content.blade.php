@@ -325,9 +325,7 @@
 
             <footer class="tk-guide-footer">
                 <p>
-                    Column catalogue:
-                    <a href="{{ route('reference') }}" class="text-tk-accent hover:underline underline-offset-2">Field reference</a>.
-                    Workbook guides in the app mirror all 12 master-template sheets.
+                    Workbook guides in the app mirror all 12 master-template sheets and the Community Data List capture flow.
                 </p>
             </footer>
             </div>

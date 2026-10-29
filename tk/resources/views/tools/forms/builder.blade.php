@@ -44,7 +44,6 @@
                 @endif
             </div>
             <div class="flex gap-2">
-                <a href="{{ route('reference') }}" class="tk-btn-secondary text-sm" target="_blank">Field catalogue</a>
                 @if ($form->currentVersion?->status === 'draft' && $form->currentVersion?->fields->isNotEmpty())
                     @if (($publishDiff['added'] ?? []) !== [] || ($publishDiff['removed'] ?? []) !== [] || ($publishDiff['changed'] ?? []) !== [])
                         <details class="text-xs text-tk-muted mr-2">

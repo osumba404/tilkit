@@ -2,7 +2,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-[4.25rem]">
             <div class="flex items-center gap-8">
-                <a href="{{ auth()->check() ? route('dashboard') : route('home') }}" class="flex items-center gap-3 group" aria-label="Tilkit home">
+                <a href="{{ route('home') }}" class="flex items-center gap-3 group" aria-label="Tilkit home">
                     <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-tk-accent text-white text-sm font-bold shadow-tk-sm transition-transform duration-300 group-hover:scale-105 group-hover:shadow-tk-md" aria-hidden="true">T</span>
                     <span class="flex flex-col leading-tight">
                         <span class="tk-nav-brand">Tilkit</span>
@@ -17,13 +17,9 @@
                         <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">Dashboard</x-nav-link>
                         <x-nav-link :href="route('tools.index')" :active="request()->routeIs('tools.*')">Tools</x-nav-link>
                     @endif
-                    <x-nav-link :href="route('platform.datasets.index')" :active="request()->routeIs('platform.datasets.*')">My datasets</x-nav-link>
-                    <x-nav-link :href="route('reference')" :active="request()->routeIs('reference')">Field reference</x-nav-link>
                     @if (Auth::user()->isSuperAdmin())
                         <x-nav-link :href="route('platform.index')" :active="request()->routeIs('platform.*')">Platform</x-nav-link>
                     @endif
-                @else
-                    <x-nav-link :href="route('reference')" :active="request()->routeIs('reference')">Field reference</x-nav-link>
                 @endauth
                     <x-nav-link :href="route('user-guide')" :active="request()->routeIs('user-guide')">User guide</x-nav-link>
                 </div>

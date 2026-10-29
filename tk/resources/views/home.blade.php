@@ -29,7 +29,7 @@
                     <a href="{{ route('dashboard') }}" class="tk-btn-secondary">Open dashboard</a>
                 @else
                     <a href="{{ route('register') }}" class="tk-btn-primary">Get started free</a>
-                    <a href="{{ route('reference') }}" class="tk-btn-secondary">Browse field reference</a>
+                    <a href="{{ route('user-guide') }}" class="tk-btn-secondary">Read user guide</a>
                 @endauth
             </nav>
         </header>

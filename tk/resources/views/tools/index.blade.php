@@ -2,7 +2,6 @@
     <x-slot name="header">
         <x-page-header title="Tools">
             <x-slot:actions>
-                <a href="{{ route('platform.datasets.index') }}" class="tk-btn-secondary">My datasets</a>
                 @unless ($tilkitWeatherTool ?? null)
                     <a href="{{ route('tools.create') }}" class="tk-btn-primary">Create tool</a>
                 @endunless

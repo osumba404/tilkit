@@ -29,14 +29,6 @@
             ])
         </div>
 
-        <div class="tk-card p-4 mb-6 flex flex-wrap items-center justify-between gap-3">
-            <div>
-                <p class="font-semibold text-sm">Analyze your own spreadsheet</p>
-                <p class="text-xs text-tk-muted">Upload CSV or Excel and ask questions in plain English.</p>
-            </div>
-            <a href="{{ route('platform.datasets.index') }}" class="tk-btn-primary text-sm shrink-0">Open dataset workspace</a>
-        </div>
-
         <div class="grid lg:grid-cols-3 gap-6 mb-6">
             <div class="lg:col-span-2 tk-card p-5">
                 <h3 class="font-semibold mb-1">Submission trend</h3>

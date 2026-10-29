@@ -113,67 +113,129 @@
             </div>
         @endif
 
-        @foreach ($stageGroups as $stage => $columns)
-            <x-tilkit.details-panel variant="card" :open="$loop->first">
-                <x-slot:summary>
-                    <span class="min-w-0 flex-1 pr-4">{{ $stage }}</span>
-                    <span class="tk-details-panel-count">{{ count($columns) }} fields</span>
-                </x-slot:summary>
-                <div class="p-5 pt-4 grid md:grid-cols-2 gap-4">
-                    @foreach ($columns as $col)
-                        @php
-                            if (\App\Support\Tilkit\WorkbookInputSpec::skipInForm($col)) {
-                                continue;
-                            }
-                            $letter = $col['column'];
-                            $current = old("workbook.{$letter}", $workbookValues[$letter] ?? '');
-                        @endphp
-                        <x-tilkit.workbook-field
-                            :col="$col"
-                            :current="$current"
-                            :center-lat="$isEdit ? $record->site?->latitude : null"
-                            :center-lng="$isEdit ? $record->site?->longitude : null"
-                        />
-                    @endforeach
-                </div>
-            </x-tilkit.details-panel>
-        @endforeach
+        @php
+            $letterBands = $letterBands ?? [];
+            $bandKeys = array_keys($letterBands);
+            $initialBand = strtoupper((string) request('band', $bandKeys[0] ?? 'A'));
+            $initialStep = array_search($initialBand, $bandKeys, true);
+            if ($initialStep === false) {
+                $initialStep = 0;
+            }
+        @endphp
 
-        <div class="tk-card p-5">
-            <h3 class="tk-section-title text-base mb-2">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('Y') }}</h3>
-            <p class="text-xs text-tk-muted mb-3">Upload at least three clear photos when possible.</p>
-            <input type="file" name="workbook_photos[]" accept="image/*" multiple class="tk-input">
-            @if ($isEdit && $record->workbookMedia->isNotEmpty())
-                <p class="text-xs text-tk-muted mt-2">{{ $record->workbookMedia->count() }} photo(s) stored.</p>
+        <div
+            class="space-y-4"
+            x-data="{
+                step: {{ (int) $initialStep }},
+                keys: @js($bandKeys),
+                bandLabel(key) { return 'Columns ' + key; },
+                goTo(i) { if (i >= 0 && i < this.keys.length) { this.step = i; window.scrollTo({ top: 0, behavior: 'smooth' }); } },
+            }"
+        >
+            <nav class="flex flex-wrap gap-2 text-sm animate-tk-fade-in" aria-label="Workbook column bands">
+                @foreach ($bandKeys as $i => $bandKey)
+                    <button
+                        type="button"
+                        class="tk-wizard-tab"
+                        :class="step === {{ $i }} ? 'tk-wizard-tab-active' : 'tk-wizard-tab-inactive'"
+                        @click="goTo({{ $i }})"
+                    >
+                        {{ $bandKey }}
+                    </button>
+                @endforeach
+            </nav>
+
+            @foreach ($letterBands as $bandKey => $columns)
+                @php
+                    $summary = \App\Support\Tilkit\WorkbookColumnRegistry::columnBandSummary($bandKey, $columns);
+                    $fieldCount = count(array_filter($columns, fn ($col) => ! \App\Support\Tilkit\WorkbookInputSpec::skipInForm($col)));
+                @endphp
+                <div
+                    class="tk-card p-5 animate-tk-fade-in-up"
+                    x-show="step === {{ $loop->index }}"
+                    x-cloak
+                >
+                    <div class="flex flex-wrap items-baseline justify-between gap-2 mb-4">
+                        <h3 class="tk-section-title text-base mb-0">Columns {{ $bandKey }}</h3>
+                        <span class="text-xs text-tk-muted font-mono">{{ $summary }} · {{ $fieldCount }} fields</span>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        @foreach ($columns as $col)
+                            @continue(\App\Support\Tilkit\WorkbookInputSpec::skipInForm($col))
+                            @php
+                                $letter = $col['column'];
+                                $current = old("workbook.{$letter}", $workbookValues[$letter] ?? '');
+                            @endphp
+                            <x-tilkit.workbook-field
+                                :col="$col"
+                                :current="$current"
+                                :center-lat="$isEdit ? $record->site?->latitude : null"
+                                :center-lng="$isEdit ? $record->site?->longitude : null"
+                            />
+                        @endforeach
+                    </div>
+                </div>
+            @endforeach
+
+            <div class="tk-card p-5" x-show="step === keys.length - 1" x-cloak>
+                <h3 class="tk-section-title text-base mb-2">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('Y') }}</h3>
+                <p class="text-xs text-tk-muted mb-3">Upload at least three clear photos when possible.</p>
+                <input type="file" name="workbook_photos[]" accept="image/*" multiple class="tk-input">
+                @if ($isEdit && $record->workbookMedia->isNotEmpty())
+                    <p class="text-xs text-tk-muted mt-2">{{ $record->workbookMedia->count() }} photo(s) stored.</p>
+                @endif
+            </div>
+
+            @if ($isEdit && isset($derivedColumns) && $derivedColumns !== [])
+                <x-tilkit.details-panel variant="card" x-show="step === keys.length - 1" x-cloak>
+                    <x-slot:summary>
+                        <span class="flex-1">Derived responses (read-only)</span>
+                        <span class="tk-details-panel-count">{{ count($derivedColumns) }} columns</span>
+                    </x-slot:summary>
+                    <p class="text-xs text-tk-muted mb-4 px-5 pt-4">Recalculated on save; not editable here.</p>
+                    <div class="grid md:grid-cols-2 gap-3 text-sm px-5 pb-5">
+                        @foreach ($derivedColumns as $col)
+                            @php
+                                $letter = $col['column'];
+                                $shown = $derivedMap[$letter]['value'] ?? '-';
+                            @endphp
+                            <div class="border border-tk-line rounded-lg p-3">
+                                <span class="font-mono text-tk-accent text-xs">{{ $letter }}</span>
+                                <div class="text-tk-muted text-xs">{{ $col['field'] }}</div>
+                                <div class="mt-1 font-medium">{{ is_scalar($shown) ? $shown : json_encode($shown) }}</div>
+                            </div>
+                        @endforeach
+                    </div>
+                </x-tilkit.details-panel>
             @endif
-        </div>
 
-        @if ($isEdit && isset($derivedColumns) && $derivedColumns !== [])
-            <x-tilkit.details-panel variant="card">
-                <x-slot:summary>
-                    <span class="flex-1">Derived responses (read-only)</span>
-                    <span class="tk-details-panel-count">{{ count($derivedColumns) }} columns</span>
-                </x-slot:summary>
-                <p class="text-xs text-tk-muted mb-4 px-5 pt-4">Recalculated on save; not editable here.</p>
-                <div class="grid md:grid-cols-2 gap-3 text-sm px-5 pb-5">
-                    @foreach ($derivedColumns as $col)
-                        @php
-                            $letter = $col['column'];
-                            $shown = $derivedMap[$letter]['value'] ?? '-';
-                        @endphp
-                        <div class="border border-tk-line rounded-lg p-3">
-                            <span class="font-mono text-tk-accent text-xs">{{ $letter }}</span>
-                            <div class="text-tk-muted text-xs">{{ $col['field'] }}</div>
-                            <div class="mt-1 font-medium">{{ is_scalar($shown) ? $shown : json_encode($shown) }}</div>
-                        </div>
-                    @endforeach
-                </div>
-            </x-tilkit.details-panel>
-        @endif
-
-        <div class="flex gap-3">
-            <button type="submit" class="tk-btn-primary">{{ $isEdit ? 'Save workbook fields' : 'Create record' }}</button>
-            <a href="{{ route('tools.tilkit.overview', $tool) }}" class="tk-btn-secondary">Cancel</a>
+            <div class="flex flex-wrap gap-3 pt-2">
+                <button
+                    type="button"
+                    class="tk-btn-secondary"
+                    x-show="step > 0"
+                    @click="goTo(step - 1)"
+                >
+                    Previous
+                </button>
+                <button
+                    type="button"
+                    class="tk-btn-primary"
+                    x-show="step < keys.length - 1"
+                    @click="goTo(step + 1)"
+                >
+                    Next
+                </button>
+                <button
+                    type="submit"
+                    class="tk-btn-primary"
+                    x-show="step === keys.length - 1"
+                    x-cloak
+                >
+                    {{ $isEdit ? 'Save workbook fields' : 'Create record' }}
+                </button>
+                <a href="{{ route('tools.tilkit.overview', $tool) }}" class="tk-btn-secondary">Cancel</a>
+            </div>
         </div>
     </form>
 </x-app-layout>

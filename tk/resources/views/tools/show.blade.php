@@ -3,7 +3,6 @@
         <x-page-header :title="$tool->name" :subtitle="$tool->code.' · Your role: '.$capabilities->label()">
             <x-slot:actions>
             <div class="flex flex-wrap gap-2">
-                <a href="{{ route('platform.datasets.index') }}" class="tk-btn-secondary">My datasets</a>
                 @if (\App\Support\Tilkit\WeatherTool::isWeatherModule($tool))
                     <a href="{{ route('tools.tilkit.overview', $tool) }}" class="tk-btn-primary">Weather log</a>
                 @else
