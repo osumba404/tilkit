@@ -40,7 +40,7 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-        View::composer('layouts.navigation', function ($view): void {
+        $shareWeatherToolNav = function ($view): void {
             if (! WeatherTool::singleToolMode()) {
                 $view->with('tilkitWeatherTool', null);
 
@@ -53,6 +53,20 @@ class AppServiceProvider extends ServiceProvider
                 $tool = WeatherTool::ensurePlatformTool($user);
             }
             $view->with('tilkitWeatherTool', $tool);
+        };
+
+        View::composer('layouts.navigation', $shareWeatherToolNav);
+        View::composer('layouts.tilkit-sidebar', $shareWeatherToolNav);
+
+        View::composer('layouts.app', function ($view): void {
+            $isTilkit = request()->routeIs('tools.tilkit.*');
+            $view->with('isTilkitPage', $isTilkit);
+            if ($isTilkit && ! array_key_exists('tool', $view->getData())) {
+                $routeTool = request()->route('tool');
+                if ($routeTool instanceof DcProject) {
+                    $view->with('tool', $routeTool);
+                }
+            }
         });
 
         Blueprint::macro('auditColumns', function (bool $userForeignKeys = true): void {

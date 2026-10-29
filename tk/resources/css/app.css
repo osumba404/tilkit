@@ -211,6 +211,10 @@
         scroll-behavior: smooth;
     }
 
+    .tk-subnav-da-slot {
+        will-change: max-width, opacity, transform;
+    }
+
     .tk-tilkit-subnav-link {
         @apply relative shrink-0 px-4 py-2.5 rounded-lg text-sm font-medium text-tk-muted transition-all duration-200 whitespace-nowrap;
     }
@@ -225,6 +229,46 @@
 
     .tk-tilkit-subnav-link.is-active {
         @apply text-white bg-tk-accent shadow-tk-sm;
+    }
+
+    .tk-tilkit-subnav-link--deep {
+        @apply bg-tk-accent text-white font-semibold shadow-tk-sm hover:bg-[#08697d] hover:text-white;
+    }
+
+    .tk-tilkit-subnav-link--deep.is-active {
+        @apply ring-2 ring-white/30 ring-inset;
+    }
+
+    .tk-tilkit-sidebar-link {
+        @apply flex items-center gap-3 rounded-lg px-2 py-2.5 text-sm font-medium text-tk-muted transition-colors duration-200;
+    }
+
+    .tk-tilkit-sidebar.tk-sidebar-closed .tk-tilkit-sidebar-link {
+        @apply justify-center px-0;
+    }
+
+    .tk-tilkit-sidebar-link:hover {
+        @apply bg-tk-soft/90 text-tk-ink;
+    }
+
+    .tk-tilkit-sidebar-link.is-active {
+        @apply bg-tk-accent text-white shadow-tk-sm;
+    }
+
+    .tk-tilkit-sidebar-link-accent:not(.is-active) {
+        @apply text-tk-accent;
+    }
+
+    .tk-tilkit-sidebar-icon {
+        @apply inline-flex shrink-0 items-center justify-center h-9 w-9 rounded-lg;
+    }
+
+    .tk-tilkit-main {
+        @apply animate-tk-fade-in;
+    }
+
+    body.tk-layout-tilkit {
+        @apply overflow-x-hidden;
     }
 
     .tk-da-shell {

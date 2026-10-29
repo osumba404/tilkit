@@ -2,16 +2,6 @@
     $isEdit = $record !== null;
 @endphp
 <x-app-layout>
-    <x-slot name="header">
-        <x-page-header
-            :title="$isEdit ? 'Edit indicator record' : 'New indicator record'"
-            :subtitle="$tool->name.' · v4 workbook capture ('.count(\App\Support\Tilkit\WorkbookColumnRegistry::rawColumns()).' raw fields)'">
-            <x-slot:actions>
-                <a href="{{ route('tools.tilkit.overview', $tool) }}" class="tk-btn-secondary">TILKIT home</a>
-            </x-slot:actions>
-        </x-page-header>
-    </x-slot>
-
     @if (session('status'))
         <div class="tk-card p-4 mb-4 text-sm text-tk-ink">{{ session('status') }}</div>
     @endif

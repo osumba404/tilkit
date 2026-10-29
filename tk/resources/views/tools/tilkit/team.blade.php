@@ -1,13 +1,9 @@
 <x-app-layout>
-    <x-slot name="header">
-        <x-page-header title="Team & governance" :subtitle="$tool->name">
-            <x-slot:actions>
-                <a href="{{ route('tools.settings.edit', $tool) }}" class="tk-btn-secondary">Consent & branding</a>
-            </x-slot:actions>
-        </x-page-header>
-    </x-slot>
-
     @include('tools.tilkit.partials.subnav')
+
+    <div class="flex justify-end mb-4">
+        <a href="{{ route('tools.settings.edit', $tool) }}" class="tk-btn-secondary text-sm">Consent &amp; branding</a>
+    </div>
 
     @if (session('status'))
         <div class="tk-card p-4 mb-4 text-sm">{{ session('status') }}</div>

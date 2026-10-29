@@ -1,12 +1,4 @@
 <x-app-layout>
-    <x-slot name="header">
-        <x-page-header title="Seasonal Indicator Calendar" :subtitle="$tool->name.' · CI–CP'">
-            <x-slot:actions>
-                <a href="{{ route('tools.tilkit.overview', $tool) }}" class="tk-btn-secondary">TILKIT home</a>
-            </x-slot:actions>
-        </x-page-header>
-    </x-slot>
-
     <div class="tk-card overflow-hidden">
         <table class="w-full text-sm">
             <thead class="bg-tk-soft text-xs uppercase text-tk-muted">

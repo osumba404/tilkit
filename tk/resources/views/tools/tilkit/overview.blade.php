@@ -1,16 +1,4 @@
 <x-app-layout>
-    <x-slot name="header">
-        <x-page-header
-            :title="'TILKIT weather - '.$tool->name"
-            subtitle="Community indicator monitoring aligned to workbook v4 (protocol {{ $protocol }})">
-            <x-slot:actions>
-                @unless (\App\Support\Tilkit\WeatherTool::singleToolMode())
-                    <a href="{{ route('tools.show', $tool) }}" class="tk-btn-secondary">Back to tool</a>
-                @endunless
-            </x-slot:actions>
-        </x-page-header>
-    </x-slot>
-
     @include('tools.tilkit.partials.subnav')
 
     <div class="grid sm:grid-cols-2 lg:grid-cols-6 gap-4 mb-8 tk-stagger">

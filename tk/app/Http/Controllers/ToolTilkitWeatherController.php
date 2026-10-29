@@ -41,12 +41,10 @@ class ToolTilkitWeatherController extends Controller
             ->limit(20)
             ->get();
 
-        $protocol = config('tilkit.weather.protocol_version');
         $rawFieldCount = count(WorkbookColumnRegistry::rawColumns());
 
         return view('tools.tilkit.overview', [
             'tool' => $tool,
-            'protocol' => $protocol,
             'records' => $records,
             'summary' => $summary,
             'mapPoints' => $insights->mapPointsForTool($tool),

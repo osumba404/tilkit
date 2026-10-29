@@ -1,12 +1,4 @@
 <x-app-layout>
-    <x-slot name="header">
-        <x-page-header title="v4 workbook (12 sheets)" :subtitle="$tool->name">
-            <x-slot:actions>
-                <a href="{{ route('tools.tilkit.overview', $tool) }}" class="tk-btn-secondary">TILKIT home</a>
-            </x-slot:actions>
-        </x-page-header>
-    </x-slot>
-
     <div class="grid lg:grid-cols-2 gap-6 mb-8">
         @foreach ($sheets as $sheet)
             <div class="tk-card p-5">

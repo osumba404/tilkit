@@ -1,12 +1,4 @@
 <x-app-layout>
-    <x-slot name="header">
-        <x-page-header title="Data desk" :subtitle="$tool->name.' · validation & quality queues'">
-            <x-slot:actions>
-                <a href="{{ route('tools.tilkit.overview', $tool) }}" class="tk-btn-secondary">TILKIT home</a>
-            </x-slot:actions>
-        </x-page-header>
-    </x-slot>
-
     @include('tools.tilkit.partials.subnav')
 
     <div class="tk-card p-5 mb-6">

@@ -7,14 +7,6 @@
     };
 @endphp
 <x-app-layout>
-    <x-slot name="header">
-        <x-page-header title="Seasonal tercile tally" :subtitle="$tool->name">
-            <x-slot:actions>
-                <a href="{{ route('tools.tilkit.overview', $tool) }}" class="tk-btn-secondary">TILKIT home</a>
-            </x-slot:actions>
-        </x-page-header>
-    </x-slot>
-
     @include('tools.tilkit.partials.subnav', ['tilkitNav' => 'tally'])
 
     <form method="POST" action="{{ route('tools.tilkit.tally', $tool) }}" class="tk-card p-5 flex flex-wrap gap-4 items-end mb-6">

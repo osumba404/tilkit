@@ -1,13 +1,9 @@
 <x-app-layout>
-    <x-slot name="header">
-        <x-page-header title="Indicator records" :subtitle="$tool->name">
-            <x-slot:actions>
-                <a href="{{ route('tools.tilkit.records.create', $tool) }}" class="tk-btn-primary">New record</a>
-            </x-slot:actions>
-        </x-page-header>
-    </x-slot>
-
     @include('tools.tilkit.partials.subnav', ['tilkitNav' => 'records'])
+
+    <div class="flex justify-end mb-4">
+        <a href="{{ route('tools.tilkit.records.create', $tool) }}" class="tk-btn-primary text-sm">New record</a>
+    </div>
 
     <form id="tilkit-records-filter" method="GET" action="{{ route('tools.tilkit.records.index', $tool) }}" class="tk-card p-4 mb-6 flex flex-wrap gap-3 items-end text-sm" data-records-url="{{ route('tools.tilkit.records.index', $tool) }}">
         <div class="min-w-[10rem]">

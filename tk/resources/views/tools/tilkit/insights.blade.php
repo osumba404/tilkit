@@ -1,13 +1,4 @@
 <x-app-layout>
-    <x-slot name="header">
-        <x-page-header title="Analysis" subtitle="Collection volume, validation, and forecast signals from workbook rows">
-            <x-slot:actions>
-                <a href="{{ route('tools.tilkit.records.index', $tool) }}" class="tk-btn-secondary">Browse records</a>
-                <a href="{{ route('tools.tilkit.tally', $tool) }}" class="tk-btn-primary">Run tally</a>
-            </x-slot:actions>
-        </x-page-header>
-    </x-slot>
-
     @include('tools.tilkit.partials.subnav')
 
     <div class="tk-card p-6 mb-8 animate-tk-fade-in-up">

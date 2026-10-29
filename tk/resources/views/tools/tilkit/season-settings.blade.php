@@ -1,12 +1,4 @@
 <x-app-layout>
-    <x-slot name="header">
-        <x-page-header title="Season settings" :subtitle="$tool->name.' · Weighting Options'">
-            <x-slot:actions>
-                <a href="{{ route('tools.tilkit.overview', $tool) }}" class="tk-btn-secondary">TILKIT home</a>
-            </x-slot:actions>
-        </x-page-header>
-    </x-slot>
-
     @if (session('status'))
         <div class="tk-card p-4 mb-4 text-sm">{{ session('status') }}</div>
     @endif

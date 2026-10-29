@@ -1,15 +1,4 @@
 <x-app-layout :fullWidth="true">
-    <x-slot name="header">
-        <x-page-header title="Deep Analysis" subtitle="Compose visuals, configure fields, and present filtered workbook data">
-            <x-slot:actions>
-                <a href="{{ route('tools.tilkit.insights', $tool) }}" class="tk-btn-secondary">← Analysis hub</a>
-                <button type="button" id="tk-da-reload-data" class="tk-btn-secondary">Refresh data</button>
-                <button type="button" id="tk-da-add-card" class="tk-btn-primary hidden" data-da-tab-action="dashboard">+ Add card</button>
-                <button type="button" id="tk-da-add-cell" class="tk-btn-primary hidden" data-da-tab-action="explore">Add analysis cell</button>
-            </x-slot:actions>
-        </x-page-header>
-    </x-slot>
-
     @include('tools.tilkit.partials.subnav')
 
     <div id="tk-deep-analysis-root" class="tk-da-shell animate-tk-fade-in">
@@ -20,7 +9,12 @@
                     <button type="button" class="tk-da-tab" data-da-tab="explore">Explore</button>
                     <button type="button" class="tk-da-tab" data-da-tab="data">Data table</button>
                 </nav>
-                <p id="tk-da-status" class="text-xs text-tk-muted lg:text-right shrink-0">Loading…</p>
+                <div class="flex flex-wrap items-center justify-end gap-2 shrink-0">
+                    <p id="tk-da-status" class="text-xs text-tk-muted w-full lg:w-auto text-right">Loading…</p>
+                    <button type="button" id="tk-da-reload-data" class="tk-btn-secondary text-sm">Refresh data</button>
+                    <button type="button" id="tk-da-add-card" class="tk-btn-primary text-sm hidden" data-da-tab-action="dashboard">+ Add card</button>
+                    <button type="button" id="tk-da-add-cell" class="tk-btn-primary text-sm hidden" data-da-tab-action="explore">Add analysis cell</button>
+                </div>
             </div>
 
             <div class="tk-da-slicers mt-4 pt-4 border-t border-tk-line/70">
