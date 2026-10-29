@@ -2,7 +2,7 @@
     $isEdit = $record !== null;
 @endphp
 <x-app-layout>
-    @include('tools.tilkit.partials.subnav', ['tilkitNav' => $tilkitNav ?? 'capture'])
+    @include('tools.tilkit.partials.subnav', ['tilkitNav' => $tilkitNav ?? 'capture', 'showProgramSwitcher' => false])
 
     <p class="text-sm text-tk-muted mb-4">
         Capture follows the v4 <a href="{{ route('tools.tilkit.workbook', $tool) }}" class="text-tk-accent underline">Community Data List</a>
@@ -26,7 +26,7 @@
     @if (! $isEdit)
         <div class="tk-card p-5 space-y-4 mb-6">
             <h3 class="tk-section-title text-base">Program / initiative</h3>
-            <p class="text-xs text-tk-muted">Choose where you are entering data (for example East Africa 2016–2021 or Ghana pilot 2019–2026). Sites and seasons below belong to this program.</p>
+            <p class="text-xs text-tk-muted">Choose where you are entering data. Sites and seasons below belong to this program.</p>
             <form method="GET" action="{{ route('tools.tilkit.records.create', $tool) }}" class="max-w-xl">
                 <select name="program_id" class="tk-input" aria-label="Program or initiative" onchange="this.form.submit()">
                     @foreach ($tilkitPrograms ?? [] as $program)
@@ -40,14 +40,17 @@
     <form method="POST"
         action="{{ $isEdit ? route('tools.tilkit.records.update', [$tool, $record]) : route('tools.tilkit.records.store', $tool) }}"
         enctype="multipart/form-data"
-        class="space-y-6">
+        class="space-y-6"
+        @if (! $isEdit) data-tk-form-draft="tilkit:record-create:{{ $tool->id }}" @endif
+        @if ($isEdit) data-tk-form-draft="tilkit:record-edit:{{ $record->id }}" @endif
+    >
         @csrf
         @if ($isEdit)
             @method('PATCH')
         @endif
 
         @if (! $isEdit)
-            <div class="tk-card p-5 grid md:grid-cols-2 lg:grid-cols-3 gap-4" data-tk-site-season-form>
+            <div class="tk-card p-5 grid md:grid-cols-2 lg:grid-cols-3 gap-4" data-tk-site-season-form data-tk-record-create-form>
                 <div>
                     <label class="text-sm text-tk-ink block mb-1 font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('AI') }}</label>
                     <select name="site_id" required class="tk-input" data-tk-site-select>
@@ -70,23 +73,15 @@
                     </select>
                 </div>
                 <div>
-                    <label class="text-sm text-tk-ink block mb-1 font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('AH') }}</label>
-                    <p class="text-xs text-tk-muted mb-2">Each option is a community-trusted sign already registered for this program.</p>
-                    <select name="indicator_id" required class="tk-input">
-                        @foreach ($indicators as $indicator)
-                            <option value="{{ $indicator->id }}" @selected(old('indicator_id') == $indicator->id)>{{ $indicator->indicator_uid }} - {{ $indicator->local_name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
                     <label class="text-sm text-tk-ink block mb-1 font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('AN') }}</label>
-                    <input type="date" name="collection_date" value="{{ old('collection_date', now()->toDateString()) }}" required class="tk-input">
+                    <input type="date" name="collection_date" value="{{ old('collection_date', now()->toDateString()) }}" required class="tk-input" data-tk-collection-date>
                 </div>
                 <div>
                     <label class="text-sm text-tk-ink block mb-1 font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('AO') }}</label>
                     <p class="text-xs text-tk-muted mb-2">Calendar year for this row, together with the season months above.</p>
                     <input type="number" name="collection_year" value="{{ old('collection_year', now()->year) }}" required min="1990" max="2100" class="tk-input" placeholder="e.g. 2024">
                 </div>
+                @include('tools.tilkit.partials.record-indicator-cascade')
             </div>
         @else
             <div class="tk-card p-4 text-sm flex flex-wrap gap-4">
@@ -148,6 +143,9 @@
                     <div class="grid md:grid-cols-2 gap-4">
                         @foreach ($columns as $col)
                             @continue(\App\Support\Tilkit\WorkbookInputSpec::skipInForm($col))
+                            @if (! $isEdit && in_array($col['column'], ['A', 'B', 'C', 'D'], true))
+                                @continue
+                            @endif
                             @php
                                 $letter = $col['column'];
                                 $current = old("workbook.{$letter}", $workbookValues[$letter] ?? '');

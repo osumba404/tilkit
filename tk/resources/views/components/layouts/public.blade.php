@@ -15,10 +15,13 @@
     @vite($vite)
     @stack('head')
 </head>
-<body @class([
-    'min-h-screen bg-tk-bg text-tk-ink font-sans antialiased',
-    'flex items-center justify-center px-4 py-10' => $centered,
-])>
+<body
+    @class([
+        'min-h-screen bg-tk-bg text-tk-ink font-sans antialiased',
+        'flex items-center justify-center px-4 py-10' => $centered,
+    ])
+    data-tk-validation-errors="{{ $errors->any() ? '1' : '0' }}"
+>
     {{ $branding ?? '' }}
     <div @class([
         'w-full',

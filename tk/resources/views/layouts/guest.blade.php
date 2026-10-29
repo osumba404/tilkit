@@ -10,7 +10,7 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased">
+    <body class="font-sans antialiased" data-tk-validation-errors="{{ $errors->any() ? '1' : '0' }}">
         <div class="relative min-h-screen flex flex-col sm:justify-center items-center px-4 py-10 sm:py-0 bg-tk-bg">
             <a href="/" class="flex items-center gap-3 mb-8 group">
                 <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-tk-accent text-white text-base font-bold shadow-tk-sm">T</span>

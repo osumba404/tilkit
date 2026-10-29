@@ -26,6 +26,8 @@ use App\Services\Tilkit\WorkbookRecordService;
 use App\Services\ToolAccessService;
 use App\Support\Tilkit\CommunityDataListRegistry;
 use App\Support\Tilkit\IndicatorCodeLegendGrouper;
+use App\Support\Tilkit\IndicatorLegendTree;
+use App\Services\Tilkit\SiteIndicatorCatalogService;
 use App\Support\Tilkit\SeasonMonthCoverage;
 use App\Support\Tilkit\SeasonMonthRange;
 use App\Support\Tilkit\WorkbookColumnRegistry;
@@ -192,6 +194,7 @@ class ToolTilkitAdminController extends Controller
             'geographyCountriesUrl' => route('tools.tilkit.geography.countries', $tool),
             'seasonMonths' => SeasonMonthRange::monthOptions(),
             'seasonMonthShort' => SeasonMonthRange::shortMonthOptions(),
+            'indicatorLegendTree' => app(IndicatorLegendTree::class)->build(),
             'setupProgramUrl' => route('tools.tilkit.setup.program', $tool),
             'setupProgramUpdateUrl' => route('tools.tilkit.setup.program.update', [$tool, 0]),
             'setupSeasonUrl' => route('tools.tilkit.setup.season', $tool),
@@ -788,6 +791,83 @@ class ToolTilkitAdminController extends Controller
 
         return redirect()->route('tools.tilkit.tally', [$tool, 'site_id' => $data['site_id'], 'season_id' => $data['season_id']])
             ->with('status', "Consensus forecast #{$forecast->id} published (BF).");
+    }
+
+    public function siteMonthIndicators(Request $request, DcProject $tool, TilkitSite $site, ToolAccessService $access, SiteIndicatorCatalogService $catalog): \Illuminate\Http\JsonResponse
+    {
+        $access->assertCanView($request->user(), $tool);
+        abort_unless((int) $site->project_id === (int) $tool->id, 404);
+
+        $program = $this->programs->active($tool);
+        abort_unless(
+            $site->program_id !== null && (int) $site->program_id === (int) $program->id,
+            404,
+            'Site is not part of the active program.',
+        );
+
+        return response()->json($this->siteMonthIndicatorsJson($site, $program, $catalog));
+    }
+
+    public function updateSiteMonthIndicators(Request $request, DcProject $tool, TilkitSite $site, ToolAccessService $access, SiteIndicatorCatalogService $catalog): RedirectResponse|\Illuminate\Http\JsonResponse
+    {
+        $access->assertCanView($request->user(), $tool);
+        abort_unless((int) $site->project_id === (int) $tool->id, 404);
+
+        $program = $this->programs->active($tool);
+        abort_unless(
+            $site->program_id !== null && (int) $site->program_id === (int) $program->id,
+            404,
+            'Site is not part of the active program.',
+        );
+
+        $data = $request->validate([
+            'assignments' => ['required', 'array'],
+            'assignments.*' => ['array'],
+            'assignments.*.*' => ['integer', 'exists:tilkit_indicator_codes,id'],
+        ]);
+
+        $byMonth = array_fill(1, 12, []);
+        foreach ($data['assignments'] as $monthKey => $codeIds) {
+            $month = (int) $monthKey;
+            if ($month >= 1 && $month <= 12) {
+                $byMonth[$month] = array_values(array_unique(array_map('intval', $codeIds)));
+            }
+        }
+
+        $catalog->syncAssignments($site, $byMonth);
+
+        if ($request->expectsJson()) {
+            return response()->json(array_merge(
+                ['ok' => true],
+                $this->siteMonthIndicatorsJson($site, $program, $catalog),
+            ));
+        }
+
+        return redirect()
+            ->route('tools.tilkit.setup', $tool)
+            ->with('status', 'Monthly indicator catalogue saved for '.$site->name.'.');
+    }
+
+    /** @return array{site_id: int, assignments: array<int, list<int>>, seasons: \Illuminate\Support\Collection<int, array<string, mixed>>} */
+    private function siteMonthIndicatorsJson(TilkitSite $site, TilkitProgram $program, SiteIndicatorCatalogService $catalog): array
+    {
+        $seasonSummaries = $site->seasons()
+            ->where('program_id', $program->id)
+            ->orderBy('start_month')
+            ->get()
+            ->map(fn (TilkitSeason $season) => [
+                'id' => $season->id,
+                'label' => $season->monthRangeLabel(),
+                'start_month' => (int) $season->start_month,
+                'end_month' => (int) $season->end_month,
+                'code_count' => count($catalog->codeIdsForSeasonUnion($site, $season)),
+            ]);
+
+        return [
+            'site_id' => $site->id,
+            'assignments' => $catalog->assignmentsByMonth($site),
+            'seasons' => $seasonSummaries,
+        ];
     }
 
     /** @return \Illuminate\Support\Collection<int, TilkitIndicatorRecord> */

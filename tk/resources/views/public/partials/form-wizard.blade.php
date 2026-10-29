@@ -7,6 +7,7 @@
     enctype="multipart/form-data"
     class="mt-8"
     data-form-wizard
+    data-tk-form-draft="public-collect:{{ request()->path() }}"
     @if (! empty($draftSaveUrl)) data-draft-save-url="{{ $draftSaveUrl }}" @endif
     @if (! empty($draftPayload)) data-draft-payload="{{ e(json_encode($draftPayload)) }}" @endif
     novalidate

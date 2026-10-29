@@ -69,6 +69,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('tilkit/deep-analysis/dataset', [ToolTilkitDeepAnalysisController::class, 'dataset'])->name('tilkit.deep-analysis.dataset');
         Route::get('tilkit/team', [ToolTilkitAdminController::class, 'team'])->name('tilkit.team');
         Route::get('tilkit/records/create', [ToolTilkitWeatherController::class, 'createRecord'])->name('tilkit.records.create');
+        Route::get('tilkit/capture/indicator-options', [ToolTilkitWeatherController::class, 'captureIndicatorOptions'])->name('tilkit.capture.indicator-options');
         Route::post('tilkit/records', [ToolTilkitWeatherController::class, 'storeRecord'])->name('tilkit.records.store');
         Route::get('tilkit/records/{record}', [ToolTilkitWeatherController::class, 'editRecord'])->name('tilkit.records.edit');
         Route::get('tilkit/records/{record}/wizard/{section}', [ToolTilkitWeatherController::class, 'wizard'])->name('tilkit.records.wizard');
@@ -83,6 +84,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('tilkit/geography/countries', [TilkitGeographyController::class, 'countries'])->name('tilkit.geography.countries');
         Route::post('tilkit/setup/sites', [ToolTilkitAdminController::class, 'storeSite'])->name('tilkit.setup.site');
         Route::patch('tilkit/setup/sites/{site}', [ToolTilkitAdminController::class, 'updateSiteStudyArea'])->name('tilkit.setup.site.update');
+        Route::get('tilkit/setup/sites/{site}/month-indicators', [ToolTilkitAdminController::class, 'siteMonthIndicators'])->name('tilkit.setup.site.month-indicators');
+        Route::put('tilkit/setup/sites/{site}/month-indicators', [ToolTilkitAdminController::class, 'updateSiteMonthIndicators'])->name('tilkit.setup.site.month-indicators.update');
         Route::post('tilkit/setup/seasons', [ToolTilkitAdminController::class, 'storeSeason'])->name('tilkit.setup.season');
         Route::get('tilkit/settings', [ToolTilkitAdminController::class, 'seasonSettings'])->name('tilkit.settings');
         Route::post('tilkit/settings', [ToolTilkitAdminController::class, 'updateSeasonSettings'])->name('tilkit.settings.update');

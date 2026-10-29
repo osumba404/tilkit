@@ -5,8 +5,8 @@
 
     <p class="text-sm text-tk-muted mb-6 max-w-3xl">
         Each <strong>program</strong> is an initiative. For each program you add <strong>sites</strong> (study areas), define
-        <strong>seasons per site</strong> (month ranges can differ by location), then outline each site on the map.
-        Use <strong>Create program</strong> or <strong>Edit</strong> to open the four-step setup wizard.
+        <strong>seasons per site</strong> (month ranges can differ by location), outline each site on the map, then assign
+        <strong>monthly indicator codes</strong> per site below. Use <strong>Create program</strong> or <strong>Edit</strong> for the four-step wizard.
     </p>
 
     <div class="grid lg:grid-cols-2 gap-6 mb-6">
@@ -129,6 +129,8 @@
             </div>
         </div>
     </div>
+
+    @include('tools.tilkit.partials.site-month-indicators')
 
     <div class="tk-card p-5 space-y-4">
         <div class="flex flex-wrap gap-2 items-baseline justify-between">

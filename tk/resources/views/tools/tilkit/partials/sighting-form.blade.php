@@ -2,7 +2,7 @@
     $workbookValues = $workbookValues ?? [];
     $defaultSightedAt = old('sighted_at', isset($workbookValues['CI']) && $workbookValues['CI'] !== '' ? $workbookValues['CI'] : '');
 @endphp
-<form method="POST" action="{{ route('tools.tilkit.records.sightings.store', [$tool, $record]) }}" class="grid md:grid-cols-2 gap-4 tk-stagger">
+<form method="POST" action="{{ route('tools.tilkit.records.sightings.store', [$tool, $record]) }}" class="grid md:grid-cols-2 gap-4 tk-stagger" data-tk-form-draft="tilkit:sighting:{{ $record->id }}">
     @csrf
     <div>
         <label class="text-sm text-tk-ink block mb-1 font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('CI') }}</label>

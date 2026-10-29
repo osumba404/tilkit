@@ -15,7 +15,10 @@
         ? 'w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12'
         : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8';
 @endphp
-<body @class(['min-h-screen font-sans antialiased', 'tk-layout-tilkit' => $isTilkitPage])>
+<body
+    @class(['min-h-screen font-sans antialiased', 'tk-layout-tilkit' => $isTilkitPage])
+    data-tk-validation-errors="{{ $errors->any() ? '1' : '0' }}"
+>
 @if ($isTilkitPage)
     <div
         class="min-h-screen w-full"

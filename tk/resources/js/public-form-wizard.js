@@ -1,3 +1,5 @@
+import { initFormLocalDraft } from './tk-form-draft';
+
 function parseRelevanceExpression(expr, values) {
     if (!expr || !String(expr).trim()) {
         return true;
@@ -225,6 +227,18 @@ function initFormWizard() {
         activePage?.setAttribute('tabindex', '-1');
         activePage?.focus({ preventScroll: true });
     };
+
+    initFormLocalDraft(form, {
+        scope: form.dataset.tkFormDraft || `public-collect:${window.location.pathname}`,
+        getMeta: () => ({ wizardStep: current }),
+        applyMeta: (meta) => {
+            if (typeof meta.wizardStep === 'number' && meta.wizardStep >= 0 && meta.wizardStep < pages.length) {
+                current = meta.wizardStep;
+                syncUi();
+            }
+            applyRelevance(form);
+        },
+    });
 
     prevBtn?.addEventListener('click', () => {
         if (current > 0) {

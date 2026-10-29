@@ -38,7 +38,7 @@
         </ol>
     </div>
 
-    <form method="POST" action="{{ route('tools.tilkit.records.wizard.update', [$tool, $record, $section]) }}" class="tk-card p-6 animate-tk-fade-in-up">
+    <form method="POST" action="{{ route('tools.tilkit.records.wizard.update', [$tool, $record, $section]) }}" class="tk-card p-6 animate-tk-fade-in-up" data-tk-form-draft="tilkit:record-wizard:{{ $record->id }}:{{ $section }}">
         @csrf
         @method('PATCH')
         <div class="grid md:grid-cols-2 gap-4">

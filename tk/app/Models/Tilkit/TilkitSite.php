@@ -53,6 +53,11 @@ class TilkitSite extends Model
         return $this->hasMany(TilkitSeason::class, 'site_id');
     }
 
+    public function monthIndicatorCodes(): HasMany
+    {
+        return $this->hasMany(TilkitSiteMonthIndicatorCode::class, 'site_id');
+    }
+
     public function hasStudyAreaMapped(): bool
     {
         if ($this->study_area_geojson !== null && $this->study_area_geojson !== []) {

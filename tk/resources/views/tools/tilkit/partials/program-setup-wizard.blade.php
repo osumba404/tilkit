@@ -1,6 +1,7 @@
 <div
     data-tilkit-program-wizard
     x-data="tilkitProgramWizard({
+        toolId: @js($tool->id),
         csrf: @js(csrf_token()),
         monthLabels: @js($seasonMonths),
         monthShort: @js($seasonMonthShort),

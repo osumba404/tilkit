@@ -53,4 +53,6 @@
         </div>
     </div>
 </div>
-@include('tools.tilkit.partials.program-switcher')
+@if ($showProgramSwitcher ?? true)
+    @include('tools.tilkit.partials.program-switcher')
+@endif

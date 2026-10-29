@@ -7,6 +7,7 @@ use App\Models\Tilkit\TilkitIndicator;
 use App\Models\Tilkit\TilkitIndicatorRecord;
 use App\Models\Tilkit\TilkitSeason;
 use App\Models\Tilkit\TilkitSite;
+use App\Services\Tilkit\SiteIndicatorCatalogService;
 use App\Models\Tilkit\TilkitWorkbookMedia;
 use App\Services\Tilkit\SeasonOutcomeScoringService;
 use App\Services\Tilkit\TilkitInsightsService;
@@ -16,8 +17,10 @@ use App\Services\Tilkit\TilkitSignOffGuard;
 use App\Services\Tilkit\WorkbookRecordService;
 use App\Services\ToolAccessService;
 use App\Support\Tilkit\CommunityDataListRegistry;
+use App\Support\Tilkit\IndicatorLegendTree;
 use App\Support\Tilkit\WorkbookCapturePreparer;
 use App\Support\Tilkit\WorkbookColumnRegistry;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -61,18 +64,86 @@ class ToolTilkitWeatherController extends Controller
             $this->programs->setActive($tool, $request->integer('program_id'));
         }
 
+        $indicators = TilkitIndicator::query()
+            ->where('project_id', $tool->id)
+            ->with('code')
+            ->orderBy('indicator_uid')
+            ->get();
+
         return view('tools.tilkit.record-form', [
             'tool' => $tool,
             'record' => null,
+            'activeProgram' => $this->programs->active($tool),
             'sites' => $this->programs->sitesQuery($tool)->get(),
             'seasons' => $this->programs->seasonsQuery($tool)->get(),
-            'indicators' => TilkitIndicator::query()->where('project_id', $tool->id)->orderBy('indicator_uid')->get(),
+            'indicators' => $indicators,
+            'indicatorOptionsUrl' => route('tools.tilkit.capture.indicator-options', $tool),
             'letterBands' => WorkbookColumnRegistry::rawColumnBandsForForm(),
             'stageGroups' => WorkbookColumnRegistry::rawColumnsByStage(),
             'workbookValues' => [],
             'derivedMap' => [],
             'derivedColumns' => WorkbookColumnRegistry::derivedColumns(),
             'tilkitNav' => 'capture',
+        ]);
+    }
+
+    public function captureIndicatorOptions(
+        Request $request,
+        DcProject $tool,
+        ToolAccessService $access,
+        SiteIndicatorCatalogService $catalog,
+        IndicatorLegendTree $legendTree,
+    ): JsonResponse {
+        $access->assertCanView($request->user(), $tool);
+
+        $validated = $request->validate([
+            'site_id' => ['required', 'integer', 'exists:tilkit_sites,id'],
+            'season_id' => ['required', 'integer', 'exists:tilkit_seasons,id'],
+            'collection_date' => ['required', 'date'],
+        ]);
+
+        $site = TilkitSite::query()->where('project_id', $tool->id)->where('id', $validated['site_id'])->firstOrFail();
+        $season = TilkitSeason::query()->where('project_id', $tool->id)->where('id', $validated['season_id'])->firstOrFail();
+
+        abort_unless(
+            $site->program_id !== null
+            && $season->program_id !== null
+            && (int) $site->program_id === (int) $season->program_id,
+            422,
+            'Site and season must belong to the same program.',
+        );
+        if ($season->site_id !== null) {
+            abort_unless((int) $season->site_id === (int) $site->id, 422, 'Season must belong to the selected site.');
+        }
+
+        $collectionMonth = $catalog->collectionMonthFromDate($validated['collection_date']);
+        $allowedIds = $catalog->allowedCodeIdsForCapture($site, $season, $collectionMonth);
+
+        $indicators = TilkitIndicator::query()
+            ->where('project_id', $tool->id)
+            ->whereIn('indicator_code_id', $allowedIds)
+            ->with('code')
+            ->orderBy('indicator_uid')
+            ->get()
+            ->map(fn (TilkitIndicator $i) => [
+                'id' => $i->id,
+                'indicator_code_id' => (int) $i->indicator_code_id,
+                'indicator_uid' => $i->indicator_uid,
+                'local_name' => $i->local_name,
+                'workbook' => $i->code
+                    ? $legendTree->workbookDescriptor($i->code, $i->local_name)
+                    : ['A' => '', 'B' => '', 'C' => (string) $i->local_name, 'D' => ''],
+            ]);
+
+        return response()->json([
+            'collection_month' => $collectionMonth,
+            'allowed_code_ids' => $allowedIds,
+            'season_union_code_ids' => $catalog->codeIdsForSeasonUnion($site, $season),
+            'legend' => $legendTree->build($allowedIds),
+            'indicators' => $indicators,
+            'messages' => $allowedIds === []
+                ? ['No indicator codes are assigned to this site for the collection month, or the date falls outside the selected season.']
+                : [],
         ]);
     }
 
@@ -97,6 +168,7 @@ class ToolTilkitWeatherController extends Controller
         ]);
 
         $this->assertToolOwnsReferences($tool, $validated);
+        $this->assertIndicatorAllowedForCapture($tool, $validated, app(SiteIndicatorCatalogService::class));
 
         $record = TilkitIndicatorRecord::query()->create([
             'indicator_id' => $validated['indicator_id'],
@@ -255,6 +327,29 @@ class ToolTilkitWeatherController extends Controller
                 'Season must belong to the selected site.',
             );
         }
+    }
+
+    /** @param  array<string, mixed>  $validated */
+    private function assertIndicatorAllowedForCapture(DcProject $tool, array $validated, SiteIndicatorCatalogService $catalog): void
+    {
+        $indicator = TilkitIndicator::query()
+            ->where('project_id', $tool->id)
+            ->where('id', $validated['indicator_id'])
+            ->first();
+        abort_unless($indicator !== null, 422);
+
+        $site = TilkitSite::query()->where('project_id', $tool->id)->where('id', $validated['site_id'])->first();
+        $season = TilkitSeason::query()->where('project_id', $tool->id)->where('id', $validated['season_id'])->first();
+        abort_unless($site !== null && $season !== null, 422);
+
+        $month = $catalog->collectionMonthFromDate((string) $validated['collection_date']);
+        $allowed = $catalog->allowedCodeIdsForCapture($site, $season, $month);
+
+        abort_unless(
+            in_array((int) $indicator->indicator_code_id, $allowed, true),
+            422,
+            'This indicator is not in the site catalogue for the selected site, season, and collection date.',
+        );
     }
 
     private function assertRecordBelongsToTool(DcProject $tool, TilkitIndicatorRecord $record): void

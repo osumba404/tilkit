@@ -3,6 +3,12 @@ import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import { messageFromApiResponse } from './json-api-error';
+import {
+    clearCustomDraft,
+    loadCustomDraft,
+    saveCustomDraft,
+    showDraftRestoredToast,
+} from './tk-form-draft';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -52,6 +58,75 @@ export function registerTilkitProgramWizard() {
         studyMapFullscreenFallback: false,
         studyMapIsFullscreen: false,
 
+        wizardDraftKey() {
+            return `tilkit:program-wizard:${config.toolId ?? 'tool'}`;
+        },
+
+        snapshotWizardDraft() {
+            return {
+                mode: this.mode,
+                step: this.step,
+                programId: this.programId,
+                programName: this.programName,
+                programDescription: this.programDescription,
+                sites: this.sites,
+                activeSiteId: this.activeSiteId,
+                mapSiteId: this.mapSiteId,
+                seasonStartMonth: this.seasonStartMonth,
+                seasonEndMonth: this.seasonEndMonth,
+                seasonName: this.seasonName,
+                siteDraft: { ...this.siteDraft },
+                studyPoints: this.studyPoints,
+            };
+        },
+
+        persistWizardDraft() {
+            if (!this.open) {
+                return;
+            }
+            const snap = this.snapshotWizardDraft();
+            const hasContent = Boolean(snap.programName?.trim())
+                || (snap.sites?.length ?? 0) > 0
+                || Boolean(snap.siteDraft?.name?.trim());
+            if (!hasContent) {
+                clearCustomDraft(this.wizardDraftKey());
+                return;
+            }
+            saveCustomDraft(this.wizardDraftKey(), snap);
+        },
+
+        restoreWizardDraftIntoState() {
+            if (document.body.dataset.tkValidationErrors === '1') {
+                return false;
+            }
+            const draft = loadCustomDraft(this.wizardDraftKey());
+            const d = draft?.data;
+            if (!d) {
+                return false;
+            }
+            const hasContent = Boolean(d.programName?.trim())
+                || (d.sites?.length ?? 0) > 0
+                || Boolean(d.siteDraft?.name?.trim());
+            if (!hasContent) {
+                return false;
+            }
+            this.mode = d.mode ?? this.mode;
+            this.step = d.step ?? this.step;
+            this.programId = d.programId ?? null;
+            this.programName = d.programName ?? '';
+            this.programDescription = d.programDescription ?? '';
+            this.sites = d.sites ?? [];
+            this.activeSiteId = d.activeSiteId ?? null;
+            this.mapSiteId = d.mapSiteId ?? null;
+            this.seasonStartMonth = d.seasonStartMonth ?? 1;
+            this.seasonEndMonth = d.seasonEndMonth ?? 1;
+            this.seasonName = d.seasonName ?? '';
+            this.siteDraft = { ...this.siteDraft, ...(d.siteDraft ?? {}) };
+            this.studyPoints = d.studyPoints ?? [];
+            showDraftRestoredToast('Restored unsaved program setup progress.');
+            return true;
+        },
+
         init() {
             document.querySelectorAll('[data-tilkit-wizard-open]').forEach((el) => {
                 el.addEventListener('click', () => {
@@ -76,6 +151,18 @@ export function registerTilkitProgramWizard() {
                     this.destroyStudyMap();
                 }
             });
+
+            let draftDebounce = null;
+            const scheduleDraft = () => {
+                window.clearTimeout(draftDebounce);
+                draftDebounce = window.setTimeout(() => this.persistWizardDraft(), 500);
+            };
+            ['step', 'programName', 'programDescription', 'seasonName'].forEach((field) => {
+                this.$watch(field, scheduleDraft);
+            });
+            this.$watch(() => JSON.stringify(this.sites), scheduleDraft);
+            this.$watch(() => JSON.stringify(this.siteDraft), scheduleDraft);
+            this.$watch(() => JSON.stringify(this.studyPoints), scheduleDraft);
 
             document.addEventListener('fullscreenchange', () => {
                 this.syncStudyMapFullscreenState();
@@ -288,6 +375,7 @@ export function registerTilkitProgramWizard() {
 
         openWizardCreate() {
             this.resetWizard();
+            this.restoreWizardDraftIntoState();
             this.mode = 'create';
             this.open = true;
             this.setPageScrollLocked(true);
@@ -1185,6 +1273,7 @@ export function registerTilkitProgramWizard() {
         },
 
         finishWizard() {
+            clearCustomDraft(this.wizardDraftKey());
             this.exitStudyMapFullscreen();
             this.destroyStudyMap();
             this.setPageScrollLocked(false);
