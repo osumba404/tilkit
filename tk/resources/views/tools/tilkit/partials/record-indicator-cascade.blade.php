@@ -9,37 +9,37 @@
 
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
         <div>
-            <label class="text-sm text-tk-ink block mb-1 font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('A') }}</label>
+            <x-tilkit.workbook-field-label letter="A" />
             <select class="tk-input" data-tk-ind-cat required disabled>
                 <option value="">Select site, season, and date first</option>
             </select>
         </div>
         <div>
-            <label class="text-sm text-tk-ink block mb-1 font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('B') }}</label>
+            <x-tilkit.workbook-field-label letter="B" title="Indicator type" />
             <select class="tk-input" data-tk-ind-type required disabled>
                 <option value="">—</option>
             </select>
         </div>
         <div>
-            <label class="text-sm text-tk-ink block mb-1 font-medium">Sub-type (legend code)</label>
+            <x-tilkit.workbook-field-label letter="B" title="Sub-type (legend code)" />
             <select class="tk-input" data-tk-ind-subtype required disabled>
                 <option value="">—</option>
             </select>
         </div>
         <div>
-            <label class="text-sm text-tk-ink block mb-1 font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('C') }}</label>
+            <x-tilkit.workbook-field-label letter="C" />
             <select class="tk-input" data-tk-ind-specific required disabled>
                 <option value="">—</option>
             </select>
         </div>
         <div>
-            <label class="text-sm text-tk-ink block mb-1 font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('D') }}</label>
+            <x-tilkit.workbook-field-label letter="D" />
             <select class="tk-input" data-tk-ind-behaviour required disabled>
                 <option value="">—</option>
             </select>
         </div>
         <div>
-            <label class="text-sm text-tk-ink block mb-1 font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('AH') }}</label>
+            <x-tilkit.workbook-field-label letter="AH" />
             <input type="text" class="tk-input bg-tk-soft" data-tk-ind-uid-display readonly placeholder="—">
         </div>
     </div>

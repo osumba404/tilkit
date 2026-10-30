@@ -22,7 +22,7 @@
                 Apply global literature prior (rating-based indicators only)
             </label>
             <div>
-                <label class="text-sm text-tk-ink font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('DJ') }}</label>
+                <x-tilkit.workbook-field-label letter="DJ" class="mb-1" />
                 <p class="text-xs text-tk-muted mb-2">Official county rainfall outlook used to compare with community tercile votes.</p>
                 <select name="kmsa_outlook_tercile" class="tk-input">
                     <option value="">-</option>
@@ -32,11 +32,11 @@
                 </select>
             </div>
             <div>
-                <label class="text-sm text-tk-ink font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('DL') }}</label>
+                <x-tilkit.workbook-field-label letter="DL" class="mb-1" />
                 <input type="text" name="ndma_drought_phase" value="{{ $settings->ndma_drought_phase }}" class="tk-input" placeholder="Normal, Alert, …">
             </div>
             <div>
-                <label class="text-sm text-tk-ink font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('CR') }}</label>
+                <x-tilkit.workbook-field-label letter="CR" class="mb-1" />
                 <p class="text-xs text-tk-muted mb-2">Ward vegetation index from the National Drought Management Authority (NDMA) feed, when available.</p>
                 <input type="number" step="0.01" name="ndma_vci3m" value="{{ $settings->ndma_vci3m }}" class="tk-input" min="0" max="100">
             </div>

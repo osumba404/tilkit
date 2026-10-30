@@ -21,4 +21,21 @@ class WorkbookFormLabelTest extends TestCase
 
         $this->assertStringContainsString('National Drought Management Authority (NDMA)', $text);
     }
+
+    public function test_column_reference_matches_letter(): void
+    {
+        $this->assertSame('Workbook column AU', WorkbookFormLabel::columnReference('au'));
+        $caption = WorkbookFormLabel::captionForLetter('AU');
+        $this->assertStringContainsString('Workbook column AU', $caption);
+        $this->assertStringContainsString('plenary rating', WorkbookFormLabel::titleForLetter('AU'));
+    }
+
+    public function test_rating321_select_options_include_labels_not_numbers_only(): void
+    {
+        $options = WorkbookFormLabel::rating321SelectOptions();
+
+        $this->assertArrayHasKey(3, $options);
+        $this->assertStringContainsString('High', $options[3]);
+        $this->assertNotSame('3', $options[3]);
+    }
 }

@@ -15,7 +15,7 @@
 
     @if ($section === 'B')
         <div class="tk-callout mb-6 text-sm">
-            Column <span class="font-mono text-tk-accent">Y</span> (photos) is uploaded on the
+            {{ \App\Support\Tilkit\WorkbookFormLabel::columnReference('Y') }} (photos) is uploaded on the
             <a href="{{ route('tools.tilkit.records.edit', [$tool, $record]) }}" class="text-tk-accent underline">full workbook grid</a>
             - at least three images recommended per sign.
         </div>

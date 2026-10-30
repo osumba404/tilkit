@@ -20,6 +20,12 @@ async function bootApp() {
     }
     bootFormDraftPersistence();
 
+    document.querySelectorAll('[data-tk-year-input]').forEach((input) => {
+        input.addEventListener('input', () => {
+            input.value = input.value.replace(/\D/g, '').slice(0, 4);
+        });
+    });
+
     if (document.querySelector('[data-tk-site-season-form]')) {
         const siteSeasons = await import('./tilkit-site-seasons');
         siteSeasons.bootTilkitSiteSeasonSelects();

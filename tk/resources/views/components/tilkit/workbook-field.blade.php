@@ -17,9 +17,9 @@
     };
 @endphp
 <div {{ $attributes->merge(['class' => 'tk-field'.$fieldSpan]) }}>
-    <label class="text-sm text-tk-ink block mb-1 font-medium leading-snug">
-        {{ \App\Support\Tilkit\WorkbookFormLabel::caption($col) }}
-    </label>
+    @if ($kind !== 'consent')
+        <x-tilkit.workbook-field-label :letter="$letter" />
+    @endif
     @if ($hint = \App\Support\Tilkit\WorkbookFormLabel::hint($col))
         <p class="text-xs text-tk-muted mb-2 leading-relaxed">{{ $hint }}</p>
     @endif
@@ -36,7 +36,7 @@
         @case('rating')
             <select name="workbook[{{ $letter }}]" class="tk-input">
                 <option value="">-</option>
-                @foreach ([3 => '3 - High / good', 2 => '2 - Medium / fair', 1 => '1 - Low / poor', 0 => '0 - Not sure'] as $v => $label)
+                @foreach (\App\Support\Tilkit\WorkbookFormLabel::ratingSelectOptions() as $v => $label)
                     <option value="{{ $v }}" @selected((string) $current === (string) $v)>{{ $label }}</option>
                 @endforeach
             </select>
@@ -45,7 +45,7 @@
         @case('rating_321')
             <select name="workbook[{{ $letter }}]" class="tk-input">
                 <option value="">-</option>
-                @foreach ([3 => '3', 2 => '2', 1 => '1'] as $v => $label)
+                @foreach (\App\Support\Tilkit\WorkbookFormLabel::rating321SelectOptions() as $v => $label)
                     <option value="{{ $v }}" @selected((string) $current === (string) $v)>{{ $label }}</option>
                 @endforeach
             </select>
@@ -100,8 +100,11 @@
 
         @case('consent')
             <div class="grid sm:grid-cols-3 gap-3">
+                <div class="sm:col-span-3">
+                    <x-tilkit.workbook-field-label letter="BC" class="mb-2" />
+                </div>
                 <div>
-                    <span class="text-xs text-tk-muted block mb-1 font-medium">Consent sharing level (workbook column BC)</span>
+                    <span class="text-xs text-tk-muted block mb-1 font-medium">Sharing level</span>
                     <select name="workbook[BC_level]" class="tk-input" aria-label="Consent sharing level">
                     <option value="">Choose level</option>
                     @foreach ([1, 2, 3, 4] as $lvl)
@@ -118,7 +121,7 @@
                 </select>
                 </div>
                 <div>
-                    <span class="text-xs text-tk-muted block mb-1 font-medium">Credit or attribution (community or person)</span>
+                    <span class="text-xs text-tk-muted block mb-1 font-medium">Credit or attribution</span>
                     <input type="text" name="workbook[BC_credit]" value="{{ $consent['credit'] }}" class="tk-input" placeholder="Community or individual">
                 </div>
             </div>
@@ -126,6 +129,22 @@
 
         @case('date')
             <input type="date" name="workbook[{{ $letter }}]" value="{{ is_scalar($current) ? $current : '' }}" class="tk-input">
+            @break
+
+        @case('collection_year')
+            <input
+                type="text"
+                name="workbook[{{ $letter }}]"
+                value="{{ is_scalar($current) ? $current : '' }}"
+                class="tk-input font-mono tabular-nums"
+                inputmode="numeric"
+                pattern="[0-9]{4}"
+                maxlength="4"
+                minlength="4"
+                placeholder="2026"
+                title="Four-digit year (1990–2100)"
+                data-tk-year-input
+            >
             @break
 
         @case('integer')

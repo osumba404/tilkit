@@ -95,7 +95,10 @@
             @endif
             @if ($result->distributionOutlook)
                 <div class="text-sm border-t border-tk-line pt-3">
-                    <h4 class="font-semibold mb-2">Distribution outlook (column T)</h4>
+                    <div class="mb-2">
+                        <h4 class="font-semibold mb-0">Predicted rainfall distribution</h4>
+                        <span class="text-xs font-mono text-tk-accent">{{ \App\Support\Tilkit\WorkbookFormLabel::columnReference('T') }}</span>
+                    </div>
                     <table class="w-full text-xs">
                         <thead class="text-tk-muted uppercase">
                             <tr>

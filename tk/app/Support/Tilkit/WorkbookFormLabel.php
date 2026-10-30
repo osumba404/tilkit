@@ -50,7 +50,7 @@ class WorkbookFormLabel
         'AL' => 'Country',
         'AM' => 'Monitoring season (month range)',
         'AN' => 'Date this row was collected',
-        'AO' => 'Collection year (with season months)',
+        'AO' => 'Collection year',
         'AP' => 'Validation status (workshop and data desk)',
         'AQ' => 'Notes on validation or disputes',
         'AR' => 'Follow-up actions after validation',
@@ -100,23 +100,93 @@ class WorkbookFormLabel
         'DN' => 'Notes when official and community forecasts differ',
         'DO' => 'Use prior literature multiplier in tally?',
         'DP' => 'Prior multiplier override notes',
+        'AW' => 'Onset check (Early / Within / Late)',
+        'AX' => 'Cessation check',
+        'AY' => 'Distribution check',
+        'BL' => 'Corroboration count',
+        'BM' => 'Scored seasons',
+        'BN' => 'Hit count',
+        'BO' => 'Miss count',
+        'BP' => 'False-start count',
+        'BQ' => 'Hit rate',
+        'BR' => 'Miss rate',
+        'BS' => 'False-start rate',
+        'BT' => 'Weighting phase (rating- or hit-rate-based)',
+        'CA' => 'Base weight',
+        'CB' => 'Final weight',
+        'CC' => 'Stability flag',
+        'CD' => 'Duplicate check',
+        'CE' => 'Tally status (counted or why excluded)',
+        'CF' => 'Global prior multiplier',
+        'CG' => 'Tally weight',
+        'CH' => 'Tally weight as a number',
+        'CJ' => 'Month sighted',
+        'CM' => 'Calendar shift (months)',
+        'CP' => 'Climate-change signal flag',
+        'CS' => 'Actual vegetation class',
+        'CT' => 'Vegetation check',
+        'CU' => 'Lead time available (days)',
+        'CV' => 'Decision horizon',
+        'DH' => 'Warning lead (days)',
+        'DI' => 'Inclusion share',
+        'DK' => 'Agreement with KMD / KMSA',
+        'DQ' => 'Confidence score (0–100)',
+        'DR' => 'Hazard priority factor',
+        'DS' => 'Priority-adjusted weight',
+        'DT' => 'First-record marker',
     ];
+
+    public static function columnReference(string $letter): string
+    {
+        return 'Workbook column '.strtoupper($letter);
+    }
+
+    public static function titleForLetter(string $letter): string
+    {
+        $letter = strtoupper($letter);
+        if (isset(self::CAPTIONS[$letter])) {
+            return self::CAPTIONS[$letter];
+        }
+        $meta = WorkbookColumnRegistry::forColumn($letter);
+
+        return $meta !== null
+            ? self::fallbackFromRegistry($meta)
+            : self::expandAcronyms($letter);
+    }
 
     public static function caption(array $column): string
     {
         $letter = strtoupper($column['column']);
-        $text = self::CAPTIONS[$letter] ?? self::fallbackFromRegistry($column);
 
-        return $text.' · Workbook column '.$letter;
+        return self::titleForLetter($letter).' · '.self::columnReference($letter);
     }
 
     public static function captionForLetter(string $letter): string
     {
-        $meta = WorkbookColumnRegistry::forColumn($letter);
+        $letter = strtoupper($letter);
 
-        return $meta !== null
-            ? self::caption($meta)
-            : self::expandAcronyms($letter).' · Workbook column '.strtoupper($letter);
+        return self::titleForLetter($letter).' · '.self::columnReference($letter);
+    }
+
+    /** @return array<int, string> */
+    public static function ratingSelectOptions(): array
+    {
+        return [
+            3 => '3 — High / good',
+            2 => '2 — Medium / fair',
+            1 => '1 — Low / poor',
+            0 => '0 — Not sure',
+        ];
+    }
+
+    /** @return array<int, string> Plenary 3 / 2 / 1 scale (columns AU, AV). */
+    public static function rating321SelectOptions(): array
+    {
+        return [
+            3 => '3 — High (strong plenary support)',
+            2 => '2 — Medium (mixed support)',
+            1 => '1 — Low (weak support)',
+        ];
     }
 
     public static function hint(array $column): ?string
@@ -126,11 +196,12 @@ class WorkbookFormLabel
 
         return match (true) {
             in_array($letter, ['N', 'AC', 'AD', 'AE', 'BB', 'CY', 'DA', 'DM', 'DO'], true) => 'Choose Yes (1) if true, No (0) if not.',
-            in_array($kind, ['rating', 'rating_321'], true) => 'Use 3 = high or above normal, 2 = medium or normal, 1 = low or below normal, 0 = not sure (where applicable).',
+            $kind === 'rating_321' => 'Choose high, medium, or low plenary support (3, 2, or 1).',
+            $kind === 'rating' => 'Use 3 = high or above normal, 2 = medium or normal, 1 = low or below normal, 0 = not sure (where applicable).',
             $kind === 'tercile' => '3 = above-normal rains, 2 = normal, 1 = below-normal (tercile forecast).',
             $kind === 'history_scale' => '3 = ancient / well known, 2 = known for some time, 1 = newly recognised sign.',
             $kind === 'lead_time_class' => '3 = warns months ahead, 2 = weeks ahead, 1 = days ahead.',
-            $letter === 'BC' => 'Record who agreed to share data and at what level (column BC).',
+            $letter === 'BC' => 'Record who agreed to share data and at what level ('.self::columnReference('BC').').',
             $letter === 'I' => 'Add one sector per line (for example crops, livestock, health, water).',
             $letter === 'X' => 'Rate each sector; use + or − codes as in your workshop guide.',
             $letter === 'Y' => 'Upload at least three clear photos when possible.',

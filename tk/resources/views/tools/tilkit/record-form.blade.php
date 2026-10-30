@@ -52,7 +52,7 @@
         @if (! $isEdit)
             <div class="tk-card p-5 grid md:grid-cols-2 lg:grid-cols-3 gap-4" data-tk-site-season-form data-tk-record-create-form>
                 <div>
-                    <label class="text-sm text-tk-ink block mb-1 font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('AI') }}</label>
+                    <x-tilkit.workbook-field-label letter="AI" />
                     <select name="site_id" required class="tk-input" data-tk-site-select>
                         @forelse ($sites as $site)
                             <option value="{{ $site->id }}" @selected(old('site_id') == $site->id)>{{ $site->name }}</option>
@@ -62,7 +62,7 @@
                     </select>
                 </div>
                 <div>
-                    <label class="text-sm text-tk-ink block mb-1 font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('AM') }}</label>
+                    <x-tilkit.workbook-field-label letter="AM" />
                     <p class="text-xs text-tk-muted mb-2">Seasons belong to the selected site (configure under Setup).</p>
                     <select name="season_id" required class="tk-input" data-tk-season-select>
                         @forelse ($seasons as $season)
@@ -73,13 +73,26 @@
                     </select>
                 </div>
                 <div>
-                    <label class="text-sm text-tk-ink block mb-1 font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('AN') }}</label>
+                    <x-tilkit.workbook-field-label letter="AN" />
                     <input type="date" name="collection_date" value="{{ old('collection_date', now()->toDateString()) }}" required class="tk-input" data-tk-collection-date>
                 </div>
                 <div>
-                    <label class="text-sm text-tk-ink block mb-1 font-medium">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('AO') }}</label>
-                    <p class="text-xs text-tk-muted mb-2">Calendar year for this row, together with the season months above.</p>
-                    <input type="number" name="collection_year" value="{{ old('collection_year', now()->year) }}" required min="1990" max="2100" class="tk-input" placeholder="e.g. 2024">
+                    <x-tilkit.workbook-field-label letter="AO" />
+                    <input
+                        type="text"
+                        name="collection_year"
+                        value="{{ old('collection_year', now()->year) }}"
+                        required
+                        class="tk-input font-mono tabular-nums"
+                        inputmode="numeric"
+                        autocomplete="off"
+                        pattern="[0-9]{4}"
+                        maxlength="4"
+                        minlength="4"
+                        placeholder="2026"
+                        title="Enter a four-digit year (1990–2100)"
+                        data-tk-year-input
+                    >
                 </div>
                 @include('tools.tilkit.partials.record-indicator-cascade')
             </div>
@@ -162,7 +175,7 @@
             @endforeach
 
             <div class="tk-card p-5" x-show="step === keys.length - 1" x-cloak>
-                <h3 class="tk-section-title text-base mb-2">{{ \App\Support\Tilkit\WorkbookFormLabel::captionForLetter('Y') }}</h3>
+                <x-tilkit.workbook-field-label letter="Y" class="mb-2" />
                 <p class="text-xs text-tk-muted mb-3">Upload at least three clear photos when possible.</p>
                 <input type="file" name="workbook_photos[]" accept="image/*" multiple class="tk-input">
                 @if ($isEdit && $record->workbookMedia->isNotEmpty())
@@ -184,8 +197,7 @@
                                 $shown = $derivedMap[$letter]['value'] ?? '-';
                             @endphp
                             <div class="border border-tk-line rounded-lg p-3">
-                                <span class="font-mono text-tk-accent text-xs">{{ $letter }}</span>
-                                <div class="text-tk-muted text-xs">{{ $col['field'] }}</div>
+                                <x-tilkit.workbook-field-label :letter="$letter" class="mb-1" />
                                 <div class="mt-1 font-medium">{{ is_scalar($shown) ? $shown : json_encode($shown) }}</div>
                             </div>
                         @endforeach

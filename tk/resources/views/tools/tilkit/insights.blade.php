@@ -3,7 +3,7 @@
 
     <div class="tk-card p-6 mb-8 animate-tk-fade-in-up">
         <h3 class="tk-section-title text-base mb-1">Collection map</h3>
-        <p class="text-sm text-tk-muted mb-4">Workbook GPS (column Z), field sightings, and site anchors across the dataset.</p>
+        <p class="text-sm text-tk-muted mb-4">{{ \App\Support\Tilkit\WorkbookFormLabel::columnReference('Z') }} (GPS), field sightings, and site anchors across the dataset.</p>
         <x-tilkit.gps-map-view :points="$mapPoints" height="h-[22rem]" />
     </div>
 
@@ -37,7 +37,10 @@
             </ul>
         </div>
         <div class="tk-card p-5">
-            <h3 class="tk-section-title text-base mb-4">Forecast tercile (column N)</h3>
+            <div class="mb-4">
+                <h3 class="tk-section-title text-base mb-0">Rainfall tercile forecast</h3>
+                <span class="text-xs font-mono text-tk-accent">{{ \App\Support\Tilkit\WorkbookFormLabel::columnReference('U') }}</span>
+            </div>
             <ul class="space-y-3">
                 @forelse ($summary['tercile_breakdown'] ?? [] as $row)
                     @php
@@ -84,7 +87,10 @@
 
     <div class="grid lg:grid-cols-2 gap-8 mb-8">
         <div class="tk-card p-5">
-            <h3 class="tk-section-title text-base mb-4">Validation status (column AP)</h3>
+            <div class="mb-4">
+                <h3 class="tk-section-title text-base mb-0">Validation status</h3>
+                <span class="text-xs font-mono text-tk-accent">{{ \App\Support\Tilkit\WorkbookFormLabel::columnReference('AP') }}</span>
+            </div>
             <ul class="space-y-3">
                 @forelse ($summary['validation_breakdown'] ?? [] as $row)
                     @php

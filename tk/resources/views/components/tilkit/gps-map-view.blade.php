@@ -29,7 +29,7 @@
         </div>
     </div>
     @if ($pointCount === 0)
-        <p class="text-sm text-tk-muted mt-3">No GPS points yet. Capture column Z or log a field sighting with a map pin.</p>
+        <p class="text-sm text-tk-muted mt-3">No GPS points yet. Capture {{ \App\Support\Tilkit\WorkbookFormLabel::columnReference('Z') }} or log a field sighting with a map pin.</p>
     @else
         <p class="text-xs text-tk-muted mt-2">{{ number_format($pointCount) }} location{{ $pointCount === 1 ? '' : 's' }} on map · click a pin for details</p>
     @endif

@@ -49,7 +49,7 @@ class WorkbookInputSpec
         'AL' => 'readonly',
         'AM' => 'readonly',
         'AN' => 'date',
-        'AO' => 'text',
+        'AO' => 'collection_year',
         'AP' => 'validation',
         'AQ' => 'textarea',
         'AR' => 'textarea',
