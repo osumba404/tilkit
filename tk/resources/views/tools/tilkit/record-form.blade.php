@@ -28,11 +28,20 @@
             <h3 class="tk-section-title text-base">Program / initiative</h3>
             <p class="text-xs text-tk-muted">Choose where you are entering data. Sites and seasons below belong to this program.</p>
             <form method="GET" action="{{ route('tools.tilkit.records.create', $tool) }}" class="max-w-xl">
-                <select name="program_id" class="tk-input" aria-label="Program or initiative" onchange="this.form.submit()">
-                    @foreach ($tilkitPrograms ?? [] as $program)
-                        <option value="{{ $program->id }}" @selected(($activeProgram->id ?? null) === $program->id)>{{ $program->name }}</option>
-                    @endforeach
-                </select>
+                @php $programList = $tilkitPrograms ?? collect(); @endphp
+                @if ($programList->isEmpty())
+                    <p class="text-sm text-amber-900 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                        No programs yet.
+                        <a href="{{ route('tools.tilkit.setup', $tool) }}" class="text-tk-accent underline font-medium">Add one under Setup</a>
+                        to choose where you enter data.
+                    </p>
+                @else
+                    <select name="program_id" class="tk-input px-3 py-2.5 min-h-[2.75rem]" aria-label="Program or initiative" onchange="this.form.submit()">
+                        @foreach ($programList as $program)
+                            <option value="{{ $program->id }}" @selected(($activeProgram->id ?? null) === $program->id)>{{ $program->name }}</option>
+                        @endforeach
+                    </select>
+                @endif
             </form>
         </div>
     @endif

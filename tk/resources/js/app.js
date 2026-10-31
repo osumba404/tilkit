@@ -38,6 +38,10 @@ async function bootApp() {
         const cascade = await import('./tilkit-record-indicator-cascade');
         cascade.bootTilkitRecordIndicatorCascade();
     }
+    if (document.querySelector('[data-tk-indicator-mindmap]')) {
+        const mindmap = await import('./tilkit-indicator-mindmap');
+        mindmap.bootIndicatorMindmap();
+    }
 
     Alpine.start();
 }

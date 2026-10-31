@@ -20,6 +20,7 @@
     },
     "dependencies": {
         "chart.js": "^4.5.1",
+        "cytoscape": "^3.34.4",
         "html2canvas": "^1.4.1",
         "jspdf": "^4.2.1",
         "leaflet": "^1.9.4",

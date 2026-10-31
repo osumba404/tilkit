@@ -183,4 +183,6 @@
             </div>
         @endif
     </div>
+
+    @include('tools.tilkit.partials.indicator-taxonomy-mindmap')
 </x-app-layout>

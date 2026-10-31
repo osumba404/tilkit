@@ -189,6 +189,7 @@ class ToolTilkitAdminController extends Controller
             'sites' => $this->programs->sitesQuery($tool)->get(),
             'seasons' => $this->programs->seasonsQuery($tool)->get(),
             'legendGroups' => app(IndicatorCodeLegendGrouper::class)->groupedLegend(),
+            'indicatorAnalysisMindmap' => app(IndicatorCodeLegendGrouper::class)->analysisMindmap(),
             'legendCodeCount' => TilkitIndicatorCode::query()->whereNull('deprecated_at')->count(),
             'geographyContinentsUrl' => route('tools.tilkit.geography.continents', $tool),
             'geographyCountriesUrl' => route('tools.tilkit.geography.countries', $tool),

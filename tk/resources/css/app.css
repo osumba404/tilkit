@@ -905,4 +905,17 @@
     .tk-public-title {
         @apply font-display text-3xl font-bold text-tk-ink mt-1 leading-tight;
     }
+
+    .tk-mindmap-host {
+        @apply rounded-2xl border border-tk-line/80;
+        background: radial-gradient(ellipse at 20% 30%, rgb(30 41 59 / 0.96), rgb(15 23 42 / 0.99));
+        box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
+    }
+
+    .tk-mindmap-mount {
+        width: 100%;
+        height: min(70vh, 640px);
+        min-height: 28rem;
+    }
+
 }

@@ -33,10 +33,14 @@ class AppServiceProvider extends ServiceProvider
             if (isset($data['tool']) && auth()->check() && ! array_key_exists('capabilities', $data)) {
                 $view->with('capabilities', auth()->user()->toolCapabilitiesFor($data['tool']));
             }
-            if (isset($data['tool']) && ! array_key_exists('activeProgram', $data)) {
+            if (isset($data['tool'])) {
                 $programs = app(TilkitProgramContext::class);
-                $view->with('activeProgram', $programs->active($data['tool']));
-                $view->with('tilkitPrograms', $programs->programsFor($data['tool']));
+                if (! array_key_exists('activeProgram', $data)) {
+                    $view->with('activeProgram', $programs->active($data['tool']));
+                }
+                if (! array_key_exists('tilkitPrograms', $data)) {
+                    $view->with('tilkitPrograms', $programs->programsFor($data['tool']));
+                }
             }
         });
 
