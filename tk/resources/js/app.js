@@ -42,7 +42,6 @@ async function bootApp() {
         const mindmap = await import('./tilkit-indicator-mindmap');
         mindmap.bootIndicatorMindmap();
     }
-
     Alpine.start();
 }
 

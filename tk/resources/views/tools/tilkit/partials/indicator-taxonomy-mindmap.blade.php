@@ -11,7 +11,7 @@
 <div class="tk-card p-5 space-y-4 mt-6">
     <div class="flex flex-wrap items-baseline justify-between gap-2">
         <h3 class="tk-section-title text-base">Indicator analysis mind map</h3>
-        <span class="text-xs text-tk-muted">Drag nodes · click to expand · scroll to zoom</span>
+        <span class="text-xs text-tk-muted">Seven v4 type lines show on load · click a type for sub-types and codes · drag · scroll to zoom</span>
     </div>
 
     @if (($analysis['legend_levels'] ?? []) !== [])
@@ -30,7 +30,9 @@
     @endif
 
     <div class="tk-mindmap-host" data-tk-indicator-mindmap role="region" aria-label="Draggable indicator mind map">
-        <script type="application/json" data-tk-mindmap-json>@json($analysis)</script>
-        <div class="tk-mindmap-mount" data-tk-mindmap-mount></div>
+        <script type="application/json" data-tk-mindmap-json>{!! json_encode($analysis, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) !!}</script>
+        <div class="tk-mindmap-mount" data-tk-mindmap-mount>
+            <p class="text-sm text-slate-400 p-4">Loading mind map…</p>
+        </div>
     </div>
 </div>

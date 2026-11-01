@@ -916,6 +916,14 @@
         width: 100%;
         height: min(70vh, 640px);
         min-height: 28rem;
+        position: relative;
+        background: rgb(15 23 42 / 0.35);
+    }
+
+    .tk-mindmap-mount .cy-container,
+    .tk-mindmap-mount > div {
+        width: 100% !important;
+        height: 100% !important;
     }
 
 }

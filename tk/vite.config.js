@@ -15,6 +15,7 @@ export default defineConfig({
                 'resources/js/acc-dashboard.js',
                 'resources/css/tilkit-deep-analysis.css',
                 'resources/js/tilkit-deep-analysis.js',
+                'resources/js/tilkit-indicator-mindmap.js',
             ],
             refresh: true,
         }),

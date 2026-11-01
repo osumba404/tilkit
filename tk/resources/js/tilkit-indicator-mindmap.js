@@ -1,15 +1,23 @@
 import cytoscape from 'cytoscape';
+import dagre from 'cytoscape-dagre';
+
+cytoscape.use(dagre);
 
 function readPayload(host) {
     const el = host.querySelector('[data-tk-mindmap-json]');
-    if (!el?.textContent) {
+    if (!el?.textContent?.trim()) {
         return null;
     }
     try {
         return JSON.parse(el.textContent);
-    } catch {
+    } catch (err) {
+        console.error('[tilkit mindmap] Invalid JSON payload', err);
         return null;
     }
+}
+
+function showMountError(mount, message) {
+    mount.innerHTML = `<p class="text-sm text-red-300 p-4">${message}</p>`;
 }
 
 const CY_STYLES = [
@@ -18,17 +26,16 @@ const CY_STYLES = [
         style: {
             label: 'data(label)',
             'text-wrap': 'wrap',
-            'text-max-width': '200px',
+            'text-max-width': '220px',
             'font-size': '11px',
-            'font-family': 'inherit',
+            'font-family': 'system-ui, sans-serif',
             color: '#f8fafc',
             'text-valign': 'center',
             'text-halign': 'center',
-            'overlay-padding': '6px',
             shape: 'round-rectangle',
             width: 'label',
             height: 'label',
-            padding: '10px',
+            padding: '12px',
         },
     },
     {
@@ -36,63 +43,62 @@ const CY_STYLES = [
         style: {
             'background-color': '#6d28d9',
             'border-width': 2,
-            'border-color': '#a78bfa',
+            'border-color': '#c4b5fd',
             'font-weight': 'bold',
-            'font-size': '12px',
         },
     },
     {
         selector: 'node[kind = "pillar"]',
         style: {
-            'background-color': '#334155',
-            'border-width': 1,
-            'border-color': '#64748b',
+            'background-color': '#475569',
+            'border-width': 2,
+            'border-color': '#94a3b8',
         },
     },
     {
         selector: 'node[kind = "pillar"][active = "yes"]',
         style: {
-            'border-width': 3,
             'border-color': '#38bdf8',
+            'border-width': 3,
         },
     },
     {
         selector: 'node[kind = "type"]',
         style: {
-            'background-color': '#065f46',
-            'border-width': 1,
-            'border-color': '#10b981',
+            'background-color': '#047857',
+            'border-width': 2,
+            'border-color': '#34d399',
         },
     },
     {
         selector: 'node[kind = "type"][active = "yes"]',
         style: {
-            'border-width': 3,
             'border-color': '#6ee7b7',
+            'border-width': 3,
         },
     },
     {
         selector: 'node[kind = "subtype"]',
         style: {
-            'background-color': '#134e4a',
-            'border-width': 1,
-            'border-color': '#14b8a6',
+            'background-color': '#115e59',
+            'border-width': 2,
+            'border-color': '#2dd4bf',
             'font-size': '10px',
         },
     },
     {
         selector: 'node[kind = "subtype"][active = "yes"]',
         style: {
+            'border-color': '#99f6e4',
             'border-width': 3,
-            'border-color': '#5eead4',
         },
     },
     {
         selector: 'node[kind = "code"]',
         style: {
-            'background-color': '#022c22',
+            'background-color': '#064e3b',
             'border-width': 1,
-            'border-color': '#047857',
+            'border-color': '#10b981',
             'font-family': 'ui-monospace, monospace',
             'font-size': '9px',
         },
@@ -100,18 +106,18 @@ const CY_STYLES = [
     {
         selector: 'node[kind = "blurb"]',
         style: {
-            'background-color': '#1e293b',
+            'background-color': '#334155',
             'border-width': 1,
-            'border-color': '#94a3b8',
+            'border-color': '#cbd5e1',
             'font-size': '10px',
-            'text-max-width': '240px',
+            'text-max-width': '260px',
         },
     },
     {
         selector: 'node[warn = "yes"]',
         style: {
-            'background-color': '#451a03',
-            'border-color': '#f59e0b',
+            'background-color': '#78350f',
+            'border-color': '#fbbf24',
         },
     },
     {
@@ -119,9 +125,10 @@ const CY_STYLES = [
         style: {
             width: 2.5,
             'line-color': '#38bdf8',
+            'target-arrow-color': '#38bdf8',
+            'target-arrow-shape': 'triangle',
             'curve-style': 'bezier',
-            opacity: 0.85,
-            'target-arrow-shape': 'none',
+            'arrow-scale': 0.85,
         },
     },
 ];
@@ -132,22 +139,32 @@ class IndicatorMindmapGraph {
         this.payload = payload;
         this.codeBranchOpen = true;
         this.selectedPillar = 'code_categories';
-        this.selectedTypeKey = payload.code_types?.[0]?.key ?? null;
-        this.selectedSubKey = payload.code_types?.[0]?.sub_types?.[0]?.key ?? null;
+        this.selectedTypeKey = null;
+        this.selectedSubKey = null;
         this.pillarBlurbId = null;
 
-        this.cy = cytoscape({
-            container: mount,
-            elements: this.buildElements(),
-            style: CY_STYLES,
-            wheelSensitivity: 0.25,
-            minZoom: 0.35,
-            maxZoom: 2.5,
-            boxSelectionEnabled: false,
-        });
+        this.mount.innerHTML = '';
+
+        try {
+            this.cy = cytoscape({
+                container: mount,
+                elements: this.buildElements(),
+                style: CY_STYLES,
+                wheelSensitivity: 0.3,
+                minZoom: 0.25,
+                maxZoom: 2.5,
+                boxSelectionEnabled: false,
+                userPanningEnabled: true,
+                userZoomingEnabled: true,
+            });
+        } catch (err) {
+            console.error('[tilkit mindmap] cytoscape init failed', err);
+            showMountError(mount, 'Mind map could not start. Try a hard refresh (Ctrl+F5).');
+            return;
+        }
 
         this.cy.on('tap', 'node', (evt) => this.onNodeTap(evt.target));
-        this.runLayout();
+        this.runLayout(true);
     }
 
     buildElements() {
@@ -169,16 +186,18 @@ class IndicatorMindmapGraph {
             addNode(id, pillar.label, 'pillar', {
                 pillarId: pillar.id,
                 expandable: pillar.expandable ? 'yes' : 'no',
-                blurb: pillar.blurb ?? '',
                 active: this.selectedPillar === pillar.id ? 'yes' : 'no',
             });
             addEdge('root', id);
         });
 
-        if (this.codeBranchOpen && this.selectedPillar === 'code_categories') {
+        const showTypeLines = (p.code_types ?? []).length > 0
+            && (this.codeBranchOpen || this.selectedPillar === 'code_categories');
+
+        if (showTypeLines) {
             (p.code_types ?? []).forEach((type) => {
                 const id = `type:${type.key}`;
-                addNode(id, `${type.title}\n${type.code_count} codes`, 'type', {
+                addNode(id, `${type.title}\n(${type.code_count} codes)`, 'type', {
                     typeKey: type.key,
                     active: this.selectedTypeKey === type.key ? 'yes' : 'no',
                     warn: type.key === '_non_standard' ? 'yes' : 'no',
@@ -187,11 +206,11 @@ class IndicatorMindmapGraph {
             });
         }
 
-        if (this.codeBranchOpen && this.selectedTypeKey) {
+        if (showTypeLines && this.selectedTypeKey) {
             const type = (p.code_types ?? []).find((t) => t.key === this.selectedTypeKey);
             (type?.sub_types ?? []).forEach((sub) => {
                 const id = `sub:${this.selectedTypeKey}:${sub.key}`;
-                addNode(id, `${sub.label}\n${sub.code_count} code(s)`, 'subtype', {
+                addNode(id, `${sub.label}\n(${sub.code_count} codes)`, 'subtype', {
                     typeKey: this.selectedTypeKey,
                     subKey: sub.key,
                     active: this.selectedSubKey === sub.key ? 'yes' : 'no',
@@ -200,15 +219,22 @@ class IndicatorMindmapGraph {
             });
         }
 
-        if (this.codeBranchOpen && this.selectedTypeKey && this.selectedSubKey) {
+        if (showTypeLines && this.selectedTypeKey && this.selectedSubKey) {
             const type = (p.code_types ?? []).find((t) => t.key === this.selectedTypeKey);
             const sub = type?.sub_types?.find((s) => s.key === this.selectedSubKey);
-            (sub?.codes ?? []).forEach((row, i) => {
+            const codes = sub?.codes ?? [];
+            const maxCodes = 24;
+            codes.slice(0, maxCodes).forEach((row, i) => {
                 const id = `code:${row.code}:${i}`;
                 const label = row.label ? `${row.code}\n${row.label}` : row.code;
                 addNode(id, label, 'code');
                 addEdge(`sub:${this.selectedTypeKey}:${this.selectedSubKey}`, id);
             });
+            if (codes.length > maxCodes) {
+                const moreId = `code:more:${this.selectedTypeKey}:${this.selectedSubKey}`;
+                addNode(moreId, `+ ${codes.length - maxCodes} more codes\n(see legend list above)`, 'blurb');
+                addEdge(`sub:${this.selectedTypeKey}:${this.selectedSubKey}`, moreId);
+            }
         }
 
         if (this.pillarBlurbId) {
@@ -222,43 +248,34 @@ class IndicatorMindmapGraph {
         return [...nodes, ...edges];
     }
 
-    preservedPositions() {
-        const pos = {};
-        this.cy.nodes().forEach((n) => {
-            pos[n.id()] = { ...n.position() };
-        });
-        return pos;
+    rebuild() {
+        if (!this.cy) {
+            return;
+        }
+        this.cy.json({ elements: this.buildElements() });
+        this.runLayout(true);
     }
 
-    rebuild() {
-        const saved = this.preservedPositions();
-        this.cy.json({ elements: this.buildElements() });
-        this.cy.nodes().forEach((n) => {
-            const p = saved[n.id()];
-            if (p) {
-                n.position(p);
+    runLayout(fit) {
+        if (!this.cy || this.cy.nodes().length === 0) {
+            return;
+        }
+        const layout = this.cy.layout({
+            name: 'dagre',
+            rankDir: 'LR',
+            nodeSep: 48,
+            edgeSep: 12,
+            rankSep: 110,
+            padding: 48,
+            animate: true,
+            animationDuration: 280,
+        });
+        layout.run();
+        layout.one('layoutstop', () => {
+            if (fit) {
+                this.cy.fit(undefined, 56);
             }
         });
-        const needsLayout = this.cy.nodes().filter((n) => !saved[n.id()]);
-        if (needsLayout.length > 0) {
-            this.runLayout(needsLayout);
-        } else {
-            this.cy.fit(undefined, 48);
-        }
-    }
-
-    runLayout(eles = null) {
-        const collection = eles ?? this.cy.elements();
-        collection.layout({
-            name: 'breadthfirst',
-            directed: true,
-            roots: '#root',
-            padding: 40,
-            spacingFactor: 1.35,
-            avoidOverlap: true,
-            nodeDimensionsIncludeLabels: true,
-        }).run();
-        this.cy.fit(undefined, 48);
     }
 
     onNodeTap(node) {
@@ -268,9 +285,10 @@ class IndicatorMindmapGraph {
         if (kind === 'pillar') {
             const pillarId = node.data('pillarId');
             this.selectedPillar = pillarId;
+            this.pillarBlurbId = null;
+
             if (node.data('expandable') === 'yes') {
                 this.codeBranchOpen = true;
-                this.pillarBlurbId = null;
                 if (!this.selectedTypeKey && p.code_types?.length) {
                     this.selectedTypeKey = p.code_types[0].key;
                     this.selectedSubKey = p.code_types[0].sub_types?.[0]?.key ?? null;
@@ -291,7 +309,6 @@ class IndicatorMindmapGraph {
             this.selectedTypeKey = node.data('typeKey');
             this.selectedSubKey = p.code_types
                 ?.find((t) => t.key === this.selectedTypeKey)?.sub_types?.[0]?.key ?? null;
-            this.pillarBlurbId = null;
             this.rebuild();
             return;
         }
@@ -308,12 +325,14 @@ export function bootIndicatorMindmap() {
         if (host.dataset.tkMindmapReady === '1') {
             return;
         }
-        const payload = readPayload(host);
-        if (!payload) {
-            return;
-        }
         const mount = host.querySelector('[data-tk-mindmap-mount]');
         if (!mount) {
+            console.error('[tilkit mindmap] Missing [data-tk-mindmap-mount]');
+            return;
+        }
+        const payload = readPayload(host);
+        if (!payload) {
+            showMountError(mount, 'Mind map data is missing. Reload the page or re-import the legend.');
             return;
         }
         host.dataset.tkMindmapReady = '1';

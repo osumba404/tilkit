@@ -38,9 +38,7 @@ class AppServiceProvider extends ServiceProvider
                 if (! array_key_exists('activeProgram', $data)) {
                     $view->with('activeProgram', $programs->active($data['tool']));
                 }
-                if (! array_key_exists('tilkitPrograms', $data)) {
-                    $view->with('tilkitPrograms', $programs->programsFor($data['tool']));
-                }
+                $view->with('tilkitPrograms', $data['tilkitPrograms'] ?? $programs->programsFor($data['tool']));
             }
         });
 
