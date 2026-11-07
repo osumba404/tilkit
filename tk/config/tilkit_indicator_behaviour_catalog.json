@@ -77,11 +77,11 @@
       "behaviours": [
         "Observable pattern: Cones / seed structures (e.g. pinecones) (pronounced)",
         "Observable pattern: Cones / seed structures (e.g. pinecones) (reduced or absent)",
-        "Sign more pronounced than usual (high vigour) — Cones / seed structures (e.g. pinecones)",
-        "Sign weaker than usual — Cones / seed structures (e.g. pinecones)",
-        "Sign observed earlier than normal calendar — Cones / seed structures (e.g. pinecones)",
-        "Sign observed later than normal calendar — Cones / seed structures (e.g. pinecones)",
-        "Sign absent when normally expected — Cones / seed structures (e.g. pinecones)"
+        "Sign more pronounced than usual (high vigour) - Cones / seed structures (e.g. pinecones)",
+        "Sign weaker than usual - Cones / seed structures (e.g. pinecones)",
+        "Sign observed earlier than normal calendar - Cones / seed structures (e.g. pinecones)",
+        "Sign observed later than normal calendar - Cones / seed structures (e.g. pinecones)",
+        "Sign absent when normally expected - Cones / seed structures (e.g. pinecones)"
       ]
     },
     "01-PLT-FLW": {
@@ -116,11 +116,11 @@
       "behaviours": [
         "Observable pattern: Fungi / mushrooms (pronounced)",
         "Observable pattern: Fungi / mushrooms (reduced or absent)",
-        "Sign more pronounced than usual (high vigour) — Fungi / mushrooms",
-        "Sign weaker than usual — Fungi / mushrooms",
-        "Sign observed earlier than normal calendar — Fungi / mushrooms",
-        "Sign observed later than normal calendar — Fungi / mushrooms",
-        "Sign absent when normally expected — Fungi / mushrooms"
+        "Sign more pronounced than usual (high vigour) - Fungi / mushrooms",
+        "Sign weaker than usual - Fungi / mushrooms",
+        "Sign observed earlier than normal calendar - Fungi / mushrooms",
+        "Sign observed later than normal calendar - Fungi / mushrooms",
+        "Sign absent when normally expected - Fungi / mushrooms"
       ]
     },
     "01-PLT-GER": {
@@ -130,11 +130,11 @@
       "behaviours": [
         "Observable pattern: Germination/sprouting/seed emergence (pronounced)",
         "Observable pattern: Germination/sprouting/seed emergence (reduced or absent)",
-        "Sign more pronounced than usual (high vigour) — Germination/sprouting/seed emergence",
-        "Sign weaker than usual — Germination/sprouting/seed emergence",
-        "Sign observed earlier than normal calendar — Germination/sprouting/seed emergence",
-        "Sign observed later than normal calendar — Germination/sprouting/seed emergence",
-        "Sign absent when normally expected — Germination/sprouting/seed emergence"
+        "Sign more pronounced than usual (high vigour) - Germination/sprouting/seed emergence",
+        "Sign weaker than usual - Germination/sprouting/seed emergence",
+        "Sign observed earlier than normal calendar - Germination/sprouting/seed emergence",
+        "Sign observed later than normal calendar - Germination/sprouting/seed emergence",
+        "Sign absent when normally expected - Germination/sprouting/seed emergence"
       ]
     },
     "01-PLT-GRS": {
@@ -144,11 +144,11 @@
       "behaviours": [
         "Observable pattern: Grass (pronounced)",
         "Observable pattern: Grass (reduced or absent)",
-        "Sign more pronounced than usual (high vigour) — Grass",
-        "Sign weaker than usual — Grass",
-        "Sign observed earlier than normal calendar — Grass",
-        "Sign observed later than normal calendar — Grass",
-        "Sign absent when normally expected — Grass"
+        "Sign more pronounced than usual (high vigour) - Grass",
+        "Sign weaker than usual - Grass",
+        "Sign observed earlier than normal calendar - Grass",
+        "Sign observed later than normal calendar - Grass",
+        "Sign absent when normally expected - Grass"
       ]
     },
     "01-PLT-HRB": {
@@ -158,11 +158,11 @@
       "behaviours": [
         "Observable pattern: Herb (pronounced)",
         "Observable pattern: Herb (reduced or absent)",
-        "Sign more pronounced than usual (high vigour) — Herb",
-        "Sign weaker than usual — Herb",
-        "Sign observed earlier than normal calendar — Herb",
-        "Sign observed later than normal calendar — Herb",
-        "Sign absent when normally expected — Herb"
+        "Sign more pronounced than usual (high vigour) - Herb",
+        "Sign weaker than usual - Herb",
+        "Sign observed earlier than normal calendar - Herb",
+        "Sign observed later than normal calendar - Herb",
+        "Sign absent when normally expected - Herb"
       ]
     },
     "01-PLT-LAF": {
@@ -216,11 +216,11 @@
       "behaviours": [
         "Observable pattern: Any Other (specify, e.g., fire) (pronounced)",
         "Observable pattern: Any Other (specify, e.g., fire) (reduced or absent)",
-        "Sign more pronounced than usual (high vigour) — Any Other (specify, e.g., fire)",
-        "Sign weaker than usual — Any Other (specify, e.g., fire)",
-        "Sign observed earlier than normal calendar — Any Other (specify, e.g., fire)",
-        "Sign observed later than normal calendar — Any Other (specify, e.g., fire)",
-        "Sign absent when normally expected — Any Other (specify, e.g., fire)"
+        "Sign more pronounced than usual (high vigour) - Any Other (specify, e.g., fire)",
+        "Sign weaker than usual - Any Other (specify, e.g., fire)",
+        "Sign observed earlier than normal calendar - Any Other (specify, e.g., fire)",
+        "Sign observed later than normal calendar - Any Other (specify, e.g., fire)",
+        "Sign absent when normally expected - Any Other (specify, e.g., fire)"
       ]
     },
     "01-PLT-SAP": {
@@ -230,11 +230,11 @@
       "behaviours": [
         "Observable pattern: Sap/resin/plant exudate changes (pronounced)",
         "Observable pattern: Sap/resin/plant exudate changes (reduced or absent)",
-        "Sign more pronounced than usual (high vigour) — Sap/resin/plant exudate changes",
-        "Sign weaker than usual — Sap/resin/plant exudate changes",
-        "Sign observed earlier than normal calendar — Sap/resin/plant exudate changes",
-        "Sign observed later than normal calendar — Sap/resin/plant exudate changes",
-        "Sign absent when normally expected — Sap/resin/plant exudate changes"
+        "Sign more pronounced than usual (high vigour) - Sap/resin/plant exudate changes",
+        "Sign weaker than usual - Sap/resin/plant exudate changes",
+        "Sign observed earlier than normal calendar - Sap/resin/plant exudate changes",
+        "Sign observed later than normal calendar - Sap/resin/plant exudate changes",
+        "Sign absent when normally expected - Sap/resin/plant exudate changes"
       ]
     },
     "01-PLT-SHR": {
@@ -244,11 +244,11 @@
       "behaviours": [
         "Observable pattern: Shrub (pronounced)",
         "Observable pattern: Shrub (reduced or absent)",
-        "Sign more pronounced than usual (high vigour) — Shrub",
-        "Sign weaker than usual — Shrub",
-        "Sign observed earlier than normal calendar — Shrub",
-        "Sign observed later than normal calendar — Shrub",
-        "Sign absent when normally expected — Shrub"
+        "Sign more pronounced than usual (high vigour) - Shrub",
+        "Sign weaker than usual - Shrub",
+        "Sign observed earlier than normal calendar - Shrub",
+        "Sign observed later than normal calendar - Shrub",
+        "Sign absent when normally expected - Shrub"
       ]
     },
     "01-PLT-TFL": {
@@ -269,11 +269,11 @@
       "behaviours": [
         "Observable pattern: Tree (pronounced)",
         "Observable pattern: Tree (reduced or absent)",
-        "Sign more pronounced than usual (high vigour) — Tree",
-        "Sign weaker than usual — Tree",
-        "Sign observed earlier than normal calendar — Tree",
-        "Sign observed later than normal calendar — Tree",
-        "Sign absent when normally expected — Tree"
+        "Sign more pronounced than usual (high vigour) - Tree",
+        "Sign weaker than usual - Tree",
+        "Sign observed earlier than normal calendar - Tree",
+        "Sign observed later than normal calendar - Tree",
+        "Sign absent when normally expected - Tree"
       ]
     },
     "01-PLT-VEG": {
@@ -283,11 +283,11 @@
       "behaviours": [
         "Observable pattern: General greenness, vigour or deterioration (pronounced)",
         "Observable pattern: General greenness, vigour or deterioration (reduced or absent)",
-        "Sign more pronounced than usual (high vigour) — General greenness, vigour or deterioration",
-        "Sign weaker than usual — General greenness, vigour or deterioration",
-        "Sign observed earlier than normal calendar — General greenness, vigour or deterioration",
-        "Sign observed later than normal calendar — General greenness, vigour or deterioration",
-        "Sign absent when normally expected — General greenness, vigour or deterioration"
+        "Sign more pronounced than usual (high vigour) - General greenness, vigour or deterioration",
+        "Sign weaker than usual - General greenness, vigour or deterioration",
+        "Sign observed earlier than normal calendar - General greenness, vigour or deterioration",
+        "Sign observed later than normal calendar - General greenness, vigour or deterioration",
+        "Sign absent when normally expected - General greenness, vigour or deterioration"
       ]
     },
     "01-PLT-VIN": {
@@ -297,11 +297,11 @@
       "behaviours": [
         "Observable pattern: Vine (Climber) (pronounced)",
         "Observable pattern: Vine (Climber) (reduced or absent)",
-        "Sign more pronounced than usual (high vigour) — Vine (Climber)",
-        "Sign weaker than usual — Vine (Climber)",
-        "Sign observed earlier than normal calendar — Vine (Climber)",
-        "Sign observed later than normal calendar — Vine (Climber)",
-        "Sign absent when normally expected — Vine (Climber)"
+        "Sign more pronounced than usual (high vigour) - Vine (Climber)",
+        "Sign weaker than usual - Vine (Climber)",
+        "Sign observed earlier than normal calendar - Vine (Climber)",
+        "Sign observed later than normal calendar - Vine (Climber)",
+        "Sign absent when normally expected - Vine (Climber)"
       ]
     },
     "01-ANI-AMP": {
@@ -311,11 +311,11 @@
       "behaviours": [
         "Observable pattern: Amphibians (pronounced)",
         "Observable pattern: Amphibians (reduced or absent)",
-        "Behaviour more intense than usual — Amphibians",
-        "Behaviour weaker or absent — Amphibians",
-        "Activity earlier than normal calendar — Amphibians",
-        "Activity later than normal calendar — Amphibians",
-        "Unusual direction or location of activity — Amphibians"
+        "Behaviour more intense than usual - Amphibians",
+        "Behaviour weaker or absent - Amphibians",
+        "Activity earlier than normal calendar - Amphibians",
+        "Activity later than normal calendar - Amphibians",
+        "Unusual direction or location of activity - Amphibians"
       ]
     },
     "01-ANI-ANT": {
@@ -325,11 +325,11 @@
       "behaviours": [
         "Observable pattern: Ant/termite activity or colony movement (pronounced)",
         "Observable pattern: Ant/termite activity or colony movement (reduced or absent)",
-        "Behaviour more intense than usual — Ant/termite activity or colony movement",
-        "Behaviour weaker or absent — Ant/termite activity or colony movement",
-        "Activity earlier than normal calendar — Ant/termite activity or colony movement",
-        "Activity later than normal calendar — Ant/termite activity or colony movement",
-        "Unusual direction or location of activity — Ant/termite activity or colony movement"
+        "Behaviour more intense than usual - Ant/termite activity or colony movement",
+        "Behaviour weaker or absent - Ant/termite activity or colony movement",
+        "Activity earlier than normal calendar - Ant/termite activity or colony movement",
+        "Activity later than normal calendar - Ant/termite activity or colony movement",
+        "Unusual direction or location of activity - Ant/termite activity or colony movement"
       ]
     },
     "01-ANI-AQU": {
@@ -339,11 +339,11 @@
       "behaviours": [
         "Observable pattern: Aquatic animal behaviour/migration (fish, crabs, etc.) (pronounced)",
         "Observable pattern: Aquatic animal behaviour/migration (fish, crabs, etc.) (reduced or absent)",
-        "Behaviour more intense than usual — Aquatic animal behaviour/migration (fish, crabs, etc.)",
-        "Behaviour weaker or absent — Aquatic animal behaviour/migration (fish, crabs, etc.)",
-        "Activity earlier than normal calendar — Aquatic animal behaviour/migration (fish, crabs, etc.)",
-        "Activity later than normal calendar — Aquatic animal behaviour/migration (fish, crabs, etc.)",
-        "Unusual direction or location of activity — Aquatic animal behaviour/migration (fish, crabs, etc.)"
+        "Behaviour more intense than usual - Aquatic animal behaviour/migration (fish, crabs, etc.)",
+        "Behaviour weaker or absent - Aquatic animal behaviour/migration (fish, crabs, etc.)",
+        "Activity earlier than normal calendar - Aquatic animal behaviour/migration (fish, crabs, etc.)",
+        "Activity later than normal calendar - Aquatic animal behaviour/migration (fish, crabs, etc.)",
+        "Unusual direction or location of activity - Aquatic animal behaviour/migration (fish, crabs, etc.)"
       ]
     },
     "01-ANI-ASR": {
@@ -353,11 +353,11 @@
       "behaviours": [
         "Observable pattern: Movement toward shelter, water or settlements (pronounced)",
         "Observable pattern: Movement toward shelter, water or settlements (reduced or absent)",
-        "Behaviour more intense than usual — Movement toward shelter, water or settlements",
-        "Behaviour weaker or absent — Movement toward shelter, water or settlements",
-        "Activity earlier than normal calendar — Movement toward shelter, water or settlements",
-        "Activity later than normal calendar — Movement toward shelter, water or settlements",
-        "Unusual direction or location of activity — Movement toward shelter, water or settlements"
+        "Behaviour more intense than usual - Movement toward shelter, water or settlements",
+        "Behaviour weaker or absent - Movement toward shelter, water or settlements",
+        "Activity earlier than normal calendar - Movement toward shelter, water or settlements",
+        "Activity later than normal calendar - Movement toward shelter, water or settlements",
+        "Unusual direction or location of activity - Movement toward shelter, water or settlements"
       ]
     },
     "01-ANI-BAD": {
@@ -367,11 +367,11 @@
       "behaviours": [
         "Observable pattern: Appearance/disappearance of particular birds (pronounced)",
         "Observable pattern: Appearance/disappearance of particular birds (reduced or absent)",
-        "Behaviour more intense than usual — Appearance/disappearance of particular birds",
-        "Behaviour weaker or absent — Appearance/disappearance of particular birds",
-        "Activity earlier than normal calendar — Appearance/disappearance of particular birds",
-        "Activity later than normal calendar — Appearance/disappearance of particular birds",
-        "Unusual direction or location of activity — Appearance/disappearance of particular birds"
+        "Behaviour more intense than usual - Appearance/disappearance of particular birds",
+        "Behaviour weaker or absent - Appearance/disappearance of particular birds",
+        "Activity earlier than normal calendar - Appearance/disappearance of particular birds",
+        "Activity later than normal calendar - Appearance/disappearance of particular birds",
+        "Unusual direction or location of activity - Appearance/disappearance of particular birds"
       ]
     },
     "01-ANI-BCL": {
@@ -392,11 +392,11 @@
       "behaviours": [
         "Observable pattern: Bee movement/abundance (pronounced)",
         "Observable pattern: Bee movement/abundance (reduced or absent)",
-        "Behaviour more intense than usual — Bee movement/abundance",
-        "Behaviour weaker or absent — Bee movement/abundance",
-        "Activity earlier than normal calendar — Bee movement/abundance",
-        "Activity later than normal calendar — Bee movement/abundance",
-        "Unusual direction or location of activity — Bee movement/abundance"
+        "Behaviour more intense than usual - Bee movement/abundance",
+        "Behaviour weaker or absent - Bee movement/abundance",
+        "Activity earlier than normal calendar - Bee movement/abundance",
+        "Activity later than normal calendar - Bee movement/abundance",
+        "Unusual direction or location of activity - Bee movement/abundance"
       ]
     },
     "01-ANI-BFD": {
@@ -406,11 +406,11 @@
       "behaviours": [
         "Observable pattern: Changes in feeding or foraging (pronounced)",
         "Observable pattern: Changes in feeding or foraging (reduced or absent)",
-        "Behaviour more intense than usual — Changes in feeding or foraging",
-        "Behaviour weaker or absent — Changes in feeding or foraging",
-        "Activity earlier than normal calendar — Changes in feeding or foraging",
-        "Activity later than normal calendar — Changes in feeding or foraging",
-        "Unusual direction or location of activity — Changes in feeding or foraging"
+        "Behaviour more intense than usual - Changes in feeding or foraging",
+        "Behaviour weaker or absent - Changes in feeding or foraging",
+        "Activity earlier than normal calendar - Changes in feeding or foraging",
+        "Activity later than normal calendar - Changes in feeding or foraging",
+        "Unusual direction or location of activity - Changes in feeding or foraging"
       ]
     },
     "01-ANI-BFL": {
@@ -444,11 +444,11 @@
       "behaviours": [
         "Observable pattern: Nesting, roosting or breeding-site behaviour (pronounced)",
         "Observable pattern: Nesting, roosting or breeding-site behaviour (reduced or absent)",
-        "Behaviour more intense than usual — Nesting, roosting or breeding-site behaviour",
-        "Behaviour weaker or absent — Nesting, roosting or breeding-site behaviour",
-        "Activity earlier than normal calendar — Nesting, roosting or breeding-site behaviour",
-        "Activity later than normal calendar — Nesting, roosting or breeding-site behaviour",
-        "Unusual direction or location of activity — Nesting, roosting or breeding-site behaviour"
+        "Behaviour more intense than usual - Nesting, roosting or breeding-site behaviour",
+        "Behaviour weaker or absent - Nesting, roosting or breeding-site behaviour",
+        "Activity earlier than normal calendar - Nesting, roosting or breeding-site behaviour",
+        "Activity later than normal calendar - Nesting, roosting or breeding-site behaviour",
+        "Unusual direction or location of activity - Nesting, roosting or breeding-site behaviour"
       ]
     },
     "01-ANI-BRD": {
@@ -458,11 +458,11 @@
       "behaviours": [
         "Observable pattern: Birds (pronounced)",
         "Observable pattern: Birds (reduced or absent)",
-        "Behaviour more intense than usual — Birds",
-        "Behaviour weaker or absent — Birds",
-        "Activity earlier than normal calendar — Birds",
-        "Activity later than normal calendar — Birds",
-        "Unusual direction or location of activity — Birds"
+        "Behaviour more intense than usual - Birds",
+        "Behaviour weaker or absent - Birds",
+        "Activity earlier than normal calendar - Birds",
+        "Activity later than normal calendar - Birds",
+        "Unusual direction or location of activity - Birds"
       ]
     },
     "01-ANI-BUT": {
@@ -472,11 +472,11 @@
       "behaviours": [
         "Observable pattern: Butterfly appearance/migration/abundance (pronounced)",
         "Observable pattern: Butterfly appearance/migration/abundance (reduced or absent)",
-        "Behaviour more intense than usual — Butterfly appearance/migration/abundance",
-        "Behaviour weaker or absent — Butterfly appearance/migration/abundance",
-        "Activity earlier than normal calendar — Butterfly appearance/migration/abundance",
-        "Activity later than normal calendar — Butterfly appearance/migration/abundance",
-        "Unusual direction or location of activity — Butterfly appearance/migration/abundance"
+        "Behaviour more intense than usual - Butterfly appearance/migration/abundance",
+        "Behaviour weaker or absent - Butterfly appearance/migration/abundance",
+        "Activity earlier than normal calendar - Butterfly appearance/migration/abundance",
+        "Activity later than normal calendar - Butterfly appearance/migration/abundance",
+        "Unusual direction or location of activity - Butterfly appearance/migration/abundance"
       ]
     },
     "01-ANI-CON": {
@@ -486,11 +486,11 @@
       "behaviours": [
         "Observable pattern: Animal body condition/physical signs (pronounced)",
         "Observable pattern: Animal body condition/physical signs (reduced or absent)",
-        "Behaviour more intense than usual — Animal body condition/physical signs",
-        "Behaviour weaker or absent — Animal body condition/physical signs",
-        "Activity earlier than normal calendar — Animal body condition/physical signs",
-        "Activity later than normal calendar — Animal body condition/physical signs",
-        "Unusual direction or location of activity — Animal body condition/physical signs"
+        "Behaviour more intense than usual - Animal body condition/physical signs",
+        "Behaviour weaker or absent - Animal body condition/physical signs",
+        "Activity earlier than normal calendar - Animal body condition/physical signs",
+        "Activity later than normal calendar - Animal body condition/physical signs",
+        "Unusual direction or location of activity - Animal body condition/physical signs"
       ]
     },
     "01-ANI-EMG": {
@@ -500,11 +500,11 @@
       "behaviours": [
         "Observable pattern: Emergence from burrows/ground (pronounced)",
         "Observable pattern: Emergence from burrows/ground (reduced or absent)",
-        "Behaviour more intense than usual — Emergence from burrows/ground",
-        "Behaviour weaker or absent — Emergence from burrows/ground",
-        "Activity earlier than normal calendar — Emergence from burrows/ground",
-        "Activity later than normal calendar — Emergence from burrows/ground",
-        "Unusual direction or location of activity — Emergence from burrows/ground"
+        "Behaviour more intense than usual - Emergence from burrows/ground",
+        "Behaviour weaker or absent - Emergence from burrows/ground",
+        "Activity earlier than normal calendar - Emergence from burrows/ground",
+        "Activity later than normal calendar - Emergence from burrows/ground",
+        "Unusual direction or location of activity - Emergence from burrows/ground"
       ]
     },
     "01-ANI-FED": {
@@ -514,11 +514,11 @@
       "behaviours": [
         "Observable pattern: Feeding/grazing behaviour or unusual appetite (pronounced)",
         "Observable pattern: Feeding/grazing behaviour or unusual appetite (reduced or absent)",
-        "Behaviour more intense than usual — Feeding/grazing behaviour or unusual appetite",
-        "Behaviour weaker or absent — Feeding/grazing behaviour or unusual appetite",
-        "Activity earlier than normal calendar — Feeding/grazing behaviour or unusual appetite",
-        "Activity later than normal calendar — Feeding/grazing behaviour or unusual appetite",
-        "Unusual direction or location of activity — Feeding/grazing behaviour or unusual appetite"
+        "Behaviour more intense than usual - Feeding/grazing behaviour or unusual appetite",
+        "Behaviour weaker or absent - Feeding/grazing behaviour or unusual appetite",
+        "Activity earlier than normal calendar - Feeding/grazing behaviour or unusual appetite",
+        "Activity later than normal calendar - Feeding/grazing behaviour or unusual appetite",
+        "Unusual direction or location of activity - Feeding/grazing behaviour or unusual appetite"
       ]
     },
     "01-ANI-FRG": {
@@ -549,11 +549,11 @@
       "behaviours": [
         "Observable pattern: Fish (pronounced)",
         "Observable pattern: Fish (reduced or absent)",
-        "Behaviour more intense than usual — Fish",
-        "Behaviour weaker or absent — Fish",
-        "Activity earlier than normal calendar — Fish",
-        "Activity later than normal calendar — Fish",
-        "Unusual direction or location of activity — Fish"
+        "Behaviour more intense than usual - Fish",
+        "Behaviour weaker or absent - Fish",
+        "Activity earlier than normal calendar - Fish",
+        "Activity later than normal calendar - Fish",
+        "Unusual direction or location of activity - Fish"
       ]
     },
     "01-ANI-INS": {
@@ -563,11 +563,11 @@
       "behaviours": [
         "Observable pattern: Insects (pronounced)",
         "Observable pattern: Insects (reduced or absent)",
-        "Behaviour more intense than usual — Insects",
-        "Behaviour weaker or absent — Insects",
-        "Activity earlier than normal calendar — Insects",
-        "Activity later than normal calendar — Insects",
-        "Unusual direction or location of activity — Insects"
+        "Behaviour more intense than usual - Insects",
+        "Behaviour weaker or absent - Insects",
+        "Activity earlier than normal calendar - Insects",
+        "Activity later than normal calendar - Insects",
+        "Unusual direction or location of activity - Insects"
       ]
     },
     "01-ANI-LBC": {
@@ -577,11 +577,11 @@
       "behaviours": [
         "Observable pattern: Body condition/appearance linked to seasonal conditions (pronounced)",
         "Observable pattern: Body condition/appearance linked to seasonal conditions (reduced or absent)",
-        "Behaviour more intense than usual — Body condition/appearance linked to seasonal conditions",
-        "Behaviour weaker or absent — Body condition/appearance linked to seasonal conditions",
-        "Activity earlier than normal calendar — Body condition/appearance linked to seasonal conditions",
-        "Activity later than normal calendar — Body condition/appearance linked to seasonal conditions",
-        "Unusual direction or location of activity — Body condition/appearance linked to seasonal conditions"
+        "Behaviour more intense than usual - Body condition/appearance linked to seasonal conditions",
+        "Behaviour weaker or absent - Body condition/appearance linked to seasonal conditions",
+        "Activity earlier than normal calendar - Body condition/appearance linked to seasonal conditions",
+        "Activity later than normal calendar - Body condition/appearance linked to seasonal conditions",
+        "Unusual direction or location of activity - Body condition/appearance linked to seasonal conditions"
       ]
     },
     "01-ANI-LIV": {
@@ -602,11 +602,11 @@
       "behaviours": [
         "Observable pattern: Movement toward/away from water, shelter or settlements (pronounced)",
         "Observable pattern: Movement toward/away from water, shelter or settlements (reduced or absent)",
-        "Behaviour more intense than usual — Movement toward/away from water, shelter or settlements",
-        "Behaviour weaker or absent — Movement toward/away from water, shelter or settlements",
-        "Activity earlier than normal calendar — Movement toward/away from water, shelter or settlements",
-        "Activity later than normal calendar — Movement toward/away from water, shelter or settlements",
-        "Unusual direction or location of activity — Movement toward/away from water, shelter or settlements"
+        "Behaviour more intense than usual - Movement toward/away from water, shelter or settlements",
+        "Behaviour weaker or absent - Movement toward/away from water, shelter or settlements",
+        "Activity earlier than normal calendar - Movement toward/away from water, shelter or settlements",
+        "Activity later than normal calendar - Movement toward/away from water, shelter or settlements",
+        "Unusual direction or location of activity - Movement toward/away from water, shelter or settlements"
       ]
     },
     "01-ANI-MAM": {
@@ -616,11 +616,11 @@
       "behaviours": [
         "Observable pattern: Mammals (pronounced)",
         "Observable pattern: Mammals (reduced or absent)",
-        "Behaviour more intense than usual — Mammals",
-        "Behaviour weaker or absent — Mammals",
-        "Activity earlier than normal calendar — Mammals",
-        "Activity later than normal calendar — Mammals",
-        "Unusual direction or location of activity — Mammals"
+        "Behaviour more intense than usual - Mammals",
+        "Behaviour weaker or absent - Mammals",
+        "Activity earlier than normal calendar - Mammals",
+        "Activity later than normal calendar - Mammals",
+        "Unusual direction or location of activity - Mammals"
       ]
     },
     "01-ANI-MAT": {
@@ -630,11 +630,11 @@
       "behaviours": [
         "Observable pattern: Mating/breeding behaviour or frequency (pronounced)",
         "Observable pattern: Mating/breeding behaviour or frequency (reduced or absent)",
-        "Behaviour more intense than usual — Mating/breeding behaviour or frequency",
-        "Behaviour weaker or absent — Mating/breeding behaviour or frequency",
-        "Activity earlier than normal calendar — Mating/breeding behaviour or frequency",
-        "Activity later than normal calendar — Mating/breeding behaviour or frequency",
-        "Unusual direction or location of activity — Mating/breeding behaviour or frequency"
+        "Behaviour more intense than usual - Mating/breeding behaviour or frequency",
+        "Behaviour weaker or absent - Mating/breeding behaviour or frequency",
+        "Activity earlier than normal calendar - Mating/breeding behaviour or frequency",
+        "Activity later than normal calendar - Mating/breeding behaviour or frequency",
+        "Unusual direction or location of activity - Mating/breeding behaviour or frequency"
       ]
     },
     "01-ANI-MIG": {
@@ -644,11 +644,11 @@
       "behaviours": [
         "Observable pattern: Migration/arrival/disappearance/movement (pronounced)",
         "Observable pattern: Migration/arrival/disappearance/movement (reduced or absent)",
-        "Behaviour more intense than usual — Migration/arrival/disappearance/movement",
-        "Behaviour weaker or absent — Migration/arrival/disappearance/movement",
-        "Activity earlier than normal calendar — Migration/arrival/disappearance/movement",
-        "Activity later than normal calendar — Migration/arrival/disappearance/movement",
-        "Unusual direction or location of activity — Migration/arrival/disappearance/movement"
+        "Behaviour more intense than usual - Migration/arrival/disappearance/movement",
+        "Behaviour weaker or absent - Migration/arrival/disappearance/movement",
+        "Activity earlier than normal calendar - Migration/arrival/disappearance/movement",
+        "Activity later than normal calendar - Migration/arrival/disappearance/movement",
+        "Unusual direction or location of activity - Migration/arrival/disappearance/movement"
       ]
     },
     "01-ANI-MOL": {
@@ -658,11 +658,11 @@
       "behaviours": [
         "Observable pattern: Molluscs (pronounced)",
         "Observable pattern: Molluscs (reduced or absent)",
-        "Behaviour more intense than usual — Molluscs",
-        "Behaviour weaker or absent — Molluscs",
-        "Activity earlier than normal calendar — Molluscs",
-        "Activity later than normal calendar — Molluscs",
-        "Unusual direction or location of activity — Molluscs"
+        "Behaviour more intense than usual - Molluscs",
+        "Behaviour weaker or absent - Molluscs",
+        "Activity earlier than normal calendar - Molluscs",
+        "Activity later than normal calendar - Molluscs",
+        "Unusual direction or location of activity - Molluscs"
       ]
     },
     "01-ANI-MOS": {
@@ -672,11 +672,11 @@
       "behaviours": [
         "Observable pattern: Mosquito abundance/activity (pronounced)",
         "Observable pattern: Mosquito abundance/activity (reduced or absent)",
-        "Behaviour more intense than usual — Mosquito abundance/activity",
-        "Behaviour weaker or absent — Mosquito abundance/activity",
-        "Activity earlier than normal calendar — Mosquito abundance/activity",
-        "Activity later than normal calendar — Mosquito abundance/activity",
-        "Unusual direction or location of activity — Mosquito abundance/activity"
+        "Behaviour more intense than usual - Mosquito abundance/activity",
+        "Behaviour weaker or absent - Mosquito abundance/activity",
+        "Activity earlier than normal calendar - Mosquito abundance/activity",
+        "Activity later than normal calendar - Mosquito abundance/activity",
+        "Unusual direction or location of activity - Mosquito abundance/activity"
       ]
     },
     "01-ANI-NST": {
@@ -686,11 +686,11 @@
       "behaviours": [
         "Observable pattern: Nesting/roosting/breeding behaviour (pronounced)",
         "Observable pattern: Nesting/roosting/breeding behaviour (reduced or absent)",
-        "Behaviour more intense than usual — Nesting/roosting/breeding behaviour",
-        "Behaviour weaker or absent — Nesting/roosting/breeding behaviour",
-        "Activity earlier than normal calendar — Nesting/roosting/breeding behaviour",
-        "Activity later than normal calendar — Nesting/roosting/breeding behaviour",
-        "Unusual direction or location of activity — Nesting/roosting/breeding behaviour"
+        "Behaviour more intense than usual - Nesting/roosting/breeding behaviour",
+        "Behaviour weaker or absent - Nesting/roosting/breeding behaviour",
+        "Activity earlier than normal calendar - Nesting/roosting/breeding behaviour",
+        "Activity later than normal calendar - Nesting/roosting/breeding behaviour",
+        "Unusual direction or location of activity - Nesting/roosting/breeding behaviour"
       ]
     },
     "01-ANI-OTH": {
@@ -700,11 +700,11 @@
       "behaviours": [
         "Observable pattern: Any Other (specify) (pronounced)",
         "Observable pattern: Any Other (specify) (reduced or absent)",
-        "Behaviour more intense than usual — Any Other (specify)",
-        "Behaviour weaker or absent — Any Other (specify)",
-        "Activity earlier than normal calendar — Any Other (specify)",
-        "Activity later than normal calendar — Any Other (specify)",
-        "Unusual direction or location of activity — Any Other (specify)"
+        "Behaviour more intense than usual - Any Other (specify)",
+        "Behaviour weaker or absent - Any Other (specify)",
+        "Activity earlier than normal calendar - Any Other (specify)",
+        "Activity later than normal calendar - Any Other (specify)",
+        "Unusual direction or location of activity - Any Other (specify)"
       ]
     },
     "01-ANI-REP": {
@@ -714,11 +714,11 @@
       "behaviours": [
         "Observable pattern: Reptiles (pronounced)",
         "Observable pattern: Reptiles (reduced or absent)",
-        "Behaviour more intense than usual — Reptiles",
-        "Behaviour weaker or absent — Reptiles",
-        "Activity earlier than normal calendar — Reptiles",
-        "Activity later than normal calendar — Reptiles",
-        "Unusual direction or location of activity — Reptiles"
+        "Behaviour more intense than usual - Reptiles",
+        "Behaviour weaker or absent - Reptiles",
+        "Activity earlier than normal calendar - Reptiles",
+        "Activity later than normal calendar - Reptiles",
+        "Unusual direction or location of activity - Reptiles"
       ]
     },
     "01-ANI-SNA": {
@@ -728,11 +728,11 @@
       "behaviours": [
         "Observable pattern: Snail appearance/abundance (pronounced)",
         "Observable pattern: Snail appearance/abundance (reduced or absent)",
-        "Behaviour more intense than usual — Snail appearance/abundance",
-        "Behaviour weaker or absent — Snail appearance/abundance",
-        "Activity earlier than normal calendar — Snail appearance/abundance",
-        "Activity later than normal calendar — Snail appearance/abundance",
-        "Unusual direction or location of activity — Snail appearance/abundance"
+        "Behaviour more intense than usual - Snail appearance/abundance",
+        "Behaviour weaker or absent - Snail appearance/abundance",
+        "Activity earlier than normal calendar - Snail appearance/abundance",
+        "Activity later than normal calendar - Snail appearance/abundance",
+        "Unusual direction or location of activity - Snail appearance/abundance"
       ]
     },
     "01-ANI-SNP": {
@@ -742,11 +742,11 @@
       "behaviours": [
         "Observable pattern: Snake/reptile movement or appearance (pronounced)",
         "Observable pattern: Snake/reptile movement or appearance (reduced or absent)",
-        "Behaviour more intense than usual — Snake/reptile movement or appearance",
-        "Behaviour weaker or absent — Snake/reptile movement or appearance",
-        "Activity earlier than normal calendar — Snake/reptile movement or appearance",
-        "Activity later than normal calendar — Snake/reptile movement or appearance",
-        "Unusual direction or location of activity — Snake/reptile movement or appearance"
+        "Behaviour more intense than usual - Snake/reptile movement or appearance",
+        "Behaviour weaker or absent - Snake/reptile movement or appearance",
+        "Activity earlier than normal calendar - Snake/reptile movement or appearance",
+        "Activity later than normal calendar - Snake/reptile movement or appearance",
+        "Unusual direction or location of activity - Snake/reptile movement or appearance"
       ]
     },
     "01-ANI-SPD": {
@@ -756,11 +756,11 @@
       "behaviours": [
         "Observable pattern: Spiders (pronounced)",
         "Observable pattern: Spiders (reduced or absent)",
-        "Behaviour more intense than usual — Spiders",
-        "Behaviour weaker or absent — Spiders",
-        "Activity earlier than normal calendar — Spiders",
-        "Activity later than normal calendar — Spiders",
-        "Unusual direction or location of activity — Spiders"
+        "Behaviour more intense than usual - Spiders",
+        "Behaviour weaker or absent - Spiders",
+        "Activity earlier than normal calendar - Spiders",
+        "Activity later than normal calendar - Spiders",
+        "Unusual direction or location of activity - Spiders"
       ]
     },
     "01-ANI-SWM": {
@@ -770,11 +770,11 @@
       "behaviours": [
         "Observable pattern: Swarming/abundance of insects (pronounced)",
         "Observable pattern: Swarming/abundance of insects (reduced or absent)",
-        "Behaviour more intense than usual — Swarming/abundance of insects",
-        "Behaviour weaker or absent — Swarming/abundance of insects",
-        "Activity earlier than normal calendar — Swarming/abundance of insects",
-        "Activity later than normal calendar — Swarming/abundance of insects",
-        "Unusual direction or location of activity — Swarming/abundance of insects"
+        "Behaviour more intense than usual - Swarming/abundance of insects",
+        "Behaviour weaker or absent - Swarming/abundance of insects",
+        "Activity earlier than normal calendar - Swarming/abundance of insects",
+        "Activity later than normal calendar - Swarming/abundance of insects",
+        "Unusual direction or location of activity - Swarming/abundance of insects"
       ]
     },
     "01-ANI-TER": {
@@ -784,11 +784,11 @@
       "behaviours": [
         "Observable pattern: Termite emergence, flying or colony activity (pronounced)",
         "Observable pattern: Termite emergence, flying or colony activity (reduced or absent)",
-        "Behaviour more intense than usual — Termite emergence, flying or colony activity",
-        "Behaviour weaker or absent — Termite emergence, flying or colony activity",
-        "Activity earlier than normal calendar — Termite emergence, flying or colony activity",
-        "Activity later than normal calendar — Termite emergence, flying or colony activity",
-        "Unusual direction or location of activity — Termite emergence, flying or colony activity"
+        "Behaviour more intense than usual - Termite emergence, flying or colony activity",
+        "Behaviour weaker or absent - Termite emergence, flying or colony activity",
+        "Activity earlier than normal calendar - Termite emergence, flying or colony activity",
+        "Activity later than normal calendar - Termite emergence, flying or colony activity",
+        "Unusual direction or location of activity - Termite emergence, flying or colony activity"
       ]
     },
     "01-ANI-VOC": {
@@ -798,11 +798,11 @@
       "behaviours": [
         "Observable pattern: Animal/bird calls, singing or unusual sounds (pronounced)",
         "Observable pattern: Animal/bird calls, singing or unusual sounds (reduced or absent)",
-        "Behaviour more intense than usual — Animal/bird calls, singing or unusual sounds",
-        "Behaviour weaker or absent — Animal/bird calls, singing or unusual sounds",
-        "Activity earlier than normal calendar — Animal/bird calls, singing or unusual sounds",
-        "Activity later than normal calendar — Animal/bird calls, singing or unusual sounds",
-        "Unusual direction or location of activity — Animal/bird calls, singing or unusual sounds"
+        "Behaviour more intense than usual - Animal/bird calls, singing or unusual sounds",
+        "Behaviour weaker or absent - Animal/bird calls, singing or unusual sounds",
+        "Activity earlier than normal calendar - Animal/bird calls, singing or unusual sounds",
+        "Activity later than normal calendar - Animal/bird calls, singing or unusual sounds",
+        "Unusual direction or location of activity - Animal/bird calls, singing or unusual sounds"
       ]
     },
     "01-ANI-WLM": {
@@ -812,11 +812,11 @@
       "behaviours": [
         "Observable pattern: Movement of wild animals toward/away from areas (pronounced)",
         "Observable pattern: Movement of wild animals toward/away from areas (reduced or absent)",
-        "Behaviour more intense than usual — Movement of wild animals toward/away from areas",
-        "Behaviour weaker or absent — Movement of wild animals toward/away from areas",
-        "Activity earlier than normal calendar — Movement of wild animals toward/away from areas",
-        "Activity later than normal calendar — Movement of wild animals toward/away from areas",
-        "Unusual direction or location of activity — Movement of wild animals toward/away from areas"
+        "Behaviour more intense than usual - Movement of wild animals toward/away from areas",
+        "Behaviour weaker or absent - Movement of wild animals toward/away from areas",
+        "Activity earlier than normal calendar - Movement of wild animals toward/away from areas",
+        "Activity later than normal calendar - Movement of wild animals toward/away from areas",
+        "Unusual direction or location of activity - Movement of wild animals toward/away from areas"
       ]
     },
     "02-ATM-AIR": {
@@ -826,11 +826,11 @@
       "behaviours": [
         "Observable pattern: Air (pronounced)",
         "Observable pattern: Air (reduced or absent)",
-        "Phenomenon intense / widespread — Air",
-        "Phenomenon weak or localized — Air",
-        "Earlier than usual timing — Air",
-        "Later than usual timing — Air",
-        "Absent when normally expected — Air"
+        "Phenomenon intense / widespread - Air",
+        "Phenomenon weak or localized - Air",
+        "Earlier than usual timing - Air",
+        "Later than usual timing - Air",
+        "Absent when normally expected - Air"
       ]
     },
     "02-ATM-CCL": {
@@ -840,11 +840,11 @@
       "behaviours": [
         "Observable pattern: Dark, white, reddish or other cloud colour (pronounced)",
         "Observable pattern: Dark, white, reddish or other cloud colour (reduced or absent)",
-        "Phenomenon intense / widespread — Dark, white, reddish or other cloud colour",
-        "Phenomenon weak or localized — Dark, white, reddish or other cloud colour",
-        "Earlier than usual timing — Dark, white, reddish or other cloud colour",
-        "Later than usual timing — Dark, white, reddish or other cloud colour",
-        "Absent when normally expected — Dark, white, reddish or other cloud colour"
+        "Phenomenon intense / widespread - Dark, white, reddish or other cloud colour",
+        "Phenomenon weak or localized - Dark, white, reddish or other cloud colour",
+        "Earlier than usual timing - Dark, white, reddish or other cloud colour",
+        "Later than usual timing - Dark, white, reddish or other cloud colour",
+        "Absent when normally expected - Dark, white, reddish or other cloud colour"
       ]
     },
     "02-ATM-CCV": {
@@ -854,11 +854,11 @@
       "behaviours": [
         "Observable pattern: Amount/extent of cloud cover or clear sky (pronounced)",
         "Observable pattern: Amount/extent of cloud cover or clear sky (reduced or absent)",
-        "Phenomenon intense / widespread — Amount/extent of cloud cover or clear sky",
-        "Phenomenon weak or localized — Amount/extent of cloud cover or clear sky",
-        "Earlier than usual timing — Amount/extent of cloud cover or clear sky",
-        "Later than usual timing — Amount/extent of cloud cover or clear sky",
-        "Absent when normally expected — Amount/extent of cloud cover or clear sky"
+        "Phenomenon intense / widespread - Amount/extent of cloud cover or clear sky",
+        "Phenomenon weak or localized - Amount/extent of cloud cover or clear sky",
+        "Earlier than usual timing - Amount/extent of cloud cover or clear sky",
+        "Later than usual timing - Amount/extent of cloud cover or clear sky",
+        "Absent when normally expected - Amount/extent of cloud cover or clear sky"
       ]
     },
     "02-ATM-CHF": {
@@ -868,11 +868,11 @@
       "behaviours": [
         "Observable pattern: Height, vertical development or unusual formation (pronounced)",
         "Observable pattern: Height, vertical development or unusual formation (reduced or absent)",
-        "Phenomenon intense / widespread — Height, vertical development or unusual formation",
-        "Phenomenon weak or localized — Height, vertical development or unusual formation",
-        "Earlier than usual timing — Height, vertical development or unusual formation",
-        "Later than usual timing — Height, vertical development or unusual formation",
-        "Absent when normally expected — Height, vertical development or unusual formation"
+        "Phenomenon intense / widespread - Height, vertical development or unusual formation",
+        "Phenomenon weak or localized - Height, vertical development or unusual formation",
+        "Earlier than usual timing - Height, vertical development or unusual formation",
+        "Later than usual timing - Height, vertical development or unusual formation",
+        "Absent when normally expected - Height, vertical development or unusual formation"
       ]
     },
     "02-ATM-CLD": {
@@ -893,11 +893,11 @@
       "behaviours": [
         "Observable pattern: Sky/cloud colour (pronounced)",
         "Observable pattern: Sky/cloud colour (reduced or absent)",
-        "Phenomenon intense / widespread — Sky/cloud colour",
-        "Phenomenon weak or localized — Sky/cloud colour",
-        "Earlier than usual timing — Sky/cloud colour",
-        "Later than usual timing — Sky/cloud colour",
-        "Absent when normally expected — Sky/cloud colour"
+        "Phenomenon intense / widespread - Sky/cloud colour",
+        "Phenomenon weak or localized - Sky/cloud colour",
+        "Earlier than usual timing - Sky/cloud colour",
+        "Later than usual timing - Sky/cloud colour",
+        "Absent when normally expected - Sky/cloud colour"
       ]
     },
     "02-ATM-COV": {
@@ -907,11 +907,11 @@
       "behaviours": [
         "Observable pattern: Cloud cover/amount/sky clarity (pronounced)",
         "Observable pattern: Cloud cover/amount/sky clarity (reduced or absent)",
-        "Phenomenon intense / widespread — Cloud cover/amount/sky clarity",
-        "Phenomenon weak or localized — Cloud cover/amount/sky clarity",
-        "Earlier than usual timing — Cloud cover/amount/sky clarity",
-        "Later than usual timing — Cloud cover/amount/sky clarity",
-        "Absent when normally expected — Cloud cover/amount/sky clarity"
+        "Phenomenon intense / widespread - Cloud cover/amount/sky clarity",
+        "Phenomenon weak or localized - Cloud cover/amount/sky clarity",
+        "Earlier than usual timing - Cloud cover/amount/sky clarity",
+        "Later than usual timing - Cloud cover/amount/sky clarity",
+        "Absent when normally expected - Cloud cover/amount/sky clarity"
       ]
     },
     "02-ATM-CTP": {
@@ -921,11 +921,11 @@
       "behaviours": [
         "Observable pattern: Nimbostratus, cumulonimbus or other locally recognized cloud forms (pronounced)",
         "Observable pattern: Nimbostratus, cumulonimbus or other locally recognized cloud forms (reduced or absent)",
-        "Phenomenon intense / widespread — Nimbostratus, cumulonimbus or other locally recognized cloud forms",
-        "Phenomenon weak or localized — Nimbostratus, cumulonimbus or other locally recognized cloud forms",
-        "Earlier than usual timing — Nimbostratus, cumulonimbus or other locally recognized cloud forms",
-        "Later than usual timing — Nimbostratus, cumulonimbus or other locally recognized cloud forms",
-        "Absent when normally expected — Nimbostratus, cumulonimbus or other locally recognized cloud forms"
+        "Phenomenon intense / widespread - Nimbostratus, cumulonimbus or other locally recognized cloud forms",
+        "Phenomenon weak or localized - Nimbostratus, cumulonimbus or other locally recognized cloud forms",
+        "Earlier than usual timing - Nimbostratus, cumulonimbus or other locally recognized cloud forms",
+        "Later than usual timing - Nimbostratus, cumulonimbus or other locally recognized cloud forms",
+        "Absent when normally expected - Nimbostratus, cumulonimbus or other locally recognized cloud forms"
       ]
     },
     "02-ATM-DEW": {
@@ -945,11 +945,11 @@
       "behaviours": [
         "Observable pattern: Dryness/cracking/wilting of soil or ground (pronounced)",
         "Observable pattern: Dryness/cracking/wilting of soil or ground (reduced or absent)",
-        "Phenomenon intense / widespread — Dryness/cracking/wilting of soil or ground",
-        "Phenomenon weak or localized — Dryness/cracking/wilting of soil or ground",
-        "Earlier than usual timing — Dryness/cracking/wilting of soil or ground",
-        "Later than usual timing — Dryness/cracking/wilting of soil or ground",
-        "Absent when normally expected — Dryness/cracking/wilting of soil or ground"
+        "Phenomenon intense / widespread - Dryness/cracking/wilting of soil or ground",
+        "Phenomenon weak or localized - Dryness/cracking/wilting of soil or ground",
+        "Earlier than usual timing - Dryness/cracking/wilting of soil or ground",
+        "Later than usual timing - Dryness/cracking/wilting of soil or ground",
+        "Absent when normally expected - Dryness/cracking/wilting of soil or ground"
       ]
     },
     "02-ATM-DSH": {
@@ -959,11 +959,11 @@
       "behaviours": [
         "Observable pattern: Dust rising, drifting or unusual atmospheric haze (pronounced)",
         "Observable pattern: Dust rising, drifting or unusual atmospheric haze (reduced or absent)",
-        "Phenomenon intense / widespread — Dust rising, drifting or unusual atmospheric haze",
-        "Phenomenon weak or localized — Dust rising, drifting or unusual atmospheric haze",
-        "Earlier than usual timing — Dust rising, drifting or unusual atmospheric haze",
-        "Later than usual timing — Dust rising, drifting or unusual atmospheric haze",
-        "Absent when normally expected — Dust rising, drifting or unusual atmospheric haze"
+        "Phenomenon intense / widespread - Dust rising, drifting or unusual atmospheric haze",
+        "Phenomenon weak or localized - Dust rising, drifting or unusual atmospheric haze",
+        "Earlier than usual timing - Dust rising, drifting or unusual atmospheric haze",
+        "Later than usual timing - Dust rising, drifting or unusual atmospheric haze",
+        "Absent when normally expected - Dust rising, drifting or unusual atmospheric haze"
       ]
     },
     "02-ATM-DSR": {
@@ -973,11 +973,11 @@
       "behaviours": [
         "Observable pattern: Dust movement/dust haze/dust colour (pronounced)",
         "Observable pattern: Dust movement/dust haze/dust colour (reduced or absent)",
-        "Phenomenon intense / widespread — Dust movement/dust haze/dust colour",
-        "Phenomenon weak or localized — Dust movement/dust haze/dust colour",
-        "Earlier than usual timing — Dust movement/dust haze/dust colour",
-        "Later than usual timing — Dust movement/dust haze/dust colour",
-        "Absent when normally expected — Dust movement/dust haze/dust colour"
+        "Phenomenon intense / widespread - Dust movement/dust haze/dust colour",
+        "Phenomenon weak or localized - Dust movement/dust haze/dust colour",
+        "Earlier than usual timing - Dust movement/dust haze/dust colour",
+        "Later than usual timing - Dust movement/dust haze/dust colour",
+        "Absent when normally expected - Dust movement/dust haze/dust colour"
       ]
     },
     "02-ATM-HAL": {
@@ -987,11 +987,11 @@
       "behaviours": [
         "Observable pattern: Halo / ring around sun or moon (pronounced)",
         "Observable pattern: Halo / ring around sun or moon (reduced or absent)",
-        "Phenomenon intense / widespread — Halo / ring around sun or moon",
-        "Phenomenon weak or localized — Halo / ring around sun or moon",
-        "Earlier than usual timing — Halo / ring around sun or moon",
-        "Later than usual timing — Halo / ring around sun or moon",
-        "Absent when normally expected — Halo / ring around sun or moon"
+        "Phenomenon intense / widespread - Halo / ring around sun or moon",
+        "Phenomenon weak or localized - Halo / ring around sun or moon",
+        "Earlier than usual timing - Halo / ring around sun or moon",
+        "Later than usual timing - Halo / ring around sun or moon",
+        "Absent when normally expected - Halo / ring around sun or moon"
       ]
     },
     "02-ATM-HUM": {
@@ -1001,11 +1001,11 @@
       "behaviours": [
         "Observable pattern: Humidity (pronounced)",
         "Observable pattern: Humidity (reduced or absent)",
-        "Phenomenon intense / widespread — Humidity",
-        "Phenomenon weak or localized — Humidity",
-        "Earlier than usual timing — Humidity",
-        "Later than usual timing — Humidity",
-        "Absent when normally expected — Humidity"
+        "Phenomenon intense / widespread - Humidity",
+        "Phenomenon weak or localized - Humidity",
+        "Earlier than usual timing - Humidity",
+        "Later than usual timing - Humidity",
+        "Absent when normally expected - Humidity"
       ]
     },
     "02-ATM-LTG": {
@@ -1025,11 +1025,11 @@
       "behaviours": [
         "Observable pattern: Mirage / loom / atmospheric refraction (pronounced)",
         "Observable pattern: Mirage / loom / atmospheric refraction (reduced or absent)",
-        "Phenomenon intense / widespread — Mirage / loom / atmospheric refraction",
-        "Phenomenon weak or localized — Mirage / loom / atmospheric refraction",
-        "Earlier than usual timing — Mirage / loom / atmospheric refraction",
-        "Later than usual timing — Mirage / loom / atmospheric refraction",
-        "Absent when normally expected — Mirage / loom / atmospheric refraction"
+        "Phenomenon intense / widespread - Mirage / loom / atmospheric refraction",
+        "Phenomenon weak or localized - Mirage / loom / atmospheric refraction",
+        "Earlier than usual timing - Mirage / loom / atmospheric refraction",
+        "Later than usual timing - Mirage / loom / atmospheric refraction",
+        "Absent when normally expected - Mirage / loom / atmospheric refraction"
       ]
     },
     "02-ATM-MST": {
@@ -1039,11 +1039,11 @@
       "behaviours": [
         "Observable pattern: Mist/ Fog (pronounced)",
         "Observable pattern: Mist/ Fog (reduced or absent)",
-        "Phenomenon intense / widespread — Mist/ Fog",
-        "Phenomenon weak or localized — Mist/ Fog",
-        "Earlier than usual timing — Mist/ Fog",
-        "Later than usual timing — Mist/ Fog",
-        "Absent when normally expected — Mist/ Fog"
+        "Phenomenon intense / widespread - Mist/ Fog",
+        "Phenomenon weak or localized - Mist/ Fog",
+        "Earlier than usual timing - Mist/ Fog",
+        "Later than usual timing - Mist/ Fog",
+        "Absent when normally expected - Mist/ Fog"
       ]
     },
     "02-ATM-ODR": {
@@ -1053,11 +1053,11 @@
       "behaviours": [
         "Observable pattern: Atmospheric/earth/rain smell (pronounced)",
         "Observable pattern: Atmospheric/earth/rain smell (reduced or absent)",
-        "Phenomenon intense / widespread — Atmospheric/earth/rain smell",
-        "Phenomenon weak or localized — Atmospheric/earth/rain smell",
-        "Earlier than usual timing — Atmospheric/earth/rain smell",
-        "Later than usual timing — Atmospheric/earth/rain smell",
-        "Absent when normally expected — Atmospheric/earth/rain smell"
+        "Phenomenon intense / widespread - Atmospheric/earth/rain smell",
+        "Phenomenon weak or localized - Atmospheric/earth/rain smell",
+        "Earlier than usual timing - Atmospheric/earth/rain smell",
+        "Later than usual timing - Atmospheric/earth/rain smell",
+        "Absent when normally expected - Atmospheric/earth/rain smell"
       ]
     },
     "02-ATM-OTH": {
@@ -1067,11 +1067,11 @@
       "behaviours": [
         "Observable pattern: Any Other (specify) (pronounced)",
         "Observable pattern: Any Other (specify) (reduced or absent)",
-        "Phenomenon intense / widespread — Any Other (specify)",
-        "Phenomenon weak or localized — Any Other (specify)",
-        "Earlier than usual timing — Any Other (specify)",
-        "Later than usual timing — Any Other (specify)",
-        "Absent when normally expected — Any Other (specify)"
+        "Phenomenon intense / widespread - Any Other (specify)",
+        "Phenomenon weak or localized - Any Other (specify)",
+        "Earlier than usual timing - Any Other (specify)",
+        "Later than usual timing - Any Other (specify)",
+        "Absent when normally expected - Any Other (specify)"
       ]
     },
     "02-ATM-PRS": {
@@ -1081,11 +1081,11 @@
       "behaviours": [
         "Observable pattern: Perceived air-pressure/pressure-related signs (pronounced)",
         "Observable pattern: Perceived air-pressure/pressure-related signs (reduced or absent)",
-        "Phenomenon intense / widespread — Perceived air-pressure/pressure-related signs",
-        "Phenomenon weak or localized — Perceived air-pressure/pressure-related signs",
-        "Earlier than usual timing — Perceived air-pressure/pressure-related signs",
-        "Later than usual timing — Perceived air-pressure/pressure-related signs",
-        "Absent when normally expected — Perceived air-pressure/pressure-related signs"
+        "Phenomenon intense / widespread - Perceived air-pressure/pressure-related signs",
+        "Phenomenon weak or localized - Perceived air-pressure/pressure-related signs",
+        "Earlier than usual timing - Perceived air-pressure/pressure-related signs",
+        "Later than usual timing - Perceived air-pressure/pressure-related signs",
+        "Absent when normally expected - Perceived air-pressure/pressure-related signs"
       ]
     },
     "02-ATM-RAN": {
@@ -1095,11 +1095,11 @@
       "behaviours": [
         "Observable pattern: Rain (itself) (pronounced)",
         "Observable pattern: Rain (itself) (reduced or absent)",
-        "Phenomenon intense / widespread — Rain (itself)",
-        "Phenomenon weak or localized — Rain (itself)",
-        "Earlier than usual timing — Rain (itself)",
-        "Later than usual timing — Rain (itself)",
-        "Absent when normally expected — Rain (itself)"
+        "Phenomenon intense / widespread - Rain (itself)",
+        "Phenomenon weak or localized - Rain (itself)",
+        "Earlier than usual timing - Rain (itself)",
+        "Later than usual timing - Rain (itself)",
+        "Absent when normally expected - Rain (itself)"
       ]
     },
     "02-ATM-RBW": {
@@ -1109,11 +1109,11 @@
       "behaviours": [
         "Observable pattern: Rainbow (pronounced)",
         "Observable pattern: Rainbow (reduced or absent)",
-        "Phenomenon intense / widespread — Rainbow",
-        "Phenomenon weak or localized — Rainbow",
-        "Earlier than usual timing — Rainbow",
-        "Later than usual timing — Rainbow",
-        "Absent when normally expected — Rainbow"
+        "Phenomenon intense / widespread - Rainbow",
+        "Phenomenon weak or localized - Rainbow",
+        "Earlier than usual timing - Rainbow",
+        "Later than usual timing - Rainbow",
+        "Absent when normally expected - Rainbow"
       ]
     },
     "02-ATM-RCS": {
@@ -1123,11 +1123,11 @@
       "behaviours": [
         "Observable pattern: Signs associated with ending of rainfall (pronounced)",
         "Observable pattern: Signs associated with ending of rainfall (reduced or absent)",
-        "Phenomenon intense / widespread — Signs associated with ending of rainfall",
-        "Phenomenon weak or localized — Signs associated with ending of rainfall",
-        "Earlier than usual timing — Signs associated with ending of rainfall",
-        "Later than usual timing — Signs associated with ending of rainfall",
-        "Absent when normally expected — Signs associated with ending of rainfall"
+        "Phenomenon intense / widespread - Signs associated with ending of rainfall",
+        "Phenomenon weak or localized - Signs associated with ending of rainfall",
+        "Earlier than usual timing - Signs associated with ending of rainfall",
+        "Later than usual timing - Signs associated with ending of rainfall",
+        "Absent when normally expected - Signs associated with ending of rainfall"
       ]
     },
     "02-ATM-RID": {
@@ -1137,11 +1137,11 @@
       "behaviours": [
         "Observable pattern: Local signs of heavy/light or spatially uneven rainfall (pronounced)",
         "Observable pattern: Local signs of heavy/light or spatially uneven rainfall (reduced or absent)",
-        "Phenomenon intense / widespread — Local signs of heavy/light or spatially uneven rainfall",
-        "Phenomenon weak or localized — Local signs of heavy/light or spatially uneven rainfall",
-        "Earlier than usual timing — Local signs of heavy/light or spatially uneven rainfall",
-        "Later than usual timing — Local signs of heavy/light or spatially uneven rainfall",
-        "Absent when normally expected — Local signs of heavy/light or spatially uneven rainfall"
+        "Phenomenon intense / widespread - Local signs of heavy/light or spatially uneven rainfall",
+        "Phenomenon weak or localized - Local signs of heavy/light or spatially uneven rainfall",
+        "Earlier than usual timing - Local signs of heavy/light or spatially uneven rainfall",
+        "Later than usual timing - Local signs of heavy/light or spatially uneven rainfall",
+        "Absent when normally expected - Local signs of heavy/light or spatially uneven rainfall"
       ]
     },
     "02-ATM-RNS": {
@@ -1151,11 +1151,11 @@
       "behaviours": [
         "Observable pattern: Rain onset/cessation/intensity pattern (pronounced)",
         "Observable pattern: Rain onset/cessation/intensity pattern (reduced or absent)",
-        "Phenomenon intense / widespread — Rain onset/cessation/intensity pattern",
-        "Phenomenon weak or localized — Rain onset/cessation/intensity pattern",
-        "Earlier than usual timing — Rain onset/cessation/intensity pattern",
-        "Later than usual timing — Rain onset/cessation/intensity pattern",
-        "Absent when normally expected — Rain onset/cessation/intensity pattern"
+        "Phenomenon intense / widespread - Rain onset/cessation/intensity pattern",
+        "Phenomenon weak or localized - Rain onset/cessation/intensity pattern",
+        "Earlier than usual timing - Rain onset/cessation/intensity pattern",
+        "Later than usual timing - Rain onset/cessation/intensity pattern",
+        "Absent when normally expected - Rain onset/cessation/intensity pattern"
       ]
     },
     "02-ATM-ROS": {
@@ -1165,11 +1165,11 @@
       "behaviours": [
         "Observable pattern: Observed signs immediately preceding rainfall (pronounced)",
         "Observable pattern: Observed signs immediately preceding rainfall (reduced or absent)",
-        "Phenomenon intense / widespread — Observed signs immediately preceding rainfall",
-        "Phenomenon weak or localized — Observed signs immediately preceding rainfall",
-        "Earlier than usual timing — Observed signs immediately preceding rainfall",
-        "Later than usual timing — Observed signs immediately preceding rainfall",
-        "Absent when normally expected — Observed signs immediately preceding rainfall"
+        "Phenomenon intense / widespread - Observed signs immediately preceding rainfall",
+        "Phenomenon weak or localized - Observed signs immediately preceding rainfall",
+        "Earlier than usual timing - Observed signs immediately preceding rainfall",
+        "Later than usual timing - Observed signs immediately preceding rainfall",
+        "Absent when normally expected - Observed signs immediately preceding rainfall"
       ]
     },
     "02-ATM-SDR": {
@@ -1179,11 +1179,11 @@
       "behaviours": [
         "Observable pattern: Soil cracking, hardness or dryness (pronounced)",
         "Observable pattern: Soil cracking, hardness or dryness (reduced or absent)",
-        "Phenomenon intense / widespread — Soil cracking, hardness or dryness",
-        "Phenomenon weak or localized — Soil cracking, hardness or dryness",
-        "Earlier than usual timing — Soil cracking, hardness or dryness",
-        "Later than usual timing — Soil cracking, hardness or dryness",
-        "Absent when normally expected — Soil cracking, hardness or dryness"
+        "Phenomenon intense / widespread - Soil cracking, hardness or dryness",
+        "Phenomenon weak or localized - Soil cracking, hardness or dryness",
+        "Earlier than usual timing - Soil cracking, hardness or dryness",
+        "Later than usual timing - Soil cracking, hardness or dryness",
+        "Absent when normally expected - Soil cracking, hardness or dryness"
       ]
     },
     "02-ATM-SKC": {
@@ -1193,11 +1193,11 @@
       "behaviours": [
         "Observable pattern: Colour/appearance of the sky (pronounced)",
         "Observable pattern: Colour/appearance of the sky (reduced or absent)",
-        "Phenomenon intense / widespread — Colour/appearance of the sky",
-        "Phenomenon weak or localized — Colour/appearance of the sky",
-        "Earlier than usual timing — Colour/appearance of the sky",
-        "Later than usual timing — Colour/appearance of the sky",
-        "Absent when normally expected — Colour/appearance of the sky"
+        "Phenomenon intense / widespread - Colour/appearance of the sky",
+        "Phenomenon weak or localized - Colour/appearance of the sky",
+        "Earlier than usual timing - Colour/appearance of the sky",
+        "Later than usual timing - Colour/appearance of the sky",
+        "Absent when normally expected - Colour/appearance of the sky"
       ]
     },
     "02-ATM-SND": {
@@ -1207,11 +1207,11 @@
       "behaviours": [
         "Observable pattern: Sound cues (breaking waves, distant thunder patterns) (pronounced)",
         "Observable pattern: Sound cues (breaking waves, distant thunder patterns) (reduced or absent)",
-        "Phenomenon intense / widespread — Sound cues (breaking waves, distant thunder patterns)",
-        "Phenomenon weak or localized — Sound cues (breaking waves, distant thunder patterns)",
-        "Earlier than usual timing — Sound cues (breaking waves, distant thunder patterns)",
-        "Later than usual timing — Sound cues (breaking waves, distant thunder patterns)",
-        "Absent when normally expected — Sound cues (breaking waves, distant thunder patterns)"
+        "Phenomenon intense / widespread - Sound cues (breaking waves, distant thunder patterns)",
+        "Phenomenon weak or localized - Sound cues (breaking waves, distant thunder patterns)",
+        "Earlier than usual timing - Sound cues (breaking waves, distant thunder patterns)",
+        "Later than usual timing - Sound cues (breaking waves, distant thunder patterns)",
+        "Absent when normally expected - Sound cues (breaking waves, distant thunder patterns)"
       ]
     },
     "02-ATM-SOI": {
@@ -1221,11 +1221,11 @@
       "behaviours": [
         "Observable pattern: Soil moisture / structure / smell (beyond dust) (pronounced)",
         "Observable pattern: Soil moisture / structure / smell (beyond dust) (reduced or absent)",
-        "Phenomenon intense / widespread — Soil moisture / structure / smell (beyond dust)",
-        "Phenomenon weak or localized — Soil moisture / structure / smell (beyond dust)",
-        "Earlier than usual timing — Soil moisture / structure / smell (beyond dust)",
-        "Later than usual timing — Soil moisture / structure / smell (beyond dust)",
-        "Absent when normally expected — Soil moisture / structure / smell (beyond dust)"
+        "Phenomenon intense / widespread - Soil moisture / structure / smell (beyond dust)",
+        "Phenomenon weak or localized - Soil moisture / structure / smell (beyond dust)",
+        "Earlier than usual timing - Soil moisture / structure / smell (beyond dust)",
+        "Later than usual timing - Soil moisture / structure / smell (beyond dust)",
+        "Absent when normally expected - Soil moisture / structure / smell (beyond dust)"
       ]
     },
     "02-ATM-SOL": {
@@ -1235,11 +1235,11 @@
       "behaviours": [
         "Observable pattern: Soil/ Dust (pronounced)",
         "Observable pattern: Soil/ Dust (reduced or absent)",
-        "Phenomenon intense / widespread — Soil/ Dust",
-        "Phenomenon weak or localized — Soil/ Dust",
-        "Earlier than usual timing — Soil/ Dust",
-        "Later than usual timing — Soil/ Dust",
-        "Absent when normally expected — Soil/ Dust"
+        "Phenomenon intense / widespread - Soil/ Dust",
+        "Phenomenon weak or localized - Soil/ Dust",
+        "Earlier than usual timing - Soil/ Dust",
+        "Later than usual timing - Soil/ Dust",
+        "Absent when normally expected - Soil/ Dust"
       ]
     },
     "02-ATM-SUN": {
@@ -1249,11 +1249,11 @@
       "behaviours": [
         "Observable pattern: Sun intensity/heating without wind (pronounced)",
         "Observable pattern: Sun intensity/heating without wind (reduced or absent)",
-        "Phenomenon intense / widespread — Sun intensity/heating without wind",
-        "Phenomenon weak or localized — Sun intensity/heating without wind",
-        "Earlier than usual timing — Sun intensity/heating without wind",
-        "Later than usual timing — Sun intensity/heating without wind",
-        "Absent when normally expected — Sun intensity/heating without wind"
+        "Phenomenon intense / widespread - Sun intensity/heating without wind",
+        "Phenomenon weak or localized - Sun intensity/heating without wind",
+        "Earlier than usual timing - Sun intensity/heating without wind",
+        "Later than usual timing - Sun intensity/heating without wind",
+        "Absent when normally expected - Sun intensity/heating without wind"
       ]
     },
     "02-ATM-TDP": {
@@ -1263,11 +1263,11 @@
       "behaviours": [
         "Observable pattern: Unusual daytime heat/cold (pronounced)",
         "Observable pattern: Unusual daytime heat/cold (reduced or absent)",
-        "Phenomenon intense / widespread — Unusual daytime heat/cold",
-        "Phenomenon weak or localized — Unusual daytime heat/cold",
-        "Earlier than usual timing — Unusual daytime heat/cold",
-        "Later than usual timing — Unusual daytime heat/cold",
-        "Absent when normally expected — Unusual daytime heat/cold"
+        "Phenomenon intense / widespread - Unusual daytime heat/cold",
+        "Phenomenon weak or localized - Unusual daytime heat/cold",
+        "Earlier than usual timing - Unusual daytime heat/cold",
+        "Later than usual timing - Unusual daytime heat/cold",
+        "Absent when normally expected - Unusual daytime heat/cold"
       ]
     },
     "02-ATM-THU": {
@@ -1277,11 +1277,11 @@
       "behaviours": [
         "Observable pattern: Thunder (pronounced)",
         "Observable pattern: Thunder (reduced or absent)",
-        "Phenomenon intense / widespread — Thunder",
-        "Phenomenon weak or localized — Thunder",
-        "Earlier than usual timing — Thunder",
-        "Later than usual timing — Thunder",
-        "Absent when normally expected — Thunder"
+        "Phenomenon intense / widespread - Thunder",
+        "Phenomenon weak or localized - Thunder",
+        "Earlier than usual timing - Thunder",
+        "Later than usual timing - Thunder",
+        "Absent when normally expected - Thunder"
       ]
     },
     "02-ATM-TMP": {
@@ -1291,11 +1291,11 @@
       "behaviours": [
         "Observable pattern: Temperature (pronounced)",
         "Observable pattern: Temperature (reduced or absent)",
-        "Phenomenon intense / widespread — Temperature",
-        "Phenomenon weak or localized — Temperature",
-        "Earlier than usual timing — Temperature",
-        "Later than usual timing — Temperature",
-        "Absent when normally expected — Temperature"
+        "Phenomenon intense / widespread - Temperature",
+        "Phenomenon weak or localized - Temperature",
+        "Earlier than usual timing - Temperature",
+        "Later than usual timing - Temperature",
+        "Absent when normally expected - Temperature"
       ]
     },
     "02-ATM-TNP": {
@@ -1305,11 +1305,11 @@
       "behaviours": [
         "Observable pattern: Unusual night warmth/cold (pronounced)",
         "Observable pattern: Unusual night warmth/cold (reduced or absent)",
-        "Phenomenon intense / widespread — Unusual night warmth/cold",
-        "Phenomenon weak or localized — Unusual night warmth/cold",
-        "Earlier than usual timing — Unusual night warmth/cold",
-        "Later than usual timing — Unusual night warmth/cold",
-        "Absent when normally expected — Unusual night warmth/cold"
+        "Phenomenon intense / widespread - Unusual night warmth/cold",
+        "Phenomenon weak or localized - Unusual night warmth/cold",
+        "Earlier than usual timing - Unusual night warmth/cold",
+        "Later than usual timing - Unusual night warmth/cold",
+        "Absent when normally expected - Unusual night warmth/cold"
       ]
     },
     "02-ATM-TYP": {
@@ -1319,11 +1319,11 @@
       "behaviours": [
         "Observable pattern: Specific cloud form/type (pronounced)",
         "Observable pattern: Specific cloud form/type (reduced or absent)",
-        "Phenomenon intense / widespread — Specific cloud form/type",
-        "Phenomenon weak or localized — Specific cloud form/type",
-        "Earlier than usual timing — Specific cloud form/type",
-        "Later than usual timing — Specific cloud form/type",
-        "Absent when normally expected — Specific cloud form/type"
+        "Phenomenon intense / widespread - Specific cloud form/type",
+        "Phenomenon weak or localized - Specific cloud form/type",
+        "Earlier than usual timing - Specific cloud form/type",
+        "Later than usual timing - Specific cloud form/type",
+        "Absent when normally expected - Specific cloud form/type"
       ]
     },
     "02-ATM-VOL": {
@@ -1333,11 +1333,11 @@
       "behaviours": [
         "Observable pattern: Volcanic plume / mountain-top cloud cap (pronounced)",
         "Observable pattern: Volcanic plume / mountain-top cloud cap (reduced or absent)",
-        "Phenomenon intense / widespread — Volcanic plume / mountain-top cloud cap",
-        "Phenomenon weak or localized — Volcanic plume / mountain-top cloud cap",
-        "Earlier than usual timing — Volcanic plume / mountain-top cloud cap",
-        "Later than usual timing — Volcanic plume / mountain-top cloud cap",
-        "Absent when normally expected — Volcanic plume / mountain-top cloud cap"
+        "Phenomenon intense / widespread - Volcanic plume / mountain-top cloud cap",
+        "Phenomenon weak or localized - Volcanic plume / mountain-top cloud cap",
+        "Earlier than usual timing - Volcanic plume / mountain-top cloud cap",
+        "Later than usual timing - Volcanic plume / mountain-top cloud cap",
+        "Absent when normally expected - Volcanic plume / mountain-top cloud cap"
       ]
     },
     "02-ATM-WCI": {
@@ -1347,11 +1347,11 @@
       "behaviours": [
         "Observable pattern: Rotating, swirling or circulating wind (pronounced)",
         "Observable pattern: Rotating, swirling or circulating wind (reduced or absent)",
-        "Phenomenon intense / widespread — Rotating, swirling or circulating wind",
-        "Phenomenon weak or localized — Rotating, swirling or circulating wind",
-        "Earlier than usual timing — Rotating, swirling or circulating wind",
-        "Later than usual timing — Rotating, swirling or circulating wind",
-        "Absent when normally expected — Rotating, swirling or circulating wind"
+        "Phenomenon intense / widespread - Rotating, swirling or circulating wind",
+        "Phenomenon weak or localized - Rotating, swirling or circulating wind",
+        "Earlier than usual timing - Rotating, swirling or circulating wind",
+        "Later than usual timing - Rotating, swirling or circulating wind",
+        "Absent when normally expected - Rotating, swirling or circulating wind"
       ]
     },
     "02-ATM-WDR": {
@@ -1361,11 +1361,11 @@
       "behaviours": [
         "Observable pattern: Direction from which wind comes (pronounced)",
         "Observable pattern: Direction from which wind comes (reduced or absent)",
-        "Phenomenon intense / widespread — Direction from which wind comes",
-        "Phenomenon weak or localized — Direction from which wind comes",
-        "Earlier than usual timing — Direction from which wind comes",
-        "Later than usual timing — Direction from which wind comes",
-        "Absent when normally expected — Direction from which wind comes"
+        "Phenomenon intense / widespread - Direction from which wind comes",
+        "Phenomenon weak or localized - Direction from which wind comes",
+        "Earlier than usual timing - Direction from which wind comes",
+        "Later than usual timing - Direction from which wind comes",
+        "Absent when normally expected - Direction from which wind comes"
       ]
     },
     "02-ATM-WHL": {
@@ -1375,11 +1375,11 @@
       "behaviours": [
         "Observable pattern: Whirlwind / dust devil / swirling wind (pronounced)",
         "Observable pattern: Whirlwind / dust devil / swirling wind (reduced or absent)",
-        "Phenomenon intense / widespread — Whirlwind / dust devil / swirling wind",
-        "Phenomenon weak or localized — Whirlwind / dust devil / swirling wind",
-        "Earlier than usual timing — Whirlwind / dust devil / swirling wind",
-        "Later than usual timing — Whirlwind / dust devil / swirling wind",
-        "Absent when normally expected — Whirlwind / dust devil / swirling wind"
+        "Phenomenon intense / widespread - Whirlwind / dust devil / swirling wind",
+        "Phenomenon weak or localized - Whirlwind / dust devil / swirling wind",
+        "Earlier than usual timing - Whirlwind / dust devil / swirling wind",
+        "Later than usual timing - Whirlwind / dust devil / swirling wind",
+        "Absent when normally expected - Whirlwind / dust devil / swirling wind"
       ]
     },
     "02-ATM-WND": {
@@ -1400,11 +1400,11 @@
       "behaviours": [
         "Observable pattern: Weak, moderate, strong or changing wind strength (pronounced)",
         "Observable pattern: Weak, moderate, strong or changing wind strength (reduced or absent)",
-        "Phenomenon intense / widespread — Weak, moderate, strong or changing wind strength",
-        "Phenomenon weak or localized — Weak, moderate, strong or changing wind strength",
-        "Earlier than usual timing — Weak, moderate, strong or changing wind strength",
-        "Later than usual timing — Weak, moderate, strong or changing wind strength",
-        "Absent when normally expected — Weak, moderate, strong or changing wind strength"
+        "Phenomenon intense / widespread - Weak, moderate, strong or changing wind strength",
+        "Phenomenon weak or localized - Weak, moderate, strong or changing wind strength",
+        "Earlier than usual timing - Weak, moderate, strong or changing wind strength",
+        "Later than usual timing - Weak, moderate, strong or changing wind strength",
+        "Absent when normally expected - Weak, moderate, strong or changing wind strength"
       ]
     },
     "03-AST-ALG": {
@@ -1414,11 +1414,11 @@
       "behaviours": [
         "Observable pattern: Star/constellation alignment or configuration (pronounced)",
         "Observable pattern: Star/constellation alignment or configuration (reduced or absent)",
-        "Celestial sign clear and pronounced — Star/constellation alignment or configuration",
-        "Sign faint or obscured — Star/constellation alignment or configuration",
-        "Earlier than usual appearance — Star/constellation alignment or configuration",
-        "Later than usual appearance — Star/constellation alignment or configuration",
-        "Sign not seen when expected — Star/constellation alignment or configuration"
+        "Celestial sign clear and pronounced - Star/constellation alignment or configuration",
+        "Sign faint or obscured - Star/constellation alignment or configuration",
+        "Earlier than usual appearance - Star/constellation alignment or configuration",
+        "Later than usual appearance - Star/constellation alignment or configuration",
+        "Sign not seen when expected - Star/constellation alignment or configuration"
       ]
     },
     "03-AST-ARC": {
@@ -1428,11 +1428,11 @@
       "behaviours": [
         "Observable pattern: Moon crescent orientation/shape (pronounced)",
         "Observable pattern: Moon crescent orientation/shape (reduced or absent)",
-        "Celestial sign clear and pronounced — Moon crescent orientation/shape",
-        "Sign faint or obscured — Moon crescent orientation/shape",
-        "Earlier than usual appearance — Moon crescent orientation/shape",
-        "Later than usual appearance — Moon crescent orientation/shape",
-        "Sign not seen when expected — Moon crescent orientation/shape"
+        "Celestial sign clear and pronounced - Moon crescent orientation/shape",
+        "Sign faint or obscured - Moon crescent orientation/shape",
+        "Earlier than usual appearance - Moon crescent orientation/shape",
+        "Later than usual appearance - Moon crescent orientation/shape",
+        "Sign not seen when expected - Moon crescent orientation/shape"
       ]
     },
     "03-AST-CLR": {
@@ -1442,11 +1442,11 @@
       "behaviours": [
         "Observable pattern: Sun/moon/star colour or brightness (pronounced)",
         "Observable pattern: Sun/moon/star colour or brightness (reduced or absent)",
-        "Celestial sign clear and pronounced — Sun/moon/star colour or brightness",
-        "Sign faint or obscured — Sun/moon/star colour or brightness",
-        "Earlier than usual appearance — Sun/moon/star colour or brightness",
-        "Later than usual appearance — Sun/moon/star colour or brightness",
-        "Sign not seen when expected — Sun/moon/star colour or brightness"
+        "Celestial sign clear and pronounced - Sun/moon/star colour or brightness",
+        "Sign faint or obscured - Sun/moon/star colour or brightness",
+        "Earlier than usual appearance - Sun/moon/star colour or brightness",
+        "Later than usual appearance - Sun/moon/star colour or brightness",
+        "Sign not seen when expected - Sun/moon/star colour or brightness"
       ]
     },
     "03-AST-CST": {
@@ -1456,11 +1456,11 @@
       "behaviours": [
         "Observable pattern: Pattern/configuration of constellations (pronounced)",
         "Observable pattern: Pattern/configuration of constellations (reduced or absent)",
-        "Celestial sign clear and pronounced — Pattern/configuration of constellations",
-        "Sign faint or obscured — Pattern/configuration of constellations",
-        "Earlier than usual appearance — Pattern/configuration of constellations",
-        "Later than usual appearance — Pattern/configuration of constellations",
-        "Sign not seen when expected — Pattern/configuration of constellations"
+        "Celestial sign clear and pronounced - Pattern/configuration of constellations",
+        "Sign faint or obscured - Pattern/configuration of constellations",
+        "Earlier than usual appearance - Pattern/configuration of constellations",
+        "Later than usual appearance - Pattern/configuration of constellations",
+        "Sign not seen when expected - Pattern/configuration of constellations"
       ]
     },
     "03-AST-HAL": {
@@ -1470,11 +1470,11 @@
       "behaviours": [
         "Observable pattern: Solar/lunar halo or ring (pronounced)",
         "Observable pattern: Solar/lunar halo or ring (reduced or absent)",
-        "Celestial sign clear and pronounced — Solar/lunar halo or ring",
-        "Sign faint or obscured — Solar/lunar halo or ring",
-        "Earlier than usual appearance — Solar/lunar halo or ring",
-        "Later than usual appearance — Solar/lunar halo or ring",
-        "Sign not seen when expected — Solar/lunar halo or ring"
+        "Celestial sign clear and pronounced - Solar/lunar halo or ring",
+        "Sign faint or obscured - Solar/lunar halo or ring",
+        "Earlier than usual appearance - Solar/lunar halo or ring",
+        "Later than usual appearance - Solar/lunar halo or ring",
+        "Sign not seen when expected - Solar/lunar halo or ring"
       ]
     },
     "03-AST-MCL": {
@@ -1484,11 +1484,11 @@
       "behaviours": [
         "Observable pattern: Moon colour/brightness (pronounced)",
         "Observable pattern: Moon colour/brightness (reduced or absent)",
-        "Celestial sign clear and pronounced — Moon colour/brightness",
-        "Sign faint or obscured — Moon colour/brightness",
-        "Earlier than usual appearance — Moon colour/brightness",
-        "Later than usual appearance — Moon colour/brightness",
-        "Sign not seen when expected — Moon colour/brightness"
+        "Celestial sign clear and pronounced - Moon colour/brightness",
+        "Sign faint or obscured - Moon colour/brightness",
+        "Earlier than usual appearance - Moon colour/brightness",
+        "Later than usual appearance - Moon colour/brightness",
+        "Sign not seen when expected - Moon colour/brightness"
       ]
     },
     "03-AST-MHL": {
@@ -1498,11 +1498,11 @@
       "behaviours": [
         "Observable pattern: Halo/ring around the moon (pronounced)",
         "Observable pattern: Halo/ring around the moon (reduced or absent)",
-        "Celestial sign clear and pronounced — Halo/ring around the moon",
-        "Sign faint or obscured — Halo/ring around the moon",
-        "Earlier than usual appearance — Halo/ring around the moon",
-        "Later than usual appearance — Halo/ring around the moon",
-        "Sign not seen when expected — Halo/ring around the moon"
+        "Celestial sign clear and pronounced - Halo/ring around the moon",
+        "Sign faint or obscured - Halo/ring around the moon",
+        "Earlier than usual appearance - Halo/ring around the moon",
+        "Later than usual appearance - Halo/ring around the moon",
+        "Sign not seen when expected - Halo/ring around the moon"
       ]
     },
     "03-AST-MMV": {
@@ -1512,11 +1512,11 @@
       "behaviours": [
         "Observable pattern: Apparent position or movement of moon (pronounced)",
         "Observable pattern: Apparent position or movement of moon (reduced or absent)",
-        "Celestial sign clear and pronounced — Apparent position or movement of moon",
-        "Sign faint or obscured — Apparent position or movement of moon",
-        "Earlier than usual appearance — Apparent position or movement of moon",
-        "Later than usual appearance — Apparent position or movement of moon",
-        "Sign not seen when expected — Apparent position or movement of moon"
+        "Celestial sign clear and pronounced - Apparent position or movement of moon",
+        "Sign faint or obscured - Apparent position or movement of moon",
+        "Earlier than usual appearance - Apparent position or movement of moon",
+        "Later than usual appearance - Apparent position or movement of moon",
+        "Sign not seen when expected - Apparent position or movement of moon"
       ]
     },
     "03-AST-MON": {
@@ -1526,11 +1526,11 @@
       "behaviours": [
         "Observable pattern: Moon (pronounced)",
         "Observable pattern: Moon (reduced or absent)",
-        "Celestial sign clear and pronounced — Moon",
-        "Sign faint or obscured — Moon",
-        "Earlier than usual appearance — Moon",
-        "Later than usual appearance — Moon",
-        "Sign not seen when expected — Moon"
+        "Celestial sign clear and pronounced - Moon",
+        "Sign faint or obscured - Moon",
+        "Earlier than usual appearance - Moon",
+        "Later than usual appearance - Moon",
+        "Sign not seen when expected - Moon"
       ]
     },
     "03-AST-MOV": {
@@ -1540,11 +1540,11 @@
       "behaviours": [
         "Observable pattern: Apparent movement/position of stars or moon (pronounced)",
         "Observable pattern: Apparent movement/position of stars or moon (reduced or absent)",
-        "Celestial sign clear and pronounced — Apparent movement/position of stars or moon",
-        "Sign faint or obscured — Apparent movement/position of stars or moon",
-        "Earlier than usual appearance — Apparent movement/position of stars or moon",
-        "Later than usual appearance — Apparent movement/position of stars or moon",
-        "Sign not seen when expected — Apparent movement/position of stars or moon"
+        "Celestial sign clear and pronounced - Apparent movement/position of stars or moon",
+        "Sign faint or obscured - Apparent movement/position of stars or moon",
+        "Earlier than usual appearance - Apparent movement/position of stars or moon",
+        "Later than usual appearance - Apparent movement/position of stars or moon",
+        "Sign not seen when expected - Apparent movement/position of stars or moon"
       ]
     },
     "03-AST-MPH": {
@@ -1554,11 +1554,11 @@
       "behaviours": [
         "Observable pattern: New/full/crescent/dark moon phase (pronounced)",
         "Observable pattern: New/full/crescent/dark moon phase (reduced or absent)",
-        "Celestial sign clear and pronounced — New/full/crescent/dark moon phase",
-        "Sign faint or obscured — New/full/crescent/dark moon phase",
-        "Earlier than usual appearance — New/full/crescent/dark moon phase",
-        "Later than usual appearance — New/full/crescent/dark moon phase",
-        "Sign not seen when expected — New/full/crescent/dark moon phase"
+        "Celestial sign clear and pronounced - New/full/crescent/dark moon phase",
+        "Sign faint or obscured - New/full/crescent/dark moon phase",
+        "Earlier than usual appearance - New/full/crescent/dark moon phase",
+        "Later than usual appearance - New/full/crescent/dark moon phase",
+        "Sign not seen when expected - New/full/crescent/dark moon phase"
       ]
     },
     "03-AST-MSH": {
@@ -1568,11 +1568,11 @@
       "behaviours": [
         "Observable pattern: Crescent shape or orientation (pronounced)",
         "Observable pattern: Crescent shape or orientation (reduced or absent)",
-        "Celestial sign clear and pronounced — Crescent shape or orientation",
-        "Sign faint or obscured — Crescent shape or orientation",
-        "Earlier than usual appearance — Crescent shape or orientation",
-        "Later than usual appearance — Crescent shape or orientation",
-        "Sign not seen when expected — Crescent shape or orientation"
+        "Celestial sign clear and pronounced - Crescent shape or orientation",
+        "Sign faint or obscured - Crescent shape or orientation",
+        "Earlier than usual appearance - Crescent shape or orientation",
+        "Later than usual appearance - Crescent shape or orientation",
+        "Sign not seen when expected - Crescent shape or orientation"
       ]
     },
     "03-AST-OTH": {
@@ -1582,11 +1582,11 @@
       "behaviours": [
         "Observable pattern: Any Other (specify) (pronounced)",
         "Observable pattern: Any Other (specify) (reduced or absent)",
-        "Celestial sign clear and pronounced — Any Other (specify)",
-        "Sign faint or obscured — Any Other (specify)",
-        "Earlier than usual appearance — Any Other (specify)",
-        "Later than usual appearance — Any Other (specify)",
-        "Sign not seen when expected — Any Other (specify)"
+        "Celestial sign clear and pronounced - Any Other (specify)",
+        "Sign faint or obscured - Any Other (specify)",
+        "Earlier than usual appearance - Any Other (specify)",
+        "Later than usual appearance - Any Other (specify)",
+        "Sign not seen when expected - Any Other (specify)"
       ]
     },
     "03-AST-PLN": {
@@ -1596,11 +1596,11 @@
       "behaviours": [
         "Observable pattern: Planets (pronounced)",
         "Observable pattern: Planets (reduced or absent)",
-        "Celestial sign clear and pronounced — Planets",
-        "Sign faint or obscured — Planets",
-        "Earlier than usual appearance — Planets",
-        "Later than usual appearance — Planets",
-        "Sign not seen when expected — Planets"
+        "Celestial sign clear and pronounced - Planets",
+        "Sign faint or obscured - Planets",
+        "Earlier than usual appearance - Planets",
+        "Later than usual appearance - Planets",
+        "Sign not seen when expected - Planets"
       ]
     },
     "03-AST-SBR": {
@@ -1610,11 +1610,11 @@
       "behaviours": [
         "Observable pattern: Size/brightness of stars (pronounced)",
         "Observable pattern: Size/brightness of stars (reduced or absent)",
-        "Celestial sign clear and pronounced — Size/brightness of stars",
-        "Sign faint or obscured — Size/brightness of stars",
-        "Earlier than usual appearance — Size/brightness of stars",
-        "Later than usual appearance — Size/brightness of stars",
-        "Sign not seen when expected — Size/brightness of stars"
+        "Celestial sign clear and pronounced - Size/brightness of stars",
+        "Sign faint or obscured - Size/brightness of stars",
+        "Earlier than usual appearance - Size/brightness of stars",
+        "Later than usual appearance - Size/brightness of stars",
+        "Sign not seen when expected - Size/brightness of stars"
       ]
     },
     "03-AST-SKY": {
@@ -1624,11 +1624,11 @@
       "behaviours": [
         "Observable pattern: Sky (pronounced)",
         "Observable pattern: Sky (reduced or absent)",
-        "Celestial sign clear and pronounced — Sky",
-        "Sign faint or obscured — Sky",
-        "Earlier than usual appearance — Sky",
-        "Later than usual appearance — Sky",
-        "Sign not seen when expected — Sky"
+        "Celestial sign clear and pronounced - Sky",
+        "Sign faint or obscured - Sky",
+        "Earlier than usual appearance - Sky",
+        "Later than usual appearance - Sky",
+        "Sign not seen when expected - Sky"
       ]
     },
     "03-AST-SMA": {
@@ -1638,11 +1638,11 @@
       "behaviours": [
         "Observable pattern: Alignment/relationship between stars and moon (pronounced)",
         "Observable pattern: Alignment/relationship between stars and moon (reduced or absent)",
-        "Celestial sign clear and pronounced — Alignment/relationship between stars and moon",
-        "Sign faint or obscured — Alignment/relationship between stars and moon",
-        "Earlier than usual appearance — Alignment/relationship between stars and moon",
-        "Later than usual appearance — Alignment/relationship between stars and moon",
-        "Sign not seen when expected — Alignment/relationship between stars and moon"
+        "Celestial sign clear and pronounced - Alignment/relationship between stars and moon",
+        "Sign faint or obscured - Alignment/relationship between stars and moon",
+        "Earlier than usual appearance - Alignment/relationship between stars and moon",
+        "Later than usual appearance - Alignment/relationship between stars and moon",
+        "Sign not seen when expected - Alignment/relationship between stars and moon"
       ]
     },
     "03-AST-SMV": {
@@ -1652,11 +1652,11 @@
       "behaviours": [
         "Observable pattern: Apparent movement or position of stars (pronounced)",
         "Observable pattern: Apparent movement or position of stars (reduced or absent)",
-        "Celestial sign clear and pronounced — Apparent movement or position of stars",
-        "Sign faint or obscured — Apparent movement or position of stars",
-        "Earlier than usual appearance — Apparent movement or position of stars",
-        "Later than usual appearance — Apparent movement or position of stars",
-        "Sign not seen when expected — Apparent movement or position of stars"
+        "Celestial sign clear and pronounced - Apparent movement or position of stars",
+        "Sign faint or obscured - Apparent movement or position of stars",
+        "Earlier than usual appearance - Apparent movement or position of stars",
+        "Later than usual appearance - Apparent movement or position of stars",
+        "Sign not seen when expected - Apparent movement or position of stars"
       ]
     },
     "03-AST-SRS": {
@@ -1666,11 +1666,11 @@
       "behaviours": [
         "Observable pattern: Sunrise/sunset colour, brightness, haze or timing (pronounced)",
         "Observable pattern: Sunrise/sunset colour, brightness, haze or timing (reduced or absent)",
-        "Celestial sign clear and pronounced — Sunrise/sunset colour, brightness, haze or timing",
-        "Sign faint or obscured — Sunrise/sunset colour, brightness, haze or timing",
-        "Earlier than usual appearance — Sunrise/sunset colour, brightness, haze or timing",
-        "Later than usual appearance — Sunrise/sunset colour, brightness, haze or timing",
-        "Sign not seen when expected — Sunrise/sunset colour, brightness, haze or timing"
+        "Celestial sign clear and pronounced - Sunrise/sunset colour, brightness, haze or timing",
+        "Sign faint or obscured - Sunrise/sunset colour, brightness, haze or timing",
+        "Earlier than usual appearance - Sunrise/sunset colour, brightness, haze or timing",
+        "Later than usual appearance - Sunrise/sunset colour, brightness, haze or timing",
+        "Sign not seen when expected - Sunrise/sunset colour, brightness, haze or timing"
       ]
     },
     "03-AST-SSG": {
@@ -1680,11 +1680,11 @@
       "behaviours": [
         "Observable pattern: Recognized star group used as a seasonal marker (pronounced)",
         "Observable pattern: Recognized star group used as a seasonal marker (reduced or absent)",
-        "Celestial sign clear and pronounced — Recognized star group used as a seasonal marker",
-        "Sign faint or obscured — Recognized star group used as a seasonal marker",
-        "Earlier than usual appearance — Recognized star group used as a seasonal marker",
-        "Later than usual appearance — Recognized star group used as a seasonal marker",
-        "Sign not seen when expected — Recognized star group used as a seasonal marker"
+        "Celestial sign clear and pronounced - Recognized star group used as a seasonal marker",
+        "Sign faint or obscured - Recognized star group used as a seasonal marker",
+        "Earlier than usual appearance - Recognized star group used as a seasonal marker",
+        "Later than usual appearance - Recognized star group used as a seasonal marker",
+        "Sign not seen when expected - Recognized star group used as a seasonal marker"
       ]
     },
     "03-AST-STR": {
@@ -1704,11 +1704,11 @@
       "behaviours": [
         "Observable pattern: Sun (pronounced)",
         "Observable pattern: Sun (reduced or absent)",
-        "Celestial sign clear and pronounced — Sun",
-        "Sign faint or obscured — Sun",
-        "Earlier than usual appearance — Sun",
-        "Later than usual appearance — Sun",
-        "Sign not seen when expected — Sun"
+        "Celestial sign clear and pronounced - Sun",
+        "Sign faint or obscured - Sun",
+        "Earlier than usual appearance - Sun",
+        "Later than usual appearance - Sun",
+        "Sign not seen when expected - Sun"
       ]
     },
     "04-HYD-CLR": {
@@ -1718,11 +1718,11 @@
       "behaviours": [
         "Observable pattern: Water colour/clarity/turbidity (pronounced)",
         "Observable pattern: Water colour/clarity/turbidity (reduced or absent)",
-        "Water signal stronger than usual — Water colour/clarity/turbidity",
-        "Water signal weaker than usual — Water colour/clarity/turbidity",
-        "Change earlier than seasonal norm — Water colour/clarity/turbidity",
-        "Change later than seasonal norm — Water colour/clarity/turbidity",
-        "No change when change is usual — Water colour/clarity/turbidity"
+        "Water signal stronger than usual - Water colour/clarity/turbidity",
+        "Water signal weaker than usual - Water colour/clarity/turbidity",
+        "Change earlier than seasonal norm - Water colour/clarity/turbidity",
+        "Change later than seasonal norm - Water colour/clarity/turbidity",
+        "No change when change is usual - Water colour/clarity/turbidity"
       ]
     },
     "04-HYD-FLW": {
@@ -1743,11 +1743,11 @@
       "behaviours": [
         "Observable pattern: Foam (pronounced)",
         "Observable pattern: Foam (reduced or absent)",
-        "Water signal stronger than usual — Foam",
-        "Water signal weaker than usual — Foam",
-        "Change earlier than seasonal norm — Foam",
-        "Change later than seasonal norm — Foam",
-        "No change when change is usual — Foam"
+        "Water signal stronger than usual - Foam",
+        "Water signal weaker than usual - Foam",
+        "Change earlier than seasonal norm - Foam",
+        "Change later than seasonal norm - Foam",
+        "No change when change is usual - Foam"
       ]
     },
     "04-HYD-KLP": {
@@ -1757,11 +1757,11 @@
       "behaviours": [
         "Observable pattern: Kelp / seaweed movement (pronounced)",
         "Observable pattern: Kelp / seaweed movement (reduced or absent)",
-        "Water signal stronger than usual — Kelp / seaweed movement",
-        "Water signal weaker than usual — Kelp / seaweed movement",
-        "Change earlier than seasonal norm — Kelp / seaweed movement",
-        "Change later than seasonal norm — Kelp / seaweed movement",
-        "No change when change is usual — Kelp / seaweed movement"
+        "Water signal stronger than usual - Kelp / seaweed movement",
+        "Water signal weaker than usual - Kelp / seaweed movement",
+        "Change earlier than seasonal norm - Kelp / seaweed movement",
+        "Change later than seasonal norm - Kelp / seaweed movement",
+        "No change when change is usual - Kelp / seaweed movement"
       ]
     },
     "04-HYD-LKC": {
@@ -1771,11 +1771,11 @@
       "behaviours": [
         "Observable pattern: Lake surface/state associated with weather (pronounced)",
         "Observable pattern: Lake surface/state associated with weather (reduced or absent)",
-        "Water signal stronger than usual — Lake surface/state associated with weather",
-        "Water signal weaker than usual — Lake surface/state associated with weather",
-        "Change earlier than seasonal norm — Lake surface/state associated with weather",
-        "Change later than seasonal norm — Lake surface/state associated with weather",
-        "No change when change is usual — Lake surface/state associated with weather"
+        "Water signal stronger than usual - Lake surface/state associated with weather",
+        "Water signal weaker than usual - Lake surface/state associated with weather",
+        "Change earlier than seasonal norm - Lake surface/state associated with weather",
+        "Change later than seasonal norm - Lake surface/state associated with weather",
+        "No change when change is usual - Lake surface/state associated with weather"
       ]
     },
     "04-HYD-LVL": {
@@ -1796,11 +1796,11 @@
       "behaviours": [
         "Observable pattern: Any Other (specify) (pronounced)",
         "Observable pattern: Any Other (specify) (reduced or absent)",
-        "Water signal stronger than usual — Any Other (specify)",
-        "Water signal weaker than usual — Any Other (specify)",
-        "Change earlier than seasonal norm — Any Other (specify)",
-        "Change later than seasonal norm — Any Other (specify)",
-        "No change when change is usual — Any Other (specify)"
+        "Water signal stronger than usual - Any Other (specify)",
+        "Water signal weaker than usual - Any Other (specify)",
+        "Change earlier than seasonal norm - Any Other (specify)",
+        "Change later than seasonal norm - Any Other (specify)",
+        "No change when change is usual - Any Other (specify)"
       ]
     },
     "04-HYD-RFL": {
@@ -1810,11 +1810,11 @@
       "behaviours": [
         "Observable pattern: Flow strength, direction or unusual current (pronounced)",
         "Observable pattern: Flow strength, direction or unusual current (reduced or absent)",
-        "Water signal stronger than usual — Flow strength, direction or unusual current",
-        "Water signal weaker than usual — Flow strength, direction or unusual current",
-        "Change earlier than seasonal norm — Flow strength, direction or unusual current",
-        "Change later than seasonal norm — Flow strength, direction or unusual current",
-        "No change when change is usual — Flow strength, direction or unusual current"
+        "Water signal stronger than usual - Flow strength, direction or unusual current",
+        "Water signal weaker than usual - Flow strength, direction or unusual current",
+        "Change earlier than seasonal norm - Flow strength, direction or unusual current",
+        "Change later than seasonal norm - Flow strength, direction or unusual current",
+        "No change when change is usual - Flow strength, direction or unusual current"
       ]
     },
     "04-HYD-SPD": {
@@ -1824,11 +1824,11 @@
       "behaviours": [
         "Observable pattern: Increase/decrease or appearance of springs (pronounced)",
         "Observable pattern: Increase/decrease or appearance of springs (reduced or absent)",
-        "Water signal stronger than usual — Increase/decrease or appearance of springs",
-        "Water signal weaker than usual — Increase/decrease or appearance of springs",
-        "Change earlier than seasonal norm — Increase/decrease or appearance of springs",
-        "Change later than seasonal norm — Increase/decrease or appearance of springs",
-        "No change when change is usual — Increase/decrease or appearance of springs"
+        "Water signal stronger than usual - Increase/decrease or appearance of springs",
+        "Water signal weaker than usual - Increase/decrease or appearance of springs",
+        "Change earlier than seasonal norm - Increase/decrease or appearance of springs",
+        "Change later than seasonal norm - Increase/decrease or appearance of springs",
+        "No change when change is usual - Increase/decrease or appearance of springs"
       ]
     },
     "04-HYD-SWL": {
@@ -1838,11 +1838,11 @@
       "behaviours": [
         "Observable pattern: Swell / anomalous waves / tide patterns (pronounced)",
         "Observable pattern: Swell / anomalous waves / tide patterns (reduced or absent)",
-        "Water signal stronger than usual — Swell / anomalous waves / tide patterns",
-        "Water signal weaker than usual — Swell / anomalous waves / tide patterns",
-        "Change earlier than seasonal norm — Swell / anomalous waves / tide patterns",
-        "Change later than seasonal norm — Swell / anomalous waves / tide patterns",
-        "No change when change is usual — Swell / anomalous waves / tide patterns"
+        "Water signal stronger than usual - Swell / anomalous waves / tide patterns",
+        "Water signal weaker than usual - Swell / anomalous waves / tide patterns",
+        "Change earlier than seasonal norm - Swell / anomalous waves / tide patterns",
+        "Change later than seasonal norm - Swell / anomalous waves / tide patterns",
+        "No change when change is usual - Swell / anomalous waves / tide patterns"
       ]
     },
     "04-HYD-SWP": {
@@ -1852,11 +1852,11 @@
       "behaviours": [
         "Observable pattern: Rise/fall or unusual condition of wetlands/swamps (pronounced)",
         "Observable pattern: Rise/fall or unusual condition of wetlands/swamps (reduced or absent)",
-        "Water signal stronger than usual — Rise/fall or unusual condition of wetlands/swamps",
-        "Water signal weaker than usual — Rise/fall or unusual condition of wetlands/swamps",
-        "Change earlier than seasonal norm — Rise/fall or unusual condition of wetlands/swamps",
-        "Change later than seasonal norm — Rise/fall or unusual condition of wetlands/swamps",
-        "No change when change is usual — Rise/fall or unusual condition of wetlands/swamps"
+        "Water signal stronger than usual - Rise/fall or unusual condition of wetlands/swamps",
+        "Water signal weaker than usual - Rise/fall or unusual condition of wetlands/swamps",
+        "Change earlier than seasonal norm - Rise/fall or unusual condition of wetlands/swamps",
+        "Change later than seasonal norm - Rise/fall or unusual condition of wetlands/swamps",
+        "No change when change is usual - Rise/fall or unusual condition of wetlands/swamps"
       ]
     },
     "04-HYD-TID": {
@@ -1866,11 +1866,11 @@
       "behaviours": [
         "Observable pattern: Tide/sea-level or coastal water movement (pronounced)",
         "Observable pattern: Tide/sea-level or coastal water movement (reduced or absent)",
-        "Water signal stronger than usual — Tide/sea-level or coastal water movement",
-        "Water signal weaker than usual — Tide/sea-level or coastal water movement",
-        "Change earlier than seasonal norm — Tide/sea-level or coastal water movement",
-        "Change later than seasonal norm — Tide/sea-level or coastal water movement",
-        "No change when change is usual — Tide/sea-level or coastal water movement"
+        "Water signal stronger than usual - Tide/sea-level or coastal water movement",
+        "Water signal weaker than usual - Tide/sea-level or coastal water movement",
+        "Change earlier than seasonal norm - Tide/sea-level or coastal water movement",
+        "Change later than seasonal norm - Tide/sea-level or coastal water movement",
+        "No change when change is usual - Tide/sea-level or coastal water movement"
       ]
     },
     "04-HYD-WAV": {
@@ -1880,11 +1880,11 @@
       "behaviours": [
         "Observable pattern: Waves (pronounced)",
         "Observable pattern: Waves (reduced or absent)",
-        "Water signal stronger than usual — Waves",
-        "Water signal weaker than usual — Waves",
-        "Change earlier than seasonal norm — Waves",
-        "Change later than seasonal norm — Waves",
-        "No change when change is usual — Waves"
+        "Water signal stronger than usual - Waves",
+        "Water signal weaker than usual - Waves",
+        "Change earlier than seasonal norm - Waves",
+        "Change later than seasonal norm - Waves",
+        "No change when change is usual - Waves"
       ]
     },
     "04-HYD-WCL": {
@@ -1894,11 +1894,11 @@
       "behaviours": [
         "Observable pattern: Colour, clarity or turbidity (pronounced)",
         "Observable pattern: Colour, clarity or turbidity (reduced or absent)",
-        "Water signal stronger than usual — Colour, clarity or turbidity",
-        "Water signal weaker than usual — Colour, clarity or turbidity",
-        "Change earlier than seasonal norm — Colour, clarity or turbidity",
-        "Change later than seasonal norm — Colour, clarity or turbidity",
-        "No change when change is usual — Colour, clarity or turbidity"
+        "Water signal stronger than usual - Colour, clarity or turbidity",
+        "Water signal weaker than usual - Colour, clarity or turbidity",
+        "Change earlier than seasonal norm - Colour, clarity or turbidity",
+        "Change later than seasonal norm - Colour, clarity or turbidity",
+        "No change when change is usual - Colour, clarity or turbidity"
       ]
     },
     "04-HYD-WLV": {
@@ -1908,11 +1908,11 @@
       "behaviours": [
         "Observable pattern: Rise/fall of rivers, lakes, ponds or swamps (pronounced)",
         "Observable pattern: Rise/fall of rivers, lakes, ponds or swamps (reduced or absent)",
-        "Water signal stronger than usual — Rise/fall of rivers, lakes, ponds or swamps",
-        "Water signal weaker than usual — Rise/fall of rivers, lakes, ponds or swamps",
-        "Change earlier than seasonal norm — Rise/fall of rivers, lakes, ponds or swamps",
-        "Change later than seasonal norm — Rise/fall of rivers, lakes, ponds or swamps",
-        "No change when change is usual — Rise/fall of rivers, lakes, ponds or swamps"
+        "Water signal stronger than usual - Rise/fall of rivers, lakes, ponds or swamps",
+        "Water signal weaker than usual - Rise/fall of rivers, lakes, ponds or swamps",
+        "Change earlier than seasonal norm - Rise/fall of rivers, lakes, ponds or swamps",
+        "Change later than seasonal norm - Rise/fall of rivers, lakes, ponds or swamps",
+        "No change when change is usual - Rise/fall of rivers, lakes, ponds or swamps"
       ]
     },
     "04-HYD-WSB": {
@@ -1922,11 +1922,11 @@
       "behaviours": [
         "Observable pattern: Ripples, foam, surface movement (pronounced)",
         "Observable pattern: Ripples, foam, surface movement (reduced or absent)",
-        "Water signal stronger than usual — Ripples, foam, surface movement",
-        "Water signal weaker than usual — Ripples, foam, surface movement",
-        "Change earlier than seasonal norm — Ripples, foam, surface movement",
-        "Change later than seasonal norm — Ripples, foam, surface movement",
-        "No change when change is usual — Ripples, foam, surface movement"
+        "Water signal stronger than usual - Ripples, foam, surface movement",
+        "Water signal weaker than usual - Ripples, foam, surface movement",
+        "Change earlier than seasonal norm - Ripples, foam, surface movement",
+        "Change later than seasonal norm - Ripples, foam, surface movement",
+        "No change when change is usual - Ripples, foam, surface movement"
       ]
     },
     "04-HYD-WTR": {
@@ -1936,11 +1936,11 @@
       "behaviours": [
         "Observable pattern: Water surface appearance/ripples/currents (pronounced)",
         "Observable pattern: Water surface appearance/ripples/currents (reduced or absent)",
-        "Water signal stronger than usual — Water surface appearance/ripples/currents",
-        "Water signal weaker than usual — Water surface appearance/ripples/currents",
-        "Change earlier than seasonal norm — Water surface appearance/ripples/currents",
-        "Change later than seasonal norm — Water surface appearance/ripples/currents",
-        "No change when change is usual — Water surface appearance/ripples/currents"
+        "Water signal stronger than usual - Water surface appearance/ripples/currents",
+        "Water signal weaker than usual - Water surface appearance/ripples/currents",
+        "Change earlier than seasonal norm - Water surface appearance/ripples/currents",
+        "Change later than seasonal norm - Water surface appearance/ripples/currents",
+        "No change when change is usual - Water surface appearance/ripples/currents"
       ]
     },
     "05-RIT-DIV": {
@@ -1950,10 +1950,10 @@
       "behaviours": [
         "Observable pattern: Other divination/ritual signs (pronounced)",
         "Observable pattern: Other divination/ritual signs (reduced or absent)",
-        "Ritual sign affirmed by knowledgeable holders — Other divination/ritual signs",
-        "Sign contested or not interpreted — Other divination/ritual signs",
-        "Timing earlier than ritual calendar — Other divination/ritual signs",
-        "Timing later than ritual calendar — Other divination/ritual signs"
+        "Ritual sign affirmed by knowledgeable holders - Other divination/ritual signs",
+        "Sign contested or not interpreted - Other divination/ritual signs",
+        "Timing earlier than ritual calendar - Other divination/ritual signs",
+        "Timing later than ritual calendar - Other divination/ritual signs"
       ]
     },
     "05-RIT-DRM": {
@@ -1972,10 +1972,10 @@
       "behaviours": [
         "Observable pattern: (He-goat) Intestines (pronounced)",
         "Observable pattern: (He-goat) Intestines (reduced or absent)",
-        "Ritual sign affirmed by knowledgeable holders — (He-goat) Intestines",
-        "Sign contested or not interpreted — (He-goat) Intestines",
-        "Timing earlier than ritual calendar — (He-goat) Intestines",
-        "Timing later than ritual calendar — (He-goat) Intestines"
+        "Ritual sign affirmed by knowledgeable holders - (He-goat) Intestines",
+        "Sign contested or not interpreted - (He-goat) Intestines",
+        "Timing earlier than ritual calendar - (He-goat) Intestines",
+        "Timing later than ritual calendar - (He-goat) Intestines"
       ]
     },
     "05-RIT-ISC": {
@@ -1985,10 +1985,10 @@
       "behaviours": [
         "Observable pattern: Traditional calendar/time markers used to anticipate seasons (pronounced)",
         "Observable pattern: Traditional calendar/time markers used to anticipate seasons (reduced or absent)",
-        "Ritual sign affirmed by knowledgeable holders — Traditional calendar/time markers used to anticipate seasons",
-        "Sign contested or not interpreted — Traditional calendar/time markers used to anticipate seasons",
-        "Timing earlier than ritual calendar — Traditional calendar/time markers used to anticipate seasons",
-        "Timing later than ritual calendar — Traditional calendar/time markers used to anticipate seasons"
+        "Ritual sign affirmed by knowledgeable holders - Traditional calendar/time markers used to anticipate seasons",
+        "Sign contested or not interpreted - Traditional calendar/time markers used to anticipate seasons",
+        "Timing earlier than ritual calendar - Traditional calendar/time markers used to anticipate seasons",
+        "Timing later than ritual calendar - Traditional calendar/time markers used to anticipate seasons"
       ]
     },
     "05-RIT-LIV": {
@@ -1998,10 +1998,10 @@
       "behaviours": [
         "Observable pattern: Liver (pronounced)",
         "Observable pattern: Liver (reduced or absent)",
-        "Ritual sign affirmed by knowledgeable holders — Liver",
-        "Sign contested or not interpreted — Liver",
-        "Timing earlier than ritual calendar — Liver",
-        "Timing later than ritual calendar — Liver"
+        "Ritual sign affirmed by knowledgeable holders - Liver",
+        "Sign contested or not interpreted - Liver",
+        "Timing earlier than ritual calendar - Liver",
+        "Timing later than ritual calendar - Liver"
       ]
     },
     "05-RIT-OTH": {
@@ -2011,10 +2011,10 @@
       "behaviours": [
         "Observable pattern: Any Other (specify) (pronounced)",
         "Observable pattern: Any Other (specify) (reduced or absent)",
-        "Ritual sign affirmed by knowledgeable holders — Any Other (specify)",
-        "Sign contested or not interpreted — Any Other (specify)",
-        "Timing earlier than ritual calendar — Any Other (specify)",
-        "Timing later than ritual calendar — Any Other (specify)"
+        "Ritual sign affirmed by knowledgeable holders - Any Other (specify)",
+        "Sign contested or not interpreted - Any Other (specify)",
+        "Timing earlier than ritual calendar - Any Other (specify)",
+        "Timing later than ritual calendar - Any Other (specify)"
       ]
     },
     "05-RIT-SPL": {
@@ -2024,10 +2024,10 @@
       "behaviours": [
         "Observable pattern: Spleen (pronounced)",
         "Observable pattern: Spleen (reduced or absent)",
-        "Ritual sign affirmed by knowledgeable holders — Spleen",
-        "Sign contested or not interpreted — Spleen",
-        "Timing earlier than ritual calendar — Spleen",
-        "Timing later than ritual calendar — Spleen"
+        "Ritual sign affirmed by knowledgeable holders - Spleen",
+        "Sign contested or not interpreted - Spleen",
+        "Timing earlier than ritual calendar - Spleen",
+        "Timing later than ritual calendar - Spleen"
       ]
     },
     "05-RIT-VIS": {
@@ -2037,10 +2037,10 @@
       "behaviours": [
         "Observable pattern: Other animal viscera/body organs (pronounced)",
         "Observable pattern: Other animal viscera/body organs (reduced or absent)",
-        "Ritual sign affirmed by knowledgeable holders — Other animal viscera/body organs",
-        "Sign contested or not interpreted — Other animal viscera/body organs",
-        "Timing earlier than ritual calendar — Other animal viscera/body organs",
-        "Timing later than ritual calendar — Other animal viscera/body organs"
+        "Ritual sign affirmed by knowledgeable holders - Other animal viscera/body organs",
+        "Sign contested or not interpreted - Other animal viscera/body organs",
+        "Timing earlier than ritual calendar - Other animal viscera/body organs",
+        "Timing later than ritual calendar - Other animal viscera/body organs"
       ]
     },
     "06-SEN-BRH": {
@@ -2050,11 +2050,11 @@
       "behaviours": [
         "Observable pattern: Breathing/sinus/body-air sensitivity (pronounced)",
         "Observable pattern: Breathing/sinus/body-air sensitivity (reduced or absent)",
-        "Sensation intense among several observers — Breathing/sinus/body-air sensitivity",
-        "Sensation mild or isolated — Breathing/sinus/body-air sensitivity",
-        "Felt earlier than usual — Breathing/sinus/body-air sensitivity",
-        "Felt later than usual — Breathing/sinus/body-air sensitivity",
-        "Not felt when usually present — Breathing/sinus/body-air sensitivity"
+        "Sensation intense among several observers - Breathing/sinus/body-air sensitivity",
+        "Sensation mild or isolated - Breathing/sinus/body-air sensitivity",
+        "Felt earlier than usual - Breathing/sinus/body-air sensitivity",
+        "Felt later than usual - Breathing/sinus/body-air sensitivity",
+        "Not felt when usually present - Breathing/sinus/body-air sensitivity"
       ]
     },
     "06-SEN-BTP": {
@@ -2064,11 +2064,11 @@
       "behaviours": [
         "Observable pattern: Feeling unusually hot/cold at particular times (pronounced)",
         "Observable pattern: Feeling unusually hot/cold at particular times (reduced or absent)",
-        "Sensation intense among several observers — Feeling unusually hot/cold at particular times",
-        "Sensation mild or isolated — Feeling unusually hot/cold at particular times",
-        "Felt earlier than usual — Feeling unusually hot/cold at particular times",
-        "Felt later than usual — Feeling unusually hot/cold at particular times",
-        "Not felt when usually present — Feeling unusually hot/cold at particular times"
+        "Sensation intense among several observers - Feeling unusually hot/cold at particular times",
+        "Sensation mild or isolated - Feeling unusually hot/cold at particular times",
+        "Felt earlier than usual - Feeling unusually hot/cold at particular times",
+        "Felt later than usual - Feeling unusually hot/cold at particular times",
+        "Not felt when usually present - Feeling unusually hot/cold at particular times"
       ]
     },
     "06-SEN-EYE": {
@@ -2078,11 +2078,11 @@
       "behaviours": [
         "Observable pattern: Eye / head sensations (twitching, headache) (pronounced)",
         "Observable pattern: Eye / head sensations (twitching, headache) (reduced or absent)",
-        "Sensation intense among several observers — Eye / head sensations (twitching, headache)",
-        "Sensation mild or isolated — Eye / head sensations (twitching, headache)",
-        "Felt earlier than usual — Eye / head sensations (twitching, headache)",
-        "Felt later than usual — Eye / head sensations (twitching, headache)",
-        "Not felt when usually present — Eye / head sensations (twitching, headache)"
+        "Sensation intense among several observers - Eye / head sensations (twitching, headache)",
+        "Sensation mild or isolated - Eye / head sensations (twitching, headache)",
+        "Felt earlier than usual - Eye / head sensations (twitching, headache)",
+        "Felt later than usual - Eye / head sensations (twitching, headache)",
+        "Not felt when usually present - Eye / head sensations (twitching, headache)"
       ]
     },
     "06-SEN-HUM": {
@@ -2092,11 +2092,11 @@
       "behaviours": [
         "Observable pattern: Humidity (body sensitivity) (pronounced)",
         "Observable pattern: Humidity (body sensitivity) (reduced or absent)",
-        "Sensation intense among several observers — Humidity (body sensitivity)",
-        "Sensation mild or isolated — Humidity (body sensitivity)",
-        "Felt earlier than usual — Humidity (body sensitivity)",
-        "Felt later than usual — Humidity (body sensitivity)",
-        "Not felt when usually present — Humidity (body sensitivity)"
+        "Sensation intense among several observers - Humidity (body sensitivity)",
+        "Sensation mild or isolated - Humidity (body sensitivity)",
+        "Felt earlier than usual - Humidity (body sensitivity)",
+        "Felt later than usual - Humidity (body sensitivity)",
+        "Not felt when usually present - Humidity (body sensitivity)"
       ]
     },
     "06-SEN-OTH": {
@@ -2106,11 +2106,11 @@
       "behaviours": [
         "Observable pattern: Any Other (specify) (pronounced)",
         "Observable pattern: Any Other (specify) (reduced or absent)",
-        "Sensation intense among several observers — Any Other (specify)",
-        "Sensation mild or isolated — Any Other (specify)",
-        "Felt earlier than usual — Any Other (specify)",
-        "Felt later than usual — Any Other (specify)",
-        "Not felt when usually present — Any Other (specify)"
+        "Sensation intense among several observers - Any Other (specify)",
+        "Sensation mild or isolated - Any Other (specify)",
+        "Felt earlier than usual - Any Other (specify)",
+        "Felt later than usual - Any Other (specify)",
+        "Not felt when usually present - Any Other (specify)"
       ]
     },
     "06-SEN-PAI": {
@@ -2130,11 +2130,11 @@
       "behaviours": [
         "Observable pattern: Skin sensation/itching/dryness linked to weather (pronounced)",
         "Observable pattern: Skin sensation/itching/dryness linked to weather (reduced or absent)",
-        "Sensation intense among several observers — Skin sensation/itching/dryness linked to weather",
-        "Sensation mild or isolated — Skin sensation/itching/dryness linked to weather",
-        "Felt earlier than usual — Skin sensation/itching/dryness linked to weather",
-        "Felt later than usual — Skin sensation/itching/dryness linked to weather",
-        "Not felt when usually present — Skin sensation/itching/dryness linked to weather"
+        "Sensation intense among several observers - Skin sensation/itching/dryness linked to weather",
+        "Sensation mild or isolated - Skin sensation/itching/dryness linked to weather",
+        "Felt earlier than usual - Skin sensation/itching/dryness linked to weather",
+        "Felt later than usual - Skin sensation/itching/dryness linked to weather",
+        "Not felt when usually present - Skin sensation/itching/dryness linked to weather"
       ]
     },
     "06-SEN-SML": {
@@ -2153,25 +2153,25 @@
       "behaviours": [
         "Observable pattern: Temperature (body sensitivity) (pronounced)",
         "Observable pattern: Temperature (body sensitivity) (reduced or absent)",
-        "Sensation intense among several observers — Temperature (body sensitivity)",
-        "Sensation mild or isolated — Temperature (body sensitivity)",
-        "Felt earlier than usual — Temperature (body sensitivity)",
-        "Felt later than usual — Temperature (body sensitivity)",
-        "Not felt when usually present — Temperature (body sensitivity)"
+        "Sensation intense among several observers - Temperature (body sensitivity)",
+        "Sensation mild or isolated - Temperature (body sensitivity)",
+        "Felt earlier than usual - Temperature (body sensitivity)",
+        "Felt later than usual - Temperature (body sensitivity)",
+        "Not felt when usually present - Temperature (body sensitivity)"
       ]
     },
     "01-PLT-PST": {
       "type_line": "01-PLT",
       "sub_type": "PST",
-      "classification_label": "Pasture/ browse/ fodder condition (greenness, regrowth, drying) — vegetation condition",
+      "classification_label": "Pasture/ browse/ fodder condition (greenness, regrowth, drying) - vegetation condition",
       "behaviours": [
-        "Observable pattern: Pasture/ browse/ fodder condition (greenness, regrowth, drying) — vegetation ... (pronounced)",
-        "Observable pattern: Pasture/ browse/ fodder condition (greenness, regrowth, drying) — vegetation ... (reduced or absent)",
-        "Sign more pronounced than usual (high vigour) — Pasture/ browse/ fodder condition (greenness, regrowth, drying) — vegetation ...",
-        "Sign weaker than usual — Pasture/ browse/ fodder condition (greenness, regrowth, drying) — vegetation ...",
-        "Sign observed earlier than normal calendar — Pasture/ browse/ fodder condition (greenness, regrowth, drying) — vegetation ...",
-        "Sign observed later than normal calendar — Pasture/ browse/ fodder condition (greenness, regrowth, drying) — vegetation ...",
-        "Sign absent when normally expected — Pasture/ browse/ fodder condition (greenness, regrowth, drying) — vegetation ..."
+        "Observable pattern: Pasture/ browse/ fodder condition (greenness, regrowth, drying) - vegetation ... (pronounced)",
+        "Observable pattern: Pasture/ browse/ fodder condition (greenness, regrowth, drying) - vegetation ... (reduced or absent)",
+        "Sign more pronounced than usual (high vigour) - Pasture/ browse/ fodder condition (greenness, regrowth, drying) - vegetation ...",
+        "Sign weaker than usual - Pasture/ browse/ fodder condition (greenness, regrowth, drying) - vegetation ...",
+        "Sign observed earlier than normal calendar - Pasture/ browse/ fodder condition (greenness, regrowth, drying) - vegetation ...",
+        "Sign observed later than normal calendar - Pasture/ browse/ fodder condition (greenness, regrowth, drying) - vegetation ...",
+        "Sign absent when normally expected - Pasture/ browse/ fodder condition (greenness, regrowth, drying) - vegetation ..."
       ]
     },
     "01-PLT-CRP": {
@@ -2181,11 +2181,11 @@
       "behaviours": [
         "Observable pattern: Crop condition/ crop stress (wilting, yellowing, early tasselling) (pronounced)",
         "Observable pattern: Crop condition/ crop stress (wilting, yellowing, early tasselling) (reduced or absent)",
-        "Sign more pronounced than usual (high vigour) — Crop condition/ crop stress (wilting, yellowing, early tasselling)",
-        "Sign weaker than usual — Crop condition/ crop stress (wilting, yellowing, early tasselling)",
-        "Sign observed earlier than normal calendar — Crop condition/ crop stress (wilting, yellowing, early tasselling)",
-        "Sign observed later than normal calendar — Crop condition/ crop stress (wilting, yellowing, early tasselling)",
-        "Sign absent when normally expected — Crop condition/ crop stress (wilting, yellowing, early tasselling)"
+        "Sign more pronounced than usual (high vigour) - Crop condition/ crop stress (wilting, yellowing, early tasselling)",
+        "Sign weaker than usual - Crop condition/ crop stress (wilting, yellowing, early tasselling)",
+        "Sign observed earlier than normal calendar - Crop condition/ crop stress (wilting, yellowing, early tasselling)",
+        "Sign observed later than normal calendar - Crop condition/ crop stress (wilting, yellowing, early tasselling)",
+        "Sign absent when normally expected - Crop condition/ crop stress (wilting, yellowing, early tasselling)"
       ]
     }
   }

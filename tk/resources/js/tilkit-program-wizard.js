@@ -1076,7 +1076,7 @@ export function registerTilkitProgramWizard() {
             const site = this.mapSite;
             if (site && this.isStudyShapeLocked(site)) {
                 this.drawSavedStudyAreaOnLayer(site);
-                this.studyMapStatus = 'Study area saved. Click the centre marker for actions — use “Edit shape” in the popup to change corners.';
+                this.studyMapStatus = 'Study area saved. Click the centre marker for actions - use “Edit shape” in the popup to change corners.';
                 this.drawPeerSites();
                 return;
             }
@@ -1105,7 +1105,7 @@ export function registerTilkitProgramWizard() {
 
             if (this.studyPoints.length >= 3) {
                 L.polygon(latlngs, { color: '#0e7c86', fillOpacity: 0.15, weight: 2 }).addTo(this.studyLayer);
-                this.studyMapStatus = `${this.studyPoints.length} corners — ready to save.${removeHint}`;
+                this.studyMapStatus = `${this.studyPoints.length} corners - ready to save.${removeHint}`;
             } else if (this.studyPoints.length === 2) {
                 L.polyline(latlngs, { color: '#506274', dashArray: '4 4' }).addTo(this.studyLayer);
                 this.studyMapStatus = `Add one more corner, or clear and use a single pin.${removeHint}`;

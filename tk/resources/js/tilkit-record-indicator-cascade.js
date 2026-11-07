@@ -46,7 +46,7 @@ export function bootTilkitRecordIndicatorCascade(root = document) {
             value: o.value,
             label: o.label || o.value,
         }));
-        fillSelect(intensitySelect, options, options.length ? 'Choose intensity' : '—');
+        fillSelect(intensitySelect, options, options.length ? 'Choose intensity' : '-');
     };
 
     const showMessage = (lines) => {
@@ -60,19 +60,19 @@ export function bootTilkitRecordIndicatorCascade(root = document) {
 
     const resetDownstream = (from) => {
         if (from <= 1) {
-            fillSelect(typeSelect, [], '—');
+            fillSelect(typeSelect, [], '-');
         }
         if (from <= 2) {
-            fillSelect(subSelect, [], '—');
+            fillSelect(subSelect, [], '-');
         }
         if (from <= 3) {
-            fillSelect(specSelect, [], '—');
+            fillSelect(specSelect, [], '-');
         }
         if (from <= 4) {
-            fillSelect(behSelect, [], '—');
+            fillSelect(behSelect, [], '-');
         }
         if (from <= 4) {
-            fillSelect(intensitySelect, [], '—');
+            fillSelect(intensitySelect, [], '-');
         }
         if (from <= 5) {
             if (uidDisplay) {
@@ -183,7 +183,7 @@ export function bootTilkitRecordIndicatorCascade(root = document) {
         const indicators = payload.indicators.filter((i) => Number(i.indicator_code_id) === codeId);
         const options = indicators.map((i) => ({
             value: String(i.id),
-            label: `${i.indicator_uid} — ${i.local_name || 'Registered sign'}`,
+            label: `${i.indicator_uid} - ${i.local_name || 'Registered sign'}`,
             dataset: {
                 uid: i.indicator_uid,
                 wb: JSON.stringify(i.workbook || {}),

@@ -22,7 +22,7 @@ class IndicatorDictionaryController extends Controller
             }
         }
 
-        $title = 'TILKIT indicator dictionary — categories, codes, and workbook levels';
+        $title = 'TILKIT indicator dictionary - categories, codes, and workbook levels';
         $metaDescription = 'Browse the v4 indicator hierarchy: six categories, seven type lines, 157 legend codes, column A–D ownership, and domain-consistent behaviours.';
 
         return view('indicator-dictionary.index', compact('dictionary', 'weatherTool', 'title', 'metaDescription'));

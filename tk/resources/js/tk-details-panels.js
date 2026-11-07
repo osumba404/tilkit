@@ -28,6 +28,15 @@ export function initTkDetailsPanels(root = document) {
         }
 
         summary.addEventListener('click', (event) => {
+            if (
+                event.target instanceof Element
+                && event.target.closest(
+                    'button, a, input, select, textarea, [data-tk-stop-summary-toggle]',
+                )
+            ) {
+                return;
+            }
+
             if (! details.open) {
                 return;
             }

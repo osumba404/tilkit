@@ -43,7 +43,7 @@ class IndicatorHierarchyTest extends TestCase
         ]);
 
         $wb = $hierarchy->workbookDescriptor($code, 'Mutundu flowering tree');
-        $this->assertStringStartsWith('01 —', $wb['A']);
+        $this->assertStringStartsWith('01 -', $wb['A']);
         $this->assertStringContainsString('01-PLT', $wb['B']);
         $this->assertStringContainsString('FLW', $wb['B']);
         $this->assertStringContainsString('Flowering/blooming', $wb['B']);

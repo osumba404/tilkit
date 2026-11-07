@@ -429,78 +429,67 @@ class IndicatorMindmapGraph {
 
         if (showLegendHierarchy && (p.categories ?? []).length > 0) {
             const categories = p.categories;
-            if (!this.selectedCategoryKey) {
-                categories.forEach((cat) => {
-                    const id = `cat:${cat.key}`;
-                    addNode(id, `L1 · ${cat.key}\n${cat.label}\n(${cat.code_count} codes)`, 'category', {
-                        categoryKey: cat.key,
-                    });
-                    addEdge('pillar:code_categories', id);
+            categories.forEach((cat) => {
+                const catId = `cat:${cat.key}`;
+                const categoryExpanded = this.selectedCategoryKey === cat.key;
+                addNode(catId, `L1 · ${cat.key}\n${cat.label}\n(${cat.code_count} codes)`, 'category', {
+                    categoryKey: cat.key,
+                    active: categoryExpanded ? 'yes' : 'no',
                 });
-            } else {
-                const cat = categories.find((c) => c.key === this.selectedCategoryKey);
-                if (cat) {
-                    const catId = `cat:${cat.key}`;
-                    addNode(catId, `L1 · ${cat.key}\n${cat.label}\n(${cat.code_count} codes)`, 'category', {
+                addEdge('pillar:code_categories', catId);
+
+                if (!categoryExpanded) {
+                    return;
+                }
+
+                (cat.types ?? []).forEach((type) => {
+                    const typeId = `type:${cat.key}:${type.key}`;
+                    const typeExpanded = this.selectedTypeKey === type.key;
+                    addNode(typeId, `L2 · ${type.title}\n(${type.code_count} codes)`, 'type', {
+                        typeKey: type.key,
                         categoryKey: cat.key,
-                        active: 'yes',
+                        active: typeExpanded ? 'yes' : 'no',
+                        warn: type.key === '_non_standard' ? 'yes' : 'no',
                     });
-                    addEdge('pillar:code_categories', catId);
+                    addEdge(catId, typeId);
 
-                    if (!this.selectedTypeKey) {
-                        (cat.types ?? []).forEach((type) => {
-                            const id = `type:${type.key}`;
-                            addNode(id, `L2 · ${type.title}\n(${type.code_count} codes)`, 'type', {
-                                typeKey: type.key,
-                                categoryKey: cat.key,
-                            });
-                            addEdge(catId, id);
+                    if (!typeExpanded) {
+                        return;
+                    }
+
+                    (type.sub_types ?? []).forEach((sub) => {
+                        const subId = `sub:${cat.key}:${type.key}:${sub.key}`;
+                        addNode(subId, `L3 · ${sub.label}\n(${sub.code_count} codes)`, 'subtype', {
+                            typeKey: type.key,
+                            categoryKey: cat.key,
+                            subKey: sub.key,
+                            active: this.selectedSubKey === sub.key ? 'yes' : 'no',
                         });
-                    } else {
-                        const type = (cat.types ?? []).find((t) => t.key === this.selectedTypeKey);
-                        if (type) {
-                            const typeId = `type:${type.key}`;
-                            addNode(typeId, `L2 · ${type.title}\n(${type.code_count} codes)`, 'type', {
-                                typeKey: type.key,
-                                categoryKey: cat.key,
-                                active: 'yes',
-                                warn: type.key === '_non_standard' ? 'yes' : 'no',
-                            });
-                            addEdge(catId, typeId);
+                        addEdge(typeId, subId);
+                    });
 
-                            (type.sub_types ?? []).forEach((sub) => {
-                                const subId = `sub:${type.key}:${sub.key}`;
-                                addNode(subId, `L3 · ${sub.label}\n(${sub.code_count} codes)`, 'subtype', {
-                                    typeKey: type.key,
-                                    subKey: sub.key,
-                                    active: this.selectedSubKey === sub.key ? 'yes' : 'no',
-                                });
-                                addEdge(typeId, subId);
-                            });
-
-                            if (this.selectedSubKey) {
-                                const sub = type.sub_types?.find((s) => s.key === this.selectedSubKey);
-                                const codes = sub?.codes ?? [];
-                                const maxCodes = 20;
-                                codes.slice(0, maxCodes).forEach((row, i) => {
-                                    const id = `code:${row.code}:${i}`;
-                                    addNode(id, this.codeLabel(row), 'code');
-                                    addEdge(`sub:${type.key}:${this.selectedSubKey}`, id);
-                                });
-                                if (codes.length > maxCodes) {
-                                    const moreId = `code:more:${type.key}:${this.selectedSubKey}`;
-                                    addNode(
-                                        moreId,
-                                        `+ ${codes.length - maxCodes} more codes\n(open dictionary / legend below)`,
-                                        'blurb',
-                                    );
-                                    addEdge(`sub:${type.key}:${this.selectedSubKey}`, moreId);
-                                }
-                            }
+                    if (this.selectedSubKey) {
+                        const sub = type.sub_types?.find((s) => s.key === this.selectedSubKey);
+                        const codes = sub?.codes ?? [];
+                        const maxCodes = 20;
+                        const subParentId = `sub:${cat.key}:${type.key}:${this.selectedSubKey}`;
+                        codes.slice(0, maxCodes).forEach((row, i) => {
+                            const id = `code:${row.code}:${i}`;
+                            addNode(id, this.codeLabel(row), 'code');
+                            addEdge(subParentId, id);
+                        });
+                        if (codes.length > maxCodes) {
+                            const moreId = `code:more:${cat.key}:${type.key}:${this.selectedSubKey}`;
+                            addNode(
+                                moreId,
+                                `+ ${codes.length - maxCodes} more codes\n(open dictionary / legend below)`,
+                                'blurb',
+                            );
+                            addEdge(subParentId, moreId);
                         }
                     }
-                }
-            }
+                });
+            });
         } else if (showLegendHierarchy) {
             (p.code_types ?? []).forEach((type) => {
                 const id = `type:${type.key}`;
@@ -730,7 +719,8 @@ class IndicatorMindmapGraph {
         }
 
         if (kind === 'subtype') {
-            this.selectedSubKey = node.data('subKey');
+            const nextSub = node.data('subKey');
+            this.selectedSubKey = nextSub === this.selectedSubKey ? null : nextSub;
             this.rebuild();
         }
     }
@@ -842,11 +832,11 @@ function bindMindmapPanelControls(panel, graph) {
         try {
             const ok = await graph.copyImageToClipboard();
             setStatus(
-                ok ? 'Graph copied to clipboard — paste into docs or chat.' : 'Copy failed (try Download PNG or allow clipboard access).',
+                ok ? 'Graph copied to clipboard - paste into docs or chat.' : 'Copy failed (try Download PNG or allow clipboard access).',
                 !ok,
             );
         } catch {
-            setStatus('Copy failed — use Download PNG instead.', true);
+            setStatus('Copy failed - use Download PNG instead.', true);
         } finally {
             copyBtn.disabled = false;
         }
@@ -856,7 +846,7 @@ function bindMindmapPanelControls(panel, graph) {
         downloadBtn.disabled = true;
         try {
             const ok = await graph.downloadPng();
-            setStatus(ok ? 'PNG downloaded.' : 'Nothing to export — expand the legend branch first.', !ok);
+            setStatus(ok ? 'PNG downloaded.' : 'Nothing to export - expand the legend branch first.', !ok);
         } catch {
             setStatus('Download failed.', true);
         } finally {

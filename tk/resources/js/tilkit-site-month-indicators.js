@@ -105,7 +105,7 @@ function renderGrid(container, legend, monthLabels, assignments, activeMonth) {
                     html += `<p class="text-tk-muted"><span class="font-medium text-tk-ink">Column B:</span> <span class="font-mono">${wbB}</span></p>`;
                 }
                 if (behaviourCount) {
-                    html += `<p class="text-tk-muted">${behaviourCount} allowed column D behaviour(s) — see <a href="/dictionary" class="text-tk-accent underline" target="_blank" rel="noopener">dictionary</a>.</p>`;
+                    html += `<p class="text-tk-muted">${behaviourCount} allowed column D behaviour(s) - see <a href="/dictionary" class="text-tk-accent underline" target="_blank" rel="noopener">dictionary</a>.</p>`;
                 }
                 html += `</div></div></details>`;
             });
@@ -122,6 +122,12 @@ function renderGrid(container, legend, monthLabels, assignments, activeMonth) {
 
     container.querySelectorAll('[data-tk-stop-summary-toggle]').forEach((wrap) => {
         wrap.addEventListener('click', (event) => {
+            event.stopPropagation();
+        });
+    });
+
+    container.querySelectorAll('[data-tk-cat-select-all], [data-tk-cat-clear-all]').forEach((btn) => {
+        btn.addEventListener('click', (event) => {
             event.stopPropagation();
         });
     });
@@ -247,7 +253,7 @@ export function bootTilkitSiteMonthIndicators(root = document) {
 
                 if (res.status === 401 || res.status === 419) {
                     persistLocalDraft(siteId);
-                    setStatus('Session expired — changes kept in this browser. Sign in again to sync.', true);
+                    setStatus('Session expired - changes kept in this browser. Sign in again to sync.', true);
                     return false;
                 }
 
@@ -263,7 +269,7 @@ export function bootTilkitSiteMonthIndicators(root = document) {
                 return true;
             } catch {
                 persistLocalDraft(siteId);
-                setStatus('Could not reach the server — changes kept in this browser and will retry.', true);
+                setStatus('Could not reach the server - changes kept in this browser and will retry.', true);
                 return false;
             } finally {
                 saveInFlight = null;
@@ -320,6 +326,7 @@ export function bootTilkitSiteMonthIndicators(root = document) {
         const selectAllBtn = target.closest('[data-tk-cat-select-all]');
         if (selectAllBtn) {
             event.preventDefault();
+            event.stopPropagation();
             const key = selectAllBtn.dataset.tkCatSelectAll;
             const category = legend.find((c) => c.key === key);
             if (!category) {
@@ -335,6 +342,7 @@ export function bootTilkitSiteMonthIndicators(root = document) {
         const clearAllBtn = target.closest('[data-tk-cat-clear-all]');
         if (clearAllBtn) {
             event.preventDefault();
+            event.stopPropagation();
             const key = clearAllBtn.dataset.tkCatClearAll;
             const category = legend.find((c) => c.key === key);
             if (!category) {
@@ -390,7 +398,7 @@ export function bootTilkitSiteMonthIndicators(root = document) {
             ) {
                 assignments = { ...emptyAssignments(), ...localDraft.data.assignments };
                 activeMonth = Number(localDraft.data.activeMonth) || activeMonth;
-                showDraftRestoredToast('Restored catalogue from this browser — syncing to server.');
+                showDraftRestoredToast('Restored catalogue from this browser - syncing to server.');
                 scheduleAutosave(siteId);
             }
 

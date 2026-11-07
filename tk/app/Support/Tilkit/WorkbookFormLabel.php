@@ -172,10 +172,10 @@ class WorkbookFormLabel
     public static function ratingSelectOptions(): array
     {
         return [
-            3 => '3 — High / good',
-            2 => '2 — Medium / fair',
-            1 => '1 — Low / poor',
-            0 => '0 — Not sure',
+            3 => '3 - High / good',
+            2 => '2 - Medium / fair',
+            1 => '1 - Low / poor',
+            0 => '0 - Not sure',
         ];
     }
 
@@ -183,9 +183,9 @@ class WorkbookFormLabel
     public static function rating321SelectOptions(): array
     {
         return [
-            3 => '3 — High (strong plenary support)',
-            2 => '2 — Medium (mixed support)',
-            1 => '1 — Low (weak support)',
+            3 => '3 - High (strong plenary support)',
+            2 => '2 - Medium (mixed support)',
+            1 => '1 - Low (weak support)',
         ];
     }
 

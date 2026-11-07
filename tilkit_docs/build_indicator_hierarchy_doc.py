@@ -52,7 +52,7 @@ type_lines = tax.get("types", {})
 
 lines: list[str] = []
 lines += [
-    "# TILKIT indicator hierarchy — reference compendium",
+    "# TILKIT indicator hierarchy - reference compendium",
     "",
     "**Version:** TILKIT Weather Indicator Log Master Template v4 (OND 2026)  ",
     f"**Legend rows:** {len(rows)} standard sub-type codes on the *Indicator Code Legend* sheet.",
@@ -72,7 +72,7 @@ lines += [
     "7. [Indigenous knowledge context (literature)](#7-indigenous-knowledge-context-literature)",
     "8. [Prior multipliers and weighting (summary)](#8-prior-multipliers-and-weighting-summary)",
     "9. [Sources and further reading](#9-sources-and-further-reading)",
-    "10. [Appendix — alphabetical code index](#10-appendix--alphabetical-code-index)",
+    "10. [Appendix - alphabetical code index](#10-appendix--alphabetical-code-index)",
     "",
     "",
     "---",
@@ -81,7 +81,7 @@ lines += [
     "",
     "TILKIT (Traditional Indigenous and Local Knowledge tool) systematises **consensus-based ethnographic weather indicators** "
     "for community climate monitoring and seasonal rainfall forecasting. The tool was developed and validated through "
-    "participatory training across East Africa (Kenya, Tanzania, Uganda) and is designed to complement—not replace—national "
+    "participatory training across East Africa (Kenya, Tanzania, Uganda) and is designed to complement-not replace-national "
     "meteorological outlooks (e.g. Kenya Meteorological Service Authority) via **knowledge integration** and impact-based advisories.",
     "",
     "Each **indicator** is a culturally situated environmental sign whose local meaning is negotiated in workshop and plenary: "
@@ -109,9 +109,9 @@ lines += [
     "",
     "```text",
     "CC-TTT-SSS",
-    "│  │   └── Sub-type (3 letters) — phenomenological class",
-    "│  └────── Type segment (3 letters) — PLT, ANI, ATM, AST, HYD, RIT, SEN",
-    "└───────── Category (2 digits) — 01 … 06",
+    "│  │   └── Sub-type (3 letters) - phenomenological class",
+    "│  └────── Type segment (3 letters) - PLT, ANI, ATM, AST, HYD, RIT, SEN",
+    "└───────── Category (2 digits) - 01 … 06",
     "```",
     "",
     "The **type line** used in analysis and priors is `CC-TTT` (category + type segment), e.g. `03-AST`.",
@@ -143,7 +143,7 @@ lines += [
 for cat_key in category_order:
     label = tax["categories"].get(cat_key, cat_names.get(cat_key, f"Category {cat_key}"))
     n_codes = sum(len(tree[cat_key][t]["subs"]) for t in tree.get(cat_key, {}))
-    lines.append(f"### Category `{cat_key}` — {label}")
+    lines.append(f"### Category `{cat_key}` - {label}")
     lines.append("")
     lines.append(f"- **Legend sub-type codes in this category:** {n_codes}")
     if cat_key in tree:
@@ -245,7 +245,7 @@ lines += [
     "",
     "Do **not** put the legend sub-type description (e.g. \"Flowering/blooming\") directly into column **D**. "
     "That text classifies the *kind* of sign (workbook **B** / legend row). Column **D** is the **observable behaviour this season**, "
-    "chosen from domain-consistent options—for example for `01-PLT-FLW`:",
+    "chosen from domain-consistent options-for example for `01-PLT-FLW`:",
     "",
     "- Heavy blossoming / peak bloom",
     "- Light or scattered flowering",
@@ -253,7 +253,7 @@ lines += [
     "",
     "…plus an **intensity** (High / Medium / Low / Not observed). Stored form: `Behaviour text | Intensity: High`.",
     "",
-    "For `01-ANI-BMG`, behaviours include bird migration direction and flock movement—not plant flowering. "
+    "For `01-ANI-BMG`, behaviours include bird migration direction and flock movement-not plant flowering. "
     "The app catalogue `tk/config/tilkit_indicator_behaviour_catalog.json` (regenerate via `tilkit_docs/build_indicator_behaviour_catalog.py`) "
     "enforces this for all 157 legend codes.",
     "",
@@ -274,14 +274,14 @@ for cat_key in category_order:
     if cat_key not in tree:
         continue
     cat_label = tax["categories"].get(cat_key, cat_names.get(cat_key, ""))
-    lines.append(f"### 6.{int(cat_key)} Category `{cat_key}` — {cat_label}")
+    lines.append(f"### 6.{int(cat_key)} Category `{cat_key}` - {cat_label}")
     lines.append("")
 
     for typ in sorted(tree[cat_key].keys()):
         block = tree[cat_key][typ]
         type_line = f"{cat_key}-{typ}"
         tlabel = block["type_name"] or type_lines.get(type_line, typ)
-        lines.append(f"#### Type line `{type_line}` — {tlabel}")
+        lines.append(f"#### Type line `{type_line}` - {tlabel}")
         lines.append("")
         lines.append("| Code | Sub-type | Description |")
         lines.append("|------|----------|-------------|")
@@ -299,7 +299,7 @@ lines += [
     "",
     "| Level | Shape | Workbook | Put here | Do **not** put here |",
     "|-------|-------|----------|----------|---------------------|",
-    "| Category | `01`–`06` | **A** | Broad domain label (`01 — Biological / ecological`) | Type lines, legend codes, behaviours, tercile `U` |",
+    "| Category | `01`–`06` | **A** | Broad domain label (`01 - Biological / ecological`) | Type lines, legend codes, behaviours, tercile `U` |",
     "| Type line | `01-PLT` … `06-SEN` | **B** (part) | One of seven families | Other domains (birds under `01-PLT`) |",
     "| Sub-type | `FLW`, `BMG`, … | **B** (part) | 3-letter phenomenological class | Local sign names, sightings |",
     "| Legend code | `CC-TTT-SSS` | **B** + **AH** prefix | Controlled vocabulary row | Site, season, GPS |",
@@ -317,9 +317,9 @@ lines += [
     "| Stage | When | Hierarchy rule |",
     "|-------|------|----------------|",
     "| **A. For every sign** | FGD / plenary | Fix **A–B–C**, behaviour **D**, predictions **H/P–U** |",
-    "| **B. With every sighting** | Each observation | Keep **AH**; add **N/O/Y** — no new classification |",
-    "| **C. After the season** | Review | **AS–AV**, **AZ** — score outcomes, not re-type the sign |",
-    "| **D. Data desk** | Entry / tally | **AI/AM**, derived weights — classification must match legend |",
+    "| **B. With every sighting** | Each observation | Keep **AH**; add **N/O/Y** - no new classification |",
+    "| **C. After the season** | Review | **AS–AV**, **AZ** - score outcomes, not re-type the sign |",
+    "| **D. Data desk** | Entry / tally | **AI/AM**, derived weights - classification must match legend |",
     "",
     "**Intensity:** strength of the sign in **D** (`… | Intensity: High`) is **not** the same as reliability **M** (3/2/1/0) or tercile **U** (above/normal/below).",
     "",
@@ -349,16 +349,16 @@ lines += [
     "",
     "Recent ethno-meteorological research in the Mount Kenya region (PLOS ONE, 2025) documents systematic use of "
     "**atmospheric**, **celestial**, **biological**, and **somatic** indicators, with elders treating the **human body as an "
-    "environmental sensor**—aligned with TILKIT category `06-SEN`. Example: "
+    "environmental sensor**-aligned with TILKIT category `06-SEN`. Example: "
     "[*When the Emerald wood dove calls, the earth prepares to drink*](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0355610).",
     "",
     "UNESCO and community documentation on Ogiek forest knowledge highlights **tree flowering**, **bird calls**, **river levels**, "
-    "and **wind shifts** as seasonal cues—spanning categories `01`, `03`, `04`, and `02`.",
+    "and **wind shifts** as seasonal cues-spanning categories `01`, `03`, `04`, and `02`.",
     "",
     "### 7.3 Sensory and embodied forecasting",
     "",
     "Ethnographic work in Borneo (Kenyah Badeng farmers) shows forecasting built on **smell, touch, sound, and sight** "
-    "interpreted through cultural categories—not only declarative proverbs. This supports the sensory / human-body branch "
+    "interpreted through cultural categories-not only declarative proverbs. This supports the sensory / human-body branch "
     "of the taxonomy. See Garay & Puri, *Smelling the monsoon* "
     "[(Kent Academic Repository)](https://kar.kent.ac.uk/31520/1/Garay%20and%20Puri%202011%20Smelling%20the%20Monsoon%20-%20Modified.pdf).",
     "",
@@ -366,7 +366,7 @@ lines += [
     "",
     "Category `05-RIT` encodes **restricted** knowledge: dreams, viscera divination, ritual calendars. "
     "Andean *Cabañuelas* (month-by-month observation rituals) illustrate how ritualised calendars link daily observations "
-    "to seasonal rainfall expectations—conceptually related though not identical to East African TILKIT practice. "
+    "to seasonal rainfall expectations-conceptually related though not identical to East African TILKIT practice. "
     "See [JAAR / Oxford Academic](https://doi.org/10.1093/jaarel/lfad030).",
     "",
     "Applications handling category `05` should support **community-private** records and consent levels.",
@@ -374,7 +374,7 @@ lines += [
     "### 7.5 Pacific and global parallels",
     "",
     "Vanuatu’s national traditional-knowledge indicator booklets catalogue **plants, animals, and astronomical phenomena** "
-    "for cyclone and dry-season timing—useful parallel reading for hydrological and celestial branches. "
+    "for cyclone and dry-season timing-useful parallel reading for hydrological and celestial branches. "
     "See [Vanuatu National TK Indicators Booklet](https://www.nab.vu/sites/default/files/documents/Vanuatu%20National%20TK%20Indicators%20Booklet.pdf).",
     "",
     "### 7.6 Mapping literature families → v4 categories",
@@ -435,7 +435,7 @@ lines += [
     "",
     "---",
     "",
-    "## 10. Appendix — alphabetical code index",
+    "## 10. Appendix - alphabetical code index",
     "",
     "Quick lookup of all legend codes (sorted by code string).",
     "",

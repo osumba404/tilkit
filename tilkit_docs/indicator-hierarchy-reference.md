@@ -1,4 +1,4 @@
-# TILKIT indicator hierarchy — reference compendium
+# TILKIT indicator hierarchy - reference compendium
 
 **Version:** TILKIT Weather Indicator Log Master Template v4 (OND 2026)  
 **Legend rows:** 157 standard sub-type codes on the *Indicator Code Legend* sheet.
@@ -18,14 +18,14 @@
 7. [Indigenous knowledge context (literature)](#7-indigenous-knowledge-context-literature)
 8. [Prior multipliers and weighting (summary)](#8-prior-multipliers-and-weighting-summary)
 9. [Sources and further reading](#9-sources-and-further-reading)
-10. [Appendix — alphabetical code index](#10-appendix--alphabetical-code-index)
+10. [Appendix - alphabetical code index](#10-appendix--alphabetical-code-index)
 
 
 ---
 
 ## 1. Purpose and conceptual frame
 
-TILKIT (Traditional Indigenous and Local Knowledge tool) systematises **consensus-based ethnographic weather indicators** for community climate monitoring and seasonal rainfall forecasting. The tool was developed and validated through participatory training across East Africa (Kenya, Tanzania, Uganda) and is designed to complement—not replace—national meteorological outlooks (e.g. Kenya Meteorological Service Authority) via **knowledge integration** and impact-based advisories.
+TILKIT (Traditional Indigenous and Local Knowledge tool) systematises **consensus-based ethnographic weather indicators** for community climate monitoring and seasonal rainfall forecasting. The tool was developed and validated through participatory training across East Africa (Kenya, Tanzania, Uganda) and is designed to complement-not replace-national meteorological outlooks (e.g. Kenya Meteorological Service Authority) via **knowledge integration** and impact-based advisories.
 
 Each **indicator** is a culturally situated environmental sign whose local meaning is negotiated in workshop and plenary: what rainfall outcome it signals (amount tercile, onset/cessation, distribution), **lead time** after observation, and community confidence (above / normal / below normal rainfall for the season).
 
@@ -49,9 +49,9 @@ This document describes the **classification hierarchy** that standardises how s
 
 ```text
 CC-TTT-SSS
-│  │   └── Sub-type (3 letters) — phenomenological class
-│  └────── Type segment (3 letters) — PLT, ANI, ATM, AST, HYD, RIT, SEN
-└───────── Category (2 digits) — 01 … 06
+│  │   └── Sub-type (3 letters) - phenomenological class
+│  └────── Type segment (3 letters) - PLT, ANI, ATM, AST, HYD, RIT, SEN
+└───────── Category (2 digits) - 01 … 06
 ```
 
 The **type line** used in analysis and priors is `CC-TTT` (category + type segment), e.g. `03-AST`.
@@ -76,32 +76,32 @@ Version 4 realigned legacy category/type codes into **six categories** and **sev
 
 These are the v4 **Category** codes (`01`–`06`) from `tilkit_indicator_taxonomy.json` and the master legend:
 
-### Category `01` — Biological / ecological
+### Category `01` - Biological / ecological
 
 - **Legend sub-type codes in this category:** 58
 - **Type segments present:** ANI, PLT
 
-### Category `02` — Atmospheric / physical / meteorological
+### Category `02` - Atmospheric / physical / meteorological
 
 - **Legend sub-type codes in this category:** 43
 - **Type segments present:** ATM
 
-### Category `03` — Astronomical / astrological / celestial
+### Category `03` - Astronomical / astrological / celestial
 
 - **Legend sub-type codes in this category:** 22
 - **Type segments present:** AST
 
-### Category `04` — Hydrological
+### Category `04` - Hydrological
 
 - **Legend sub-type codes in this category:** 17
 - **Type segments present:** HYD
 
-### Category `05` — Ritual / divinatory
+### Category `05` - Ritual / divinatory
 
 - **Legend sub-type codes in this category:** 8
 - **Type segments present:** RIT
 
-### Category `06` — Sensory / human body
+### Category `06` - Sensory / human body
 
 - **Legend sub-type codes in this category:** 9
 - **Type segments present:** SEN
@@ -181,7 +181,7 @@ The Community Data List and Indicator Log align capture fields to the same conce
 
 ### 5.1 Classification label vs column D behaviour
 
-Do **not** put the legend sub-type description (e.g. "Flowering/blooming") directly into column **D**. That text classifies the *kind* of sign (workbook **B** / legend row). Column **D** is the **observable behaviour this season**, chosen from domain-consistent options—for example for `01-PLT-FLW`:
+Do **not** put the legend sub-type description (e.g. "Flowering/blooming") directly into column **D**. That text classifies the *kind* of sign (workbook **B** / legend row). Column **D** is the **observable behaviour this season**, chosen from domain-consistent options-for example for `01-PLT-FLW`:
 
 - Heavy blossoming / peak bloom
 - Light or scattered flowering
@@ -189,7 +189,7 @@ Do **not** put the legend sub-type description (e.g. "Flowering/blooming") direc
 
 …plus an **intensity** (High / Medium / Low / Not observed). Stored form: `Behaviour text | Intensity: High`.
 
-For `01-ANI-BMG`, behaviours include bird migration direction and flock movement—not plant flowering. The app catalogue `tk/config/tilkit_indicator_behaviour_catalog.json` (regenerate via `tilkit_docs/build_indicator_behaviour_catalog.py`) enforces this for all 157 legend codes.
+For `01-ANI-BMG`, behaviours include bird migration direction and flock movement-not plant flowering. The app catalogue `tk/config/tilkit_indicator_behaviour_catalog.json` (regenerate via `tilkit_docs/build_indicator_behaviour_catalog.py`) enforces this for all 157 legend codes.
 
 Workshop flow (**A. For every sign / B. With every sighting / C. After the season / D. Data desk**) mirrors these levels.
 
@@ -201,9 +201,9 @@ Workshop flow (**A. For every sign / B. With every sighting / C. After the seaso
 
 Full list extracted from the v4 master *Indicator Code Legend* sheet. Each row is one **legend code** (`CC-TTT-SSS`) with its descriptive label.
 
-### 6.1 Category `01` — Biological / ecological
+### 6.1 Category `01` - Biological / ecological
 
-#### Type line `01-ANI` — Animals/ livestock
+#### Type line `01-ANI` - Animals/ livestock
 
 | Code | Sub-type | Description |
 |------|----------|-------------|
@@ -246,7 +246,7 @@ Full list extracted from the v4 master *Indicator Code Legend* sheet. Each row i
 | `01-ANI-VOC` | `VOC` | Animal/bird calls, singing or unusual sounds |
 | `01-ANI-WLM` | `WLM` | Movement of wild animals toward/away from areas |
 
-#### Type line `01-PLT` — Plants/ crops
+#### Type line `01-PLT` - Plants/ crops
 
 | Code | Sub-type | Description |
 |------|----------|-------------|
@@ -263,7 +263,7 @@ Full list extracted from the v4 master *Indicator Code Legend* sheet. Each row i
 | `01-PLT-LFS` | `LFS` | Leaf shedding/wilting/drying |
 | `01-PLT-LSH` | `LSH` | Leaf fall, wilting or drying |
 | `01-PLT-OTH` | `OTH` | Any Other (specify, e.g., fire) |
-| `01-PLT-PST` | `PST` | Pasture/ browse/ fodder condition (greenness, regrowth, drying) — vegetation condition |
+| `01-PLT-PST` | `PST` | Pasture/ browse/ fodder condition (greenness, regrowth, drying) - vegetation condition |
 | `01-PLT-SAP` | `SAP` | Sap/resin/plant exudate changes |
 | `01-PLT-SHR` | `SHR` | Shrub |
 | `01-PLT-TFL` | `TFL` | Flowering of trees before/around rains |
@@ -271,9 +271,9 @@ Full list extracted from the v4 master *Indicator Code Legend* sheet. Each row i
 | `01-PLT-VEG` | `VEG` | General greenness, vigour or deterioration |
 | `01-PLT-VIN` | `VIN` | Vine (Climber) |
 
-### 6.2 Category `02` — Atmospheric / physical / meteorological
+### 6.2 Category `02` - Atmospheric / physical / meteorological
 
-#### Type line `02-ATM` — Wind, cloud, air, rain, temperature, humidity, thunder, lightning, rainbow, mist/ fog, dew, soil/ dust
+#### Type line `02-ATM` - Wind, cloud, air, rain, temperature, humidity, thunder, lightning, rainbow, mist/ fog, dew, soil/ dust
 
 | Code | Sub-type | Description |
 |------|----------|-------------|
@@ -321,9 +321,9 @@ Full list extracted from the v4 master *Indicator Code Legend* sheet. Each row i
 | `02-ATM-WND` | `WND` | Wind |
 | `02-ATM-WST` | `WST` | Weak, moderate, strong or changing wind strength |
 
-### 6.3 Category `03` — Astronomical / astrological / celestial
+### 6.3 Category `03` - Astronomical / astrological / celestial
 
-#### Type line `03-AST` — Sun, moon, stars, planets, sky
+#### Type line `03-AST` - Sun, moon, stars, planets, sky
 
 | Code | Sub-type | Description |
 |------|----------|-------------|
@@ -350,9 +350,9 @@ Full list extracted from the v4 master *Indicator Code Legend* sheet. Each row i
 | `03-AST-STR` | `STR` | Stars |
 | `03-AST-SUN` | `SUN` | Sun |
 
-### 6.4 Category `04` — Hydrological
+### 6.4 Category `04` - Hydrological
 
-#### Type line `04-HYD` — Water bodies (hydrological)
+#### Type line `04-HYD` - Water bodies (hydrological)
 
 | Code | Sub-type | Description |
 |------|----------|-------------|
@@ -374,9 +374,9 @@ Full list extracted from the v4 master *Indicator Code Legend* sheet. Each row i
 | `04-HYD-WSB` | `WSB` | Ripples, foam, surface movement |
 | `04-HYD-WTR` | `WTR` | Water surface appearance/ripples/currents |
 
-### 6.5 Category `05` — Ritual / divinatory
+### 6.5 Category `05` - Ritual / divinatory
 
-#### Type line `05-RIT` — Ritual/ hidden indicators
+#### Type line `05-RIT` - Ritual/ hidden indicators
 
 | Code | Sub-type | Description |
 |------|----------|-------------|
@@ -389,9 +389,9 @@ Full list extracted from the v4 master *Indicator Code Legend* sheet. Each row i
 | `05-RIT-SPL` | `SPL` | Spleen |
 | `05-RIT-VIS` | `VIS` | Other animal viscera/body organs |
 
-### 6.6 Category `06` — Sensory / human body
+### 6.6 Category `06` - Sensory / human body
 
-#### Type line `06-SEN` — Human body sensations
+#### Type line `06-SEN` - Human body sensations
 
 | Code | Sub-type | Description |
 |------|----------|-------------|
@@ -413,7 +413,7 @@ Use this matrix to avoid mixing layers (your example: **flowering plant** at cla
 
 | Level | Shape | Workbook | Put here | Do **not** put here |
 |-------|-------|----------|----------|---------------------|
-| Category | `01`–`06` | **A** | Broad domain label (`01 — Biological / ecological`) | Type lines, legend codes, behaviours, tercile `U` |
+| Category | `01`–`06` | **A** | Broad domain label (`01 - Biological / ecological`) | Type lines, legend codes, behaviours, tercile `U` |
 | Type line | `01-PLT` … `06-SEN` | **B** (part) | One of seven families | Other domains (birds under `01-PLT`) |
 | Sub-type | `FLW`, `BMG`, … | **B** (part) | 3-letter phenomenological class | Local sign names, sightings |
 | Legend code | `CC-TTT-SSS` | **B** + **AH** prefix | Controlled vocabulary row | Site, season, GPS |
@@ -431,9 +431,9 @@ Use this matrix to avoid mixing layers (your example: **flowering plant** at cla
 | Stage | When | Hierarchy rule |
 |-------|------|----------------|
 | **A. For every sign** | FGD / plenary | Fix **A–B–C**, behaviour **D**, predictions **H/P–U** |
-| **B. With every sighting** | Each observation | Keep **AH**; add **N/O/Y** — no new classification |
-| **C. After the season** | Review | **AS–AV**, **AZ** — score outcomes, not re-type the sign |
-| **D. Data desk** | Entry / tally | **AI/AM**, derived weights — classification must match legend |
+| **B. With every sighting** | Each observation | Keep **AH**; add **N/O/Y** - no new classification |
+| **C. After the season** | Review | **AS–AV**, **AZ** - score outcomes, not re-type the sign |
+| **D. Data desk** | Entry / tally | **AI/AM**, derived weights - classification must match legend |
 
 **Intensity:** strength of the sign in **D** (`… | Intensity: High`) is **not** the same as reliability **M** (3/2/1/0) or tercile **U** (above/normal/below).
 
@@ -458,23 +458,23 @@ Workshop tables record, for each sign: local weather meaning, lead time, and ple
 
 ### 7.2 East African community practice
 
-Recent ethno-meteorological research in the Mount Kenya region (PLOS ONE, 2025) documents systematic use of **atmospheric**, **celestial**, **biological**, and **somatic** indicators, with elders treating the **human body as an environmental sensor**—aligned with TILKIT category `06-SEN`. Example: [*When the Emerald wood dove calls, the earth prepares to drink*](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0355610).
+Recent ethno-meteorological research in the Mount Kenya region (PLOS ONE, 2025) documents systematic use of **atmospheric**, **celestial**, **biological**, and **somatic** indicators, with elders treating the **human body as an environmental sensor**-aligned with TILKIT category `06-SEN`. Example: [*When the Emerald wood dove calls, the earth prepares to drink*](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0355610).
 
-UNESCO and community documentation on Ogiek forest knowledge highlights **tree flowering**, **bird calls**, **river levels**, and **wind shifts** as seasonal cues—spanning categories `01`, `03`, `04`, and `02`.
+UNESCO and community documentation on Ogiek forest knowledge highlights **tree flowering**, **bird calls**, **river levels**, and **wind shifts** as seasonal cues-spanning categories `01`, `03`, `04`, and `02`.
 
 ### 7.3 Sensory and embodied forecasting
 
-Ethnographic work in Borneo (Kenyah Badeng farmers) shows forecasting built on **smell, touch, sound, and sight** interpreted through cultural categories—not only declarative proverbs. This supports the sensory / human-body branch of the taxonomy. See Garay & Puri, *Smelling the monsoon* [(Kent Academic Repository)](https://kar.kent.ac.uk/31520/1/Garay%20and%20Puri%202011%20Smelling%20the%20Monsoon%20-%20Modified.pdf).
+Ethnographic work in Borneo (Kenyah Badeng farmers) shows forecasting built on **smell, touch, sound, and sight** interpreted through cultural categories-not only declarative proverbs. This supports the sensory / human-body branch of the taxonomy. See Garay & Puri, *Smelling the monsoon* [(Kent Academic Repository)](https://kar.kent.ac.uk/31520/1/Garay%20and%20Puri%202011%20Smelling%20the%20Monsoon%20-%20Modified.pdf).
 
 ### 7.4 Ritual and divinatory knowledge
 
-Category `05-RIT` encodes **restricted** knowledge: dreams, viscera divination, ritual calendars. Andean *Cabañuelas* (month-by-month observation rituals) illustrate how ritualised calendars link daily observations to seasonal rainfall expectations—conceptually related though not identical to East African TILKIT practice. See [JAAR / Oxford Academic](https://doi.org/10.1093/jaarel/lfad030).
+Category `05-RIT` encodes **restricted** knowledge: dreams, viscera divination, ritual calendars. Andean *Cabañuelas* (month-by-month observation rituals) illustrate how ritualised calendars link daily observations to seasonal rainfall expectations-conceptually related though not identical to East African TILKIT practice. See [JAAR / Oxford Academic](https://doi.org/10.1093/jaarel/lfad030).
 
 Applications handling category `05` should support **community-private** records and consent levels.
 
 ### 7.5 Pacific and global parallels
 
-Vanuatu’s national traditional-knowledge indicator booklets catalogue **plants, animals, and astronomical phenomena** for cyclone and dry-season timing—useful parallel reading for hydrological and celestial branches. See [Vanuatu National TK Indicators Booklet](https://www.nab.vu/sites/default/files/documents/Vanuatu%20National%20TK%20Indicators%20Booklet.pdf).
+Vanuatu’s national traditional-knowledge indicator booklets catalogue **plants, animals, and astronomical phenomena** for cyclone and dry-season timing-useful parallel reading for hydrological and celestial branches. See [Vanuatu National TK Indicators Booklet](https://www.nab.vu/sites/default/files/documents/Vanuatu%20National%20TK%20Indicators%20Booklet.pdf).
 
 ### 7.6 Mapping literature families → v4 categories
 
@@ -531,7 +531,7 @@ Operational fields on each Indicator Log row (simplified):
 
 ---
 
-## 10. Appendix — alphabetical code index
+## 10. Appendix - alphabetical code index
 
 Quick lookup of all legend codes (sorted by code string).
 
@@ -588,7 +588,7 @@ Quick lookup of all legend codes (sorted by code string).
 | `01-PLT-LFS` | Leaf shedding/wilting/drying |
 | `01-PLT-LSH` | Leaf fall, wilting or drying |
 | `01-PLT-OTH` | Any Other (specify, e.g., fire) |
-| `01-PLT-PST` | Pasture/ browse/ fodder condition (greenness, regrowth, drying) — vegetation condition |
+| `01-PLT-PST` | Pasture/ browse/ fodder condition (greenness, regrowth, drying) - vegetation condition |
 | `01-PLT-SAP` | Sap/resin/plant exudate changes |
 | `01-PLT-SHR` | Shrub |
 | `01-PLT-TFL` | Flowering of trees before/around rains |

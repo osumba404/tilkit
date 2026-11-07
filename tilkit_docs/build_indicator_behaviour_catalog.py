@@ -247,7 +247,7 @@ def generate(code: str, cat: str, typ: str, sub: str, label: str) -> list[str]:
         base = list(BEHAVIOUR_TEMPLATES[key])
     else:
         topic = label_phrase(label) if label else sub
-        base = [f"{g} — {topic}" for g in TYPE_LINE_GENERIC.get(tl, TYPE_LINE_GENERIC["02-ATM"])]
+        base = [f"{g} - {topic}" for g in TYPE_LINE_GENERIC.get(tl, TYPE_LINE_GENERIC["02-ATM"])]
         if label:
             base.insert(0, f"Observable pattern: {topic} (pronounced)")
             base.insert(1, f"Observable pattern: {topic} (reduced or absent)")

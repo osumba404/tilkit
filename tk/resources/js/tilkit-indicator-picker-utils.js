@@ -63,7 +63,7 @@ export function typeOptionLabel(type) {
 export function legendCodeOptionLabel(code) {
     const base = code.code || '';
     const tail = code.classification_label || code.label || '';
-    return tail ? `${base} — ${tail}` : base;
+    return tail ? `${base} - ${tail}` : base;
 }
 
 /** Checkbox / list label (code + classification, optional type line). */

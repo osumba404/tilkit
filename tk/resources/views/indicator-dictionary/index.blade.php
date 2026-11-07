@@ -22,7 +22,7 @@
         <x-page-header
             eyebrow="Reference"
             title="Indicator dictionary"
-            subtitle="v4 taxonomy, legend codes, workbook columns, and allowed behaviours — for setup, capture, and analysis."
+            subtitle="v4 taxonomy, legend codes, workbook columns, and allowed behaviours - for setup, capture, and analysis."
         >
             <x-slot name="actions">
                 <a href="{{ route('user-guide') }}" class="tk-btn-secondary text-sm">User guide</a>

@@ -18,36 +18,36 @@
         <div>
             <x-tilkit.workbook-field-label letter="B" title="Type line (seven v4 families)" />
             <select class="tk-input" data-tk-ind-type required disabled>
-                <option value="">—</option>
+                <option value="">-</option>
             </select>
         </div>
         <div>
             <label class="block text-xs font-medium text-tk-muted mb-1">Legend code (refines column B: type · sub-type)</label>
             <select class="tk-input" data-tk-ind-subtype required disabled>
-                <option value="">—</option>
+                <option value="">-</option>
             </select>
         </div>
         <div>
             <x-tilkit.workbook-field-label letter="C" />
             <select class="tk-input" data-tk-ind-specific required disabled>
-                <option value="">—</option>
+                <option value="">-</option>
             </select>
         </div>
         <div>
             <x-tilkit.workbook-field-label letter="D" />
             <select class="tk-input" data-tk-ind-behaviour required disabled>
-                <option value="">—</option>
+                <option value="">-</option>
             </select>
         </div>
         <div>
             <label class="block text-xs font-medium text-tk-muted mb-1">Intensity / strength of the sign</label>
             <select class="tk-input" data-tk-ind-intensity required disabled>
-                <option value="">—</option>
+                <option value="">-</option>
             </select>
         </div>
         <div>
             <x-tilkit.workbook-field-label letter="AH" />
-            <input type="text" class="tk-input bg-tk-soft" data-tk-ind-uid-display readonly placeholder="—">
+            <input type="text" class="tk-input bg-tk-soft" data-tk-ind-uid-display readonly placeholder="-">
         </div>
     </div>
 

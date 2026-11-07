@@ -31,7 +31,7 @@
         <div>
             <label class="block text-xs font-medium text-tk-muted mb-1">Intensity / strength</label>
             <select class="tk-input" data-tk-wb-d-intensity>
-                <option value="">—</option>
+                <option value="">-</option>
             </select>
         </div>
     </div>

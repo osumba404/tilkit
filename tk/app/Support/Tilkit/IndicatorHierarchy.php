@@ -107,7 +107,7 @@ class IndicatorHierarchy
     }
 
     /**
-     * Workbook columns owned at registration / capture (Community Data List §A — describing the sign).
+     * Workbook columns owned at registration / capture (Community Data List §A - describing the sign).
      *
      * @return array{A: string, B: string, C: string, D: string}
      */
@@ -127,11 +127,11 @@ class IndicatorHierarchy
             $columnB .= ' · '.$sub;
         }
         if ($classification !== '') {
-            $columnB .= ' — '.$classification;
+            $columnB .= ' - '.$classification;
         }
 
         return [
-            'A' => "{$cat} — {$catLabel}",
+            'A' => "{$cat} - {$catLabel}",
             'B' => $columnB,
             'C' => trim((string) ($registeredName ?? '')),
             'D' => '',
@@ -293,7 +293,7 @@ class IndicatorHierarchy
             'B' => [
                 'title' => 'With every sighting',
                 'columns' => ['N', 'O', 'Y–AB', 'AR', 'CI', 'CK', 'CL'],
-                'hierarchy_note' => 'Evidence and dating—must reference an existing AH ID; do not reclassify the sign.',
+                'hierarchy_note' => 'Evidence and dating-must reference an existing AH ID; do not reclassify the sign.',
             ],
             'C' => [
                 'title' => 'After the season',
@@ -303,7 +303,7 @@ class IndicatorHierarchy
             'D' => [
                 'title' => 'Data desk',
                 'columns' => ['AH', 'AI', 'AM', 'AE', 'AF', 'BL–CH'],
-                'hierarchy_note' => 'IDs, weights, derived fields—classification must match legend.',
+                'hierarchy_note' => 'IDs, weights, derived fields-classification must match legend.',
             ],
         ];
     }

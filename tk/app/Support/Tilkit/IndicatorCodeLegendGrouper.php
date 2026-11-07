@@ -93,7 +93,7 @@ class IndicatorCodeLegendGrouper
                 $bySub = [];
                 foreach ($type['codes'] as $codeRow) {
                     $sub = strtoupper(trim((string) ($codeRow['sub_type'] ?? '')));
-                    $subKey = $sub !== '' ? $sub : '—';
+                    $subKey = $sub !== '' ? $sub : '-';
                     $bySub[$subKey][] = $codeRow;
                 }
                 ksort($bySub);
@@ -102,7 +102,7 @@ class IndicatorCodeLegendGrouper
                 foreach ($bySub as $subKey => $rows) {
                     $subOut[] = [
                         'key' => $subKey,
-                        'label' => $subKey === '—' ? 'No sub-type code' : $subKey,
+                        'label' => $subKey === '-' ? 'No sub-type code' : $subKey,
                         'code_count' => count($rows),
                         'sample_codes' => collect($rows)->take(4)->pluck('code')->values()->all(),
                     ];
@@ -244,7 +244,7 @@ class IndicatorCodeLegendGrouper
                 $parts = explode('-', strtoupper((string) $row['code']), 3);
                 $sub = $parts[2] ?? '';
             }
-            $subKey = $sub !== '' ? $sub : '—';
+            $subKey = $sub !== '' ? $sub : '-';
             $bySub[$subKey][] = $row;
         }
         ksort($bySub);
@@ -258,10 +258,10 @@ class IndicatorCodeLegendGrouper
                 ->values();
             $out[] = [
                 'key' => $subKey,
-                'label' => $subKey === '—'
+                'label' => $subKey === '-'
                     ? 'Sub-type not set'
                     : ($classifications->first()
-                        ? $subKey.' — '.$classifications->first()
+                        ? $subKey.' - '.$classifications->first()
                         : $subKey),
                 'code_count' => count($rows),
                 'codes' => collect($rows)->map(function (array $row) {
@@ -291,7 +291,7 @@ class IndicatorCodeLegendGrouper
         $bySub = [];
         foreach ($typeRows as $row) {
             $sub = strtoupper(trim((string) ($row->sub_type ?? '')));
-            $subKey = $sub !== '' ? $sub : '—';
+            $subKey = $sub !== '' ? $sub : '-';
             $bySub[$subKey][] = $row;
         }
         ksort($bySub);
@@ -301,9 +301,9 @@ class IndicatorCodeLegendGrouper
             $labels = collect($rows)->pluck('label')->filter()->unique()->values();
             $out[] = [
                 'key' => $subKey,
-                'label' => $subKey === '—'
+                'label' => $subKey === '-'
                     ? 'Sub-type not set'
-                    : ($labels->first() ? $subKey.' — '.$labels->first() : $subKey),
+                    : ($labels->first() ? $subKey.' - '.$labels->first() : $subKey),
                 'code_count' => count($rows),
                 'codes' => collect($rows)->map(fn (TilkitIndicatorCode $c) => [
                     'code' => $c->code,

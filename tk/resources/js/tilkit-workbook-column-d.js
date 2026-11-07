@@ -22,7 +22,7 @@ export function bootTilkitWorkbookColumnD(root = document) {
                 value: o.value,
                 label: o.label || o.value,
             })),
-            intensityOptions.length ? 'Choose intensity' : '—',
+            intensityOptions.length ? 'Choose intensity' : '-',
         );
 
         const sync = () => {

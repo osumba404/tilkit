@@ -66,18 +66,18 @@
                                                     <div class="tk-details-panel-body">
                                                         <div class="tk-details-panel-inner tk-dict-nest tk-dict-nest-3 space-y-2 pb-1">
                                                             <details class="tk-details-panel tk-dict-summary-l3">
-                                                                <summary>Workbook A — category (column A)</summary>
+                                                                <summary>Workbook A - category (column A)</summary>
                                                                 <div class="tk-details-panel-body">
                                                                     <div class="tk-details-panel-inner px-3 py-2">
-                                                                        <p class="font-mono text-xs text-tk-ink bg-tk-soft/80 rounded px-2 py-1.5">{{ $wb['A'] ?? '—' }}</p>
+                                                                        <p class="font-mono text-xs text-tk-ink bg-tk-soft/80 rounded px-2 py-1.5">{{ $wb['A'] ?? '-' }}</p>
                                                                     </div>
                                                                 </div>
                                                             </details>
                                                             <details class="tk-details-panel tk-dict-summary-l3">
-                                                                <summary>Workbook B — type · sub-type (column B)</summary>
+                                                                <summary>Workbook B - type · sub-type (column B)</summary>
                                                                 <div class="tk-details-panel-body">
                                                                     <div class="tk-details-panel-inner px-3 py-2">
-                                                                        <p class="font-mono text-xs text-tk-ink bg-tk-soft/80 rounded px-2 py-1.5">{{ $wb['B'] ?? '—' }}</p>
+                                                                        <p class="font-mono text-xs text-tk-ink bg-tk-soft/80 rounded px-2 py-1.5">{{ $wb['B'] ?? '-' }}</p>
                                                                     </div>
                                                                 </div>
                                                             </details>

@@ -27,7 +27,7 @@
                     This dictionary matches the <strong>Indicator Code Legend</strong> in the v4 master workbook
                     ({{ $d['code_count'] }} codes, {{ $d['version'] }}).
                     Use it to check that <strong>category</strong>, <strong>type line</strong>, <strong>legend code</strong>,
-                    and <strong>workbook columns A–D</strong> stay aligned — e.g. plant flowering vs bird migration.
+                    and <strong>workbook columns A–D</strong> stay aligned - e.g. plant flowering vs bird migration.
                 </p>
                 <dl class="grid sm:grid-cols-2 gap-3 text-sm">
                     <div class="rounded-lg border border-tk-line/80 bg-tk-soft/50 px-3 py-2">
@@ -51,7 +51,7 @@
 
             <div class="tk-card p-5 sm:p-6 space-y-4" id="dict-hierarchy">
                 <h2 class="tk-section-title text-lg">Hierarchy vs workbook columns</h2>
-                <p class="text-xs text-tk-muted">What belongs at each level — avoid putting classification text in behaviour (D) or tercile (U).</p>
+                <p class="text-xs text-tk-muted">What belongs at each level - avoid putting classification text in behaviour (D) or tercile (U).</p>
                 <div class="overflow-x-auto -mx-1">
                     <table class="tk-table-premium w-full text-sm min-w-[36rem]">
                         <thead>
@@ -95,7 +95,7 @@
                     @foreach ($d['taxonomy']['types'] ?? [] as $tl => $label)
                         <li class="rounded-lg border border-tk-line/70 px-3 py-2">
                             <span class="font-mono text-tk-ink">{{ $tl }}</span>
-                            <span class="text-tk-muted"> — {{ $label }}</span>
+                            <span class="text-tk-muted"> - {{ $label }}</span>
                         </li>
                     @endforeach
                 </ul>
@@ -122,7 +122,7 @@
                         <select class="tk-input w-full" x-model="category" @change="applyFilter()">
                             <option value="">All categories</option>
                             @foreach ($d['categories'] as $cat)
-                                <option value="{{ $cat['key'] }}">{{ $cat['key'] }} — {{ $cat['label'] }}</option>
+                                <option value="{{ $cat['key'] }}">{{ $cat['key'] }} - {{ $cat['label'] }}</option>
                             @endforeach
                         </select>
                     </label>
@@ -167,7 +167,7 @@
                                                             <div class="tk-details-panel-body">
                                                                 <div class="tk-details-panel-inner tk-dict-nest tk-dict-nest-3 space-y-2 pb-1">
                                                                     <details class="tk-details-panel tk-dict-summary-l3">
-                                                                        <summary>Workbook A — category (column A)</summary>
+                                                                        <summary>Workbook A - category (column A)</summary>
                                                                         <div class="tk-details-panel-body">
                                                                             <div class="tk-details-panel-inner px-3 py-2">
                                                                                 <p class="font-mono text-xs text-tk-ink bg-tk-soft/80 rounded px-2 py-1.5" x-text="row.workbook_a"></p>
@@ -175,7 +175,7 @@
                                                                         </div>
                                                                     </details>
                                                                     <details class="tk-details-panel tk-dict-summary-l3">
-                                                                        <summary>Workbook B — type · sub-type (column B)</summary>
+                                                                        <summary>Workbook B - type · sub-type (column B)</summary>
                                                                         <div class="tk-details-panel-body">
                                                                             <div class="tk-details-panel-inner px-3 py-2">
                                                                                 <p class="font-mono text-xs text-tk-ink bg-tk-soft/80 rounded px-2 py-1.5" x-text="row.workbook_b"></p>

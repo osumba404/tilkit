@@ -12,7 +12,7 @@
     <div class="flex flex-wrap items-baseline justify-between gap-2">
         <h3 class="tk-section-title text-base">Indicator analysis mind map</h3>
         <span class="text-xs text-tk-muted">
-            Tap <strong>Legend hierarchy</strong> to drill L1 categories → L2 type lines → L3 sub-types → legend codes.
+            Tap <strong>Legend hierarchy</strong>, then click a node to open the next level (L1 categories → L2 types → L3 sub-types → codes). Siblings at the same level stay visible.
             Same mapping as the <a href="{{ route('dictionary') }}" class="text-tk-accent underline">dictionary</a>. Drag · scroll to zoom ·
             <strong>Full screen</strong> · <strong>Copy image</strong> (clipboard, no OS screenshot).
         </span>
@@ -21,7 +21,7 @@
     @if (($analysis['legend_levels'] ?? []) !== [])
         <ol class="text-xs text-tk-muted flex flex-wrap gap-x-4 gap-y-1 list-decimal list-inside max-w-4xl">
             @foreach ($analysis['legend_levels'] as $level)
-                <li><span class="text-tk-ink font-medium">{{ $level['label'] }}</span> — {{ $level['detail'] }}</li>
+                <li><span class="text-tk-ink font-medium">{{ $level['label'] }}</span> - {{ $level['detail'] }}</li>
             @endforeach
         </ol>
     @endif
