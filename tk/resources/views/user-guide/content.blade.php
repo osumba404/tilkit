@@ -157,6 +157,7 @@
                     <p>Each indicator record is a single workbook row: one community sign at one site for one monitoring season. You enter raw fields in the app; the rules engine calculates derived columns including eligibility, weights, tally status, and integration fields.</p>
                     <p>Definitions come from the v4 register and Community Data List. The same gate rules as Excel apply before a row counts toward the tercile tally.</p>
                     <p class="text-sm text-tk-muted">90 raw columns · 34 derived · Community Data List sections A-E</p>
+                    <x-guide.link href="{{ route('dictionary') }}">Indicator dictionary (categories, codes, workbook levels)</x-guide.link>
                     @if ($link('tools.tilkit.workbook'))
                         <x-guide.link href="{{ $link('tools.tilkit.workbook') }}">Workbook guides in the app</x-guide.link>
                     @endif

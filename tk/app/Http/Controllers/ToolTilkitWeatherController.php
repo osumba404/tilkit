@@ -17,6 +17,8 @@ use App\Services\Tilkit\TilkitSignOffGuard;
 use App\Services\Tilkit\WorkbookRecordService;
 use App\Services\ToolAccessService;
 use App\Support\Tilkit\CommunityDataListRegistry;
+use App\Support\Tilkit\IndicatorBehaviourCatalog;
+use App\Support\Tilkit\IndicatorHierarchy;
 use App\Support\Tilkit\IndicatorLegendTree;
 use App\Support\Tilkit\WorkbookCapturePreparer;
 use App\Support\Tilkit\WorkbookColumnRegistry;
@@ -93,6 +95,7 @@ class ToolTilkitWeatherController extends Controller
         ToolAccessService $access,
         SiteIndicatorCatalogService $catalog,
         IndicatorLegendTree $legendTree,
+        IndicatorBehaviourCatalog $behaviourCatalog,
     ): JsonResponse {
         $access->assertCanView($request->user(), $tool);
 
@@ -141,6 +144,11 @@ class ToolTilkitWeatherController extends Controller
             'season_union_code_ids' => $catalog->codeIdsForSeasonUnion($site, $season),
             'legend' => $legendTree->build($allowedIds),
             'indicators' => $indicators,
+            'intensity_options' => $behaviourCatalog->intensityOptions(),
+            'hierarchy' => [
+                'levels' => app(IndicatorHierarchy::class)->analyticalLevels(),
+                'community_data_list_stages' => app(IndicatorHierarchy::class)->communityDataListStages(),
+            ],
             'messages' => $allowedIds === []
                 ? ['No indicator codes are assigned to this site for the collection month, or the date falls outside the selected season.']
                 : [],
@@ -169,6 +177,7 @@ class ToolTilkitWeatherController extends Controller
 
         $this->assertToolOwnsReferences($tool, $validated);
         $this->assertIndicatorAllowedForCapture($tool, $validated, app(SiteIndicatorCatalogService::class));
+        $this->assertWorkbookBehaviourMatchesIndicator($tool, $validated, app(IndicatorBehaviourCatalog::class));
 
         $record = TilkitIndicatorRecord::query()->create([
             'indicator_id' => $validated['indicator_id'],
@@ -330,6 +339,53 @@ class ToolTilkitWeatherController extends Controller
     }
 
     /** @param  array<string, mixed>  $validated */
+    /** @param  array<string, mixed>  $validated */
+    private function assertWorkbookBehaviourMatchesIndicator(
+        DcProject $tool,
+        array $validated,
+        IndicatorBehaviourCatalog $behaviourCatalog,
+    ): void {
+        $workbook = $validated['workbook'] ?? [];
+        if (! is_array($workbook) || ! array_key_exists('D', $workbook)) {
+            return;
+        }
+        $columnD = trim((string) ($workbook['D'] ?? ''));
+        if ($columnD === '') {
+            return;
+        }
+
+        $indicator = TilkitIndicator::query()
+            ->where('project_id', $tool->id)
+            ->where('id', $validated['indicator_id'])
+            ->with('code')
+            ->first();
+        abort_unless($indicator !== null && $indicator->code !== null, 422);
+
+        $parsed = $behaviourCatalog->parseColumnD($columnD);
+        if ($parsed['behaviour'] === '') {
+            return;
+        }
+        abort_unless(
+            $behaviourCatalog->isAllowedBehaviour($indicator->code, $parsed['behaviour']),
+            422,
+            'Indicator behaviour does not match the selected legend code.',
+        );
+        abort_unless(
+            $behaviourCatalog->isAllowedIntensity($parsed['intensity']),
+            422,
+            'Behaviour intensity is not valid for this sign type.',
+        );
+
+        $hierarchy = app(IndicatorHierarchy::class);
+        foreach (['A', 'B', 'C', 'D'] as $letter) {
+            if (! array_key_exists($letter, $workbook)) {
+                continue;
+            }
+            $violation = $hierarchy->columnBleedViolation($indicator->code, $letter, (string) ($workbook[$letter] ?? ''));
+            abort_unless($violation === null, 422, $violation);
+        }
+    }
+
     private function assertIndicatorAllowedForCapture(DcProject $tool, array $validated, SiteIndicatorCatalogService $catalog): void
     {
         $indicator = TilkitIndicator::query()

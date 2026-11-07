@@ -114,6 +114,3 @@ function animateClose(details, body) {
     body.addEventListener('transitionend', finish);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    initTkDetailsPanels();
-});

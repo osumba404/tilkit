@@ -21,6 +21,32 @@ function fillSelect(select, options, placeholder) {
     select.disabled = options.length === 0;
 }
 
+function composeColumnD(behaviour, intensity) {
+    const b = (behaviour || '').trim();
+    const i = (intensity || '').trim();
+    if (!b) {
+        return '';
+    }
+    if (!i) {
+        return b;
+    }
+
+    return `${b} | Intensity: ${i}`;
+}
+
+function parseColumnD(columnD) {
+    const raw = (columnD || '').trim();
+    if (!raw) {
+        return { behaviour: '', intensity: '' };
+    }
+    const match = raw.match(/^(.+?)\s*\|\s*Intensity:\s*(.+)$/i);
+    if (match) {
+        return { behaviour: match[1].trim(), intensity: match[2].trim() };
+    }
+
+    return { behaviour: raw, intensity: '' };
+}
+
 export function bootTilkitRecordIndicatorCascade(root = document) {
     const cascade = root.querySelector('[data-tk-record-indicator-cascade]');
     const form = root.querySelector('[data-tk-record-create-form]');
@@ -38,6 +64,7 @@ export function bootTilkitRecordIndicatorCascade(root = document) {
     const subSelect = cascade.querySelector('[data-tk-ind-subtype]');
     const specSelect = cascade.querySelector('[data-tk-ind-specific]');
     const behSelect = cascade.querySelector('[data-tk-ind-behaviour]');
+    const intensitySelect = cascade.querySelector('[data-tk-ind-intensity]');
     const uidDisplay = cascade.querySelector('[data-tk-ind-uid-display]');
     const idInput = cascade.querySelector('[data-tk-ind-id-input]');
     const wbA = cascade.querySelector('[data-tk-wb-a]');
@@ -46,7 +73,21 @@ export function bootTilkitRecordIndicatorCascade(root = document) {
     const wbD = cascade.querySelector('[data-tk-wb-d]');
     const messageEl = cascade.querySelector('[data-tk-ind-message]');
 
-    let payload = { legend: [], indicators: [] };
+    let payload = { legend: [], indicators: [], intensity_options: [] };
+
+    const syncWorkbookD = () => {
+        if (wbD) {
+            wbD.value = composeColumnD(behSelect?.value, intensitySelect?.value);
+        }
+    };
+
+    const applyIntensityOptions = () => {
+        const options = (payload.intensity_options || []).map((o) => ({
+            value: o.value,
+            label: o.label || o.value,
+        }));
+        fillSelect(intensitySelect, options, options.length ? 'Choose intensity' : '—');
+    };
 
     const showMessage = (lines) => {
         if (!messageEl) {
@@ -70,6 +111,9 @@ export function bootTilkitRecordIndicatorCascade(root = document) {
         if (from <= 4) {
             fillSelect(behSelect, [], '—');
         }
+        if (from <= 4) {
+            fillSelect(intensitySelect, [], '—');
+        }
         if (from <= 5) {
             if (uidDisplay) {
                 uidDisplay.value = '';
@@ -87,6 +131,7 @@ export function bootTilkitRecordIndicatorCascade(root = document) {
 
     const applyCategories = () => {
         resetDownstream(1);
+        applyIntensityOptions();
         const options = payload.legend.map((c) => ({
             value: c.key,
             label: `${c.key} · ${c.label}`,
@@ -126,18 +171,55 @@ export function bootTilkitRecordIndicatorCascade(root = document) {
         }
         const options = type.codes.map((code) => ({
             value: String(code.id),
-            label: `${code.code}${code.label ? ` — ${code.label}` : ''}`,
-            dataset: { code: code.code, label: code.label || '' },
+            label: `${code.code}${code.classification_label ? ` — ${code.classification_label}` : ''}`,
+            dataset: {
+                code: code.code,
+                behaviours: JSON.stringify(code.behaviours || []),
+                workbook: JSON.stringify(code.workbook || {}),
+            },
         }));
         fillSelect(subSelect, options, 'Choose sub-type / code');
     };
 
     const onSubtype = () => {
         resetDownstream(4);
+        const codeOpt = subSelect?.selectedOptions[0];
         const codeId = Number(subSelect?.value);
-        if (!codeId) {
+        if (!codeId || !codeOpt) {
             return;
         }
+
+        try {
+            const wb = JSON.parse(codeOpt.dataset.workbook || '{}');
+            if (wbA) {
+                wbA.value = wb.A || '';
+            }
+            if (wbB) {
+                wbB.value = wb.B || '';
+            }
+            if (wbC) {
+                wbC.value = '';
+            }
+            if (wbD) {
+                wbD.value = '';
+            }
+        } catch {
+            /* ignore */
+        }
+
+        let behaviours = [];
+        try {
+            behaviours = JSON.parse(codeOpt.dataset.behaviours || '[]');
+        } catch {
+            behaviours = [];
+        }
+        fillSelect(
+            behSelect,
+            behaviours.map((b) => ({ value: b, label: b })),
+            behaviours.length ? 'Choose observable behaviour' : 'No behaviours for this code',
+        );
+        applyIntensityOptions();
+
         const indicators = payload.indicators.filter((i) => Number(i.indicator_code_id) === codeId);
         const options = indicators.map((i) => ({
             value: String(i.id),
@@ -151,16 +233,9 @@ export function bootTilkitRecordIndicatorCascade(root = document) {
     };
 
     const onSpecific = () => {
-        resetDownstream(5);
         const opt = specSelect?.selectedOptions[0];
         if (!opt || !opt.value) {
             return;
-        }
-        const codeOpt = subSelect?.selectedOptions[0];
-        const behaviourLabel = codeOpt?.dataset.label || '';
-        fillSelect(behSelect, behaviourLabel ? [{ value: behaviourLabel, label: behaviourLabel }] : [], 'Choose behaviour');
-        if (behaviourLabel && behSelect) {
-            behSelect.value = behaviourLabel;
         }
         if (uidDisplay) {
             uidDisplay.value = opt.dataset.uid || '';
@@ -179,22 +254,21 @@ export function bootTilkitRecordIndicatorCascade(root = document) {
             if (wbC) {
                 wbC.value = wb.C || '';
             }
-            if (wbD) {
-                wbD.value = wb.D || behaviourLabel;
+            const parsed = parseColumnD(wb.D || '');
+            if (parsed.behaviour && behSelect) {
+                behSelect.value = parsed.behaviour;
             }
+            if (parsed.intensity && intensitySelect) {
+                intensitySelect.value = parsed.intensity;
+            }
+            syncWorkbookD();
         } catch {
             /* ignore */
         }
     };
 
-    const onBehaviour = () => {
-        const opt = specSelect?.selectedOptions[0];
-        if (!opt || !behSelect?.value) {
-            return;
-        }
-        if (wbD) {
-            wbD.value = behSelect.value;
-        }
+    const onBehaviourOrIntensity = () => {
+        syncWorkbookD();
     };
 
     const restoreIndicatorSelection = () => {
@@ -221,8 +295,14 @@ export function bootTilkitRecordIndicatorCascade(root = document) {
                 onSubtype();
                 specSelect.value = String(indicatorId);
                 onSpecific();
-                if (wbD?.value && behSelect) {
-                    behSelect.value = wbD.value;
+                if (wbD?.value) {
+                    const parsed = parseColumnD(wbD.value);
+                    if (parsed.behaviour && behSelect) {
+                        behSelect.value = parsed.behaviour;
+                    }
+                    if (parsed.intensity && intensitySelect) {
+                        intensitySelect.value = parsed.intensity;
+                    }
                 }
                 return;
             }
@@ -233,7 +313,8 @@ export function bootTilkitRecordIndicatorCascade(root = document) {
     typeSelect?.addEventListener('change', onType);
     subSelect?.addEventListener('change', onSubtype);
     specSelect?.addEventListener('change', onSpecific);
-    behSelect?.addEventListener('change', onBehaviour);
+    behSelect?.addEventListener('change', onBehaviourOrIntensity);
+    intensitySelect?.addEventListener('change', onBehaviourOrIntensity);
 
     let loadToken = 0;
     const refreshOptions = async () => {

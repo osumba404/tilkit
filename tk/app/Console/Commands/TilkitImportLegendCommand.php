@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Tilkit\TilkitIndicatorCode;
+use App\Support\Tilkit\IndicatorHierarchy;
 use Illuminate\Console\Command;
 
 class TilkitImportLegendCommand extends Command
@@ -82,8 +83,15 @@ PY;
     private function persistRows(array $rows): int
     {
         $version = config('tilkit.weather.protocol_version');
+        $hierarchy = app(IndicatorHierarchy::class);
         $count = 0;
         foreach ($rows as $row) {
+            $hierarchy->assertLegendRowValid(
+                $row['code'],
+                (string) $row['category'],
+                (string) ($row['type'] ?? ''),
+                (string) ($row['sub_type'] ?? ''),
+            );
             TilkitIndicatorCode::query()->updateOrCreate(
                 ['code' => $row['code']],
                 [

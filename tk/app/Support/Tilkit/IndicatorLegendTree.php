@@ -47,12 +47,23 @@ class IndicatorLegendTree
                 $typesOut[] = [
                     'key' => $typeLine,
                     'label' => $taxonomy['types'][$typeLine] ?? ($typeKey !== '' ? $typeKey : 'Other'),
-                    'codes' => collect($typeCodes)->map(fn (TilkitIndicatorCode $c) => [
-                        'id' => (int) $c->id,
-                        'code' => $c->code,
-                        'sub_type' => $c->sub_type,
-                        'label' => $c->label,
-                    ])->values()->all(),
+                    'codes' => collect($typeCodes)->map(function (TilkitIndicatorCode $c) {
+                        $catalog = app(IndicatorBehaviourCatalog::class);
+
+                        $hierarchy = app(IndicatorHierarchy::class);
+                        $wb = $hierarchy->workbookDescriptor($c);
+
+                        return [
+                            'id' => (int) $c->id,
+                            'code' => $c->code,
+                            'sub_type' => $c->sub_type,
+                            'label' => $c->label,
+                            'type_line' => $hierarchy->typeLineForCode($c),
+                            'classification_label' => $catalog->classificationLabel((string) $c->code) ?? $c->label,
+                            'behaviours' => $catalog->behavioursForCode($c),
+                            'workbook' => $wb,
+                        ];
+                    })->values()->all(),
                 ];
             }
             usort($typesOut, fn ($a, $b) => strcmp($a['key'], $b['key']));
@@ -79,17 +90,6 @@ class IndicatorLegendTree
     /** @return array{A: string, B: string, C: string, D: string} */
     public function workbookDescriptor(TilkitIndicatorCode $code, ?string $specificName = null): array
     {
-        $tax = $this->taxonomy();
-        $cat = str_pad((string) $code->category, 2, '0', STR_PAD_LEFT);
-        $typeKey = $cat.'-'.strtoupper((string) ($code->type ?? ''));
-        $typeLabel = $tax['types'][$typeKey] ?? strtoupper((string) ($code->type ?? ''));
-        $sub = strtoupper((string) ($code->sub_type ?? ''));
-
-        return [
-            'A' => $tax['categories'][$cat] ?? $cat,
-            'B' => trim($typeLabel.($sub !== '' ? ' · '.$sub : '')),
-            'C' => trim((string) ($specificName ?? '')),
-            'D' => trim((string) ($code->label ?? '')),
-        ];
+        return app(IndicatorHierarchy::class)->workbookDescriptor($code, $specificName);
     }
 }

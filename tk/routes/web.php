@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\IndicatorDictionaryController;
 use App\Http\Controllers\UserGuideController;
 use App\Http\Controllers\PlatformAdminController;
 use App\Http\Controllers\PlatformAnalyticsController;
@@ -44,6 +45,7 @@ Route::post('/f/{form:code}', [PublicFormController::class, 'submit'])->name('pu
 Route::get('/f/{form:code}/thanks', [PublicFormController::class, 'thanks'])->name('public.forms.thanks');
 
 Route::get('/user-guide', UserGuideController::class)->name('user-guide');
+Route::get('/dictionary', IndicatorDictionaryController::class)->name('dictionary');
 
 Route::post('/api/tilkit/mobile/login', [TilkitMobileController::class, 'login'])
     ->middleware('guest')

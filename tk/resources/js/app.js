@@ -1,5 +1,8 @@
 import './bootstrap';
-import './tk-details-panels';
+import { initTkDetailsPanels } from './tk-details-panels';
+
+window.initTkDetailsPanels = initTkDetailsPanels;
+document.addEventListener('DOMContentLoaded', () => initTkDetailsPanels());
 import { bootFormDraftPersistence } from './tk-form-draft';
 
 import Alpine from 'alpinejs';
