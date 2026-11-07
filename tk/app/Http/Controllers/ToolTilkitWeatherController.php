@@ -177,7 +177,8 @@ class ToolTilkitWeatherController extends Controller
 
         $this->assertToolOwnsReferences($tool, $validated);
         $this->assertIndicatorAllowedForCapture($tool, $validated, app(SiteIndicatorCatalogService::class));
-        $this->assertWorkbookBehaviourMatchesIndicator($tool, $validated, app(IndicatorBehaviourCatalog::class));
+        $recordForValidation = new TilkitIndicatorRecord(['indicator_id' => $validated['indicator_id']]);
+        $this->assertWorkbookBehaviourForRecord($tool, $recordForValidation, $validated['workbook'] ?? [], app(IndicatorBehaviourCatalog::class));
 
         $record = TilkitIndicatorRecord::query()->create([
             'indicator_id' => $validated['indicator_id'],
@@ -203,7 +204,7 @@ class ToolTilkitWeatherController extends Controller
         $access->assertCanView($request->user(), $tool);
         $this->assertRecordBelongsToTool($tool, $record);
 
-        $record->load(['indicator', 'site', 'season', 'workbookMedia', 'workbookValues', 'sightings']);
+        $record->load(['indicator.code', 'site', 'season', 'workbookMedia', 'workbookValues', 'sightings']);
 
         $derivedMap = [];
         foreach ($record->workbookValues->where('is_derived', true) as $cell) {
@@ -232,6 +233,7 @@ class ToolTilkitWeatherController extends Controller
             'workbookValues' => $workbook->rawWorkbookMap($record),
             'derivedMap' => $derivedMap,
             'derivedColumns' => WorkbookColumnRegistry::derivedColumns(),
+            'intensityOptions' => app(IndicatorBehaviourCatalog::class)->intensityOptions(),
         ]);
     }
 
@@ -249,6 +251,7 @@ class ToolTilkitWeatherController extends Controller
 
         $raw = WorkbookCapturePreparer::normalizeIncoming($validated['workbook'] ?? []);
         $this->assertPersonaForWorkbookFields($personas, $request->user(), $tool, $raw);
+        $this->assertWorkbookBehaviourForRecord($tool, $record, $raw, app(IndicatorBehaviourCatalog::class));
         $raw = app(TilkitSignOffGuard::class)->applySignOff($record, $request->user(), $raw);
         $workbook->storeRawValues($record, $raw);
         $workbook->storeReferenceColumns($record->fresh());
@@ -270,7 +273,7 @@ class ToolTilkitWeatherController extends Controller
         $section = strtoupper($section);
         abort_unless(preg_match('/^[A-E]$/', $section), 404);
 
-        $record->load(['indicator', 'site', 'season', 'sightings', 'workbookMedia']);
+        $record->load(['indicator.code', 'site', 'season', 'sightings', 'workbookMedia']);
         $columns = $this->wizardColumnsForSection($section);
         $checklist = CommunityDataListRegistry::itemsForSectionKey($section);
         $workbookValues = $workbook->rawWorkbookMap($record);
@@ -283,6 +286,7 @@ class ToolTilkitWeatherController extends Controller
             'columns' => $columns,
             'workbookValues' => $workbookValues,
             'sections' => ['A', 'B', 'C', 'D', 'E'],
+            'intensityOptions' => app(IndicatorBehaviourCatalog::class)->intensityOptions(),
         ]);
     }
 
@@ -298,6 +302,7 @@ class ToolTilkitWeatherController extends Controller
         ]);
         $raw = WorkbookCapturePreparer::normalizeIncoming($validated['workbook'] ?? []);
         $this->assertPersonaForWorkbookFields($personas, $request->user(), $tool, $raw);
+        $this->assertWorkbookBehaviourForRecord($tool, $record, $raw, app(IndicatorBehaviourCatalog::class));
         $raw = app(TilkitSignOffGuard::class)->applySignOff($record, $request->user(), $raw);
         $workbook->storeRawValues($record, $raw);
         $workbook->storeReferenceColumns($record->fresh());
@@ -338,43 +343,44 @@ class ToolTilkitWeatherController extends Controller
         }
     }
 
-    /** @param  array<string, mixed>  $validated */
-    /** @param  array<string, mixed>  $validated */
-    private function assertWorkbookBehaviourMatchesIndicator(
+    /** @param  array<string, mixed>  $workbook */
+    private function assertWorkbookBehaviourForRecord(
         DcProject $tool,
-        array $validated,
+        TilkitIndicatorRecord $record,
+        array $workbook,
         IndicatorBehaviourCatalog $behaviourCatalog,
     ): void {
-        $workbook = $validated['workbook'] ?? [];
-        if (! is_array($workbook) || ! array_key_exists('D', $workbook)) {
-            return;
-        }
-        $columnD = trim((string) ($workbook['D'] ?? ''));
-        if ($columnD === '') {
+        if (! is_array($workbook)) {
             return;
         }
 
         $indicator = TilkitIndicator::query()
             ->where('project_id', $tool->id)
-            ->where('id', $validated['indicator_id'])
+            ->where('id', $record->indicator_id)
             ->with('code')
             ->first();
-        abort_unless($indicator !== null && $indicator->code !== null, 422);
-
-        $parsed = $behaviourCatalog->parseColumnD($columnD);
-        if ($parsed['behaviour'] === '') {
+        if ($indicator === null || $indicator->code === null) {
             return;
         }
-        abort_unless(
-            $behaviourCatalog->isAllowedBehaviour($indicator->code, $parsed['behaviour']),
-            422,
-            'Indicator behaviour does not match the selected legend code.',
-        );
-        abort_unless(
-            $behaviourCatalog->isAllowedIntensity($parsed['intensity']),
-            422,
-            'Behaviour intensity is not valid for this sign type.',
-        );
+
+        if (array_key_exists('D', $workbook)) {
+            $columnD = trim((string) ($workbook['D'] ?? ''));
+            if ($columnD !== '') {
+                $parsed = $behaviourCatalog->parseColumnD($columnD);
+                if ($parsed['behaviour'] !== '') {
+                    abort_unless(
+                        $behaviourCatalog->isAllowedBehaviour($indicator->code, $parsed['behaviour']),
+                        422,
+                        'Indicator behaviour does not match the selected legend code.',
+                    );
+                    abort_unless(
+                        $behaviourCatalog->isAllowedIntensity($parsed['intensity']),
+                        422,
+                        'Behaviour intensity is not valid for this sign type.',
+                    );
+                }
+            }
+        }
 
         $hierarchy = app(IndicatorHierarchy::class);
         foreach (['A', 'B', 'C', 'D'] as $letter) {

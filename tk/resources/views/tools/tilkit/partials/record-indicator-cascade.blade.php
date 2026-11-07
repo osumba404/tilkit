@@ -5,6 +5,7 @@
 >
     <p class="text-xs text-tk-muted">
         Choose category → type → sub-type → registered sign → observable behaviour → intensity. Behaviours are limited to what fits the legend code (e.g. flowering plants, not bird movement).
+        <a href="{{ route('dictionary') }}" class="text-tk-accent underline" target="_blank" rel="noopener">Open indicator dictionary</a>
     </p>
 
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3">

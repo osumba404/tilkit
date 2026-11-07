@@ -4,6 +4,7 @@ import {
     saveCustomDraft,
     showDraftRestoredToast,
 } from './tk-form-draft';
+import { categoryOptionLabel, legendCodeListLabel, typeOptionLabel } from './tilkit-indicator-picker-utils';
 
 const AUTOSAVE_DELAY_MS = 1200;
 
@@ -48,16 +49,17 @@ function renderGrid(container, legend, monthLabels, assignments, activeMonth) {
     legend.forEach((category) => {
         html += `<div class="border-b border-tk-line/50 pb-4 last:border-0" data-tk-ind-category="${category.key}">`;
         html += `<div class="flex flex-wrap items-center gap-2 mb-2">`;
-        html += `<h4 class="text-xs font-semibold uppercase tracking-wide text-tk-muted flex-1 min-w-[10rem]">${category.key} · ${category.label}</h4>`;
+        html += `<h4 class="text-xs font-semibold uppercase tracking-wide text-tk-muted flex-1 min-w-[10rem]">${categoryOptionLabel(category)}</h4>`;
         html += `<div class="flex flex-wrap gap-2 shrink-0" role="group" aria-label="Bulk actions for ${category.label}">`;
         html += `<button type="button" class="tk-btn-secondary text-xs py-1 px-2.5 font-semibold" data-tk-cat-select-all="${category.key}">Select all</button>`;
         html += `<button type="button" class="tk-btn-secondary text-xs py-1 px-2.5 font-semibold" data-tk-cat-clear-all="${category.key}">Clear all</button>`;
         html += `</div></div>`;
         category.types.forEach((type) => {
-            html += `<div class="mb-3"><p class="text-xs font-medium text-tk-ink mb-1">${type.key} · ${type.label}</p><ul class="grid sm:grid-cols-2 lg:grid-cols-3 gap-1 text-sm">`;
+            html += `<div class="mb-3"><p class="text-xs font-medium text-tk-ink mb-1">${typeOptionLabel(type)}</p><ul class="grid sm:grid-cols-2 lg:grid-cols-3 gap-1 text-sm">`;
             type.codes.forEach((code) => {
                 const checked = selected.has(Number(code.id)) ? 'checked' : '';
-                html += `<li><label class="flex gap-2 items-start cursor-pointer"><input type="checkbox" class="mt-1" data-tk-code-id="${code.id}" ${checked}><span class="font-mono text-xs">${code.code}</span><span class="text-tk-muted text-xs">${code.label || ''}</span></label></li>`;
+                const listLabel = legendCodeListLabel(code);
+                html += `<li><label class="flex gap-2 items-start cursor-pointer"><input type="checkbox" class="mt-1" data-tk-code-id="${code.id}" ${checked}><span class="text-xs leading-snug">${listLabel}</span></label></li>`;
             });
             html += '</ul></div>';
         });

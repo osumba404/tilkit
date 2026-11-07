@@ -53,6 +53,9 @@
                 :current="$current"
                 :center-lat="$record->site?->latitude"
                 :center-lng="$record->site?->longitude"
+                :indicator-code="$record->indicator?->code"
+                :indicator-local-name="$record->indicator?->local_name"
+                :intensity-options="$intensityOptions ?? []"
             />
         @endforeach
         </div>

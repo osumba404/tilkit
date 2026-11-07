@@ -177,6 +177,9 @@
                                 :current="$current"
                                 :center-lat="$isEdit ? $record->site?->latitude : null"
                                 :center-lng="$isEdit ? $record->site?->longitude : null"
+                                :indicator-code="$isEdit ? $record->indicator?->code : null"
+                                :indicator-local-name="$isEdit ? $record->indicator?->local_name : null"
+                                :intensity-options="$intensityOptions ?? []"
                             />
                         @endforeach
                     </div>

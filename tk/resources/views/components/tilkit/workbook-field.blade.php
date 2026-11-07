@@ -1,8 +1,25 @@
-@props(['col', 'current' => '', 'centerLat' => null, 'centerLng' => null])
+@props([
+    'col',
+    'current' => '',
+    'centerLat' => null,
+    'centerLng' => null,
+    'indicatorCode' => null,
+    'indicatorLocalName' => null,
+    'intensityOptions' => [],
+])
 
 @php
     $letter = $col['column'];
     $kind = \App\Support\Tilkit\WorkbookColumnRegistry::inputKind($col);
+    $hierarchy = ($indicatorCode instanceof \App\Models\Tilkit\TilkitIndicatorCode)
+        ? app(\App\Support\Tilkit\IndicatorHierarchy::class)
+        : null;
+    $workbookFromCode = $hierarchy
+        ? $hierarchy->workbookDescriptor($indicatorCode, $indicatorLocalName)
+        : null;
+    $behaviourCatalog = $indicatorCode
+        ? app(\App\Support\Tilkit\IndicatorBehaviourCatalog::class)
+        : null;
     $gps = $kind === 'gps' ? \App\Support\Tilkit\WorkbookCapturePreparer::splitGps($current) : null;
     $consent = $kind === 'consent' ? \App\Support\Tilkit\WorkbookCapturePreparer::splitConsent($current) : null;
 @endphp
@@ -208,7 +225,15 @@
             @break
 
         @case('textarea')
-            <textarea name="workbook[{{ $letter }}]" rows="3" class="tk-input">{{ is_scalar($current) ? $current : '' }}</textarea>
+            @if ($letter === 'D' && $indicatorCode && $behaviourCatalog)
+                <x-tilkit.workbook-indicator-d
+                    :current="$current"
+                    :behaviours="$behaviourCatalog->behavioursForCode($indicatorCode)"
+                    :intensity-options="$intensityOptions"
+                />
+            @else
+                <textarea name="workbook[{{ $letter }}]" rows="3" class="tk-input">{{ is_scalar($current) ? $current : '' }}</textarea>
+            @endif
             @break
 
         @case('readonly')
@@ -216,6 +241,19 @@
             @break
 
         @default
-            <input type="text" name="workbook[{{ $letter }}]" value="{{ is_scalar($current) ? $current : '' }}" class="tk-input">
+            @if (in_array($letter, ['A', 'B'], true) && $workbookFromCode)
+                @php
+                    $locked = $workbookFromCode[$letter] ?? '';
+                    $display = is_scalar($current) && (string) $current !== '' ? (string) $current : $locked;
+                @endphp
+                <input type="text" value="{{ $display }}" class="tk-input bg-tk-soft" readonly title="Set from indicator legend hierarchy">
+                <input type="hidden" name="workbook[{{ $letter }}]" value="{{ $display }}">
+                <p class="text-xs text-tk-muted mt-1">
+                    From legend hierarchy.
+                    <a href="{{ route('dictionary') }}" class="text-tk-accent underline" target="_blank" rel="noopener">Dictionary</a>
+                </p>
+            @else
+                <input type="text" name="workbook[{{ $letter }}]" value="{{ is_scalar($current) ? $current : '' }}" class="tk-input">
+            @endif
     @endswitch
 </div>

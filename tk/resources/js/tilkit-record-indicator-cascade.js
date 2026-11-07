@@ -1,51 +1,11 @@
-function fillSelect(select, options, placeholder) {
-    if (!select) {
-        return;
-    }
-    select.innerHTML = '';
-    const first = document.createElement('option');
-    first.value = '';
-    first.textContent = placeholder;
-    select.appendChild(first);
-    options.forEach((opt) => {
-        const el = document.createElement('option');
-        el.value = String(opt.value);
-        el.textContent = opt.label;
-        if (opt.dataset) {
-            Object.entries(opt.dataset).forEach(([k, v]) => {
-                el.dataset[k] = v;
-            });
-        }
-        select.appendChild(el);
-    });
-    select.disabled = options.length === 0;
-}
-
-function composeColumnD(behaviour, intensity) {
-    const b = (behaviour || '').trim();
-    const i = (intensity || '').trim();
-    if (!b) {
-        return '';
-    }
-    if (!i) {
-        return b;
-    }
-
-    return `${b} | Intensity: ${i}`;
-}
-
-function parseColumnD(columnD) {
-    const raw = (columnD || '').trim();
-    if (!raw) {
-        return { behaviour: '', intensity: '' };
-    }
-    const match = raw.match(/^(.+?)\s*\|\s*Intensity:\s*(.+)$/i);
-    if (match) {
-        return { behaviour: match[1].trim(), intensity: match[2].trim() };
-    }
-
-    return { behaviour: raw, intensity: '' };
-}
+import {
+    categoryOptionLabel,
+    composeColumnD,
+    fillSelect,
+    legendCodeOptionLabel,
+    parseColumnD,
+    typeOptionLabel,
+} from './tilkit-indicator-picker-utils';
 
 export function bootTilkitRecordIndicatorCascade(root = document) {
     const cascade = root.querySelector('[data-tk-record-indicator-cascade]');
@@ -134,7 +94,7 @@ export function bootTilkitRecordIndicatorCascade(root = document) {
         applyIntensityOptions();
         const options = payload.legend.map((c) => ({
             value: c.key,
-            label: `${c.key} · ${c.label}`,
+            label: categoryOptionLabel(c),
         }));
         fillSelect(catSelect, options, options.length ? 'Choose category' : 'No codes for this context');
         catSelect.disabled = options.length === 0;
@@ -152,7 +112,7 @@ export function bootTilkitRecordIndicatorCascade(root = document) {
         }
         const options = category.types.map((t) => ({
             value: t.key,
-            label: `${t.key} · ${t.label}`,
+            label: typeOptionLabel(t),
         }));
         fillSelect(typeSelect, options, 'Choose type');
     };
@@ -171,7 +131,7 @@ export function bootTilkitRecordIndicatorCascade(root = document) {
         }
         const options = type.codes.map((code) => ({
             value: String(code.id),
-            label: `${code.code}${code.classification_label ? ` — ${code.classification_label}` : ''}`,
+            label: legendCodeOptionLabel(code),
             dataset: {
                 code: code.code,
                 behaviours: JSON.stringify(code.behaviours || []),

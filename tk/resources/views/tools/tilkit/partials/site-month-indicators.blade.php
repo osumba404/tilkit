@@ -1,4 +1,8 @@
 @if ($sites->isNotEmpty() && ($indicatorLegendTree ?? []) !== [])
+    <p class="text-xs text-tk-muted mb-3">
+        Legend codes use the same category, type, and behaviour rules as capture and the
+        <a href="{{ route('dictionary') }}" class="text-tk-accent underline" target="_blank" rel="noopener">indicator dictionary</a>.
+    </p>
     <div
         class="tk-card p-5 space-y-4 mb-6"
         data-tilkit-site-month-indicators

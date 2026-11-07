@@ -41,6 +41,10 @@ async function bootApp() {
         const cascade = await import('./tilkit-record-indicator-cascade');
         cascade.bootTilkitRecordIndicatorCascade();
     }
+    if (document.querySelector('[data-tk-workbook-column-d]')) {
+        const columnD = await import('./tilkit-workbook-column-d');
+        columnD.bootTilkitWorkbookColumnD();
+    }
     if (document.querySelector('[data-tk-indicator-mindmap]')) {
         const mindmap = await import('./tilkit-indicator-mindmap');
         mindmap.bootIndicatorMindmap();
