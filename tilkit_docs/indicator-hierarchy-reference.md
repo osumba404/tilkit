@@ -12,6 +12,8 @@
 2. [How codes are built](#2-how-codes-are-built)
 3. [Top-level hierarchy (six categories)](#3-top-level-hierarchy-six-categories)
 4. [Seven canonical type lines](#4-seven-canonical-type-lines)
+   - [4.2 Hierarchy diagram (conceptual)](#42-hierarchy-diagram-conceptual)
+   - [4.3 Setup mind map (program admin)](#43-setup-mind-map-program-admin)
 5. [Workbook capture levels](#5-workbook-capture-levels)
 6. [Complete code catalogue by category](#6-complete-code-catalogue-by-category)
 6A. [Hierarchy levels vs workbook columns (all stages)](#6a-hierarchy-levels-vs-workbook-columns-all-stages)
@@ -138,32 +140,49 @@ TILKIT v4 analysis and mind-map views use exactly **seven type lines** (one per 
 
 ### 4.2 Hierarchy diagram (conceptual)
 
+The **Indicator analysis mind map** on program **Setup** shows one branch only: the **legend hierarchy** (L1 → L2 → L3 → legend codes). Workbook capture stages (unique ID, sighting, reliability, column D, and so on) are not separate mind-map pillars; they stay in [section 6A](#6a-hierarchy-levels-vs-workbook-columns-all-stages) and in capture forms.
+
 ```mermaid
 flowchart LR
-  ROOT[TILKIT indicator analysis]
-  ROOT --> P1[Code categories pillar]
-  ROOT --> P2[UID structure]
-  ROOT --> P3[Log fields]
-  ROOT --> P4[History and reliability]
-  ROOT --> P5[Field sighting]
-  ROOT --> P6[Behaviour]
-  P1 --> C01[01 Biological]
-  P1 --> C02[02 Atmospheric]
-  P1 --> C03[03 Astronomical]
-  P1 --> C04[04 Hydrological]
-  P1 --> C05[05 Ritual]
-  P1 --> C06[06 Sensory]
-  C01 --> TPLT[01-PLT Plants]
-  C01 --> TANI[01-ANI Animals]
-  C02 --> TATM[02-ATM Atmosphere]
-  C03 --> TAST[03-AST Sky]
-  C04 --> THYD[04-HYD Water]
-  C05 --> TRIT[05-RIT Ritual]
-  C06 --> TSEN[06-SEN Body or senses]
-  TANI --> ST[Sub-types e.g. FRO BMG]
+  ROOT[TILKIT v4 hierarchy]
+  ROOT --> LH[Legend hierarchy L1 to L3]
+  LH --> C01[L1 · 01 Biological]
+  LH --> C02[L1 · 02 Atmospheric]
+  LH --> C06[L1 · 06 Sensory]
+  C01 --> TPLT[L2 · 01-PLT Plants]
+  C01 --> TANI[L2 · 01-ANI Animals]
+  C02 --> TATM[L2 · 02-ATM Atmosphere]
+  TANI --> ST[L3 · sub-types e.g. FRO BMG]
   ST --> LC[Legend code 01-ANI-FRO]
-  LC --> UID[Unique ID 01-ANI-FRO-001]
 ```
+
+**Below the legend code** (not drawn on the mind map): unique Indicator ID (`AH`), registered sign (**C**), season behaviour (**D**), predictions and scoring columns - see sections 5 and 6A.
+
+### 4.3 Setup mind map (program admin)
+
+| Item | Detail |
+|------|--------|
+| **Where** | TILKIT program **Setup** (`/tools/{project}/tilkit/setup`), card *Indicator analysis mind map* |
+| **Data** | `IndicatorCodeLegendGrouper::analysisMindmap()` built from `IndicatorLegendTree` (parsed legend code segments, same buckets as the dictionary) |
+| **Root node** | `TILKIT v4 hierarchy → workbook A–D` |
+| **Single pillar** | *Legend hierarchy (L1–L3)* - expandable drill-down only |
+| **L1** | Six categories `01`–`06` (counts per category) |
+| **L2** | Seven canonical type lines under the chosen category (e.g. `01-PLT`, `01-ANI`) |
+| **L3** | Sub-type groupings under the type line (legend sub-type segment) |
+| **Leaves** | Up to 20 sample legend codes per L3 group (full list in the dictionary); optional column D behaviour hints |
+
+**Interaction**
+
+- Click a node to reveal the **next level**; **siblings at the same level stay on the canvas** (categories, types, and sub-types are not collapsed when you expand one branch).
+- Click the same L1/L2 node again to collapse that branch; click an L3 node again to hide its code sample leaves.
+- Pan and scroll to zoom; **Full screen**, **Copy image** (clipboard), and **Download PNG**; styling follows light/dark mode.
+
+**Aligned UI on Setup**
+
+- **Site monthly indicator catalogue** uses the same L1 → L2 → L3 nested panels plus per-month code checkboxes (`IndicatorLegendTree`).
+- **Legend reference** list on Setup uses the same tree for quick lookup.
+
+Import legend data before the map fills: `php artisan tilkit:import-legend`. Regenerate code buckets after taxonomy or import changes: `php artisan tilkit:reconcile-indicator-codes` when DB category/type columns drift from code strings.
 
 ---
 
