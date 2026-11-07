@@ -4,7 +4,7 @@ import {
     saveCustomDraft,
     showDraftRestoredToast,
 } from './tk-form-draft';
-import { categoryOptionLabel, legendCodeListLabel, typeOptionLabel } from './tilkit-indicator-picker-utils';
+import { initTkDetailsPanels } from './tk-details-panels';
 
 const AUTOSAVE_DELAY_MS = 1200;
 
@@ -22,6 +22,18 @@ function emptyAssignments() {
 
 function assignmentsFingerprint(assignments) {
     return JSON.stringify(assignments);
+}
+
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
+function typeCodeCount(category) {
+    return (category.types || []).reduce((sum, type) => sum + (type.codes || []).length, 0);
 }
 
 /** @param {{ types: { codes: { id: number }[] }[] }} category */
@@ -44,30 +56,75 @@ function renderGrid(container, legend, monthLabels, assignments, activeMonth) {
         const active = m === month ? 'tk-wizard-tab-active' : 'tk-wizard-tab-inactive';
         html += `<button type="button" class="tk-wizard-tab text-xs py-1 px-2 ${active}" data-tk-month-tab="${m}">${label}${count ? ` (${count})` : ''}</button>`;
     }
-    html += '</div><div class="p-4 space-y-4 max-h-[28rem] overflow-y-auto" data-tk-site-indicator-scroll>';
+    html += `</div><div class="p-4 max-h-[32rem] overflow-y-auto tk-dictionary-tree" data-tk-site-indicator-scroll>`;
 
     legend.forEach((category) => {
-        html += `<div class="border-b border-tk-line/50 pb-4 last:border-0" data-tk-ind-category="${category.key}">`;
-        html += `<div class="flex flex-wrap items-center gap-2 mb-2">`;
-        html += `<h4 class="text-xs font-semibold uppercase tracking-wide text-tk-muted flex-1 min-w-[10rem]">${categoryOptionLabel(category)}</h4>`;
-        html += `<div class="flex flex-wrap gap-2 shrink-0" role="group" aria-label="Bulk actions for ${category.label}">`;
-        html += `<button type="button" class="tk-btn-secondary text-xs py-1 px-2.5 font-semibold" data-tk-cat-select-all="${category.key}">Select all</button>`;
-        html += `<button type="button" class="tk-btn-secondary text-xs py-1 px-2.5 font-semibold" data-tk-cat-clear-all="${category.key}">Clear all</button>`;
-        html += `</div></div>`;
-        category.types.forEach((type) => {
-            html += `<div class="mb-3"><p class="text-xs font-medium text-tk-ink mb-1">${typeOptionLabel(type)}</p><ul class="grid sm:grid-cols-2 lg:grid-cols-3 gap-1 text-sm">`;
-            type.codes.forEach((code) => {
+        const catCount = typeCodeCount(category);
+        html += `<details class="tk-details-panel tk-dict-summary-l0 mb-2" data-tk-ind-category="${escapeHtml(category.key)}">`;
+        html += `<summary class="flex flex-wrap items-center gap-2">`;
+        html += `<span class="text-tk-muted text-xs font-mono">L1 · Cat ${escapeHtml(category.key)}</span>`;
+        html += `<span class="min-w-0 flex-1">${escapeHtml(category.label)}</span>`;
+        html += `<span class="tk-details-panel-count">${catCount} codes</span>`;
+        html += `<span class="flex flex-wrap gap-1 shrink-0" role="group" aria-label="Bulk actions for ${escapeHtml(category.label)}">`;
+        html += `<button type="button" class="tk-btn-secondary text-[0.65rem] py-0.5 px-2 font-semibold" data-tk-cat-select-all="${escapeHtml(category.key)}">All</button>`;
+        html += `<button type="button" class="tk-btn-secondary text-[0.65rem] py-0.5 px-2 font-semibold" data-tk-cat-clear-all="${escapeHtml(category.key)}">Clear</button>`;
+        html += `</span></summary>`;
+        html += `<div class="tk-details-panel-body"><div class="tk-details-panel-inner tk-dict-nest">`;
+
+        (category.types || []).forEach((type) => {
+            html += `<details class="tk-details-panel tk-dict-summary-l1">`;
+            html += `<summary class="flex flex-wrap items-center gap-2">`;
+            html += `<span class="text-tk-muted text-xs font-mono">L2 · ${escapeHtml(type.key)}</span>`;
+            html += `<span>${escapeHtml(type.label)}</span>`;
+            html += `<span class="tk-details-panel-count">${(type.codes || []).length} codes</span>`;
+            html += `</summary>`;
+            html += `<div class="tk-details-panel-body"><div class="tk-details-panel-inner tk-dict-nest tk-dict-nest-2">`;
+
+            (type.codes || []).forEach((code) => {
                 const checked = selected.has(Number(code.id)) ? 'checked' : '';
-                const listLabel = legendCodeListLabel(code);
-                html += `<li><label class="flex gap-2 items-start cursor-pointer"><input type="checkbox" class="mt-1" data-tk-code-id="${code.id}" ${checked}><span class="text-xs leading-snug">${listLabel}</span></label></li>`;
+                const classification = code.classification_label || code.label || '';
+                const wbB = code.workbook?.B ? escapeHtml(code.workbook.B) : '';
+                const behaviourCount = (code.behaviours || []).length;
+                html += `<details class="tk-details-panel tk-dict-summary-l2">`;
+                html += `<summary class="flex flex-wrap items-center gap-x-2 gap-y-1">`;
+                html += `<label class="inline-flex items-center gap-1.5 shrink-0 cursor-pointer" data-tk-stop-summary-toggle>`;
+                html += `<input type="checkbox" class="mt-0" data-tk-code-id="${code.id}" ${checked}>`;
+                html += `</label>`;
+                html += `<span class="text-tk-muted text-xs font-mono">L3</span>`;
+                html += `<span class="font-mono text-tk-ink text-xs">${escapeHtml(code.code)}</span>`;
+                if (classification) {
+                    html += `<span class="text-tk-muted font-normal text-xs">${escapeHtml(classification)}</span>`;
+                }
+                if (behaviourCount) {
+                    html += `<span class="tk-details-panel-count">${behaviourCount} D opts</span>`;
+                }
+                html += `</summary>`;
+                html += `<div class="tk-details-panel-body">`;
+                html += `<div class="tk-details-panel-inner tk-dict-nest tk-dict-nest-3 px-3 py-2 space-y-2 text-xs">`;
+                if (wbB) {
+                    html += `<p class="text-tk-muted"><span class="font-medium text-tk-ink">Column B:</span> <span class="font-mono">${wbB}</span></p>`;
+                }
+                if (behaviourCount) {
+                    html += `<p class="text-tk-muted">${behaviourCount} allowed column D behaviour(s) — see <a href="/dictionary" class="text-tk-accent underline" target="_blank" rel="noopener">dictionary</a>.</p>`;
+                }
+                html += `</div></div></details>`;
             });
-            html += '</ul></div>';
+
+            html += `</div></div></details>`;
         });
-        html += '</div>';
+
+        html += `</div></div></details>`;
     });
 
     html += '</div>';
     container.innerHTML = html;
+    initTkDetailsPanels(container);
+
+    container.querySelectorAll('[data-tk-stop-summary-toggle]').forEach((wrap) => {
+        wrap.addEventListener('click', (event) => {
+            event.stopPropagation();
+        });
+    });
 }
 
 function syncGridUi(container, monthLabels, assignments, activeMonth) {

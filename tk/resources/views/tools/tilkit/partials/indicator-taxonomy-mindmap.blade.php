@@ -11,7 +11,9 @@
 <div class="tk-card p-5 space-y-4 mt-6">
     <div class="flex flex-wrap items-baseline justify-between gap-2">
         <h3 class="tk-section-title text-base">Indicator analysis mind map</h3>
-        <span class="text-xs text-tk-muted">Seven v4 type lines show on load · click a type for sub-types and codes · drag · scroll to zoom</span>
+        <span class="text-xs text-tk-muted">
+            Aligns with <a href="{{ route('dictionary') }}" class="text-tk-accent underline">dictionary</a> type lines · expand for codes · drag · scroll to zoom
+        </span>
     </div>
 
     @if (($analysis['legend_levels'] ?? []) !== [])

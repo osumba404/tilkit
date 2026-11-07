@@ -1,8 +1,4 @@
 @if ($sites->isNotEmpty() && ($indicatorLegendTree ?? []) !== [])
-    <p class="text-xs text-tk-muted mb-3">
-        Legend codes use the same category, type, and behaviour rules as capture and the
-        <a href="{{ route('dictionary') }}" class="text-tk-accent underline" target="_blank" rel="noopener">indicator dictionary</a>.
-    </p>
     <div
         class="tk-card p-5 space-y-4 mb-6"
         data-tilkit-site-month-indicators
@@ -16,11 +12,11 @@
         <div>
             <h3 class="tk-section-title text-base">Site monthly indicator catalogue</h3>
             <p class="text-sm text-tk-muted max-w-3xl mt-2">
-                For each monitoring site under <strong>{{ $activeProgram->name }}</strong>, choose which standard legend codes
-                (for example <span class="font-mono text-xs">01-ANI-BMG</span>) usually occur in each calendar month.
-                Capture only allows signs whose code is listed for the site, season, and collection date.
-                Months that share a season are treated as one set of codes when you record data (duplicates across those months count once).
-                Selections are kept in this browser immediately and <strong>saved to the server automatically</strong> (including when you leave the page).
+                For each site under <strong>{{ $activeProgram->name }}</strong>, tick legend codes that usually occur each month.
+                Open <strong>L1 → L2 → L3</strong> levels (same as the
+                <a href="{{ route('dictionary') }}" class="text-tk-accent underline">dictionary</a>).
+                Capture only allows codes listed for the site, season, and collection date.
+                Selections autosave in this browser and to the server.
             </p>
         </div>
 

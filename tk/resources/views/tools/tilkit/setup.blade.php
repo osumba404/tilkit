@@ -3,11 +3,15 @@
 
     @include('tools.tilkit.partials.program-setup-wizard')
 
-    <p class="text-sm text-tk-muted mb-6 max-w-3xl">
-        Each <strong>program</strong> is an initiative. For each program you add <strong>sites</strong> (study areas), define
-        <strong>seasons per site</strong> (month ranges can differ by location), outline each site on the map, then assign
-        <strong>monthly indicator codes</strong> per site below. Use <strong>Create program</strong> or <strong>Edit</strong> for the four-step wizard.
-    </p>
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <p class="text-sm text-tk-muted max-w-3xl">
+            Each <strong>program</strong> is an initiative. Add <strong>sites</strong>, <strong>seasons per site</strong>, map study areas, then assign
+            <strong>monthly legend codes</strong> using the same v4 hierarchy as capture
+            (<a href="{{ route('dictionary') }}" class="text-tk-accent underline">dictionary</a>).
+            Use <strong>Create program</strong> or <strong>Edit</strong> for the four-step wizard.
+        </p>
+        <a href="{{ route('dictionary') }}" class="tk-btn-secondary text-sm shrink-0">Indicator dictionary</a>
+    </div>
 
     <div class="grid lg:grid-cols-2 gap-6 mb-6">
         <div class="tk-card p-5 space-y-4">
@@ -132,57 +136,7 @@
 
     @include('tools.tilkit.partials.site-month-indicators')
 
-    <div class="tk-card p-5 space-y-4">
-        <div class="flex flex-wrap gap-2 items-baseline justify-between">
-            <h3 class="tk-section-title text-base">Indicator code legend</h3>
-            <span class="text-xs text-tk-muted">{{ $legendCodeCount }} standard codes</span>
-        </div>
-        <p class="text-sm text-tk-muted max-w-3xl">
-            Reference only - you do not register indicators here. During capture (FGD / records), each sign gets a
-            <strong>Unique Indicator ID</strong> from this legend. Codes are grouped by v4 category and type
-            (01-PLT, 01-ANI, 02-ATM, …).
-        </p>
-        @if ($legendGroups === [])
-            <p class="text-sm text-amber-800">
-                No codes loaded yet. An administrator can import the master legend:
-                <code class="text-xs">php artisan tilkit:import-legend</code>
-            </p>
-        @else
-            <div class="space-y-3">
-                @foreach ($legendGroups as $category)
-                    <x-tilkit.details-panel :open="$loop->first" class="mb-0">
-                        <x-slot:summary>
-                            <span class="min-w-0 flex-1 text-left">
-                                {{ $category['key'] }} · {{ $category['label'] }}
-                            </span>
-                            <span class="tk-details-panel-count">
-                                {{ collect($category['types'])->sum(fn ($t) => count($t['codes'])) }} codes
-                            </span>
-                        </x-slot:summary>
-                        <div class="space-y-4 px-1 pb-1 pt-3">
-                            @foreach ($category['types'] as $type)
-                                <div>
-                                    <h4 class="text-xs font-semibold uppercase tracking-wide text-tk-muted mb-2">
-                                        {{ $type['key'] }} · {{ $type['label'] }}
-                                    </h4>
-                                    <ul class="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-1 text-sm">
-                                        @foreach ($type['codes'] as $codeRow)
-                                            <li class="font-mono text-xs leading-relaxed">
-                                                <span class="text-tk-ink">{{ $codeRow['code'] }}</span>
-                                                @if ($codeRow['label'])
-                                                    <span class="text-tk-muted font-sans"> - {{ $codeRow['label'] }}</span>
-                                                @endif
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endforeach
-                        </div>
-                    </x-tilkit.details-panel>
-                @endforeach
-            </div>
-        @endif
-    </div>
+    @include('tools.tilkit.partials.indicator-legend-reference', ['legendTree' => $indicatorLegendTree ?? []])
 
     @include('tools.tilkit.partials.indicator-taxonomy-mindmap')
 </x-app-layout>
