@@ -63,6 +63,21 @@ const CY_STYLES = [
         },
     },
     {
+        selector: 'node[kind = "category"]',
+        style: {
+            'background-color': '#1d4ed8',
+            'border-width': 2,
+            'border-color': '#93c5fd',
+        },
+    },
+    {
+        selector: 'node[kind = "category"][active = "yes"]',
+        style: {
+            'border-color': '#bfdbfe',
+            'border-width': 3,
+        },
+    },
+    {
         selector: 'node[kind = "type"]',
         style: {
             'background-color': '#047857',
@@ -133,12 +148,15 @@ const CY_STYLES = [
     },
 ];
 
+const MINDMAP_EXPORT_BG = '#0f172a';
+
 class IndicatorMindmapGraph {
     constructor(mount, payload) {
         this.mount = mount;
         this.payload = payload;
         this.codeBranchOpen = true;
         this.selectedPillar = 'code_categories';
+        this.selectedCategoryKey = null;
         this.selectedTypeKey = null;
         this.selectedSubKey = null;
         this.pillarBlurbId = null;
@@ -167,6 +185,36 @@ class IndicatorMindmapGraph {
         this.runLayout(true);
     }
 
+    resetHierarchyBranch() {
+        this.selectedCategoryKey = null;
+        this.selectedTypeKey = null;
+        this.selectedSubKey = null;
+    }
+
+    codeLabel(row) {
+        const classification = row.classification || row.label || '';
+        const lines = [row.code];
+        if (classification) {
+            lines.push(classification);
+        }
+        if (row.behaviour_count > 0) {
+            lines.push(`${row.behaviour_count} D options`);
+            if (row.sample_behaviour) {
+                lines.push(`e.g. ${row.sample_behaviour}`);
+            }
+        }
+        return lines.join('\n');
+    }
+
+    activeCategory() {
+        return (this.payload.categories ?? []).find((c) => c.key === this.selectedCategoryKey) ?? null;
+    }
+
+    activeType() {
+        const cat = this.activeCategory();
+        return cat?.types?.find((t) => t.key === this.selectedTypeKey) ?? null;
+    }
+
     buildElements() {
         const nodes = [];
         const edges = [];
@@ -191,10 +239,85 @@ class IndicatorMindmapGraph {
             addEdge('root', id);
         });
 
-        const showTypeLines = (p.code_types ?? []).length > 0
+        const hasHierarchy = (p.categories ?? []).length > 0 || (p.code_types ?? []).length > 0;
+        const showTypeLines = hasHierarchy
             && (this.codeBranchOpen || this.selectedPillar === 'code_categories');
 
-        if (showTypeLines) {
+        if (showTypeLines && (p.categories ?? []).length > 0) {
+            const categories = p.categories;
+            if (!this.selectedCategoryKey) {
+                categories.forEach((cat) => {
+                    const id = `cat:${cat.key}`;
+                    addNode(id, `L1 · ${cat.key}\n${cat.label}\n(${cat.code_count} codes)`, 'category', {
+                        categoryKey: cat.key,
+                    });
+                    addEdge('pillar:code_categories', id);
+                });
+            } else {
+                const cat = categories.find((c) => c.key === this.selectedCategoryKey);
+                if (cat) {
+                    const catId = `cat:${cat.key}`;
+                    addNode(catId, `L1 · ${cat.key}\n${cat.label}\n(${cat.code_count} codes)`, 'category', {
+                        categoryKey: cat.key,
+                        active: 'yes',
+                    });
+                    addEdge('pillar:code_categories', catId);
+
+                    if (!this.selectedTypeKey) {
+                        (cat.types ?? []).forEach((type) => {
+                            const id = `type:${type.key}`;
+                            addNode(id, `L2 · ${type.title}\n(${type.code_count} codes)`, 'type', {
+                                typeKey: type.key,
+                                categoryKey: cat.key,
+                            });
+                            addEdge(catId, id);
+                        });
+                    } else {
+                        const type = (cat.types ?? []).find((t) => t.key === this.selectedTypeKey);
+                        if (type) {
+                            const typeId = `type:${type.key}`;
+                            addNode(typeId, `L2 · ${type.title}\n(${type.code_count} codes)`, 'type', {
+                                typeKey: type.key,
+                                categoryKey: cat.key,
+                                active: 'yes',
+                                warn: type.key === '_non_standard' ? 'yes' : 'no',
+                            });
+                            addEdge(catId, typeId);
+
+                            (type.sub_types ?? []).forEach((sub) => {
+                                const subId = `sub:${type.key}:${sub.key}`;
+                                addNode(subId, `L3 · ${sub.label}\n(${sub.code_count} codes)`, 'subtype', {
+                                    typeKey: type.key,
+                                    subKey: sub.key,
+                                    active: this.selectedSubKey === sub.key ? 'yes' : 'no',
+                                });
+                                addEdge(typeId, subId);
+                            });
+
+                            if (this.selectedSubKey) {
+                                const sub = type.sub_types?.find((s) => s.key === this.selectedSubKey);
+                                const codes = sub?.codes ?? [];
+                                const maxCodes = 20;
+                                codes.slice(0, maxCodes).forEach((row, i) => {
+                                    const id = `code:${row.code}:${i}`;
+                                    addNode(id, this.codeLabel(row), 'code');
+                                    addEdge(`sub:${type.key}:${this.selectedSubKey}`, id);
+                                });
+                                if (codes.length > maxCodes) {
+                                    const moreId = `code:more:${type.key}:${this.selectedSubKey}`;
+                                    addNode(
+                                        moreId,
+                                        `+ ${codes.length - maxCodes} more codes\n(open dictionary / legend below)`,
+                                        'blurb',
+                                    );
+                                    addEdge(`sub:${type.key}:${this.selectedSubKey}`, moreId);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else if (showTypeLines) {
             (p.code_types ?? []).forEach((type) => {
                 const id = `type:${type.key}`;
                 addNode(id, `${type.title}\n(${type.code_count} codes)`, 'type', {
@@ -204,36 +327,35 @@ class IndicatorMindmapGraph {
                 });
                 addEdge('pillar:code_categories', id);
             });
-        }
 
-        if (showTypeLines && this.selectedTypeKey) {
-            const type = (p.code_types ?? []).find((t) => t.key === this.selectedTypeKey);
-            (type?.sub_types ?? []).forEach((sub) => {
-                const id = `sub:${this.selectedTypeKey}:${sub.key}`;
-                addNode(id, `${sub.label}\n(${sub.code_count} codes)`, 'subtype', {
-                    typeKey: this.selectedTypeKey,
-                    subKey: sub.key,
-                    active: this.selectedSubKey === sub.key ? 'yes' : 'no',
+            if (this.selectedTypeKey) {
+                const type = (p.code_types ?? []).find((t) => t.key === this.selectedTypeKey);
+                (type?.sub_types ?? []).forEach((sub) => {
+                    const id = `sub:${this.selectedTypeKey}:${sub.key}`;
+                    addNode(id, `${sub.label}\n(${sub.code_count} codes)`, 'subtype', {
+                        typeKey: this.selectedTypeKey,
+                        subKey: sub.key,
+                        active: this.selectedSubKey === sub.key ? 'yes' : 'no',
+                    });
+                    addEdge(`type:${this.selectedTypeKey}`, id);
                 });
-                addEdge(`type:${this.selectedTypeKey}`, id);
-            });
-        }
+            }
 
-        if (showTypeLines && this.selectedTypeKey && this.selectedSubKey) {
-            const type = (p.code_types ?? []).find((t) => t.key === this.selectedTypeKey);
-            const sub = type?.sub_types?.find((s) => s.key === this.selectedSubKey);
-            const codes = sub?.codes ?? [];
-            const maxCodes = 24;
-            codes.slice(0, maxCodes).forEach((row, i) => {
-                const id = `code:${row.code}:${i}`;
-                const label = row.label ? `${row.code}\n${row.label}` : row.code;
-                addNode(id, label, 'code');
-                addEdge(`sub:${this.selectedTypeKey}:${this.selectedSubKey}`, id);
-            });
-            if (codes.length > maxCodes) {
-                const moreId = `code:more:${this.selectedTypeKey}:${this.selectedSubKey}`;
-                addNode(moreId, `+ ${codes.length - maxCodes} more codes\n(see legend list above)`, 'blurb');
-                addEdge(`sub:${this.selectedTypeKey}:${this.selectedSubKey}`, moreId);
+            if (this.selectedTypeKey && this.selectedSubKey) {
+                const type = (p.code_types ?? []).find((t) => t.key === this.selectedTypeKey);
+                const sub = type?.sub_types?.find((s) => s.key === this.selectedSubKey);
+                const codes = sub?.codes ?? [];
+                const maxCodes = 20;
+                codes.slice(0, maxCodes).forEach((row, i) => {
+                    const id = `code:${row.code}:${i}`;
+                    addNode(id, this.codeLabel(row), 'code');
+                    addEdge(`sub:${this.selectedTypeKey}:${this.selectedSubKey}`, id);
+                });
+                if (codes.length > maxCodes) {
+                    const moreId = `code:more:${this.selectedTypeKey}:${this.selectedSubKey}`;
+                    addNode(moreId, `+ ${codes.length - maxCodes} more codes\n(open dictionary / legend below)`, 'blurb');
+                    addEdge(`sub:${this.selectedTypeKey}:${this.selectedSubKey}`, moreId);
+                }
             }
         }
 
@@ -254,6 +376,82 @@ class IndicatorMindmapGraph {
         }
         this.cy.json({ elements: this.buildElements() });
         this.runLayout(true);
+    }
+
+    resizeAndFit() {
+        if (!this.cy) {
+            return;
+        }
+        const apply = () => {
+            const host = this.mount.parentElement;
+            const hostHeight = host?.clientHeight ?? 0;
+            if (hostHeight > 0) {
+                this.mount.style.height = `${hostHeight}px`;
+            }
+            this.cy.resize();
+            if (this.cy.nodes().length > 0) {
+                this.cy.fit(undefined, 56);
+            }
+        };
+        apply();
+        window.requestAnimationFrame(() => {
+            window.requestAnimationFrame(() => {
+                apply();
+                window.setTimeout(apply, 80);
+                window.setTimeout(apply, 250);
+            });
+        });
+    }
+
+    async exportPngBlob() {
+        if (!this.cy || this.cy.nodes().length === 0) {
+            return null;
+        }
+        const opts = {
+            full: true,
+            bg: MINDMAP_EXPORT_BG,
+            scale: 2,
+        };
+        try {
+            const out = this.cy.png({ ...opts, output: 'blob-promise' });
+            if (out && typeof out.then === 'function') {
+                return await out;
+            }
+        } catch {
+            /* fall through */
+        }
+        const dataUri = this.cy.png({ ...opts, output: 'base64uri' });
+        const response = await fetch(dataUri);
+
+        return response.blob();
+    }
+
+    async copyImageToClipboard() {
+        const blob = await this.exportPngBlob();
+        if (!blob) {
+            return false;
+        }
+        if (!navigator.clipboard?.write || typeof ClipboardItem === 'undefined') {
+            return false;
+        }
+        await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+
+        return true;
+    }
+
+    async downloadPng() {
+        const blob = await this.exportPngBlob();
+        if (!blob) {
+            return false;
+        }
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `tilkit-indicator-mindmap-${new Date().toISOString().slice(0, 10)}.png`;
+        link.click();
+        URL.revokeObjectURL(url);
+
+        return true;
     }
 
     runLayout(fit) {
@@ -289,13 +487,30 @@ class IndicatorMindmapGraph {
 
             if (node.data('expandable') === 'yes') {
                 this.codeBranchOpen = true;
-                if (!this.selectedTypeKey && p.code_types?.length) {
-                    this.selectedTypeKey = p.code_types[0].key;
-                    this.selectedSubKey = p.code_types[0].sub_types?.[0]?.key ?? null;
-                }
+                this.resetHierarchyBranch();
             } else {
                 this.codeBranchOpen = false;
                 this.pillarBlurbId = pillarId;
+                this.selectedCategoryKey = null;
+                this.selectedTypeKey = null;
+                this.selectedSubKey = null;
+            }
+            this.rebuild();
+            return;
+        }
+
+        if (kind === 'category') {
+            this.selectedPillar = 'code_categories';
+            this.codeBranchOpen = true;
+            const tapped = node.data('categoryKey');
+            if (
+                tapped === this.selectedCategoryKey
+                && !this.selectedTypeKey
+                && !this.selectedSubKey
+            ) {
+                this.resetHierarchyBranch();
+            } else {
+                this.selectedCategoryKey = tapped;
                 this.selectedTypeKey = null;
                 this.selectedSubKey = null;
             }
@@ -306,9 +521,17 @@ class IndicatorMindmapGraph {
         if (kind === 'type') {
             this.selectedPillar = 'code_categories';
             this.codeBranchOpen = true;
-            this.selectedTypeKey = node.data('typeKey');
-            this.selectedSubKey = p.code_types
-                ?.find((t) => t.key === this.selectedTypeKey)?.sub_types?.[0]?.key ?? null;
+            if (node.data('categoryKey')) {
+                this.selectedCategoryKey = node.data('categoryKey');
+            }
+            const nextType = node.data('typeKey');
+            if (nextType === this.selectedTypeKey) {
+                this.selectedTypeKey = null;
+                this.selectedSubKey = null;
+            } else {
+                this.selectedTypeKey = nextType;
+                this.selectedSubKey = null;
+            }
             this.rebuild();
             return;
         }
@@ -317,6 +540,140 @@ class IndicatorMindmapGraph {
             this.selectedSubKey = node.data('subKey');
             this.rebuild();
         }
+    }
+}
+
+function bindMindmapPanelControls(panel, graph) {
+    const statusEl = panel.querySelector('[data-tk-mindmap-status]');
+    const fullscreenBtn = panel.querySelector('[data-tk-mindmap-fullscreen]');
+    const copyBtn = panel.querySelector('[data-tk-mindmap-copy-image]');
+    const downloadBtn = panel.querySelector('[data-tk-mindmap-download-image]');
+
+    const setStatus = (message, isError = false) => {
+        if (!statusEl) {
+            return;
+        }
+        statusEl.textContent = message;
+        statusEl.classList.toggle('text-amber-800', isError);
+        statusEl.classList.toggle('text-tk-muted', !isError);
+        if (message && !isError) {
+            window.setTimeout(() => {
+                if (statusEl.textContent === message) {
+                    statusEl.textContent = '';
+                }
+            }, 4000);
+        }
+    };
+
+    const syncFullscreenUi = () => {
+        const native = document.fullscreenElement === panel;
+        const overlay = panel.classList.contains('tk-mindmap-panel--overlay');
+        const active = native || overlay;
+        if (fullscreenBtn) {
+            fullscreenBtn.textContent = active ? 'Exit full screen' : 'Full screen';
+            fullscreenBtn.setAttribute('aria-pressed', active ? 'true' : 'false');
+        }
+        document.body.classList.toggle('tk-mindmap-fs-open', active);
+        if (!active) {
+            graph.mount.style.height = '';
+        }
+        graph.resizeAndFit();
+    };
+
+    const mountLooksBlank = () => (graph.mount?.clientHeight ?? 0) < 80;
+
+    const enterFullscreen = async () => {
+        graph.resizeAndFit();
+        let usedNative = false;
+        try {
+            if (panel.requestFullscreen) {
+                await panel.requestFullscreen();
+                usedNative = document.fullscreenElement === panel;
+            }
+        } catch {
+            usedNative = false;
+        }
+
+        await new Promise((resolve) => {
+            window.setTimeout(resolve, 120);
+        });
+        graph.resizeAndFit();
+
+        if (!usedNative || mountLooksBlank()) {
+            if (document.fullscreenElement === panel) {
+                await document.exitFullscreen();
+            }
+            panel.classList.add('tk-mindmap-panel--overlay');
+        }
+
+        syncFullscreenUi();
+    };
+
+    const exitFullscreen = async () => {
+        if (document.fullscreenElement === panel) {
+            await document.exitFullscreen();
+        }
+        panel.classList.remove('tk-mindmap-panel--overlay');
+        syncFullscreenUi();
+    };
+
+    fullscreenBtn?.addEventListener('click', async () => {
+        const active = document.fullscreenElement === panel || panel.classList.contains('tk-mindmap-panel--overlay');
+        if (active) {
+            await exitFullscreen();
+        } else {
+            await enterFullscreen();
+        }
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+        if (document.fullscreenElement === panel || panel.classList.contains('tk-mindmap-panel--overlay')) {
+            syncFullscreenUi();
+        } else if (!document.fullscreenElement) {
+            panel.classList.remove('tk-mindmap-panel--overlay');
+            syncFullscreenUi();
+        }
+    });
+
+    window.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape') {
+            return;
+        }
+        if (document.fullscreenElement === panel || panel.classList.contains('tk-mindmap-panel--overlay')) {
+            exitFullscreen();
+        }
+    });
+
+    copyBtn?.addEventListener('click', async () => {
+        copyBtn.disabled = true;
+        try {
+            const ok = await graph.copyImageToClipboard();
+            setStatus(
+                ok ? 'Graph copied to clipboard — paste into docs or chat.' : 'Copy failed (try Download PNG or allow clipboard access).',
+                !ok,
+            );
+        } catch {
+            setStatus('Copy failed — use Download PNG instead.', true);
+        } finally {
+            copyBtn.disabled = false;
+        }
+    });
+
+    downloadBtn?.addEventListener('click', async () => {
+        downloadBtn.disabled = true;
+        try {
+            const ok = await graph.downloadPng();
+            setStatus(ok ? 'PNG downloaded.' : 'Nothing to export — expand the legend branch first.', !ok);
+        } catch {
+            setStatus('Download failed.', true);
+        } finally {
+            downloadBtn.disabled = false;
+        }
+    });
+
+    if (typeof ResizeObserver !== 'undefined') {
+        const ro = new ResizeObserver(() => graph.resizeAndFit());
+        ro.observe(panel);
     }
 }
 
@@ -336,6 +693,10 @@ export function bootIndicatorMindmap() {
             return;
         }
         host.dataset.tkMindmapReady = '1';
-        new IndicatorMindmapGraph(mount, payload);
+        const graph = new IndicatorMindmapGraph(mount, payload);
+        const panel = host.closest('[data-tk-mindmap-panel]');
+        if (panel) {
+            bindMindmapPanelControls(panel, graph);
+        }
     });
 }

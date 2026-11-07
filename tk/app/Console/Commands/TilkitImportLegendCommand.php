@@ -92,12 +92,18 @@ PY;
                 (string) ($row['type'] ?? ''),
                 (string) ($row['sub_type'] ?? ''),
             );
+            $segments = $hierarchy->parseLegendCodeSegments($row['code'])
+                ?? [
+                    'category' => str_pad((string) $row['category'], 2, '0', STR_PAD_LEFT),
+                    'type' => strtoupper(trim((string) ($row['type'] ?? ''))),
+                    'sub_type' => strtoupper(trim((string) ($row['sub_type'] ?? ''))),
+                ];
             TilkitIndicatorCode::query()->updateOrCreate(
                 ['code' => $row['code']],
                 [
-                    'category' => $row['category'],
-                    'type' => $row['type'] ?: null,
-                    'sub_type' => $row['sub_type'] ?: null,
+                    'category' => $segments['category'],
+                    'type' => $segments['type'] ?: null,
+                    'sub_type' => $segments['sub_type'] ?: null,
                     'label' => $row['label'] ?: null,
                     'protocol_version' => $version,
                 ]

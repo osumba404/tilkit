@@ -20,9 +20,16 @@ class IndicatorCodeLegendGrouper
 
         /** @var array<string, array<string, list<TilkitIndicatorCode>>> $bucket */
         $bucket = [];
+        $hierarchy = app(IndicatorHierarchy::class);
         foreach ($codes as $row) {
-            $cat = str_pad((string) $row->category, 2, '0', STR_PAD_LEFT);
-            $type = strtoupper((string) ($row->type ?? ''));
+            $parsed = $hierarchy->parseLegendCodeSegments((string) $row->code);
+            if ($parsed !== null) {
+                $cat = $parsed['category'];
+                $type = $parsed['type'];
+            } else {
+                $cat = str_pad((string) $row->category, 2, '0', STR_PAD_LEFT);
+                $type = strtoupper((string) ($row->type ?? ''));
+            }
             $bucket[$cat][$type][] = $row;
         }
 
@@ -167,102 +174,70 @@ class IndicatorCodeLegendGrouper
      */
     public function analysisMindmap(): array
     {
-        $taxonomy = $this->taxonomy();
-        /** @var list<string> $canonicalTypeLines */
-        $canonicalTypeLines = array_keys($taxonomy['types'] ?? []);
+        $hierarchy = app(IndicatorHierarchy::class);
+        $legendTree = app(IndicatorLegendTree::class)->build();
 
-        $codes = TilkitIndicatorCode::query()
-            ->whereNull('deprecated_at')
-            ->orderBy('code')
-            ->get();
-
-        /** @var array<string, list<TilkitIndicatorCode>> $byCanonicalType */
-        $byCanonicalType = array_fill_keys($canonicalTypeLines, []);
-        $nonStandard = [];
-
-        foreach ($codes as $row) {
-            $typeLine = $this->typeLineFromCode((string) $row->code);
-            if ($typeLine !== null && isset($byCanonicalType[$typeLine])) {
-                $byCanonicalType[$typeLine][] = $row;
-            } else {
-                $nonStandard[] = $row;
-            }
-        }
-
+        $categories = [];
         $codeTypes = [];
-        foreach ($canonicalTypeLines as $typeKey) {
-            $typeRows = $byCanonicalType[$typeKey];
-            if ($typeRows === []) {
-                continue;
+
+        foreach ($legendTree as $cat) {
+            $typesOut = [];
+            foreach ($cat['types'] as $type) {
+                $subTypes = $this->mindmapSubTypesFromLegendRows($type['codes'] ?? []);
+                $typeEntry = [
+                    'key' => $type['key'],
+                    'title' => $type['key'].' · '.$type['label'],
+                    'code_count' => count($type['codes'] ?? []),
+                    'sub_types' => $subTypes,
+                ];
+                $typesOut[] = $typeEntry;
+                $codeTypes[] = $typeEntry;
             }
-            $typeLabel = $taxonomy['types'][$typeKey] ?? $typeKey;
-            $codeTypes[] = [
-                'key' => $typeKey,
-                'title' => $this->typeMindmapTitleForKey($typeKey, $typeLabel, $taxonomy),
-                'code_count' => count($typeRows),
-                'sub_types' => $this->mindmapSubTypes($typeLabel, $typeRows),
+
+            $categories[] = [
+                'key' => $cat['key'],
+                'label' => $cat['label'],
+                'code_count' => collect($typesOut)->sum('code_count'),
+                'types' => $typesOut,
             ];
         }
 
-        if ($nonStandard !== []) {
-            $codeTypes[] = [
-                'key' => '_non_standard',
-                'title' => 'Non-standard legend rows ('.count($nonStandard).')',
-                'code_count' => count($nonStandard),
-                'sub_types' => [[
-                    'key' => 'review',
-                    'label' => 'Not one of the 7 v4 type lines — check master xlsx',
-                    'code_count' => count($nonStandard),
-                    'codes' => collect($nonStandard)->map(fn (TilkitIndicatorCode $c) => [
-                        'code' => $c->code,
-                        'label' => $c->label,
-                    ])->values()->all(),
-                ]],
-            ];
-        }
+        $codeCount = collect($categories)->sum('code_count');
+        $intensityLabels = collect(app(IndicatorBehaviourCatalog::class)->intensityOptions())
+            ->pluck('label')
+            ->implode(', ');
+
+        $legendLevels = collect($hierarchy->analyticalLevels())
+            ->take(7)
+            ->map(fn (array $level) => [
+                'label' => sprintf('L%d %s · column %s', $level['level'], $level['name'], $level['workbook']),
+                'detail' => (string) ($level['contains'] ?? ''),
+            ])
+            ->values()
+            ->all();
 
         return [
-            'root' => 'TILKIT Indicator Analysis from Top to Behavior',
-            'has_codes' => $codes->isNotEmpty(),
-            'legend_levels' => [
-                [
-                    'label' => 'Category · workbook A',
-                    'detail' => '6 groups (01–06) — biological, atmospheric, astronomical, hydrological, ritual, sensory',
-                ],
-                [
-                    'label' => 'Type line · workbook B',
-                    'detail' => '7 lines per Community Data List: 01-PLT, 01-ANI, 02-ATM, 03-AST, 04-HYD, 05-RIT, 06-SEN',
-                ],
-                [
-                    'label' => 'Sub-type · legend + B',
-                    'detail' => 'Third segment of the code (e.g. FRO in 01-ANI-FRO)',
-                ],
-                [
-                    'label' => 'Legend code',
-                    'detail' => 'Full XX-YYY-ZZZ row on Indicator Code Legend sheet',
-                ],
-                [
-                    'label' => 'Registered sign · C, D, AH',
-                    'detail' => 'Specific names (C), behaviour (D), unique indicator ID (AH) at capture',
-                ],
-            ],
+            'root' => 'TILKIT v4 hierarchy → workbook A–D',
+            'has_codes' => $codeCount > 0,
+            'legend_levels' => $legendLevels,
+            'categories' => $categories,
             'pillars' => [
                 [
                     'id' => 'code_categories',
-                    'label' => 'Indicator Code Categories',
+                    'label' => 'Legend hierarchy (L1–L3)',
                     'expandable' => true,
                 ],
                 [
                     'id' => 'uid',
-                    'label' => 'Unique Indicator ID Structure',
+                    'label' => 'Unique Indicator ID (AH)',
                     'expandable' => false,
-                    'blurb' => 'Workbook column AH — each registered sign gets a unique ID linked to the master legend (e.g. 01-ANI-FRO-001).',
+                    'blurb' => 'Level 5 — stable ID per registered sign (legend code + suffix), e.g. 01-ANI-FRO-001.',
                 ],
                 [
                     'id' => 'log_fields',
-                    'label' => 'Indicator Log Description Fields',
+                    'label' => 'Workbook A–C at capture',
                     'expandable' => false,
-                    'blurb' => 'Columns A–C — category, type & sub-type, then local / English / scientific names for the specific sign.',
+                    'blurb' => 'A = category (01–06), B = type line · sub-type · classification, C = local / English name for this sign.',
                 ],
                 [
                     'id' => 'history',
@@ -278,13 +253,67 @@ class IndicatorCodeLegendGrouper
                 ],
                 [
                     'id' => 'behavior',
-                    'label' => 'Indicator Behavior and Manifestation',
+                    'label' => 'Column D behaviours',
                     'expandable' => false,
-                    'blurb' => 'Column D — what the sign looks, sounds, or feels like when it warns about weather (behaviour at capture).',
+                    'blurb' => 'Level 7 — domain-specific options from the behaviour catalogue only (e.g. plant flowering, not bird migration under 01-PLT). Capture as behaviour | Intensity: '.$intensityLabels.'.',
                 ],
             ],
             'code_types' => $codeTypes,
         ];
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $codeRows  Rows from {@see IndicatorLegendTree::build()}.
+     * @return list<array{key: string, label: string, code_count: int, codes: list<array<string, mixed>>}>
+     */
+    private function mindmapSubTypesFromLegendRows(array $codeRows): array
+    {
+        /** @var array<string, list<array<string, mixed>>> $bySub */
+        $bySub = [];
+        foreach ($codeRows as $row) {
+            $sub = strtoupper(trim((string) ($row['sub_type'] ?? '')));
+            if ($sub === '' && isset($row['code'])) {
+                $parts = explode('-', strtoupper((string) $row['code']), 3);
+                $sub = $parts[2] ?? '';
+            }
+            $subKey = $sub !== '' ? $sub : '—';
+            $bySub[$subKey][] = $row;
+        }
+        ksort($bySub);
+
+        $out = [];
+        foreach ($bySub as $subKey => $rows) {
+            $classifications = collect($rows)
+                ->map(fn (array $r) => (string) ($r['classification_label'] ?? $r['label'] ?? ''))
+                ->filter()
+                ->unique()
+                ->values();
+            $out[] = [
+                'key' => $subKey,
+                'label' => $subKey === '—'
+                    ? 'Sub-type not set'
+                    : ($classifications->first()
+                        ? $subKey.' — '.$classifications->first()
+                        : $subKey),
+                'code_count' => count($rows),
+                'codes' => collect($rows)->map(function (array $row) {
+                    $behaviours = is_array($row['behaviours'] ?? null) ? $row['behaviours'] : [];
+                    $classification = (string) ($row['classification_label'] ?? $row['label'] ?? '');
+                    $wb = is_array($row['workbook'] ?? null) ? $row['workbook'] : [];
+
+                    return [
+                        'code' => (string) ($row['code'] ?? ''),
+                        'label' => $classification !== '' ? $classification : null,
+                        'classification' => $classification,
+                        'workbook_b' => (string) ($wb['B'] ?? ''),
+                        'behaviour_count' => count($behaviours),
+                        'sample_behaviour' => $behaviours[0] ?? null,
+                    ];
+                })->values()->all(),
+            ];
+        }
+
+        return $out;
     }
 
     /** @param  list<TilkitIndicatorCode>  $typeRows */

@@ -1,6 +1,6 @@
 @php
     $analysis = $indicatorAnalysisMindmap ?? [
-        'root' => 'TILKIT Indicator Analysis from Top to Behavior',
+        'root' => 'TILKIT v4 hierarchy → workbook A–D',
         'has_codes' => false,
         'legend_levels' => [],
         'pillars' => [],
@@ -12,7 +12,9 @@
     <div class="flex flex-wrap items-baseline justify-between gap-2">
         <h3 class="tk-section-title text-base">Indicator analysis mind map</h3>
         <span class="text-xs text-tk-muted">
-            Aligns with <a href="{{ route('dictionary') }}" class="text-tk-accent underline">dictionary</a> type lines · expand for codes · drag · scroll to zoom
+            Tap <strong>Legend hierarchy</strong> → L1 categories → L2 type lines → L3 sub-types → codes (classification + D options).
+            Same mapping as the <a href="{{ route('dictionary') }}" class="text-tk-accent underline">dictionary</a>. Drag · scroll to zoom ·
+            <strong>Full screen</strong> · <strong>Copy image</strong> (clipboard, no OS screenshot).
         </span>
     </div>
 
@@ -31,10 +33,34 @@
         </p>
     @endif
 
-    <div class="tk-mindmap-host" data-tk-indicator-mindmap role="region" aria-label="Draggable indicator mind map">
-        <script type="application/json" data-tk-mindmap-json>{!! json_encode($analysis, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) !!}</script>
-        <div class="tk-mindmap-mount" data-tk-mindmap-mount>
-            <p class="text-sm text-slate-400 p-4">Loading mind map…</p>
+    <div class="tk-mindmap-panel flex flex-col gap-3" data-tk-mindmap-panel>
+        <div
+            class="flex flex-wrap gap-2 items-center justify-end"
+            role="toolbar"
+            aria-label="Mind map display and export"
+        >
+            <span class="text-xs text-tk-muted mr-auto min-h-[1.25rem]" data-tk-mindmap-status aria-live="polite"></span>
+            <button type="button" class="tk-btn-secondary text-xs" data-tk-mindmap-copy-image>
+                Copy image
+            </button>
+            <button type="button" class="tk-btn-secondary text-xs" data-tk-mindmap-download-image>
+                Download PNG
+            </button>
+            <button
+                type="button"
+                class="tk-btn-secondary text-xs"
+                data-tk-mindmap-fullscreen
+                aria-pressed="false"
+            >
+                Full screen
+            </button>
+        </div>
+
+        <div class="tk-mindmap-host flex-1 min-h-0" data-tk-indicator-mindmap role="region" aria-label="Draggable indicator mind map">
+            <script type="application/json" data-tk-mindmap-json>{!! json_encode($analysis, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) !!}</script>
+            <div class="tk-mindmap-mount" data-tk-mindmap-mount>
+                <p class="text-sm text-slate-400 p-4">Loading mind map…</p>
+            </div>
         </div>
     </div>
 </div>

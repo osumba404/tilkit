@@ -41,12 +41,46 @@ class IndicatorHierarchy
         return is_array($data) ? $data : ['categories' => [], 'types' => [], 'category_order' => []];
     }
 
+    /**
+     * @return array{category: string, type: string, sub_type: string}|null
+     */
+    public function parseLegendCodeSegments(string $legendCode): ?array
+    {
+        $parts = explode('-', strtoupper(trim($legendCode)), 3);
+        if (count($parts) < 3 || $parts[0] === '' || $parts[1] === '' || $parts[2] === '') {
+            return null;
+        }
+
+        return [
+            'category' => str_pad($parts[0], 2, '0', STR_PAD_LEFT),
+            'type' => $parts[1],
+            'sub_type' => $parts[2],
+        ];
+    }
+
     public function typeLineForCode(TilkitIndicatorCode $code): string
     {
+        $parsed = $this->parseLegendCodeSegments((string) $code->code);
+        if ($parsed !== null) {
+            return $parsed['category'].'-'.$parsed['type'];
+        }
+
         $cat = str_pad((string) $code->category, 2, '0', STR_PAD_LEFT);
         $typ = strtoupper(trim((string) ($code->type ?? '')));
 
         return $cat.'-'.$typ;
+    }
+
+    public function compareCanonicalTypeLines(string $typeLineA, string $typeLineB): int
+    {
+        $order = array_flip(self::CANONICAL_TYPE_LINES);
+        $rankA = $order[$typeLineA] ?? 999;
+        $rankB = $order[$typeLineB] ?? 999;
+        if ($rankA !== $rankB) {
+            return $rankA <=> $rankB;
+        }
+
+        return strcmp($typeLineA, $typeLineB);
     }
 
     public function assertLegendRowValid(string $legendCode, string $category, string $type, string $subType): void
@@ -80,10 +114,11 @@ class IndicatorHierarchy
     public function workbookDescriptor(TilkitIndicatorCode $code, ?string $registeredName = null): array
     {
         $tax = $this->taxonomy();
-        $cat = str_pad((string) $code->category, 2, '0', STR_PAD_LEFT);
+        $parsed = $this->parseLegendCodeSegments((string) $code->code);
+        $cat = $parsed['category'] ?? str_pad((string) $code->category, 2, '0', STR_PAD_LEFT);
         $typeLine = $this->typeLineForCode($code);
         $typeLabel = $tax['types'][$typeLine] ?? strtoupper((string) ($code->type ?? ''));
-        $sub = strtoupper(trim((string) ($code->sub_type ?? '')));
+        $sub = $parsed['sub_type'] ?? strtoupper(trim((string) ($code->sub_type ?? '')));
         $classification = trim((string) ($code->label ?? ''));
         $catLabel = $tax['categories'][$cat] ?? "Category {$cat}";
 

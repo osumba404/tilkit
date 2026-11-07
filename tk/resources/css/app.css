@@ -938,6 +938,48 @@
         @apply font-display text-3xl font-bold text-tk-ink mt-1 leading-tight;
     }
 
+    .tk-mindmap-panel:fullscreen,
+    .tk-mindmap-panel.tk-mindmap-panel--overlay {
+        display: flex !important;
+        flex-direction: column;
+        box-sizing: border-box;
+        width: 100vw;
+        max-width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        max-height: 100dvh;
+        @apply bg-slate-950 p-4 sm:p-6 overflow-hidden;
+    }
+
+    .tk-mindmap-panel.tk-mindmap-panel--overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+    }
+
+    .tk-mindmap-panel:fullscreen .tk-mindmap-host,
+    .tk-mindmap-panel.tk-mindmap-panel--overlay .tk-mindmap-host {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 0;
+        min-height: 12rem;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .tk-mindmap-panel:fullscreen .tk-mindmap-mount,
+    .tk-mindmap-panel.tk-mindmap-panel--overlay .tk-mindmap-mount {
+        flex: 1 1 0;
+        width: 100%;
+        min-height: 0;
+        height: 100%;
+        max-height: none;
+    }
+
+    body.tk-mindmap-fs-open {
+        overflow: hidden;
+    }
+
     .tk-mindmap-host {
         @apply rounded-2xl border border-tk-line/80;
         background: radial-gradient(ellipse at 20% 30%, rgb(30 41 59 / 0.96), rgb(15 23 42 / 0.99));

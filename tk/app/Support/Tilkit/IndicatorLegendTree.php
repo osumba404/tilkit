@@ -30,9 +30,16 @@ class IndicatorLegendTree
 
         /** @var array<string, array<string, list<TilkitIndicatorCode>>> $bucket */
         $bucket = [];
+        $hierarchy = app(IndicatorHierarchy::class);
         foreach ($codes as $row) {
-            $cat = str_pad((string) $row->category, 2, '0', STR_PAD_LEFT);
-            $type = strtoupper((string) ($row->type ?? ''));
+            $parsed = $hierarchy->parseLegendCodeSegments((string) $row->code);
+            if ($parsed !== null) {
+                $cat = $parsed['category'];
+                $type = $parsed['type'];
+            } else {
+                $cat = str_pad((string) $row->category, 2, '0', STR_PAD_LEFT);
+                $type = strtoupper((string) ($row->type ?? ''));
+            }
             $bucket[$cat][$type][] = $row;
         }
 
@@ -66,7 +73,7 @@ class IndicatorLegendTree
                     })->values()->all(),
                 ];
             }
-            usort($typesOut, fn ($a, $b) => strcmp($a['key'], $b['key']));
+            usort($typesOut, fn ($a, $b) => $hierarchy->compareCanonicalTypeLines($a['key'], $b['key']));
 
             $out[] = [
                 'key' => $catKey,

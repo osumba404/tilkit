@@ -9,6 +9,28 @@ use Tests\TestCase;
 
 class IndicatorHierarchyTest extends TestCase
 {
+    public function test_parse_legend_code_segments_from_code_string(): void
+    {
+        $hierarchy = app(IndicatorHierarchy::class);
+        $this->assertSame(
+            ['category' => '02', 'type' => 'ATM', 'sub_type' => 'CLD'],
+            $hierarchy->parseLegendCodeSegments('02-ATM-CLD'),
+        );
+    }
+
+    public function test_type_line_follows_code_string_not_stale_db_columns(): void
+    {
+        $hierarchy = app(IndicatorHierarchy::class);
+        $code = new TilkitIndicatorCode([
+            'code' => '02-ATM-CLD',
+            'category' => '01',
+            'type' => 'ANI',
+            'sub_type' => 'CLD',
+        ]);
+
+        $this->assertSame('02-ATM', $hierarchy->typeLineForCode($code));
+    }
+
     public function test_workbook_descriptor_separates_levels(): void
     {
         $hierarchy = app(IndicatorHierarchy::class);
