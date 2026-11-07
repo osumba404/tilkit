@@ -17,138 +17,238 @@ function readPayload(host) {
 }
 
 function showMountError(mount, message) {
-    mount.innerHTML = `<p class="text-sm text-red-300 p-4">${message}</p>`;
+    mount.innerHTML = `<p class="text-sm text-red-600 dark:text-red-300 p-4">${message}</p>`;
 }
 
-const CY_STYLES = [
-    {
-        selector: 'node',
-        style: {
-            label: 'data(label)',
-            'text-wrap': 'wrap',
-            'text-max-width': '220px',
-            'font-size': '11px',
-            'font-family': 'system-ui, sans-serif',
-            color: '#f8fafc',
-            'text-valign': 'center',
-            'text-halign': 'center',
-            shape: 'round-rectangle',
-            width: 'label',
-            height: 'label',
-            padding: '12px',
-        },
-    },
-    {
-        selector: 'node[kind = "root"]',
-        style: {
-            'background-color': '#6d28d9',
-            'border-width': 2,
-            'border-color': '#c4b5fd',
-            'font-weight': 'bold',
-        },
-    },
-    {
-        selector: 'node[kind = "pillar"]',
-        style: {
-            'background-color': '#475569',
-            'border-width': 2,
-            'border-color': '#94a3b8',
-        },
-    },
-    {
-        selector: 'node[kind = "pillar"][active = "yes"]',
-        style: {
-            'border-color': '#38bdf8',
-            'border-width': 3,
-        },
-    },
-    {
-        selector: 'node[kind = "category"]',
-        style: {
-            'background-color': '#1d4ed8',
-            'border-width': 2,
-            'border-color': '#93c5fd',
-        },
-    },
-    {
-        selector: 'node[kind = "category"][active = "yes"]',
-        style: {
-            'border-color': '#bfdbfe',
-            'border-width': 3,
-        },
-    },
-    {
-        selector: 'node[kind = "type"]',
-        style: {
-            'background-color': '#047857',
-            'border-width': 2,
-            'border-color': '#34d399',
-        },
-    },
-    {
-        selector: 'node[kind = "type"][active = "yes"]',
-        style: {
-            'border-color': '#6ee7b7',
-            'border-width': 3,
-        },
-    },
-    {
-        selector: 'node[kind = "subtype"]',
-        style: {
-            'background-color': '#115e59',
-            'border-width': 2,
-            'border-color': '#2dd4bf',
-            'font-size': '10px',
-        },
-    },
-    {
-        selector: 'node[kind = "subtype"][active = "yes"]',
-        style: {
-            'border-color': '#99f6e4',
-            'border-width': 3,
-        },
-    },
-    {
-        selector: 'node[kind = "code"]',
-        style: {
-            'background-color': '#064e3b',
-            'border-width': 1,
-            'border-color': '#10b981',
-            'font-family': 'ui-monospace, monospace',
-            'font-size': '9px',
-        },
-    },
-    {
-        selector: 'node[kind = "blurb"]',
-        style: {
-            'background-color': '#334155',
-            'border-width': 1,
-            'border-color': '#cbd5e1',
-            'font-size': '10px',
-            'text-max-width': '260px',
-        },
-    },
-    {
-        selector: 'node[warn = "yes"]',
-        style: {
-            'background-color': '#78350f',
-            'border-color': '#fbbf24',
-        },
-    },
-    {
-        selector: 'edge',
-        style: {
-            width: 2.5,
-            'line-color': '#38bdf8',
-            'target-arrow-color': '#38bdf8',
-            'target-arrow-shape': 'triangle',
-            'curve-style': 'bezier',
-            'arrow-scale': 0.85,
-        },
-    },
-];
+function mindmapIsDarkMode() {
+    return document.documentElement.classList.contains('dark');
+}
 
-const MINDMAP_EXPORT_BG = '#0f172a';
+function mindmapExportBackground() {
+    return mindmapIsDarkMode() ? '#0f172a' : '#f3f5f7';
+}
+
+function buildMindmapCyStyles(dark) {
+    const t = dark
+        ? {
+            text: '#f8fafc',
+            rootBg: '#6d28d9',
+            rootBorder: '#c4b5fd',
+            pillarBg: '#475569',
+            pillarBorder: '#94a3b8',
+            pillarActive: '#38bdf8',
+            categoryBg: '#1d4ed8',
+            categoryBorder: '#93c5fd',
+            categoryActive: '#bfdbfe',
+            typeBg: '#047857',
+            typeBorder: '#34d399',
+            typeActive: '#6ee7b7',
+            subBg: '#115e59',
+            subBorder: '#2dd4bf',
+            subActive: '#99f6e4',
+            codeBg: '#064e3b',
+            codeBorder: '#10b981',
+            blurbBg: '#334155',
+            blurbBorder: '#cbd5e1',
+            warnBg: '#78350f',
+            warnBorder: '#fbbf24',
+            edge: '#38bdf8',
+        }
+        : {
+            text: '#0f172a',
+            rootBg: '#7c3aed',
+            rootBorder: '#a78bfa',
+            pillarBg: '#e2e8f0',
+            pillarBorder: '#64748b',
+            pillarActive: '#0e7490',
+            categoryBg: '#2563eb',
+            categoryBorder: '#60a5fa',
+            categoryActive: '#1d4ed8',
+            typeBg: '#059669',
+            typeBorder: '#34d399',
+            typeActive: '#047857',
+            subBg: '#0d9488',
+            subBorder: '#5eead4',
+            subActive: '#0f766e',
+            codeBg: '#ecfdf5',
+            codeBorder: '#10b981',
+            blurbBg: '#f1f5f9',
+            blurbBorder: '#94a3b8',
+            warnBg: '#fef3c7',
+            warnBorder: '#d97706',
+            edge: '#0e7490',
+        };
+
+    return [
+        {
+            selector: 'node',
+            style: {
+                label: 'data(label)',
+                'text-wrap': 'wrap',
+                'text-max-width': '220px',
+                'font-size': '11px',
+                'font-family': 'system-ui, sans-serif',
+                color: t.text,
+                'text-valign': 'center',
+                'text-halign': 'center',
+                shape: 'round-rectangle',
+                width: 'label',
+                height: 'label',
+                padding: '12px',
+            },
+        },
+        {
+            selector: 'node[kind = "root"]',
+            style: {
+                'background-color': t.rootBg,
+                'border-width': 2,
+                'border-color': t.rootBorder,
+                'font-weight': 'bold',
+            },
+        },
+        {
+            selector: 'node[kind = "pillar"]',
+            style: {
+                'background-color': t.pillarBg,
+                'border-width': 2,
+                'border-color': t.pillarBorder,
+            },
+        },
+        {
+            selector: 'node[kind = "pillar"][active = "yes"]',
+            style: {
+                'border-color': t.pillarActive,
+                'border-width': 3,
+            },
+        },
+        {
+            selector: 'node[kind = "category"]',
+            style: {
+                'background-color': t.categoryBg,
+                'border-width': 2,
+                'border-color': t.categoryBorder,
+            },
+        },
+        {
+            selector: 'node[kind = "category"][active = "yes"]',
+            style: {
+                'border-color': t.categoryActive,
+                'border-width': 3,
+            },
+        },
+        {
+            selector: 'node[kind = "type"]',
+            style: {
+                'background-color': t.typeBg,
+                'border-width': 2,
+                'border-color': t.typeBorder,
+            },
+        },
+        {
+            selector: 'node[kind = "type"][active = "yes"]',
+            style: {
+                'border-color': t.typeActive,
+                'border-width': 3,
+            },
+        },
+        {
+            selector: 'node[kind = "subtype"]',
+            style: {
+                'background-color': t.subBg,
+                'border-width': 2,
+                'border-color': t.subBorder,
+                'font-size': '10px',
+            },
+        },
+        {
+            selector: 'node[kind = "subtype"][active = "yes"]',
+            style: {
+                'border-color': t.subActive,
+                'border-width': 3,
+            },
+        },
+        {
+            selector: 'node[kind = "pillar_child"]',
+            style: {
+                'background-color': t.subBg,
+                'border-width': 2,
+                'border-color': t.subBorder,
+                'font-size': '10px',
+            },
+        },
+        {
+            selector: 'node[kind = "pillar_child"][active = "yes"]',
+            style: {
+                'border-color': t.subActive,
+                'border-width': 3,
+            },
+        },
+        {
+            selector: 'node[kind = "code"]',
+            style: {
+                'background-color': t.codeBg,
+                'border-width': 1,
+                'border-color': t.codeBorder,
+                'font-family': 'ui-monospace, monospace',
+                'font-size': '9px',
+            },
+        },
+        {
+            selector: 'node[kind = "blurb"]',
+            style: {
+                'background-color': t.blurbBg,
+                'border-width': 1,
+                'border-color': t.blurbBorder,
+                'font-size': '10px',
+                'text-max-width': '260px',
+            },
+        },
+        {
+            selector: 'node[warn = "yes"]',
+            style: {
+                'background-color': t.warnBg,
+                'border-color': t.warnBorder,
+            },
+        },
+        {
+            selector: 'edge',
+            style: {
+                width: 2.5,
+                'line-color': t.edge,
+                'target-arrow-color': t.edge,
+                'target-arrow-shape': 'triangle',
+                'curve-style': 'bezier',
+                'arrow-scale': 0.85,
+            },
+        },
+        ...(dark
+            ? []
+            : [
+                {
+                    selector: 'node[kind = "root"], node[kind = "category"], node[kind = "type"], node[kind = "subtype"]',
+                    style: { color: '#ffffff' },
+                },
+            ]),
+    ];
+}
+
+/** @type {MutationObserver | null} */
+let mindmapThemeObserver = null;
+/** @type {Set<IndicatorMindmapGraph>} */
+const mindmapGraphInstances = new Set();
+
+function ensureMindmapThemeObserver() {
+    if (mindmapThemeObserver) {
+        return;
+    }
+    mindmapThemeObserver = new MutationObserver(() => {
+        mindmapGraphInstances.forEach((graph) => graph.applyTheme());
+    });
+    mindmapThemeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class'],
+    });
+}
 
 class IndicatorMindmapGraph {
     constructor(mount, payload) {
@@ -160,6 +260,7 @@ class IndicatorMindmapGraph {
         this.selectedTypeKey = null;
         this.selectedSubKey = null;
         this.pillarBlurbId = null;
+        this.pillarPath = [];
 
         this.mount.innerHTML = '';
 
@@ -167,7 +268,7 @@ class IndicatorMindmapGraph {
             this.cy = cytoscape({
                 container: mount,
                 elements: this.buildElements(),
-                style: CY_STYLES,
+                style: buildMindmapCyStyles(mindmapIsDarkMode()),
                 wheelSensitivity: 0.3,
                 minZoom: 0.25,
                 maxZoom: 2.5,
@@ -182,13 +283,87 @@ class IndicatorMindmapGraph {
         }
 
         this.cy.on('tap', 'node', (evt) => this.onNodeTap(evt.target));
+        mindmapGraphInstances.add(this);
+        ensureMindmapThemeObserver();
         this.runLayout(true);
+    }
+
+    applyTheme() {
+        if (!this.cy) {
+            return;
+        }
+        this.cy.style(buildMindmapCyStyles(mindmapIsDarkMode()));
     }
 
     resetHierarchyBranch() {
         this.selectedCategoryKey = null;
         this.selectedTypeKey = null;
         this.selectedSubKey = null;
+    }
+
+    resetPillarBranch() {
+        this.pillarPath = [];
+    }
+
+    formatPillarNode(node) {
+        const lines = [node.label];
+        if (node.detail) {
+            const detail = String(node.detail);
+            lines.push(detail.length > 140 ? `${detail.slice(0, 137)}…` : detail);
+        }
+
+        return lines.join('\n');
+    }
+
+    appendPillarTree(pillarId, addNode, addEdge) {
+        const trees = this.payload.pillar_trees?.[pillarId] ?? [];
+        if (!trees.length) {
+            return;
+        }
+
+        const path = this.pillarPath;
+        const pillarNodeId = `pillar:${pillarId}`;
+        let parentId = pillarNodeId;
+        let siblings = trees;
+
+        if (path.length === 0) {
+            siblings.forEach((node) => {
+                const id = `pnode:${pillarId}:${node.key}`;
+                addNode(id, this.formatPillarNode(node), 'pillar_child', {
+                    pillarId,
+                    pillarKey: node.key,
+                });
+                addEdge(parentId, id);
+            });
+
+            return;
+        }
+
+        for (let i = 0; i < path.length; i += 1) {
+            const key = path[i];
+            const node = siblings.find((n) => n.key === key);
+            if (!node) {
+                break;
+            }
+            const id = `pnode:${pillarId}:${path.slice(0, i + 1).join('/')}`;
+            addNode(id, this.formatPillarNode(node), 'pillar_child', {
+                pillarId,
+                pillarKey: key,
+                active: i === path.length - 1 ? 'yes' : 'no',
+            });
+            addEdge(parentId, id);
+            parentId = id;
+            siblings = node.children ?? [];
+        }
+
+        siblings.forEach((node) => {
+            const id = `pnode:${pillarId}:${[...path, node.key].join('/')}`;
+            addNode(id, this.formatPillarNode(node), 'pillar_child', {
+                pillarId,
+                pillarKey: node.key,
+            });
+            addEdge(parentId, id);
+        });
     }
 
     codeLabel(row) {
@@ -240,10 +415,19 @@ class IndicatorMindmapGraph {
         });
 
         const hasHierarchy = (p.categories ?? []).length > 0 || (p.code_types ?? []).length > 0;
-        const showTypeLines = hasHierarchy
-            && (this.codeBranchOpen || this.selectedPillar === 'code_categories');
+        const showLegendHierarchy = hasHierarchy
+            && this.selectedPillar === 'code_categories'
+            && this.codeBranchOpen;
 
-        if (showTypeLines && (p.categories ?? []).length > 0) {
+        const showWorkbookPillar = this.selectedPillar
+            && this.selectedPillar !== 'code_categories'
+            && (p.pillar_trees?.[this.selectedPillar] ?? []).length > 0;
+
+        if (showWorkbookPillar) {
+            this.appendPillarTree(this.selectedPillar, addNode, addEdge);
+        }
+
+        if (showLegendHierarchy && (p.categories ?? []).length > 0) {
             const categories = p.categories;
             if (!this.selectedCategoryKey) {
                 categories.forEach((cat) => {
@@ -317,7 +501,7 @@ class IndicatorMindmapGraph {
                     }
                 }
             }
-        } else if (showTypeLines) {
+        } else if (showLegendHierarchy) {
             (p.code_types ?? []).forEach((type) => {
                 const id = `type:${type.key}`;
                 addNode(id, `${type.title}\n(${type.code_count} codes)`, 'type', {
@@ -356,14 +540,6 @@ class IndicatorMindmapGraph {
                     addNode(moreId, `+ ${codes.length - maxCodes} more codes\n(open dictionary / legend below)`, 'blurb');
                     addEdge(`sub:${this.selectedTypeKey}:${this.selectedSubKey}`, moreId);
                 }
-            }
-        }
-
-        if (this.pillarBlurbId) {
-            const blurb = (p.pillars ?? []).find((x) => x.id === this.pillarBlurbId)?.blurb ?? '';
-            if (blurb !== '') {
-                addNode(`blurb:${this.pillarBlurbId}`, blurb, 'blurb');
-                addEdge(`pillar:${this.pillarBlurbId}`, `blurb:${this.pillarBlurbId}`);
             }
         }
 
@@ -409,7 +585,7 @@ class IndicatorMindmapGraph {
         }
         const opts = {
             full: true,
-            bg: MINDMAP_EXPORT_BG,
+            bg: mindmapExportBackground(),
             scale: 2,
         };
         try {
@@ -484,16 +660,33 @@ class IndicatorMindmapGraph {
             const pillarId = node.data('pillarId');
             this.selectedPillar = pillarId;
             this.pillarBlurbId = null;
+            this.resetPillarBranch();
+            this.resetHierarchyBranch();
 
-            if (node.data('expandable') === 'yes') {
+            if (pillarId === 'code_categories') {
                 this.codeBranchOpen = true;
-                this.resetHierarchyBranch();
             } else {
                 this.codeBranchOpen = false;
-                this.pillarBlurbId = pillarId;
-                this.selectedCategoryKey = null;
-                this.selectedTypeKey = null;
-                this.selectedSubKey = null;
+            }
+            this.rebuild();
+            return;
+        }
+
+        if (kind === 'pillar_child') {
+            const pillarId = node.data('pillarId');
+            const key = node.data('pillarKey');
+            this.selectedPillar = pillarId;
+            this.codeBranchOpen = false;
+            this.resetHierarchyBranch();
+
+            const path = [...this.pillarPath];
+            const at = path.indexOf(key);
+            if (at !== -1 && at === path.length - 1) {
+                this.pillarPath = path.slice(0, -1);
+            } else if (at !== -1) {
+                this.pillarPath = path.slice(0, at + 1);
+            } else {
+                this.pillarPath = [...path, key];
             }
             this.rebuild();
             return;

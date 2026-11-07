@@ -12,7 +12,7 @@
     <div class="flex flex-wrap items-baseline justify-between gap-2">
         <h3 class="tk-section-title text-base">Indicator analysis mind map</h3>
         <span class="text-xs text-tk-muted">
-            Tap <strong>Legend hierarchy</strong> → L1 categories → L2 type lines → L3 sub-types → codes (classification + D options).
+            Tap <strong>Legend hierarchy</strong> to drill L1 categories → L2 type lines → L3 sub-types → legend codes.
             Same mapping as the <a href="{{ route('dictionary') }}" class="text-tk-accent underline">dictionary</a>. Drag · scroll to zoom ·
             <strong>Full screen</strong> · <strong>Copy image</strong> (clipboard, no OS screenshot).
         </span>
@@ -59,7 +59,7 @@
         <div class="tk-mindmap-host flex-1 min-h-0" data-tk-indicator-mindmap role="region" aria-label="Draggable indicator mind map">
             <script type="application/json" data-tk-mindmap-json>{!! json_encode($analysis, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) !!}</script>
             <div class="tk-mindmap-mount" data-tk-mindmap-mount>
-                <p class="text-sm text-slate-400 p-4">Loading mind map…</p>
+                <p class="text-sm text-tk-muted p-4">Loading mind map…</p>
             </div>
         </div>
     </div>

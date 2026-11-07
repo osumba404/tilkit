@@ -88,7 +88,8 @@ class TilkitIndicatorLegendGrouperTest extends TestCase
         $analysis = app(IndicatorCodeLegendGrouper::class)->analysisMindmap();
 
         $this->assertSame('TILKIT v4 hierarchy → workbook A–D', $analysis['root']);
-        $this->assertCount(6, $analysis['pillars']);
+        $this->assertCount(1, $analysis['pillars']);
+        $this->assertSame('code_categories', $analysis['pillars'][0]['id']);
         $this->assertTrue($analysis['has_codes']);
         $this->assertNotEmpty($analysis['categories']);
         $this->assertSame('01', $analysis['categories'][0]['key']);

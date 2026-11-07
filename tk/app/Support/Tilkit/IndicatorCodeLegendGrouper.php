@@ -203,9 +203,6 @@ class IndicatorCodeLegendGrouper
         }
 
         $codeCount = collect($categories)->sum('code_count');
-        $intensityLabels = collect(app(IndicatorBehaviourCatalog::class)->intensityOptions())
-            ->pluck('label')
-            ->implode(', ');
 
         $legendLevels = collect($hierarchy->analyticalLevels())
             ->take(7)
@@ -221,41 +218,12 @@ class IndicatorCodeLegendGrouper
             'has_codes' => $codeCount > 0,
             'legend_levels' => $legendLevels,
             'categories' => $categories,
+            'pillar_trees' => [],
             'pillars' => [
                 [
                     'id' => 'code_categories',
                     'label' => 'Legend hierarchy (L1–L3)',
                     'expandable' => true,
-                ],
-                [
-                    'id' => 'uid',
-                    'label' => 'Unique Indicator ID (AH)',
-                    'expandable' => false,
-                    'blurb' => 'Level 5 — stable ID per registered sign (legend code + suffix), e.g. 01-ANI-FRO-001.',
-                ],
-                [
-                    'id' => 'log_fields',
-                    'label' => 'Workbook A–C at capture',
-                    'expandable' => false,
-                    'blurb' => 'A = category (01–06), B = type line · sub-type · classification, C = local / English name for this sign.',
-                ],
-                [
-                    'id' => 'history',
-                    'label' => 'Indicator History and Reliability',
-                    'expandable' => false,
-                    'blurb' => 'Columns J–M — how long the community has trusted the sign, lead time, and historical vs current-season reliability.',
-                ],
-                [
-                    'id' => 'sighting',
-                    'label' => 'Field Sighting and Evidence',
-                    'expandable' => false,
-                    'blurb' => 'Columns N, O, Z, Y, CI — sighted this season, place description, GPS, photos, and field sighting dates.',
-                ],
-                [
-                    'id' => 'behavior',
-                    'label' => 'Column D behaviours',
-                    'expandable' => false,
-                    'blurb' => 'Level 7 — domain-specific options from the behaviour catalogue only (e.g. plant flowering, not bird migration under 01-PLT). Capture as behaviour | Intensity: '.$intensityLabels.'.',
                 ],
             ],
             'code_types' => $codeTypes,

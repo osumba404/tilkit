@@ -948,7 +948,12 @@
         height: 100vh;
         height: 100dvh;
         max-height: 100dvh;
-        @apply bg-slate-950 p-4 sm:p-6 overflow-hidden;
+        @apply bg-tk-bg p-4 sm:p-6 overflow-hidden;
+    }
+
+    .dark .tk-mindmap-panel:fullscreen,
+    .dark .tk-mindmap-panel.tk-mindmap-panel--overlay {
+        @apply bg-slate-950;
     }
 
     .tk-mindmap-panel.tk-mindmap-panel--overlay {
@@ -981,7 +986,18 @@
     }
 
     .tk-mindmap-host {
-        @apply rounded-2xl border border-tk-line/80;
+        @apply rounded-2xl border border-tk-line/80 bg-tk-surface;
+        background: linear-gradient(
+            145deg,
+            rgb(var(--tk-surface)),
+            rgb(var(--tk-soft))
+        );
+        box-shadow:
+            inset 0 1px 0 rgb(255 255 255 / 0.9),
+            0 1px 2px rgb(var(--tk-ink) / 0.04);
+    }
+
+    .dark .tk-mindmap-host {
         background: radial-gradient(ellipse at 20% 30%, rgb(30 41 59 / 0.96), rgb(15 23 42 / 0.99));
         box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
     }
@@ -991,6 +1007,10 @@
         height: min(70vh, 640px);
         min-height: 28rem;
         position: relative;
+        background: rgb(var(--tk-soft) / 0.65);
+    }
+
+    .dark .tk-mindmap-mount {
         background: rgb(15 23 42 / 0.35);
     }
 
