@@ -16,6 +16,7 @@
                 Open <strong>L1 → L2 → L3</strong> levels (same as the
                 <a href="{{ route('dictionary') }}" class="text-tk-accent underline">dictionary</a>).
                 Capture only allows codes listed for the site, season, and collection date.
+                Use <strong>All</strong> / <strong>Clear</strong> on each L1 category to bulk-select codes for the active month.
                 Selections autosave in this browser and to the server.
             </p>
         </div>

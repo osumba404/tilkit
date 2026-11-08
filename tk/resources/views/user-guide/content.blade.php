@@ -207,7 +207,9 @@
                         <li><strong>Sites (AI)</strong> - community or station, geography, optional map centre for GPS.</li>
                         <li><strong>Seasons (AM)</strong> - named month ranges, including year wrap.</li>
                         <li><strong>Season settings</strong> - weighting, priors, integration hooks.</li>
-                        <li><strong>Code legend</strong> - <span class="tk-guide-code">tilkit:import-legend</span> for official indicator UIDs.</li>
+                        <li><strong>Code legend</strong> - <span class="tk-guide-code">tilkit:import-legend</span> for official indicator UIDs; <span class="tk-guide-code">tilkit:reconcile-indicator-codes</span> if DB category/type drift from code strings.</li>
+                        <li><strong>Indicator analysis mind map</strong> - legend-only L1 → L2 → L3 drill-down (same tree as the dictionary); expand one level at a time with siblings visible.</li>
+                        <li><strong>Site monthly indicator catalogue</strong> - per site and calendar month, tick expected legend codes; <strong>All</strong> / <strong>Clear</strong> on each L1 category; autosave to the server.</li>
                     </ul>
                     @if ($link('tools.tilkit.setup'))
                         <x-guide.link href="{{ $link('tools.tilkit.setup') }}">Open Setup</x-guide.link>

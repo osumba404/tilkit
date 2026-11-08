@@ -152,13 +152,15 @@ class IndicatorCodeLegendGrouper
     }
 
     /**
-     * Horizontal mind-map payload (root → workbook pillars → legend types → examples).
+     * Horizontal mind-map payload for Setup: root → single legend-hierarchy pillar → L1–L3 drill-down.
      *
      * @return array{
      *     root: string,
      *     has_codes: bool,
      *     pillars: list<array{id: string, label: string, expandable: bool, blurb?: string}>,
      *     legend_levels: list<array{label: string, detail: string}>,
+     *     categories: list<array{key: string, label: string, code_count: int, types: list<mixed>}>,
+     *     pillar_trees: array<string, list<mixed>>,
      *     code_types: list<array{
      *         key: string,
      *         title: string,

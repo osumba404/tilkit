@@ -54,6 +54,6 @@ Track detailed status in **[alignment-audit.md](./alignment-audit.md)** (living 
 - **Operational data** (sites, seasons, indicator records) is entered in the app or imported deliberately; **`tilkit:import-demo`** is for PHPUnit and manual parity checks only.
 - Optional reference: **`tilkit:import-legend`** loads the code legend from the master xlsx when you need DB-backed UIDs.
 
-Sites and seasons are configured per deployment under that single tool (setup UI).
+Sites and seasons are configured per deployment under that single tool (setup UI), including the **legend mind map**, **monthly indicator catalogue** (L1–L3, per-month codes), and `php artisan tilkit:reconcile-indicator-codes` when legend DB columns drift from code strings.
 
 **In-app flow:** Weather log subnav covers **Capture → Records → Analysis → Tally → Data desk → Setup → Team**. Generic form builder / submission analytics redirect here; workbook CSV/JSON/xlsx exports live on the weather log home.

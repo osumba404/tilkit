@@ -4,7 +4,7 @@ Cross-check between **spec documents** (`tilkit_docs/`, Developer Brief in `_ext
 
 **Related docs:** [README](./README.md) · [Open questions](./open-questions.md) · [Fixtures README](../../tests/Fixtures/Tilkit/README.md)
 
-**Last reviewed:** 2026-10-24 (personas, climate review, xlsx import/export, integration fields)
+**Last reviewed:** 2026-11-08 (Setup legend hierarchy: mind map, monthly catalogue, shared L1–L3 tree)
 
 ---
 
@@ -97,6 +97,8 @@ Source files: `TILKIT_Weather_Indicator_Log_Master_Template_v4_OND2026.xlsx` and
 | Seed code legend + prior multipliers from v4 xlsx | Phase 1 epic | `tilkit:import-legend` (157 codes from master) | `[~]` prior matrix import partial |
 | RBAC by provider (observer, ITK, data desk, …) | Brief §5, Register | `TilkitPersona` + `TilkitPersonaService`; guards on data desk, sightings, publish, AC/AD/AE | `[~]` persona column on `tool_members`; no invite UI |
 | Admin CRUD: sites, seasons, codes | Phase 1 epic | `ToolTilkitAdminController` setup + data desk | `[~]` codes via import, not full CRUD |
+| Setup: indicator analysis mind map (legend L1–L3) | Brief hierarchy UX | `IndicatorCodeLegendGrouper::analysisMindmap()` + `tilkit-indicator-mindmap.js` on setup | `[x]` single legend pillar; sibling-preserving drill-down |
+| Setup: site monthly indicator catalogue | Pilot capture scope | `SiteIndicatorCatalogService`, `tilkit-site-month-indicators.js`, L1 **All/Clear** | `[x]` same `IndicatorLegendTree` as dictionary; autosave |
 | Organisation entity | Phase 1 epic deliverable | Uses `dc_projects` as tool host | `[~]` intentional platform pattern |
 
 **Child issues**
@@ -270,3 +272,4 @@ Before calling a pilot “on TILKIT digital” rather than the xlsx:
 | 2026-10-23 | Removed legacy generic-form capture (`WeatherIndicatorLogToolSeeder`, `WeatherIndicatorLogFieldCatalog`) |
 | 2026-10-23 | Engine, tally, demo parity, 12-sheet config, admin routes; AP Excel labels; AJ–AL reference sync |
 | 2026-10-24 | Personas, climate weight reviews, A–E wizard, xlsx import/export, integration enrichments, six-sign + climate gate tests |
+| 2026-11-08 | Setup mind map (legend-only pillar), monthly catalogue All/Clear, hierarchy reference §4.3; `tilkit:reconcile-indicator-codes` |

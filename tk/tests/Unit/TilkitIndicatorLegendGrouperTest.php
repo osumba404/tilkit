@@ -73,7 +73,7 @@ class TilkitIndicatorLegendGrouperTest extends TestCase
         $this->assertContains('01-ANI-FRO', $type['sub_types'][0]['sample_codes']);
     }
 
-    public function test_analysis_mindmap_includes_pillars_and_type_leaves(): void
+    public function test_analysis_mindmap_has_single_legend_pillar_and_type_leaves(): void
     {
         $protocol = config('tilkit.weather.protocol_version');
         TilkitIndicatorCode::query()->create([

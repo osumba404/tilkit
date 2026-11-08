@@ -16,7 +16,7 @@ The primary product in this repository is the **TILKIT Weather Indicator Log**: 
 | **Analysis** | Volume, validation breakdown, maps, and **Deep Analysis**-custom dashboards, Explore notebook, and slicers by program, site, and season. |
 | **Tally** | Seasonal tercile aggregation with v4 weighting and eligibility gates; publish snapshots for reporting. |
 | **Data desk** | Queues for validation, climate-weight review, and operational follow-up. |
-| **Setup** | Programs, monitoring seasons (month ranges), sites, team roles, and indicator code legend (reference). |
+| **Setup** | Programs, seasons, sites, team roles, legend reference, **site monthly indicator catalogue** (L1–L3 + per-month codes), and **indicator analysis mind map**. |
 | **Exports** | Governed CSV, JSON, and Excel aligned to workbook column order; consent and do-no-harm rules apply. |
 
 **TILKIT** (Traditional Indigenous and Local Knowledge Tool) turns community-trusted weather signs-tree flowering, wind, animal behaviour, and similar-into a **shared seasonal rainfall forecast** (tercile: above normal, normal, below normal), with traceability from workshop capture through field sighting to official comparison (e.g. meteorological outlook and drought monitoring feeds where configured).
