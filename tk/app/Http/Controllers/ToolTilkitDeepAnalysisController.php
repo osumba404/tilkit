@@ -13,7 +13,7 @@ class ToolTilkitDeepAnalysisController extends Controller
 {
     public function show(Request $request, DcProject $tool, ToolAccessService $access): View
     {
-        $access->assertCanView($request->user(), $tool);
+        $access->assertCanViewAnalytics($request->user(), $tool);
 
         return view('tools.tilkit.deep-analysis', [
             'tool' => $tool,
@@ -26,14 +26,14 @@ class ToolTilkitDeepAnalysisController extends Controller
 
     public function schema(Request $request, DcProject $tool, ToolAccessService $access, TilkitDeepAnalysisDataset $dataset): JsonResponse
     {
-        $access->assertCanView($request->user(), $tool);
+        $access->assertCanViewAnalytics($request->user(), $tool);
 
         return response()->json($dataset->schema($tool));
     }
 
     public function dataset(Request $request, DcProject $tool, ToolAccessService $access, TilkitDeepAnalysisDataset $dataset): JsonResponse
     {
-        $access->assertCanView($request->user(), $tool);
+        $access->assertCanViewAnalytics($request->user(), $tool);
 
         $data = $request->validate([
             'site_ids' => ['nullable', 'array'],

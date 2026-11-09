@@ -172,7 +172,7 @@ class ToolTilkitWeatherController extends Controller
             'workbook' => ['nullable', 'array'],
             'workbook.*' => ['nullable'],
             'workbook_photos' => ['nullable', 'array'],
-            'workbook_photos.*' => ['file', 'image', 'max:8192'],
+            'workbook_photos.*' => ['file', 'image', 'mimes:jpeg,jpg,png,webp,gif', 'max:8192'],
         ]);
 
         $this->assertToolOwnsReferences($tool, $validated);
@@ -246,7 +246,7 @@ class ToolTilkitWeatherController extends Controller
             'workbook' => ['nullable', 'array'],
             'workbook.*' => ['nullable'],
             'workbook_photos' => ['nullable', 'array'],
-            'workbook_photos.*' => ['file', 'image', 'max:8192'],
+            'workbook_photos.*' => ['file', 'image', 'mimes:jpeg,jpg,png,webp,gif', 'max:8192'],
         ]);
 
         $raw = WorkbookCapturePreparer::normalizeIncoming($validated['workbook'] ?? []);

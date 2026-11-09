@@ -205,7 +205,7 @@ class ToolTilkitAdminController extends Controller
 
     public function storeProgram(Request $request, DcProject $tool, ToolAccessService $access): RedirectResponse|JsonResponse
     {
-        $access->assertCanView($request->user(), $tool);
+        $access->assertCanManage($request->user(), $tool);
         $data = $request->validate(
             [
                 'name' => $this->programNameRules($tool),
@@ -233,7 +233,7 @@ class ToolTilkitAdminController extends Controller
 
     public function updateProgram(Request $request, DcProject $tool, TilkitProgram $program, ToolAccessService $access): RedirectResponse|JsonResponse
     {
-        $access->assertCanView($request->user(), $tool);
+        $access->assertCanManage($request->user(), $tool);
         abort_unless((int) $program->project_id === (int) $tool->id, 404);
 
         $data = $request->validate(
@@ -271,7 +271,7 @@ class ToolTilkitAdminController extends Controller
 
     public function storeSite(Request $request, DcProject $tool, ToolAccessService $access, GeographyCatalogService $geo): RedirectResponse|JsonResponse
     {
-        $access->assertCanView($request->user(), $tool);
+        $access->assertCanManage($request->user(), $tool);
         $programId = (int) $request->input('program_id');
         $data = $request->validate(
             [
@@ -315,7 +315,7 @@ class ToolTilkitAdminController extends Controller
 
     public function updateSiteStudyArea(Request $request, DcProject $tool, TilkitSite $site, ToolAccessService $access): RedirectResponse|JsonResponse
     {
-        $access->assertCanView($request->user(), $tool);
+        $access->assertCanManage($request->user(), $tool);
         abort_unless((int) $site->project_id === (int) $tool->id, 404);
 
         $data = $request->validate([
@@ -356,7 +356,7 @@ class ToolTilkitAdminController extends Controller
 
     public function storeSeason(Request $request, DcProject $tool, ToolAccessService $access): RedirectResponse|JsonResponse
     {
-        $access->assertCanView($request->user(), $tool);
+        $access->assertCanManage($request->user(), $tool);
         $programId = (int) $request->input('program_id');
         $siteId = (int) $request->input('site_id');
         $data = $request->validate(
@@ -514,6 +514,12 @@ class ToolTilkitAdminController extends Controller
         $seasons = $this->programs->seasonsQuery($tool)->get();
         $siteId = (int) $request->query('site_id', $sites->first()?->id);
         $seasonId = (int) $request->query('season_id', $seasons->first()?->id);
+        if ($siteId) {
+            abort_unless($sites->contains('id', $siteId), 404);
+        }
+        if ($seasonId) {
+            abort_unless($seasons->contains('id', $seasonId), 404);
+        }
         $settings = null;
         if ($siteId && $seasonId) {
             $settings = TilkitSeasonSettings::query()->firstOrCreate(
@@ -527,7 +533,7 @@ class ToolTilkitAdminController extends Controller
 
     public function updateSeasonSettings(Request $request, DcProject $tool, ToolAccessService $access): RedirectResponse
     {
-        $access->assertCanView($request->user(), $tool);
+        $access->assertCanManage($request->user(), $tool);
         $data = $request->validate([
             'site_id' => ['required', 'exists:tilkit_sites,id'],
             'season_id' => ['required', 'exists:tilkit_seasons,id'],
@@ -536,6 +542,7 @@ class ToolTilkitAdminController extends Controller
             'ndma_drought_phase' => ['nullable', 'string', 'max:40'],
             'ndma_vci3m' => ['nullable', 'numeric', 'min:0', 'max:100'],
         ]);
+        $this->assertToolOwnsSiteAndSeason($tool, (int) $data['site_id'], (int) $data['season_id']);
         $settings = TilkitSeasonSettings::query()->updateOrCreate(
             ['site_id' => $data['site_id'], 'season_id' => $data['season_id']],
             [
@@ -652,15 +659,11 @@ class ToolTilkitAdminController extends Controller
         return back()->with('status', 'Climate weight review signed off.');
     }
 
-    public function exportXlsx(Request $request, DcProject $tool, ToolAccessService $access, WorkbookXlsxExporter $exporter): StreamedResponse|\Symfony\Component\HttpFoundation\BinaryFileResponse
+    public function exportXlsx(Request $request, DcProject $tool, ToolAccessService $access, WorkbookXlsxExporter $exporter, TilkitConsentGate $consent): StreamedResponse|\Symfony\Component\HttpFoundation\BinaryFileResponse
     {
-        $access->assertCanView($request->user(), $tool);
-        abort_unless($request->user()->toolCapabilitiesFor($tool)->canExportData(), 403);
+        $access->assertCanExport($request->user(), $tool);
 
-        $records = TilkitIndicatorRecord::query()
-            ->whereHas('indicator', fn ($q) => $q->where('project_id', $tool->id))
-            ->with(['workbookValues', 'indicator'])
-            ->get();
+        $records = $this->exportableRecords($tool, $consent, $request->boolean('include_blocked'));
 
         $path = storage_path('app/tilkit-export-'.uniqid('', true).'.xlsx');
         $exporter->writeToPath($records, $path);
@@ -708,7 +711,7 @@ class ToolTilkitAdminController extends Controller
 
     public function exportCsv(Request $request, DcProject $tool, ToolAccessService $access, WorkbookRecordService $workbook, TilkitConsentGate $consent): StreamedResponse
     {
-        $access->assertCanView($request->user(), $tool);
+        $access->assertCanExport($request->user(), $tool);
 
         $records = $this->exportableRecords($tool, $consent, $request->boolean('include_blocked'));
 
@@ -738,7 +741,7 @@ class ToolTilkitAdminController extends Controller
 
     public function exportJson(Request $request, DcProject $tool, ToolAccessService $access, WorkbookRecordService $workbook, TilkitConsentGate $consent): StreamedResponse
     {
-        $access->assertCanView($request->user(), $tool);
+        $access->assertCanExport($request->user(), $tool);
         $records = $this->exportableRecords($tool, $consent, false);
         $columns = WorkbookColumnRegistry::all();
         $payload = [];
@@ -775,6 +778,7 @@ class ToolTilkitAdminController extends Controller
             'advisory_message' => ['required', 'string', 'max:5000'],
             'publish_snapshot' => ['nullable', 'boolean'],
         ]);
+        $this->assertToolOwnsSiteAndSeason($tool, (int) $data['site_id'], (int) $data['season_id']);
         $result = $engine->runTally((int) $data['site_id'], (int) $data['season_id'], $request->boolean('publish_snapshot'), $request->user()->id);
         $settings = TilkitSeasonSettings::query()->where('site_id', $data['site_id'])->where('season_id', $data['season_id'])->first();
         $forecast = TilkitConsensusForecast::query()->create([
@@ -809,7 +813,7 @@ class ToolTilkitAdminController extends Controller
 
     public function updateSiteMonthIndicators(Request $request, DcProject $tool, TilkitSite $site, ToolAccessService $access, SiteIndicatorCatalogService $catalog): RedirectResponse|\Illuminate\Http\JsonResponse
     {
-        $access->assertCanView($request->user(), $tool);
+        $access->assertCanManage($request->user(), $tool);
         abort_unless((int) $site->project_id === (int) $tool->id, 404);
 
         $program = $this->programs->active($tool);
@@ -882,6 +886,25 @@ class ToolTilkitAdminController extends Controller
         }
 
         return $records->filter(fn (TilkitIndicatorRecord $r) => $consent->canExport($r));
+    }
+
+    private function assertToolOwnsSiteAndSeason(DcProject $tool, int $siteId, int $seasonId): void
+    {
+        $site = TilkitSite::query()
+            ->where('project_id', $tool->id)
+            ->where('id', $siteId)
+            ->first();
+        $season = TilkitSeason::query()
+            ->where('project_id', $tool->id)
+            ->where('id', $seasonId)
+            ->first();
+
+        abort_unless($site !== null && $season !== null, 404);
+        abort_unless(
+            $season->site_id === null || (int) $season->site_id === (int) $site->id,
+            422,
+            'Season does not belong to the selected site.',
+        );
     }
 
     private function assertRecordBelongsToTool(DcProject $tool, TilkitIndicatorRecord $record): void
