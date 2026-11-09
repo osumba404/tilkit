@@ -49,6 +49,12 @@ class AppServiceProvider extends ServiceProvider
                 return;
             }
 
+            if (! Schema::hasTable('dc_projects')) {
+                $view->with('tilkitWeatherTool', null);
+
+                return;
+            }
+
             $user = auth()->user();
             $tool = WeatherTool::resolve();
             if ($tool === null && $user !== null) {

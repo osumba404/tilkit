@@ -4,15 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Support\Marketing\HomeTilkitAbout;
 use App\Support\Tilkit\WeatherTool;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
 class HomeController extends Controller
 {
     public function __invoke(): View
     {
-        $weatherTool = WeatherTool::singleToolMode()
-            ? (auth()->user() ? WeatherTool::ensurePlatformTool(auth()->user()) : WeatherTool::resolve())
-            : null;
+        $weatherTool = null;
+        if (WeatherTool::singleToolMode() && Schema::hasTable('dc_projects')) {
+            $weatherTool = auth()->user()
+                ? WeatherTool::ensurePlatformTool(auth()->user())
+                : WeatherTool::resolve();
+        }
 
         $about = HomeTilkitAbout::content();
         $title = 'Tilkit - institutional data collection and field analytics';

@@ -25,16 +25,26 @@ class TilkitDeepAnalysisDatasetTest extends TestCase
 
         $kenya = collect($schema['filters']['programs'])->firstWhere('name', 'Kenya NEO');
         $isiolo = collect($schema['filters']['sites'])->first(fn (array $s) => str_contains($s['name'], 'Isiolo'));
-        $mam = collect($schema['filters']['seasons'])->firstWhere('label', 'MAM 2026');
 
         $this->assertNotNull($kenya, 'Kenya NEO program in schema');
         $this->assertNotNull($isiolo, 'Isiolo site in schema');
-        $this->assertNotNull($mam, 'MAM 2026 season in schema');
+
+        $seasonsById = collect($schema['filters']['seasons'])->keyBy('id');
+        $scope = collect($schema['filters']['scopes'])->first(function (array $s) use ($kenya, $isiolo, $seasonsById) {
+            if ($s['program_id'] !== $kenya['id'] || $s['site_id'] !== $isiolo['id']) {
+                return false;
+            }
+            $season = $seasonsById->get($s['season_id']);
+
+            return $season && ($season['label'] ?? '') === 'MAM 2026';
+        });
+
+        $this->assertNotNull($scope, 'Kenya / Isiolo / MAM 2026 scope in schema');
 
         $scoped = $dataset->rows($tool, [
-            'program_id' => $kenya['id'],
-            'site_ids' => [$isiolo['id']],
-            'season_ids' => [$mam['id']],
+            'program_id' => $scope['program_id'],
+            'site_ids' => [$scope['site_id']],
+            'season_ids' => [$scope['season_id']],
         ]);
 
         $this->assertGreaterThan(0, $dataset->rows($tool, [])['row_count'], 'Expected exportable rows overall');

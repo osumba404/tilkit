@@ -49,7 +49,7 @@ class TilkitPlatformUxTest extends TestCase
         $this->actingAs($admin)
             ->get(route('tools.tilkit.records.index', $tool))
             ->assertOk()
-            ->assertSee('Indicator records');
+            ->assertSee('New record');
 
         $this->actingAs($admin)
             ->get(route('tools.tilkit.insights', $tool))
