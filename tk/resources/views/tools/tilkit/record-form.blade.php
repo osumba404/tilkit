@@ -1,5 +1,6 @@
 @php
     $isEdit = $record !== null;
+    $canEditRecord = $canCaptureRecords ?? ($capabilities ?? null)?->canFillForms() ?? true;
 @endphp
 <x-app-layout>
     @include('tools.tilkit.partials.subnav', ['tilkitNav' => $tilkitNav ?? 'capture', 'showProgramSwitcher' => false])
@@ -13,14 +14,16 @@
         <p class="mb-4">
             <a href="{{ route('tools.tilkit.records.wizard', [$tool, $record, 'A']) }}" class="tk-btn-primary text-sm">Workshop wizard (A–E)</a>
         </p>
-        <div class="tk-card p-5 space-y-4 mb-6">
-            <h3 class="tk-section-title text-base">Field sighting</h3>
-            @include('tools.tilkit.partials.sighting-form', [
-                'tool' => $tool,
-                'record' => $record,
-                'workbookValues' => $workbookValues,
-            ])
-        </div>
+        @if ($canEditRecord)
+            <div class="tk-card p-5 space-y-4 mb-6">
+                <h3 class="tk-section-title text-base">Field sighting</h3>
+                @include('tools.tilkit.partials.sighting-form', [
+                    'tool' => $tool,
+                    'record' => $record,
+                    'workbookValues' => $workbookValues,
+                ])
+            </div>
+        @endif
     @endif
 
     @if (! $isEdit)
@@ -46,6 +49,10 @@
         </div>
     @endif
 
+    @if ($isEdit && ! $canEditRecord)
+        <div class="tk-callout mb-4 text-sm">You have read-only access. Workbook fields are shown for review; saving requires a field collector or administrator role.</div>
+    @endif
+
     <form method="POST"
         action="{{ $isEdit ? route('tools.tilkit.records.update', [$tool, $record]) : route('tools.tilkit.records.store', $tool) }}"
         enctype="multipart/form-data"
@@ -57,6 +64,8 @@
         @if ($isEdit)
             @method('PATCH')
         @endif
+
+        <fieldset @disabled(! $canEditRecord) class="space-y-6 min-w-0 border-0 p-0 m-0">
 
         @if (! $isEdit)
             <div class="tk-card p-5 grid md:grid-cols-2 lg:grid-cols-3 gap-4" data-tk-site-season-form data-tk-record-create-form>
@@ -234,16 +243,19 @@
                 >
                     Next
                 </button>
-                <button
-                    type="submit"
-                    class="tk-btn-primary"
-                    x-show="step === keys.length - 1"
-                    x-cloak
-                >
-                    {{ $isEdit ? 'Save workbook fields' : 'Create record' }}
-                </button>
+                @if ($canEditRecord)
+                    <button
+                        type="submit"
+                        class="tk-btn-primary"
+                        x-show="step === keys.length - 1"
+                        x-cloak
+                    >
+                        {{ $isEdit ? 'Save workbook fields' : 'Create record' }}
+                    </button>
+                @endif
                 <a href="{{ route('tools.tilkit.overview', $tool) }}" class="tk-btn-secondary">Cancel</a>
             </div>
         </div>
+        </fieldset>
     </form>
 </x-app-layout>

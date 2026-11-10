@@ -75,6 +75,28 @@ class TilkitSecurityAuthorizationTest extends TestCase
         }
     }
 
+    public function test_viewer_cannot_capture_or_update_records(): void
+    {
+        config(['tilkit.weather.single_tool.enabled' => true]);
+        $this->seed(TilkitSeeder::class);
+
+        $tool = WeatherTool::resolve();
+        $viewer = User::factory()->create();
+        ToolMember::query()->create([
+            'project_id' => $tool->id,
+            'user_id' => $viewer->id,
+            'role' => ToolMemberRole::Viewer,
+        ]);
+
+        $this->actingAs($viewer)
+            ->get(route('tools.tilkit.records.create', $tool))
+            ->assertForbidden();
+
+        $this->actingAs($viewer)
+            ->post(route('tools.tilkit.records.store', $tool), [])
+            ->assertForbidden();
+    }
+
     public function test_collector_cannot_access_deep_analysis_dataset(): void
     {
         config(['tilkit.weather.single_tool.enabled' => true]);

@@ -63,11 +63,19 @@ class ToolAccessService
         }
     }
 
+    public function assertCanFillForms(User $user, DcProject $project): void
+    {
+        $this->assertCanView($user, $project);
+        if (! $user->toolCapabilitiesFor($project)->canFillForms()) {
+            abort(403, 'You do not have permission to capture or edit records for this tool.');
+        }
+    }
+
     public function assertCanViewAnalytics(User $user, DcProject $project): void
     {
         $this->assertCanView($user, $project);
         if (! $user->toolCapabilitiesFor($project)->canViewAnalytics()) {
-            abort(403, 'Analytics are available to tool administrators only.');
+            abort(403, 'Analytics are available to tool administrators and viewers only.');
         }
     }
 

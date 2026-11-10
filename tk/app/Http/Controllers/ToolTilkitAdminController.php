@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Tilkit\TilkitPersona;
+use App\Enums\ToolMemberRole;
 use App\Models\DcProject;
+use App\Models\ToolMember;
 use App\Models\Tilkit\TilkitIndicatorCode;
 use App\Models\Tilkit\TilkitIndicatorRecord;
 use App\Models\Tilkit\TilkitProgram;
@@ -120,7 +123,28 @@ class ToolTilkitAdminController extends Controller
         return view('tools.tilkit.team', [
             'tool' => $tool,
             'tilkitNav' => 'team',
+            'tilkitPersonas' => TilkitPersona::cases(),
         ]);
+    }
+
+    public function updateMember(Request $request, DcProject $tool, ToolMember $member, ToolAccessService $access): RedirectResponse
+    {
+        $access->assertCanManage($request->user(), $tool);
+        abort_unless($member->project_id === $tool->id, 404);
+
+        $validated = $request->validate([
+            'role' => ['required', 'in:viewer,collector,member,admin'],
+            'tilkit_persona' => ['nullable', 'string', Rule::in(array_map(fn (TilkitPersona $p) => $p->value, TilkitPersona::cases()))],
+            'can_export' => ['sometimes', 'boolean'],
+        ]);
+
+        $member->update([
+            'role' => ToolMemberRole::from($validated['role']),
+            'tilkit_persona' => ($validated['tilkit_persona'] ?? '') !== '' ? $validated['tilkit_persona'] : null,
+            'can_export' => $request->boolean('can_export') ? true : null,
+        ]);
+
+        return back()->with('status', 'Team member updated.');
     }
 
     public function workbookGuides(Request $request, DcProject $tool, ToolAccessService $access): View
@@ -673,7 +697,7 @@ class ToolTilkitAdminController extends Controller
 
     public function storeSighting(Request $request, DcProject $tool, TilkitIndicatorRecord $record, ToolAccessService $access, WorkbookRecordService $workbook, TilkitPersonaService $personas): RedirectResponse
     {
-        $access->assertCanView($request->user(), $tool);
+        $access->assertCanFillForms($request->user(), $tool);
         $personas->assert($request->user(), $tool, fn ($p) => $p->canLogSighting());
         $this->assertRecordBelongsToTool($tool, $record);
 

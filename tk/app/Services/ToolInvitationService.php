@@ -22,6 +22,7 @@ class ToolInvitationService
         ToolMemberRole $role = ToolMemberRole::Collector,
         ?bool $canExport = null,
         ?bool $canPublishForms = null,
+        ?string $tilkitPersona = null,
     ): ToolInvitation|ToolMember
     {
         $email = Str::lower(trim($email));
@@ -42,11 +43,12 @@ class ToolInvitationService
                 throw ValidationException::withMessages(['email' => 'This person already has access to the tool.']);
             }
 
-            return DB::transaction(function () use ($tool, $existingUser, $role, $inviter, $canExport, $canPublishForms): ToolMember {
+            return DB::transaction(function () use ($tool, $existingUser, $role, $inviter, $canExport, $canPublishForms, $tilkitPersona): ToolMember {
                 $member = ToolMember::create([
                     'project_id' => $tool->id,
                     'user_id' => $existingUser->id,
                     'role' => $role,
+                    'tilkit_persona' => $tilkitPersona,
                     'can_export' => $canExport,
                     'can_publish_forms' => $canPublishForms,
                 ]);
@@ -78,6 +80,7 @@ class ToolInvitationService
             ['project_id' => $tool->id, 'email' => $email],
             [
                 'role' => $role,
+                'tilkit_persona' => $tilkitPersona,
                 'can_export' => $canExport,
                 'can_publish_forms' => $canPublishForms,
                 'invited_by' => $inviter->id,
@@ -112,6 +115,7 @@ class ToolInvitationService
                 ['project_id' => $invitation->project_id, 'user_id' => $user->id],
                 [
                     'role' => $invitation->role,
+                    'tilkit_persona' => $invitation->tilkit_persona,
                     'can_export' => $invitation->can_export,
                     'can_publish_forms' => $invitation->can_publish_forms,
                 ],
@@ -120,6 +124,7 @@ class ToolInvitationService
             if ($member->wasRecentlyCreated === false) {
                 $member->update([
                     'role' => $invitation->role,
+                    'tilkit_persona' => $invitation->tilkit_persona,
                     'can_export' => $invitation->can_export,
                     'can_publish_forms' => $invitation->can_publish_forms,
                 ]);

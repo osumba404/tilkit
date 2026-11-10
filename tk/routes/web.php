@@ -70,6 +70,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('tilkit/deep-analysis/schema', [ToolTilkitDeepAnalysisController::class, 'schema'])->name('tilkit.deep-analysis.schema');
         Route::get('tilkit/deep-analysis/dataset', [ToolTilkitDeepAnalysisController::class, 'dataset'])->name('tilkit.deep-analysis.dataset');
         Route::get('tilkit/team', [ToolTilkitAdminController::class, 'team'])->name('tilkit.team');
+        Route::patch('tilkit/team/members/{member}', [ToolTilkitAdminController::class, 'updateMember'])->name('tilkit.team.members.update');
         Route::get('tilkit/records/create', [ToolTilkitWeatherController::class, 'createRecord'])->name('tilkit.records.create');
         Route::get('tilkit/capture/indicator-options', [ToolTilkitWeatherController::class, 'captureIndicatorOptions'])->name('tilkit.capture.indicator-options');
         Route::post('tilkit/records', [ToolTilkitWeatherController::class, 'storeRecord'])->name('tilkit.records.store');

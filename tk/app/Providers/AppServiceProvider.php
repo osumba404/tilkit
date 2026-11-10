@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\DcForm;
 use App\Models\DcProject;
 use App\Models\DcSubmission;
+use App\Services\Tilkit\TilkitPersonaService;
 use App\Services\Tilkit\TilkitProgramContext;
 use App\Support\Tilkit\WeatherTool;
 use Illuminate\Database\Schema\Blueprint;
@@ -30,8 +31,18 @@ class AppServiceProvider extends ServiceProvider
     {
         View::composer('tools.tilkit.*', function ($view): void {
             $data = $view->getData();
-            if (isset($data['tool']) && auth()->check() && ! array_key_exists('capabilities', $data)) {
-                $view->with('capabilities', auth()->user()->toolCapabilitiesFor($data['tool']));
+            if (isset($data['tool']) && auth()->check()) {
+                $user = auth()->user();
+                $tool = $data['tool'];
+                $capabilities = $data['capabilities'] ?? $user->toolCapabilitiesFor($tool);
+                $persona = app(TilkitPersonaService::class)->personaFor($user, $tool);
+                $view->with([
+                    'capabilities' => $capabilities,
+                    'tilkitPersona' => $persona,
+                    'canAccessDataDesk' => $persona->canDataDesk(),
+                    'canCaptureRecords' => $capabilities->canFillForms(),
+                    'canAccessDeepAnalysis' => $capabilities->canViewAnalytics(),
+                ]);
             }
             if (isset($data['tool'])) {
                 $programs = app(TilkitProgramContext::class);

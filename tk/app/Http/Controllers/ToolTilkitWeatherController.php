@@ -60,7 +60,7 @@ class ToolTilkitWeatherController extends Controller
 
     public function createRecord(Request $request, DcProject $tool, ToolAccessService $access): View
     {
-        $access->assertCanView($request->user(), $tool);
+        $access->assertCanFillForms($request->user(), $tool);
 
         if ($request->filled('program_id')) {
             $this->programs->setActive($tool, $request->integer('program_id'));
@@ -97,7 +97,7 @@ class ToolTilkitWeatherController extends Controller
         IndicatorLegendTree $legendTree,
         IndicatorBehaviourCatalog $behaviourCatalog,
     ): JsonResponse {
-        $access->assertCanView($request->user(), $tool);
+        $access->assertCanFillForms($request->user(), $tool);
 
         $validated = $request->validate([
             'site_id' => ['required', 'integer', 'exists:tilkit_sites,id'],
@@ -157,7 +157,7 @@ class ToolTilkitWeatherController extends Controller
 
     public function storeRecord(Request $request, DcProject $tool, ToolAccessService $access, WorkbookRecordService $workbook): RedirectResponse
     {
-        $access->assertCanView($request->user(), $tool);
+        $access->assertCanFillForms($request->user(), $tool);
 
         if ($request->filled('program_id')) {
             $this->programs->setActive($tool, $request->integer('program_id'));
@@ -239,7 +239,7 @@ class ToolTilkitWeatherController extends Controller
 
     public function updateRecord(Request $request, DcProject $tool, TilkitIndicatorRecord $record, ToolAccessService $access, WorkbookRecordService $workbook, TilkitPersonaService $personas): RedirectResponse
     {
-        $access->assertCanView($request->user(), $tool);
+        $access->assertCanFillForms($request->user(), $tool);
         $this->assertRecordBelongsToTool($tool, $record);
 
         $validated = $request->validate([
@@ -292,7 +292,7 @@ class ToolTilkitWeatherController extends Controller
 
     public function updateWizard(Request $request, DcProject $tool, TilkitIndicatorRecord $record, string $section, ToolAccessService $access, WorkbookRecordService $workbook, TilkitPersonaService $personas): RedirectResponse
     {
-        $access->assertCanView($request->user(), $tool);
+        $access->assertCanFillForms($request->user(), $tool);
         $this->assertRecordBelongsToTool($tool, $record);
         $section = strtoupper($section);
 

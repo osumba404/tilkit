@@ -308,7 +308,7 @@
                 <h2 id="guide-chapter-4" class="tk-guide-chapter-title"><span class="text-tk-accent">Section 4</span> Administration</h2>
 
                 <x-guide.section id="team" num="4.1" title="Team and roles" search="team invite roles administrator collector viewer export">
-                    <p>Invite colleagues by email. Roles include field collector, viewer, and administrator. Toggle export permission where needed. Personas can further guard data desk and publish routes.</p>
+                    <p>Invite colleagues by email. Tool roles are administrator, field collector (same permissions as member), and viewer (read-only capture). Toggle export where needed. Assign a TILKIT persona for data desk, confirmations, and integration publish; leave default to match the tool role.</p>
                     @if ($link('tools.tilkit.team'))
                         <x-guide.link href="{{ $link('tools.tilkit.team') }}">Manage team</x-guide.link>
                     @endif

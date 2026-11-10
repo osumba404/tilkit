@@ -22,11 +22,13 @@
                     <td class="p-3">{{ $rec->validation_status?->excelLabel() ?? '-' }}</td>
                     <td class="p-3 text-right space-x-2">
                         <a href="{{ route('tools.tilkit.records.wizard', [$tool, $rec, 'A']) }}" class="text-tk-accent">Wizard</a>
-                        <a href="{{ route('tools.tilkit.records.edit', [$tool, $rec]) }}" class="text-tk-accent">Edit</a>
+                        <a href="{{ route('tools.tilkit.records.edit', [$tool, $rec]) }}" class="text-tk-accent">
+                            {{ ($canCaptureRecords ?? ($capabilities ?? null)?->canFillForms()) ? 'Edit' : 'View' }}
+                        </a>
                     </td>
                 </tr>
             @empty
-                <tr><td colspan="7" class="p-6 text-tk-muted">No records yet. <a href="{{ route('tools.tilkit.records.create', $tool) }}" class="text-tk-accent underline">Capture the first row</a>.</td></tr>
+                <tr><td colspan="7" class="p-6 text-tk-muted">No records yet.@if ($canCaptureRecords ?? ($capabilities ?? null)?->canFillForms()) <a href="{{ route('tools.tilkit.records.create', $tool) }}" class="text-tk-accent underline">Capture the first row</a>.@endif</td></tr>
             @endforelse
         </tbody>
     </table>

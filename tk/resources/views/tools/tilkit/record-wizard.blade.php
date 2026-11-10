@@ -1,3 +1,4 @@
+@php $canEditRecord = $canCaptureRecords ?? ($capabilities ?? null)?->canFillForms() ?? true; @endphp
 <x-app-layout>
     <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
         <p class="text-sm text-tk-muted">{{ $record->indicator?->indicator_uid }} · {{ $record->site?->name }}</p>
@@ -19,14 +20,16 @@
             <a href="{{ route('tools.tilkit.records.edit', [$tool, $record]) }}" class="text-tk-accent underline">full workbook grid</a>
             - at least three images recommended per sign.
         </div>
-        <div class="tk-card p-5 mb-6">
-            <h3 class="font-semibold mb-3">Log a sighting (child event - does not create a new row)</h3>
-            @include('tools.tilkit.partials.sighting-form', [
-                'tool' => $tool,
-                'record' => $record,
-                'workbookValues' => $workbookValues,
-            ])
-        </div>
+        @if ($canEditRecord)
+            <div class="tk-card p-5 mb-6">
+                <h3 class="font-semibold mb-3">Log a sighting (child event - does not create a new row)</h3>
+                @include('tools.tilkit.partials.sighting-form', [
+                    'tool' => $tool,
+                    'record' => $record,
+                    'workbookValues' => $workbookValues,
+                ])
+            </div>
+        @endif
     @endif
 
     <div class="tk-card p-5 mb-6 bg-tk-soft/50">
@@ -38,10 +41,14 @@
         </ol>
     </div>
 
+    @if (! $canEditRecord)
+        <div class="tk-callout mb-4 text-sm">Read-only: workshop sections are visible for review.</div>
+    @endif
+
     <form method="POST" action="{{ route('tools.tilkit.records.wizard.update', [$tool, $record, $section]) }}" class="tk-card p-6 animate-tk-fade-in-up" data-tk-form-draft="tilkit:record-wizard:{{ $record->id }}:{{ $section }}">
         @csrf
         @method('PATCH')
-        <div class="grid md:grid-cols-2 gap-4">
+        <fieldset @disabled(! $canEditRecord) class="grid md:grid-cols-2 gap-4 min-w-0 border-0 p-0 m-0">
         @foreach ($columns as $col)
             @continue(\App\Support\Tilkit\WorkbookInputSpec::skipInForm($col))
             @php
@@ -58,15 +65,17 @@
                 :intensity-options="$intensityOptions ?? []"
             />
         @endforeach
-        </div>
-        <div class="flex flex-wrap gap-3 pt-4">
-            @php $idx = array_search($section, $sections, true); @endphp
-            @if ($idx !== false && $idx < count($sections) - 1)
-                <input type="hidden" name="next_section" value="{{ $sections[$idx + 1] }}">
-                <button type="submit" class="tk-btn-primary">Save &amp; next section</button>
-            @else
-                <button type="submit" class="tk-btn-primary">Save &amp; finish</button>
-            @endif
-        </div>
+        </fieldset>
+        @if ($canEditRecord)
+            <div class="flex flex-wrap gap-3 pt-4">
+                @php $idx = array_search($section, $sections, true); @endphp
+                @if ($idx !== false && $idx < count($sections) - 1)
+                    <input type="hidden" name="next_section" value="{{ $sections[$idx + 1] }}">
+                    <button type="submit" class="tk-btn-primary">Save &amp; next section</button>
+                @else
+                    <button type="submit" class="tk-btn-primary">Save &amp; finish</button>
+                @endif
+            </div>
+        @endif
     </form>
 </x-app-layout>

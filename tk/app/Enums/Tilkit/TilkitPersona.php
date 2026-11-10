@@ -32,12 +32,24 @@ enum TilkitPersona: string
 
     public function canLogSighting(): bool
     {
-        return in_array($this, [self::Observer, self::WorkshopContributor, self::Facilitator, self::Administrator], true);
+        return in_array($this, [
+            self::Observer,
+            self::WorkshopContributor,
+            self::Facilitator,
+            self::CommunityRepresentative,
+            self::Administrator,
+        ], true);
     }
 
     public function canConfirm(): bool
     {
-        return in_array($this, [self::WorkshopContributor, self::LeadItkHolder, self::Facilitator, self::Administrator], true);
+        return in_array($this, [
+            self::WorkshopContributor,
+            self::LeadItkHolder,
+            self::Facilitator,
+            self::CommunityRepresentative,
+            self::Administrator,
+        ], true);
     }
 
     public function canApprove(): bool

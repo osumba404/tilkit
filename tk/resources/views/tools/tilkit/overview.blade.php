@@ -70,10 +70,12 @@
     @endif
 
     <div class="tk-action-grid tk-stagger">
-        <a href="{{ route('tools.tilkit.records.create', $tool) }}" class="tk-action-tile">
-            <span class="tk-action-tile-title">New indicator record</span>
-            <span class="tk-action-tile-desc">Workshop capture and v4 workbook fields</span>
-        </a>
+        @if ($canCaptureRecords ?? ($capabilities ?? null)?->canFillForms())
+            <a href="{{ route('tools.tilkit.records.create', $tool) }}" class="tk-action-tile">
+                <span class="tk-action-tile-title">New indicator record</span>
+                <span class="tk-action-tile-desc">Workshop capture and v4 workbook fields</span>
+            </a>
+        @endif
         <a href="{{ route('tools.tilkit.records.index', $tool) }}" class="tk-action-tile">
             <span class="tk-action-tile-title">Browse records</span>
             <span class="tk-action-tile-desc">Filter by site, season, and indicator ID</span>
@@ -82,10 +84,12 @@
             <span class="tk-action-tile-title">Tercile tally</span>
             <span class="tk-action-tile-desc">Simple, weighted, and priority-adjusted forecasts</span>
         </a>
-        <a href="{{ route('tools.tilkit.data-desk', $tool) }}" class="tk-action-tile">
-            <span class="tk-action-tile-title">Data desk</span>
-            <span class="tk-action-tile-desc">Validation queues and climate reviews</span>
-        </a>
+        @if ($canAccessDataDesk ?? false)
+            <a href="{{ route('tools.tilkit.data-desk', $tool) }}" class="tk-action-tile">
+                <span class="tk-action-tile-title">Data desk</span>
+                <span class="tk-action-tile-desc">Validation queues and climate reviews</span>
+            </a>
+        @endif
         <a href="{{ route('tools.tilkit.insights', $tool) }}" class="tk-action-tile">
             <span class="tk-action-tile-title">Analysis hub</span>
             <span class="tk-action-tile-desc">Counts, calendar, and season settings</span>
@@ -98,9 +102,11 @@
 
     <div class="flex flex-wrap gap-2 mb-8">
         <a href="{{ route('tools.tilkit.settings', $tool) }}" class="tk-btn-secondary text-xs">Season settings</a>
-        <a href="{{ route('tools.tilkit.export.csv', $tool) }}" class="tk-btn-secondary text-xs">Export CSV</a>
-        <a href="{{ route('tools.tilkit.export.json', $tool) }}" class="tk-btn-secondary text-xs">Export JSON</a>
-        <a href="{{ route('tools.tilkit.export.xlsx', $tool) }}" class="tk-btn-secondary text-xs">Export xlsx</a>
+        @if (($capabilities ?? null)?->canExportData())
+            <a href="{{ route('tools.tilkit.export.csv', $tool) }}" class="tk-btn-secondary text-xs">Export CSV</a>
+            <a href="{{ route('tools.tilkit.export.json', $tool) }}" class="tk-btn-secondary text-xs">Export JSON</a>
+            <a href="{{ route('tools.tilkit.export.xlsx', $tool) }}" class="tk-btn-secondary text-xs">Export xlsx</a>
+        @endif
         <a href="{{ route('tools.tilkit.calendar', $tool) }}" class="tk-btn-secondary text-xs">Calendar</a>
     </div>
 
@@ -136,7 +142,9 @@
                             <td class="p-3">{{ $rec->site?->name }}</td>
                             <td class="p-3">{{ $rec->season?->label }}</td>
                             <td class="p-3 text-right">
-                                <a href="{{ route('tools.tilkit.records.edit', [$tool, $rec]) }}" class="text-tk-accent">Edit workbook</a>
+                                <a href="{{ route('tools.tilkit.records.edit', [$tool, $rec]) }}" class="text-tk-accent">
+                                    {{ ($canCaptureRecords ?? ($capabilities ?? null)?->canFillForms()) ? 'Edit workbook' : 'View workbook' }}
+                                </a>
                             </td>
                         </tr>
                     @endforeach

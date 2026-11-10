@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\DcProject;
 use App\Support\Tilkit\WeatherTool;
 use App\Models\ToolInvitation;
+use App\Enums\Tilkit\TilkitPersona;
 use App\Enums\ToolMemberRole;
+use Illuminate\Validation\Rule;
 use App\Services\ToolAccessService;
 use App\Services\ToolAuditService;
 use App\Services\ToolInvitationService;
@@ -23,12 +25,16 @@ class ToolInvitationController extends Controller
 
         $validated = $request->validate([
             'email' => ['required', 'email', 'max:190'],
-            'role' => ['required', 'in:viewer,collector,admin'],
+            'role' => ['required', 'in:viewer,collector,member,admin'],
+            'tilkit_persona' => ['nullable', 'string', Rule::in(array_map(fn (TilkitPersona $p) => $p->value, TilkitPersona::cases()))],
             'can_export' => ['sometimes', 'boolean'],
             'can_publish_forms' => ['sometimes', 'boolean'],
         ]);
 
         $role = ToolMemberRole::from($validated['role']);
+        $persona = isset($validated['tilkit_persona']) && $validated['tilkit_persona'] !== ''
+            ? $validated['tilkit_persona']
+            : null;
 
         $invites->invite(
             $tool,
@@ -37,6 +43,7 @@ class ToolInvitationController extends Controller
             $role,
             $request->boolean('can_export') ? true : null,
             $request->boolean('can_publish_forms') ? true : null,
+            $persona,
         );
 
         $audit->log($tool, $request->user(), 'invitation.sent', null, null, [

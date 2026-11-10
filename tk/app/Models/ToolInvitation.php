@@ -15,6 +15,7 @@ class ToolInvitation extends Model
         'project_id',
         'email',
         'role',
+        'tilkit_persona',
         'can_export',
         'can_publish_forms',
         'token',
