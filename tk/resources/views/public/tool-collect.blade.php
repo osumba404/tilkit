@@ -39,11 +39,16 @@
         ])
     @endif
 
-    @if ($tool->brand_footer)
-        <x-slot:footer>
-            <footer class="border-t border-tk-line py-6 text-center text-xs text-tk-muted max-w-xl mx-auto px-4 mt-8">
-                {{ $tool->brand_footer }}
-            </footer>
-        </x-slot:footer>
-    @endif
+    <x-slot:footer>
+        <footer class="border-t border-tk-line py-6 text-center text-xs text-tk-muted max-w-xl mx-auto px-4 mt-8 space-y-2">
+            @if ($tool->brand_footer)
+                <p>{{ $tool->brand_footer }}</p>
+            @endif
+            <p>
+                <a href="{{ route('public.tools.privacy', $tool) }}" class="text-tk-accent underline">Privacy notice</a>
+                ·
+                <a href="{{ route('public.tools.data-subject-request', $tool) }}" class="text-tk-accent underline">Your data rights</a>
+            </p>
+        </footer>
+    </x-slot:footer>
 </x-layouts.public>

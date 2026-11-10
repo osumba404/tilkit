@@ -142,6 +142,7 @@
                     <input type="text" name="workbook[BC_credit]" value="{{ $consent['credit'] }}" class="tk-input" placeholder="Community or individual">
                 </div>
             </div>
+            <p class="text-xs text-tk-muted sm:col-span-3 mt-1">Kenya DPA: record sharing level and “No” withdraws consent for export. Level ≥ 2 required for CSV/JSON/xlsx.</p>
             @break
 
         @case('date')

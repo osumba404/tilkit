@@ -10,6 +10,15 @@ class TilkitConsentGate
     public function exportBlocks(TilkitIndicatorRecord $record): array
     {
         $blocks = [];
+        if ($record->anonymized_at !== null) {
+            $blocks[] = 'Record anonymized under retention or erasure request.';
+        }
+        if ($record->processing_restricted) {
+            $blocks[] = 'Processing restricted (consent withdrawn or objection recorded).';
+        }
+        if ($record->consent_to_share === false) {
+            $blocks[] = 'Community declined sharing for this record (BC).';
+        }
         if ($record->do_no_harm) {
             $blocks[] = 'Do-no-harm flag (BB) - technical review required before dissemination.';
         }

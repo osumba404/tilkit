@@ -1,15 +1,12 @@
 <x-app-layout>
     @include('tools.tilkit.partials.subnav')
 
-    <div class="flex justify-end mb-4">
+    <div class="flex justify-end gap-2 mb-4">
+        <a href="{{ $tool->dataProtectionAdminUrl() }}" class="tk-btn-secondary text-sm">Data protection (Kenya DPA)</a>
         <a href="{{ route('tools.settings.edit', $tool) }}" class="tk-btn-secondary text-sm">Consent &amp; branding</a>
     </div>
 
-    <div class="tk-card p-6 mb-8">
-        <h3 class="font-semibold text-tk-ink mb-2">Governance</h3>
-        <p class="text-sm text-tk-muted">{{ $tool->purpose }}</p>
-        <p class="text-xs text-tk-muted mt-2">Lawful basis: {{ str_replace('_', ' ', $tool->lawful_basis) }}</p>
-    </div>
+    @include('tools.partials.governance-kenya-dpa', ['tool' => $tool])
 
     <div class="tk-card p-6 mb-8">
         <h3 class="font-semibold text-tk-ink mb-2">Invite team members</h3>

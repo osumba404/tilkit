@@ -252,6 +252,17 @@ class WorkbookRecordService
         if (isset($parts[0]) && is_numeric($parts[0])) {
             $record->consent_level = (int) $parts[0];
         }
+        if (isset($parts[1]) && is_numeric($parts[1])) {
+            $share = (int) $parts[1] === 1;
+            $wasSharing = $record->consent_to_share;
+            $record->consent_to_share = $share;
+            if (! $share) {
+                $record->processing_restricted = true;
+                if ($wasSharing !== false) {
+                    $record->consent_withdrawn_at = now();
+                }
+            }
+        }
         if (count($parts) >= 3) {
             $record->consent_credit = $parts[2];
         }

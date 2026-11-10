@@ -18,7 +18,11 @@ return [
             'project' => [
                 'name' => env('TILKIT_TOOL_NAME', 'TILKIT Weather Indicator Log'),
                 'purpose' => 'Traditional indigenous and local knowledge weather indicators - v4 workbook capture and tally.',
-                'lawful_basis' => 'consent',
+                'lawful_basis' => env('TILKIT_LAWFUL_BASIS', 'consent'),
+                'retention_months' => (int) env('TILKIT_RETENTION_MONTHS', (int) env('KENYA_DPA_DEFAULT_RETENTION_MONTHS', 84)),
+                'data_controller_name' => env('TILKIT_DATA_CONTROLLER_NAME'),
+                'data_controller_email' => env('TILKIT_DATA_CONTROLLER_EMAIL'),
+                'data_protection_contact_email' => env('TILKIT_DPO_EMAIL'),
                 'public_collection_enabled' => false,
             ],
         ],

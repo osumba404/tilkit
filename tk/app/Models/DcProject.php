@@ -19,7 +19,16 @@ class DcProject extends Model
         'module',
         'purpose',
         'lawful_basis',
+        'data_controller_name',
+        'data_controller_email',
+        'data_protection_contact_email',
+        'odpc_registration_number',
+        'privacy_policy_url',
+        'personal_data_notice',
         'retention_months',
+        'retention_policy_summary',
+        'cross_border_transfers_allowed',
+        'cross_border_safeguards',
         'starts_on',
         'ends_on',
         'status',
@@ -42,6 +51,7 @@ class DcProject extends Model
             'ends_on' => 'date',
             'public_collection_enabled' => 'boolean',
             'consent_require_signature' => 'boolean',
+            'cross_border_transfers_allowed' => 'boolean',
         ];
     }
 
@@ -113,5 +123,31 @@ class DcProject extends Model
     public function requiresConsentGate(): bool
     {
         return filled(trim((string) $this->consent_text));
+    }
+
+    public function dataSubjectRequests(): HasMany
+    {
+        return $this->hasMany(DataSubjectRequest::class, 'project_id');
+    }
+
+    public function lawfulBasisLabel(): string
+    {
+        $bases = config('kenya_dpa.lawful_bases', []);
+
+        return $bases[$this->lawful_basis] ?? str_replace('_', ' ', (string) $this->lawful_basis);
+    }
+
+    public function publicPrivacyUrl(): string
+    {
+        return route('public.tools.privacy', $this);
+    }
+
+    public function dataProtectionAdminUrl(): string
+    {
+        if ($this->module === 'tilkit_weather') {
+            return route('tools.tilkit.data-protection', $this);
+        }
+
+        return route('tools.data-protection', $this);
     }
 }

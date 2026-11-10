@@ -27,6 +27,7 @@ use App\Services\Tilkit\TilkitConsentGate;
 use App\Services\Tilkit\TilkitEngineService;
 use App\Services\Tilkit\WorkbookRecordService;
 use App\Services\ToolAccessService;
+use App\Services\ToolAuditService;
 use App\Support\Tilkit\CommunityDataListRegistry;
 use App\Support\Tilkit\IndicatorCodeLegendGrouper;
 use App\Support\Tilkit\IndicatorLegendTree;
@@ -683,11 +684,15 @@ class ToolTilkitAdminController extends Controller
         return back()->with('status', 'Climate weight review signed off.');
     }
 
-    public function exportXlsx(Request $request, DcProject $tool, ToolAccessService $access, WorkbookXlsxExporter $exporter, TilkitConsentGate $consent): StreamedResponse|\Symfony\Component\HttpFoundation\BinaryFileResponse
+    public function exportXlsx(Request $request, DcProject $tool, ToolAccessService $access, WorkbookXlsxExporter $exporter, TilkitConsentGate $consent, ToolAuditService $audit): StreamedResponse|\Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $access->assertCanExport($request->user(), $tool);
 
         $records = $this->exportableRecords($tool, $consent, $request->boolean('include_blocked'));
+        $audit->log($tool, $request->user(), 'tilkit.export.xlsx', null, null, [
+            'rows' => $records->count(),
+            'kenya_dpa_consent_filtered' => true,
+        ]);
 
         $path = storage_path('app/tilkit-export-'.uniqid('', true).'.xlsx');
         $exporter->writeToPath($records, $path);
@@ -733,11 +738,15 @@ class ToolTilkitAdminController extends Controller
         return back()->with('status', 'Sighting recorded on this indicator row.');
     }
 
-    public function exportCsv(Request $request, DcProject $tool, ToolAccessService $access, WorkbookRecordService $workbook, TilkitConsentGate $consent): StreamedResponse
+    public function exportCsv(Request $request, DcProject $tool, ToolAccessService $access, WorkbookRecordService $workbook, TilkitConsentGate $consent, ToolAuditService $audit): StreamedResponse
     {
         $access->assertCanExport($request->user(), $tool);
 
         $records = $this->exportableRecords($tool, $consent, $request->boolean('include_blocked'));
+        $audit->log($tool, $request->user(), 'tilkit.export.csv', null, null, [
+            'rows' => $records->count(),
+            'kenya_dpa_consent_filtered' => true,
+        ]);
 
         $columns = WorkbookColumnRegistry::all();
 
@@ -763,10 +772,15 @@ class ToolTilkitAdminController extends Controller
         }, 'tilkit-workbook-export.csv', ['Content-Type' => 'text/csv']);
     }
 
-    public function exportJson(Request $request, DcProject $tool, ToolAccessService $access, WorkbookRecordService $workbook, TilkitConsentGate $consent): StreamedResponse
+    public function exportJson(Request $request, DcProject $tool, ToolAccessService $access, WorkbookRecordService $workbook, TilkitConsentGate $consent, ToolAuditService $audit): StreamedResponse
     {
         $access->assertCanExport($request->user(), $tool);
         $records = $this->exportableRecords($tool, $consent, false);
+        $audit->log($tool, $request->user(), 'tilkit.export.json', null, null, [
+            'rows' => $records->count(),
+            'kenya_dpa_consent_filtered' => true,
+            'cross_border_allowed' => $tool->cross_border_transfers_allowed,
+        ]);
         $columns = WorkbookColumnRegistry::all();
         $payload = [];
         foreach ($records as $record) {

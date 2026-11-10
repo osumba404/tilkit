@@ -1,11 +1,19 @@
 <x-app-layout>
     <x-slot name="header">
-        <x-page-header :title="'Settings - '.$tool->name" subtitle="Consent, branding, and locale for public collection">
+        <x-page-header :title="'Settings - '.$tool->name" subtitle="Public collection consent screen, branding, and locale">
             <x-slot:actions>
+                <a href="{{ $tool->dataProtectionAdminUrl() }}" class="tk-btn-secondary text-sm">Data protection (Kenya DPA)</a>
                 <a href="{{ route('tools.show', $tool) }}" class="tk-btn-secondary">Back to tool</a>
             </x-slot:actions>
         </x-page-header>
     </x-slot>
+
+    <p class="text-sm text-tk-muted mb-6 max-w-2xl">
+        <strong>Consent text</strong> below is the pre-collection gate for generic public forms.
+        Workbook row consent (BC) and the statutory privacy notice are managed under
+        <a href="{{ $tool->dataProtectionAdminUrl() }}" class="text-tk-accent underline">Data protection</a>
+        and <a href="{{ route('public.tools.privacy', $tool) }}" class="text-tk-accent underline" target="_blank" rel="noopener">public privacy notice</a>.
+    </p>
 
     <form method="POST" action="{{ route('tools.settings.update', $tool) }}" class="tk-card p-6 space-y-6 max-w-2xl">
         @csrf

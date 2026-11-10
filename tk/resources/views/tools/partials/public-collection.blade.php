@@ -4,7 +4,7 @@
 @if ($tool->public_collection_enabled)
     <div class="tk-card p-6 mb-8">
         <h3 class="font-semibold mb-2">Public collection link</h3>
-        <p class="text-sm text-tk-muted mb-4">Opens one multi-section form (Next / Previous) across all published forms. Share the QR code or link. Signed-in users, including administrators, have entries linked to their account.</p>
+        <p class="text-sm text-tk-muted mb-4">Opens one multi-section form (Next / Previous) across all published forms. Share the QR code or link. Signed-in users, including administrators, have entries linked to their account. Public pages link to the <a href="{{ route('public.tools.privacy', $tool) }}" class="text-tk-accent underline" target="_blank" rel="noopener">privacy notice</a>.</p>
         <div class="flex flex-col md:flex-row gap-6 items-start">
             <a href="{{ route('public.tools.collect', $tool) }}" target="_blank" rel="noopener" class="shrink-0 block rounded-lg border border-tk-line bg-white p-2 hover:border-tk-accent">
                 <img src="{{ route('public.tools.qr', $tool) }}" width="160" height="160" alt="QR code">

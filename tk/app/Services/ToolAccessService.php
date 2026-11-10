@@ -31,7 +31,7 @@ class ToolAccessService
                 'module' => $attributes['module'] ?? 'data_collection',
                 'purpose' => $attributes['purpose'],
                 'lawful_basis' => $attributes['lawful_basis'] ?? 'consent',
-                'retention_months' => $attributes['retention_months'] ?? null,
+                'retention_months' => $attributes['retention_months'] ?? config('kenya_dpa.default_retention_months'),
                 'status' => 'active',
                 'public_collection_enabled' => $attributes['public_collection_enabled'] ?? true,
                 'owner_user_id' => $owner->id,

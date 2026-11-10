@@ -7,6 +7,7 @@ use App\Services\ToolAccessService;
 use App\Support\Tilkit\WeatherTool;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class ToolController extends Controller
@@ -51,7 +52,8 @@ class ToolController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:160'],
             'purpose' => ['required', 'string', 'max:5000'],
-            'lawful_basis' => ['required', 'in:consent,contract,legal_obligation,public_interest,legitimate_interest'],
+            'lawful_basis' => ['required', Rule::in(array_keys(config('kenya_dpa.lawful_bases', [])))],
+            'retention_months' => ['nullable', 'integer', 'min:1', 'max:600'],
             'module' => ['nullable', 'string', 'max:40'],
         ]);
 

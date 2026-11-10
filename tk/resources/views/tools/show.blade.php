@@ -21,6 +21,7 @@
                     <a href="{{ route('tools.export', $tool) }}" class="tk-btn-secondary">Export CSV</a>
                 @endif
                 @if ($capabilities->canManageTool())
+                    <a href="{{ $tool->dataProtectionAdminUrl() }}" class="tk-btn-secondary">Data protection</a>
                     <a href="{{ route('tools.settings.edit', $tool) }}" class="tk-btn-secondary">Settings</a>
                     @unless (\App\Support\Tilkit\WeatherTool::isWeatherModule($tool))
                         <a href="{{ route('tools.forms.create', $tool) }}" class="tk-btn-primary">New form</a>
@@ -96,11 +97,7 @@
         @endif
     @endif
 
-    <div class="tk-card p-6 mb-8">
-        <h3 class="font-semibold mb-2">Governance</h3>
-        <p class="text-sm text-tk-muted">{{ $tool->purpose }}</p>
-        <p class="text-xs text-tk-muted mt-2">Lawful basis: {{ str_replace('_', ' ', $tool->lawful_basis) }}</p>
-    </div>
+    @include('tools.partials.governance-kenya-dpa', ['tool' => $tool, 'capabilities' => $capabilities])
 
     <h3 class="font-semibold mb-4">Forms</h3>
     <div class="space-y-3">

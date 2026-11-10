@@ -9,3 +9,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('tilkit:send-scheduled-exports')->dailyAt('06:00');
+Schedule::command('tilkit:enforce-retention')->monthlyOn(1, '03:00');

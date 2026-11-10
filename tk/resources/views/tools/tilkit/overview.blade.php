@@ -1,6 +1,8 @@
 <x-app-layout>
     @include('tools.tilkit.partials.subnav')
 
+    @include('tools.partials.governance-kenya-dpa', ['tool' => $tool])
+
     <div class="grid sm:grid-cols-2 lg:grid-cols-6 gap-4 mb-8 tk-stagger">
         <div class="tk-stat">
             <p class="tk-stat-label">Workbook rows</p>

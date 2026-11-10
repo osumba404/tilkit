@@ -126,13 +126,18 @@
             <h3 class="tk-section-title text-base mb-3">Analysis tools</h3>
             <ul class="text-sm space-y-2">
                 <li><a href="{{ route('tools.tilkit.tally', $tool) }}" class="text-tk-accent font-medium">Seasonal tercile tally</a> - simple, weighted, and priority-adjusted forecasts.</li>
-                <li><a href="{{ route('tools.tilkit.data-desk', $tool) }}" class="text-tk-accent font-medium">Data desk</a> - validation queues and climate weight reviews.</li>
+                @if ($canAccessDataDesk ?? false)
+                    <li><a href="{{ route('tools.tilkit.data-desk', $tool) }}" class="text-tk-accent font-medium">Data desk</a> - validation queues and climate weight reviews.</li>
+                @endif
                 <li><a href="{{ route('tools.tilkit.settings', $tool) }}" class="text-tk-accent font-medium">Season settings</a> - KMSA, NDMA, and weighting options per site × season.</li>
                 <li><a href="{{ route('tools.tilkit.calendar', $tool) }}" class="text-tk-accent font-medium">Indicator calendar</a> - CI–CP timing and climate flags.</li>
-                <li><a href="{{ route('tools.tilkit.deep-analysis', $tool) }}" class="text-tk-accent font-medium">Deep Analysis</a> - notebook EDA, charts, statistics, and time series on any columns.</li>
+                @if ($canAccessDeepAnalysis ?? ($capabilities ?? null)?->canViewAnalytics())
+                    <li><a href="{{ route('tools.tilkit.deep-analysis', $tool) }}" class="text-tk-accent font-medium">Deep Analysis</a> - notebook EDA, charts, statistics, and time series on consent-gated columns.</li>
+                @endif
+                <li><a href="{{ $tool->dataProtectionAdminUrl() }}" class="text-tk-accent font-medium">Data protection</a> - Kenya DPA governance, retention, and data subject requests.</li>
             </ul>
             @if ($capabilities->canExportData())
-                <p class="text-xs text-tk-muted mt-4">Exports: CSV, JSON, and xlsx from the weather log home.</p>
+                <p class="text-xs text-tk-muted mt-4">Exports (CSV, JSON, xlsx) omit rows without consent (BC ≥ 2), with do-no-harm (BB), or under processing restriction - Kenya DPA s.25.</p>
             @endif
         </div>
         <div class="tk-card p-5">

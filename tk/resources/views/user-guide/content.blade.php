@@ -299,8 +299,8 @@
                     @endif
                 </x-guide.section>
 
-                <x-guide.section id="exports" num="3.4" title="Exports and consent" search="export csv json xlsx consent BC do no harm">
-                    <p>CSV, JSON, and XLSX respect consent (BC) and do-no-harm rules. Export access is controlled per team member. Column order matches A-DT for template parity.</p>
+                <x-guide.section id="exports" num="3.4" title="Exports and consent" search="export csv json xlsx consent BC do no harm Kenya DPA">
+                    <p>CSV, JSON, and XLSX respect consent (BC), do-no-harm (BB), withdrawal, and retention rules under the Kenya Data Protection Act workflow. Export access is controlled per team member. Administrators configure the privacy notice and data subject requests under Data protection on Team.</p>
                 </x-guide.section>
             </section>
 

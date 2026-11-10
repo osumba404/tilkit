@@ -33,4 +33,10 @@
 
         <button type="submit" class="tk-btn-primary">{{ __('tk.continue_to_form') }}</button>
     </form>
+
+    <p class="text-center text-xs text-tk-muted mt-6">
+        <a href="{{ route('public.tools.privacy', $tool) }}" class="text-tk-accent underline">Privacy notice</a>
+        ·
+        <a href="{{ route('public.tools.data-subject-request', $tool) }}" class="text-tk-accent underline">Exercise your rights</a>
+    </p>
 </x-layouts.public>

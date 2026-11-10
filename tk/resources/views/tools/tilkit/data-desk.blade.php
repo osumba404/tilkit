@@ -1,6 +1,11 @@
 <x-app-layout>
     @include('tools.tilkit.partials.subnav')
 
+    <p class="text-xs text-tk-muted mb-4">
+        Desk work must respect row-level consent (BC), do-no-harm (BB), and processing restrictions.
+        <a href="{{ route('public.tools.privacy', $tool) }}" class="text-tk-accent underline" target="_blank" rel="noopener">Privacy notice</a>
+    </p>
+
     <div class="tk-card p-5 mb-6">
         <h3 class="tk-section-title text-base mb-3">Quality desk · locations</h3>
         <p class="text-sm text-tk-muted mb-4">Pins show where workbook GPS and field sightings were captured while you work validation queues.</p>
@@ -41,6 +46,7 @@
                     <th class="p-3 text-left">Site / season</th>
                     <th class="p-3 text-left">Queue</th>
                     <th class="p-3 text-left">CE</th>
+                    <th class="p-3 text-left">Privacy</th>
                     <th class="p-3"></th>
                 </tr>
             </thead>
@@ -52,6 +58,7 @@
                         <td class="p-3">{{ $rec->site?->name }} · {{ $rec->season?->label }}</td>
                         <td class="p-3 text-xs">{{ str_replace('_', ' ', $row['queue']) }}</td>
                         <td class="p-3">{{ $row['tally_status'] }}</td>
+                        <td class="p-3">@include('tools.tilkit.partials.record-privacy-status', ['rec' => $rec])</td>
                         <td class="p-3 text-right space-x-2">
                             <a href="{{ route('tools.tilkit.records.wizard', [$tool, $rec, 'A']) }}" class="text-tk-accent">Wizard</a>
                             <a href="{{ route('tools.tilkit.records.edit', [$tool, $rec]) }}" class="text-tk-accent">Edit</a>

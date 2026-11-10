@@ -8,6 +8,7 @@
                 <th class="p-3">Sighted</th>
                 <th class="p-3">Tercile</th>
                 <th class="p-3">Validation</th>
+                <th class="p-3 text-left">Privacy</th>
                 <th class="p-3"></th>
             </tr>
         </thead>
@@ -20,6 +21,7 @@
                     <td class="p-3">{{ $rec->sighted ? 'Yes' : 'No' }}</td>
                     <td class="p-3">{{ $rec->tercile_forecast?->label() ?? '-' }}</td>
                     <td class="p-3">{{ $rec->validation_status?->excelLabel() ?? '-' }}</td>
+                    <td class="p-3">@include('tools.tilkit.partials.record-privacy-status', ['rec' => $rec])</td>
                     <td class="p-3 text-right space-x-2">
                         <a href="{{ route('tools.tilkit.records.wizard', [$tool, $rec, 'A']) }}" class="text-tk-accent">Wizard</a>
                         <a href="{{ route('tools.tilkit.records.edit', [$tool, $rec]) }}" class="text-tk-accent">
@@ -28,7 +30,7 @@
                     </td>
                 </tr>
             @empty
-                <tr><td colspan="7" class="p-6 text-tk-muted">No records yet.@if ($canCaptureRecords ?? ($capabilities ?? null)?->canFillForms()) <a href="{{ route('tools.tilkit.records.create', $tool) }}" class="text-tk-accent underline">Capture the first row</a>.@endif</td></tr>
+                <tr><td colspan="8" class="p-6 text-tk-muted">No records yet.@if ($canCaptureRecords ?? ($capabilities ?? null)?->canFillForms()) <a href="{{ route('tools.tilkit.records.create', $tool) }}" class="text-tk-accent underline">Capture the first row</a>.@endif</td></tr>
             @endforelse
         </tbody>
     </table>
