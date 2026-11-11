@@ -1,3 +1,3 @@
-@props(['disabled' => false])
+@props(['disabled' => false, 'readonly' => false])
 
-<input @disabled($disabled) {{ $attributes->merge(['class' => 'tk-input']) }}>
+<input @disabled($disabled) @readonly($readonly) {{ $attributes->merge(['class' => 'tk-input']) }}>

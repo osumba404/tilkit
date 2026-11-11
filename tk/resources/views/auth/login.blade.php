@@ -31,6 +31,12 @@
         </div>
 
         <div class="flex flex-wrap items-center justify-end gap-3 pt-2">
+            @if (Route::has('register'))
+                <a class="tk-link" href="{{ route('register') }}">
+                    {{ __('Create an account') }}
+                </a>
+            @endif
+
             @if (Route::has('password.request'))
                 <a class="tk-link" href="{{ route('password.request') }}">
                     {{ __('Forgot your password?') }}
