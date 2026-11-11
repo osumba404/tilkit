@@ -1,0 +1,6 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home3/occcoke/tilkit/tk
+    - /bin/echo "Tilkit deployment configuration detected"
+    - /bin/echo "Laravel application path configured"
