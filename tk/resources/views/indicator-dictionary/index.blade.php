@@ -4,17 +4,17 @@
 
 @guest
 <x-layouts.site :title="$title" :meta-description="$metaDescription" :canonical="route('dictionary')">
-    <div class="max-w-[96rem] mx-auto -mx-2 sm:mx-0">
+    <article class="max-w-[96rem] mx-auto -mx-2 sm:mx-0" aria-labelledby="dictionary-title">
         <header class="mb-8">
             <p class="text-xs font-medium uppercase tracking-wide text-tk-muted">Reference</p>
-            <h1 class="text-2xl font-bold text-tk-ink mt-1">Indicator dictionary</h1>
+            <h1 id="dictionary-title" class="text-2xl font-bold text-tk-ink mt-1">Indicator dictionary</h1>
             <p class="text-sm text-tk-muted mt-2 max-w-2xl">v4 taxonomy, legend codes, workbook columns, and allowed behaviours.</p>
             <p class="mt-4">
                 <a href="{{ route('user-guide') }}" class="tk-btn-secondary text-sm">User guide</a>
             </p>
         </header>
         @include('indicator-dictionary.content')
-    </div>
+    </article>
 </x-layouts.site>
 @else
 <x-app-layout :full-width="true">

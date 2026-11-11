@@ -1,4 +1,9 @@
-<x-guest-layout>
+<x-guest-layout
+    title="Create account | Tilkit"
+    meta-description="Register for Tilkit to join weather indicator programmes and institutional field data collection."
+    :canonical="route('register')"
+    robots="noindex, nofollow"
+>
     <x-auth-heading title="{{ __('Register') }}" />
 
     <form method="POST" action="{{ route('register') }}" class="space-y-4">

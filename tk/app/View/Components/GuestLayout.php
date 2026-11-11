@@ -7,11 +7,20 @@ use Illuminate\View\View;
 
 class GuestLayout extends Component
 {
-    /**
-     * Get the view / contents that represents the component.
-     */
+    public function __construct(
+        public ?string $title = null,
+        public ?string $metaDescription = null,
+        public ?string $canonical = null,
+        public string $robots = 'noindex, nofollow',
+    ) {}
+
     public function render(): View
     {
-        return view('layouts.guest');
+        return view('layouts.guest', [
+            'pageTitle' => $this->title ?? config('app.name', 'Tilkit'),
+            'metaDescription' => $this->metaDescription,
+            'canonical' => $this->canonical ?? url()->current(),
+            'robots' => $this->robots,
+        ]);
     }
 }

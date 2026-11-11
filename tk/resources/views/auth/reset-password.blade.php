@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-guest-layout title="Choose new password | Tilkit" meta-description="Set a new password for your Tilkit account." robots="noindex, nofollow">
     <x-auth-heading title="{{ __('Reset password') }}" />
 
     <form method="POST" action="{{ route('password.store') }}" class="space-y-4">

@@ -1,4 +1,9 @@
-<x-guest-layout>
+<x-guest-layout
+    title="Sign in | Tilkit"
+    meta-description="Sign in to Tilkit to manage collection tools, capture field data, and govern exports under Kenya DPA controls."
+    :canonical="route('login')"
+    robots="noindex, nofollow"
+>
     <x-auth-heading title="{{ __('Log in') }}" />
 
     <x-auth-session-status class="mb-4 tk-status-banner !py-2" :status="session('status')" />

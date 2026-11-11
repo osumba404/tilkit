@@ -105,6 +105,7 @@
         <x-page-header
             eyebrow="Documentation"
             title="User guide"
+            title-id="user-guide-title"
             subtitle="TILKIT Weather Indicator Log on Tilkit - setup, capture, validation, seasonal tercile tally, and governed exports."
             class="mb-8 sm:mb-10"
         >

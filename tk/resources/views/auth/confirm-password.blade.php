@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-guest-layout title="Confirm password | Tilkit" meta-description="Confirm your password to continue in Tilkit." robots="noindex, nofollow">
     <x-auth-heading title="{{ __('Confirm password') }}">
         {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}
     </x-auth-heading>

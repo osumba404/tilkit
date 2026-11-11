@@ -1,11 +1,11 @@
-@props(['title', 'eyebrow' => null, 'subtitle' => null])
+@props(['title', 'eyebrow' => null, 'subtitle' => null, 'titleId' => null])
 
 <div {{ $attributes->merge(['class' => 'flex flex-wrap justify-between items-start gap-4 animate-tk-fade-in-down']) }}>
     <div class="min-w-0">
         @if ($eyebrow)
             <p class="text-xs font-medium uppercase tracking-tk-label text-tk-accent mb-1">{{ $eyebrow }}</p>
         @endif
-        <h1 class="font-display text-2xl sm:text-3xl font-bold text-tk-ink leading-tight">{{ $title }}</h1>
+        <h1 @if ($titleId) id="{{ $titleId }}" @endif class="font-display text-2xl sm:text-3xl font-bold text-tk-ink leading-tight">{{ $title }}</h1>
         @if ($subtitle)
             <p class="tk-page-lead max-w-3xl">{{ $subtitle }}</p>
         @endif

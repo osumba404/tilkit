@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-guest-layout title="Reset password | Tilkit" meta-description="Request a password reset link for your Tilkit account." robots="noindex, nofollow">
     <x-auth-heading title="{{ __('Reset password') }}">
         {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
     </x-auth-heading>

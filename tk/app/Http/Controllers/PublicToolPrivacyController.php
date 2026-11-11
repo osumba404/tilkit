@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DcProject;
 use App\Services\KenyaDpa\PrivacyNoticeBuilder;
+use App\Support\Tilkit\WeatherTool;
 use Illuminate\View\View;
 
 class PublicToolPrivacyController extends Controller
@@ -16,8 +17,9 @@ class PublicToolPrivacyController extends Controller
         return view('public.privacy', [
             'tool' => $tool,
             'notice' => $notices->render($tool),
-            'inventory' => config('kenya_dpa.tilkit_personal_data_columns', []),
-            'lawfulBasis' => config('kenya_dpa.lawful_bases.'.$tool->lawful_basis),
+            'inventory' => WeatherTool::isWeatherModule($tool)
+                ? config('kenya_dpa.tilkit_personal_data_columns', [])
+                : [],
         ]);
     }
 }

@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-guest-layout title="Verify email | Tilkit" meta-description="Confirm your email address to activate your Tilkit account." robots="noindex, nofollow">
     <x-auth-heading title="{{ __('Verify your email') }}">
         {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
     </x-auth-heading>
