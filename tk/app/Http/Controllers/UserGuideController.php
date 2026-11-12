@@ -14,7 +14,7 @@ class UserGuideController extends Controller
             : null;
 
         $title = 'User guide - TILKIT Weather Indicator Log on Tilkit';
-        $metaDescription = 'Step-by-step guide: setup programs, sites and seasons, capture indicator records, validation, seasonal tercile tally, data desk, exports, and team roles.';
+        $metaDescription = 'Plain-language guide to Tilkit: sign in, set up your programme, capture community weather signs, check quality, run the seasonal summary, and export data safely.';
 
         return view('user-guide.index', compact('weatherTool', 'title', 'metaDescription'));
     }
