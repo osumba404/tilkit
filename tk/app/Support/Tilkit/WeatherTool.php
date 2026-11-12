@@ -8,6 +8,7 @@ use App\Models\DcProject;
 use App\Models\ToolMember;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * One fixed TILKIT Weather tool per deployment. Workbook columns and community
@@ -113,22 +114,30 @@ class WeatherTool
         $attributes = config('tilkit.weather.single_tool.project', []);
 
         return DB::transaction(function () use ($owner, $attributes): DcProject {
+            $payload = [
+                'name' => $attributes['name'] ?? 'TILKIT Weather Indicator Log',
+                'module' => 'tilkit_weather',
+                'purpose' => $attributes['purpose'] ?? 'Community weather indicator monitoring and seasonal tercile tally (v4 workbook).',
+                'lawful_basis' => $attributes['lawful_basis'] ?? 'consent',
+                'retention_months' => $attributes['retention_months'] ?? config('kenya_dpa.default_retention_months'),
+                'data_controller_name' => $attributes['data_controller_name'] ?? null,
+                'data_controller_email' => $attributes['data_controller_email'] ?? null,
+                'data_protection_contact_email' => $attributes['data_protection_contact_email'] ?? null,
+                'status' => 'active',
+                'public_collection_enabled' => (bool) ($attributes['public_collection_enabled'] ?? false),
+                'owner_user_id' => $owner->id,
+                'created_by' => $owner->id,
+            ];
+
+            $payload = array_filter(
+                $payload,
+                fn (mixed $value, string $column): bool => Schema::hasColumn('dc_projects', $column),
+                ARRAY_FILTER_USE_BOTH,
+            );
+
             $project = DcProject::query()->updateOrCreate(
                 ['code' => static::configuredCode()],
-                [
-                    'name' => $attributes['name'] ?? 'TILKIT Weather Indicator Log',
-                    'module' => 'tilkit_weather',
-                    'purpose' => $attributes['purpose'] ?? 'Community weather indicator monitoring and seasonal tercile tally (v4 workbook).',
-                    'lawful_basis' => $attributes['lawful_basis'] ?? 'consent',
-                    'retention_months' => $attributes['retention_months'] ?? config('kenya_dpa.default_retention_months'),
-                    'data_controller_name' => $attributes['data_controller_name'] ?? null,
-                    'data_controller_email' => $attributes['data_controller_email'] ?? null,
-                    'data_protection_contact_email' => $attributes['data_protection_contact_email'] ?? null,
-                    'status' => 'active',
-                    'public_collection_enabled' => (bool) ($attributes['public_collection_enabled'] ?? false),
-                    'owner_user_id' => $owner->id,
-                    'created_by' => $owner->id,
-                ]
+                $payload,
             );
 
             ToolMember::query()->updateOrCreate(
