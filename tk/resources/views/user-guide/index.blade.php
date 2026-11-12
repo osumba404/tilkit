@@ -12,7 +12,7 @@
         <x-page-header
             eyebrow="Documentation"
             title="User guide"
-            subtitle="Simple steps for community weather monitoring — from first sign-in to seasonal summaries and safe exports."
+            subtitle="Simple steps for community weather monitoring - from first sign-in to seasonal summaries and safe exports."
         >
             @if ($weatherTool ?? null)
                 <x-slot name="actions">

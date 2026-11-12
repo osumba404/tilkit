@@ -1,5 +1,5 @@
 -- =============================================================================
--- Tilkit — bring occcoke_tk (or similar) in line with Laravel migrations
+-- Tilkit - bring occcoke_tk (or similar) in line with Laravel migrations
 -- Run in phpMyAdmin when artisan migrate is not available.
 -- Skip any statement that errors with "Duplicate column name".
 -- =============================================================================
@@ -34,7 +34,7 @@ INNER JOIN (
 SET s.`site_id` = pick.`site_id`
 WHERE s.`site_id` IS NULL;
 
--- Per-site season labels: MySQL reuses (project_id, label) for the project_id FK — drop FK first.
+-- Per-site season labels: MySQL reuses (project_id, label) for the project_id FK - drop FK first.
 -- If DROP INDEX says "check that column/key exists", the legacy index is already gone; continue.
 ALTER TABLE `tilkit_seasons` DROP FOREIGN KEY `tilkit_seasons_project_id_foreign`;
 

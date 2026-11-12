@@ -107,7 +107,7 @@
             eyebrow="Help"
             title="User guide"
             title-id="user-guide-title"
-            subtitle="Community weather signs on Tilkit — explained in everyday language."
+            subtitle="Community weather signs on Tilkit - explained in everyday language."
             class="mb-8 sm:mb-10"
         >
             <x-slot name="actions">
@@ -154,7 +154,7 @@
                     num="1.1"
                     title="What is this app?"
                     search="about tilkit weather signs community rain season forecast"
-                    lead="Tilkit helps communities record local weather signs — plants, animals, sky, water, rituals, and how people feel — and turn them into a seasonal picture you can trust and share."
+                    lead="Tilkit helps communities record local weather signs - plants, animals, sky, water, rituals, and how people feel - and turn them into a seasonal picture you can trust and share."
                 >
                     <p>Each entry is <strong>one sign</strong>, tied to <strong>one place</strong> and <strong>one monitoring season</strong> (for example long rains or short rains). You type what the community agreed in the field or workshop; the app does the counting and summary rules in the background so you do not have to work like a spreadsheet.</p>
                     <p>You can use the <strong>step-by-step workshop flow</strong> for group sessions, or the main capture form when you already know what to enter. Photos and location help strengthen the story of each sign.</p>
@@ -174,10 +174,10 @@
                     <ol class="tk-guide-list list-decimal pl-5 space-y-2">
                         <li><strong>Create an account</strong> and sign in, or use an invite from your team leader.</li>
                         <li><strong>Open Weather log</strong> from the menu after sign-in.</li>
-                        <li><strong>Setup</strong> — an administrator adds your programme, places (sites), and the season dates. They also check that the standard sign list appears (birds, clouds, water level, and so on). If Setup looks empty, ask them to load the official list — you do not need to fix that yourself.</li>
-                        <li><strong>Capture</strong> — add each community sign once per place and season. Use the workshop steps if you are in a group session.</li>
-                        <li><strong>During the season</strong> — add extra observations on the same sign without duplicating the whole row.</li>
-                        <li><strong>Before you share results</strong> — responsible people confirm, approve, and check rows; then run the <strong>season summary</strong> and export only where consent allows.</li>
+                        <li><strong>Setup</strong> - an administrator adds your programme, places (sites), and the season dates. They also check that the standard sign list appears (birds, clouds, water level, and so on). If Setup looks empty, ask them to load the official list - you do not need to fix that yourself.</li>
+                        <li><strong>Capture</strong> - add each community sign once per place and season. Use the workshop steps if you are in a group session.</li>
+                        <li><strong>During the season</strong> - add extra observations on the same sign without duplicating the whole row.</li>
+                        <li><strong>Before you share results</strong> - responsible people confirm, approve, and check rows; then run the <strong>season summary</strong> and export only where consent allows.</li>
                     </ol>
                     @if ($link('tools.tilkit.setup'))
                         <x-guide.link href="{{ $link('tools.tilkit.setup') }}">Go to Setup</x-guide.link>
@@ -191,7 +191,7 @@
                     search="sign in login register account password email invite admin"
                 >
                     <p>Register with your email and a password, then sign in. Invited colleagues use the same sign-in page; the invite email tells them which programme they belong to.</p>
-                    <p><strong>New accounts are usually “members”</strong> — they can record and view according to team rules. <strong>Administrator</strong> access (Setup, inviting others, data protection settings) is given on the <strong>Team</strong> page by someone who already manages the programme. Registering alone does not make you an administrator.</p>
+                    <p><strong>New accounts are usually “members”</strong> - they can record and view according to team rules. <strong>Administrator</strong> access (Setup, inviting others, data protection settings) is given on the <strong>Team</strong> page by someone who already manages the programme. Registering alone does not make you an administrator.</p>
                 </x-guide.section>
             </section>
 
@@ -225,13 +225,13 @@
                     lead="Administrators prepare the programme before field work. Everyone else can read Setup to see places, seasons, and which signs are expected each month."
                 >
                     <ul class="tk-guide-list">
-                        <li><strong>Programme</strong> — name and group your places and seasons (guided steps: programme → seasons → sites).</li>
-                        <li><strong>Sites (places)</strong> — community or station name, area on the map, optional map centre for GPS when recording.</li>
-                        <li><strong>Seasons</strong> — label and months you monitor (including seasons that cross a year boundary).</li>
-                        <li><strong>Season settings</strong> — how strongly signs count, links to official forecasts where your process uses them.</li>
-                        <li><strong>Sign list</strong> — the standard catalogue of sign <em>types</em> (same idea as the public dictionary). If it is missing, your technical contact loads it once on the server; afterward it appears here for everyone.</li>
-                        <li><strong>Sign map</strong> — browse types by category (plants, animals, sky, water, and so on) without entering data.</li>
-                        <li><strong>Monthly sign plan per place</strong> — for each site and calendar month, tick which sign types usually appear there. Use <strong>All</strong> or <strong>Clear</strong> on a category to save time; changes save automatically.</li>
+                        <li><strong>Programme</strong> - name and group your places and seasons (guided steps: programme → seasons → sites).</li>
+                        <li><strong>Sites (places)</strong> - community or station name, area on the map, optional map centre for GPS when recording.</li>
+                        <li><strong>Seasons</strong> - label and months you monitor (including seasons that cross a year boundary).</li>
+                        <li><strong>Season settings</strong> - how strongly signs count, links to official forecasts where your process uses them.</li>
+                        <li><strong>Sign list</strong> - the standard catalogue of sign <em>types</em> (same idea as the public dictionary). If it is missing, your technical contact loads it once on the server; afterward it appears here for everyone.</li>
+                        <li><strong>Sign map</strong> - browse types by category (plants, animals, sky, water, and so on) without entering data.</li>
+                        <li><strong>Monthly sign plan per place</strong> - for each site and calendar month, tick which sign types usually appear there. Use <strong>All</strong> or <strong>Clear</strong> on a category to save time; changes save automatically.</li>
                     </ul>
                     @if ($link('tools.tilkit.setup'))
                         <x-guide.link href="{{ $link('tools.tilkit.setup') }}">Open Setup</x-guide.link>
@@ -248,7 +248,7 @@
                     <ul class="tk-guide-list">
                         <li>Pick the sign from the list that matches what people described (plants, birds, clouds, and so on).</li>
                         <li>Describe <strong>who is affected</strong> (farming, water, health, and similar) and how serious it feels.</li>
-                        <li>Add <strong>photos</strong> when you can — three or more is ideal for evidence.</li>
+                        <li>Add <strong>photos</strong> when you can - three or more is ideal for evidence.</li>
                         <li>Some totals and status fields fill in by themselves after you save; you do not need to calculate them.</li>
                     </ul>
                     @if ($link('tools.tilkit.records.create'))
@@ -299,10 +299,10 @@
                     lead="Before numbers go into the season summary, agreed people check that each sign was really seen, understood, and not disputed."
                 >
                     <ul class="tk-guide-list">
-                        <li><strong>Confirmed</strong> — the community or observer stands by what was recorded.</li>
-                        <li><strong>Approved</strong> — a lead or elder agrees it is ready to count.</li>
-                        <li><strong>Verified</strong> — an independent or technical check where your process requires it.</li>
-                        <li><strong>Not disputed</strong> — no open disagreement on that row.</li>
+                        <li><strong>Confirmed</strong> - the community or observer stands by what was recorded.</li>
+                        <li><strong>Approved</strong> - a lead or elder agrees it is ready to count.</li>
+                        <li><strong>Verified</strong> - an independent or technical check where your process requires it.</li>
+                        <li><strong>Not disputed</strong> - no open disagreement on that row.</li>
                     </ul>
                     <p>Rows that need attention (including weather disagreements) appear on the <strong>Data desk</strong> for people with that role.</p>
                     @if ($link('tools.tilkit.data-desk'))
@@ -318,14 +318,14 @@
                 </x-guide.section>
 
                 <x-guide.section id="analysis" num="3.3" title="Charts and maps" search="analysis charts maps monitoring progress insights">
-                    <p>See how much has been recorded by place and season, how far checking has progressed, and simple maps. Use this for learning and supervision alongside the formal season summary — not as a replacement for community agreement.</p>
+                    <p>See how much has been recorded by place and season, how far checking has progressed, and simple maps. Use this for learning and supervision alongside the formal season summary - not as a replacement for community agreement.</p>
                     @if ($link('tools.tilkit.insights'))
                         <x-guide.link href="{{ $link('tools.tilkit.insights') }}">Open Analysis</x-guide.link>
                     @endif
                 </x-guide.section>
 
                 <x-guide.section id="exports" num="3.4" title="Downloads and privacy" search="export download csv excel consent privacy kenya share safe">
-                    <p>Download files (spreadsheet or other formats) only where <strong>consent</strong> allows and your role has export permission. The app supports do-no-harm choices and Kenya data-protection practice: who may export, what the privacy notice says, and how people can ask about their data — configured under <strong>Team</strong> by administrators.</p>
+                    <p>Download files (spreadsheet or other formats) only where <strong>consent</strong> allows and your role has export permission. The app supports do-no-harm choices and Kenya data-protection practice: who may export, what the privacy notice says, and how people can ask about their data - configured under <strong>Team</strong> by administrators.</p>
                 </x-guide.section>
             </section>
 
@@ -335,11 +335,11 @@
                 <x-guide.section id="team" num="4.1" title="Team and permissions" search="team invite roles administrator collector viewer export">
                     <p>Invite people by email and choose what they can do:</p>
                     <ul class="tk-guide-list">
-                        <li><strong>Administrator</strong> — Setup, team, who may export, and data protection settings.</li>
-                        <li><strong>Field collector / member</strong> — record and edit signs according to programme rules (same practical access).</li>
-                        <li><strong>Viewer</strong> — look without changing capture.</li>
+                        <li><strong>Administrator</strong> - Setup, team, who may export, and data protection settings.</li>
+                        <li><strong>Field collector / member</strong> - record and edit signs according to programme rules (same practical access).</li>
+                        <li><strong>Viewer</strong> - look without changing capture.</li>
                     </ul>
-                    <p>You can also assign a <strong>workflow role</strong> (who may use the data desk, confirm rows, or publish integration results). If unsure, leave the default — it follows the tool role.</p>
+                    <p>You can also assign a <strong>workflow role</strong> (who may use the data desk, confirm rows, or publish integration results). If unsure, leave the default - it follows the tool role.</p>
                     @if ($link('tools.tilkit.team'))
                         <x-guide.link href="{{ $link('tools.tilkit.team') }}">Manage team</x-guide.link>
                     @endif
@@ -347,12 +347,12 @@
 
                 <x-guide.section id="cycle" num="4.2" title="A year in the community" search="pre-season workshop season integrate share outcomes">
                     <ul class="tk-guide-list">
-                        <li><strong>Before the season</strong> — settings, training, who confirms what.</li>
-                        <li><strong>Workshop</strong> — agree signs and expectations together.</li>
-                        <li><strong>During the season</strong> — observations, photos, community panels.</li>
-                        <li><strong>Bringing views together</strong> — local outlook and links to official forecasts if you use them.</li>
-                        <li><strong>End of season</strong> — season summary, agreed messages, careful exports.</li>
-                        <li><strong>Afterward</strong> — keep history for the next year’s weighting and learning.</li>
+                        <li><strong>Before the season</strong> - settings, training, who confirms what.</li>
+                        <li><strong>Workshop</strong> - agree signs and expectations together.</li>
+                        <li><strong>During the season</strong> - observations, photos, community panels.</li>
+                        <li><strong>Bringing views together</strong> - local outlook and links to official forecasts if you use them.</li>
+                        <li><strong>End of season</strong> - season summary, agreed messages, careful exports.</li>
+                        <li><strong>Afterward</strong> - keep history for the next year’s weighting and learning.</li>
                     </ul>
                 </x-guide.section>
             </section>

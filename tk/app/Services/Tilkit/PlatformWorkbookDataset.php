@@ -3,7 +3,7 @@
 namespace App\Services\Tilkit;
 
 /**
- * Workbook rows for platform screenshots — Kenya and Ghana programmes (v4 workbook).
+ * Workbook rows for platform screenshots - Kenya and Ghana programmes (v4 workbook).
  */
 class PlatformWorkbookDataset
 {

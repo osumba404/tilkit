@@ -16,7 +16,7 @@
         @if ($tool->data_controller_name || $tool->data_controller_email)
             <div>
                 <dt class="text-xs uppercase tracking-wide">Data controller</dt>
-                <dd class="text-tk-ink">{{ $tool->data_controller_name ?: '—' }}@if ($tool->data_controller_email)<span class="block text-xs">{{ $tool->data_controller_email }}</span>@endif</dd>
+                <dd class="text-tk-ink">{{ $tool->data_controller_name ?: '-' }}@if ($tool->data_controller_email)<span class="block text-xs">{{ $tool->data_controller_email }}</span>@endif</dd>
             </div>
         @endif
         @if ($tool->data_protection_contact_email)

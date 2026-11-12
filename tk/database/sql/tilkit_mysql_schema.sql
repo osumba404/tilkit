@@ -1,11 +1,11 @@
-﻿-- =============================================================================
--- Tilkit — full MySQL/MariaDB schema (structure only, no data)
+-- =============================================================================
+-- Tilkit - full MySQL/MariaDB schema (structure only, no data)
 -- Generated from local database `tk1` (MariaDB 10.4, matches Laravel migrations)
 -- Use in production: create empty DB in cPanel, then import this file (phpMyAdmin
 -- or MySQL → Import). Structure only; run seeders/artisan separately for data.
 --
 -- Notes:
--- * Drops existing tables (DROP TABLE IF EXISTS) — safe only on an empty database.
+-- * Drops existing tables (DROP TABLE IF EXISTS) - safe only on an empty database.
 -- * Includes audit_logs append-only triggers.
 -- * DEFINER clauses removed for shared-hosting compatibility.
 -- =============================================================================

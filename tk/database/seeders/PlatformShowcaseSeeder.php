@@ -52,7 +52,7 @@ class PlatformShowcaseSeeder extends Seeder
 
         $governance = [
             'owner_user_id' => $owner->id,
-            'purpose' => 'Community indigenous weather indicators for anticipatory action — Kenya long/short rains and Ghana seasonal forecast integration.',
+            'purpose' => 'Community indigenous weather indicators for anticipatory action - Kenya long/short rains and Ghana seasonal forecast integration.',
             'lawful_basis' => 'consent',
             'retention_months' => 84,
             'status' => 'active',
@@ -86,7 +86,7 @@ class PlatformShowcaseSeeder extends Seeder
         $kenyaProgram = TilkitProgram::query()->create([
             'project_id' => $tool->id,
             'name' => 'Kenya Nature Early Outlook',
-            'description' => 'Laikipia and eastern drylands — long rains (MAM) and short rains (OND) indicator monitoring with ward plenary endorsement.',
+            'description' => 'Laikipia and eastern drylands - long rains (MAM) and short rains (OND) indicator monitoring with ward plenary endorsement.',
         ]);
 
         $ghanaProgram = TilkitProgram::query()->create([
