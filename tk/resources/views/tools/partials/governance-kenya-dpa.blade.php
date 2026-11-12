@@ -37,9 +37,13 @@
         </div>
     </dl>
     <div class="flex flex-wrap gap-3 mt-4">
-        <a href="{{ route('public.tools.privacy', $tool) }}" class="text-tk-accent text-xs underline" target="_blank" rel="noopener">Public privacy notice</a>
-        <a href="{{ route('public.tools.data-subject-request', $tool) }}" class="text-tk-accent text-xs underline" target="_blank" rel="noopener">Data subject request form</a>
-        @if (($capabilities ?? null)?->canManageTool())
+        @if (Route::has('public.tools.privacy'))
+            <a href="{{ route('public.tools.privacy', $tool) }}" class="text-tk-accent text-xs underline" target="_blank" rel="noopener">Public privacy notice</a>
+        @endif
+        @if (Route::has('public.tools.data-subject-request'))
+            <a href="{{ route('public.tools.data-subject-request', $tool) }}" class="text-tk-accent text-xs underline" target="_blank" rel="noopener">Data subject request form</a>
+        @endif
+        @if (($capabilities ?? null)?->canManageTool() && Route::has($tool->module === 'tilkit_weather' ? 'tools.tilkit.data-protection' : 'tools.data-protection'))
             <a href="{{ $tool->dataProtectionAdminUrl() }}" class="text-tk-accent text-xs underline">Manage governance</a>
         @endif
     </div>
